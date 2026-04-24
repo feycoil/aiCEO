@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>aiCEO — Projets</title>
+  <link rel="stylesheet" href="assets/app.css"/>
+</head>
+<body data-page="projects">
+<div id="app-root"></div>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/app-nba.js"></script>
+<script>
+(function(){
+  const A = window.AICEO;
+  const scope = A.getActiveGroup();
+  const allProjects = A.scopeProjects(A.PROJECTS||[]);
+  const tasks = A.TASKS_ALL();
+  const scopedTasks = A.scopeTasks(tasks);
+  const overdueAll = scopedTasks.filter(t => !t.done && t.due && A.daysUntil(t.due) < 0).length;
+
+  const subtitle = `${allProjects.length} projet${allProjects.length>1?'s':''} dans ${scope==='all'?'le portefeuille':'le groupe '+A.getGroup(scope).name}`;
+  let content = ``;
+
+  // Coach strip
+  const coach = A.coachMessage({ overdue: overdueAll });
+  content += `<div class="coach-strip" style="margin-bottom:18px"><span class="coach-dot">AI</span><span><em>Copilote ·</em> ${A.escHtml(coach)}</span></div>`;
+
+  // Grouper par groupe si all
+  const groupsToShow = scope === "all" ? (A.GROUPS||[]) : [A.getGroup(scope)];
+  groupsToShow.forEach(g => {
+    const projs = allProjects.filter(p => p.group === g.id);
+    if (!projs.length) return;
+    const gColor = A.GROUP_COLOR[g.id];
+    content += `
+      <div style="margin-top:24px">
+        <div class="hstack" style="margin-bottom:12px;gap:10px">
+          <h2 class="page-title" style="font-size:18px;margin:0;display:flex;align-items:center;gap:8px">${g.icon} ${A.escHtml(g.name)}</h2>
+          <span class="pill outline small">${projs.length}</span>
+          <div class="spacer"></div>
+          <span class="small muted">${A.escHtml(g.tagline)}</span>
+        </div>
+        <div class="grid-3">
+          ${projs.map(p => {
+            const openT = tasks.filter(t => t.project === p.id && !t.done);
+            const overdueT = openT.filter(t => t.due && A.daysUntil(t.due) < 0).length;
+            const charge = openT.reduce((a,t)=>a+(t.estimatedMin||0),0);
+            return `
+              <a class="project-card" href="projets/${p.id}.html" style="--p-accent:${gColor.accent}">
+                <div class="project-card-head">
+                  <span class="project-card-icon">${p.icon}</span>
+                  <div style="flex:1;min-width:0">
+                    <div class="project-card-name">${A.escHtml(p.name)}</div>
+                    <div class="project-card-tagline">${A.escHtml(p.tagline)}</div>
+                  </div>
+                  <span class="pill status ${p.status}">${p.status}</span>
+                </div>
+                <div class="project-card-stats">
+                  <span>${openT.length} tâche${openT.length>1?'s':''}</span>
+                  ${overdueT>0 ? `<span style="color:var(--amber-800);font-weight:600">${overdueT} à rattraper</span>` : ""}
+                  <span>⏱ ${A.formatMin(charge)}</span>
+                  <span class="tnum">${p.progress}%</span>
+                </div>
+                <div class="project-card-progress"><div class="project-card-progress-bar" style="width:${p.progress}%"></div></div>
+              </a>
+            `;
+          }).join("")}
+        </div>
+      </div>
+    `;
+  });
+
+  A.mount({
+    page: "projects",
+    title: "Projets",
+    subtitle,
+    breadcrumb: "Pilotage · Projets",
+    content
+  });
+})();
+</script>
+</body>
+</html>

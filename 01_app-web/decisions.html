@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>aiCEO — Décisions</title>
+  <link rel="stylesheet" href="assets/app.css"/>
+</head>
+<body data-page="decisions">
+<div id="app-root"></div>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/app-nba.js"></script>
+<script>
+(function(){
+  const A = window.AICEO;
+  const all = A.DECISIONS_ALL();
+  const scope = A.getActiveGroup();
+  const projIds = (A.PROJECTS||[]).filter(p => scope==='all' || p.group === scope).map(p => p.id);
+  const scoped = all.filter(d => projIds.includes(d.project));
+
+  const toExecute = scoped.filter(d => d.status === "to-execute");
+  const executed = scoped.filter(d => d.status === "executed");
+
+  let content = "";
+
+  // KPIs
+  content += `
+    <div class="grid-4" style="margin-bottom:18px">
+      <div class="kpi tinted violet"><div class="kpi-label">Total</div><div class="kpi-value tnum">${scoped.length}</div><div class="kpi-sub">dans le scope</div></div>
+      <div class="kpi tinted amber"><div class="kpi-label">À exécuter</div><div class="kpi-value tnum">${toExecute.length}</div><div class="kpi-sub">encore en cours</div></div>
+      <div class="kpi tinted sage"><div class="kpi-label">Exécutées</div><div class="kpi-value tnum">${executed.length}</div><div class="kpi-sub">soldées</div></div>
+      <div class="kpi tinted amber"><div class="kpi-label">Ce mois</div><div class="kpi-value tnum">${scoped.filter(d => d.date.slice(0,7) === A.todayISO().slice(0,7)).length}</div><div class="kpi-sub">prises en ${new Date().toLocaleDateString("fr-FR",{month:"long"})}</div></div>
+    </div>
+  `;
+
+  // Actions
+  content += `
+    <div class="hstack" style="margin-bottom:16px">
+      <div class="spacer"></div>
+      <button class="btn" onclick="AICEOdec.openAdd()">+ Nouvelle décision</button>
+    </div>
+  `;
+
+  // Décisions à exécuter
+  if (toExecute.length){
+    content += `
+      <div class="card panel" style="margin-bottom:16px">
+        <div class="card-header"><h3 class="card-title">À exécuter · ${toExecute.length}</h3></div>
+        ${toExecute.map(renderDec).join("")}
+      </div>
+    `;
+  }
+
+  // Executed, par mois
+  const byMonth = {};
+  executed.forEach(d => { const m = d.date.slice(0,7); (byMonth[m] = byMonth[m] || []).push(d); });
+  Object.keys(byMonth).sort().reverse().forEach(m => {
+    const label = new Date(m+"-01").toLocaleDateString("fr-FR",{month:"long",year:"numeric"});
+    content += `
+      <div class="card panel" style="margin-bottom:16px">
+        <div class="card-header"><h3 class="card-title">${label.charAt(0).toUpperCase()+label.slice(1)} · ${byMonth[m].length}</h3></div>
+        ${byMonth[m].map(renderDec).join("")}
+      </div>
+    `;
+  });
+
+  if (!scoped.length){
+    content += `<div class="empty"><div class="empty-icon">⚖️</div>Aucune décision dans ce scope</div>`;
+  }
+
+  function renderDec(d){
+    const proj = A.getProject(d.project);
+    const overdue = d.deadline && A.daysUntil(d.deadline) < 0 && d.status === "to-execute";
+    const src = A._sourceOfDecision(d);
+    return `
+      <div data-open-decision="${d.id}" role="button" tabindex="0" style="padding:12px 14px;border:1px solid var(--border);border-radius:12px;margin-bottom:8px;background:var(--surface-2);cursor:pointer;transition:border-color .15s ease">
+        <div style="display:flex;gap:8px;align-items:flex-start">
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:600;font-size:14px">${A.escHtml(d.title)}</div>
+            <div style="font-size:12.5px;color:var(--text-2);margin-top:4px">${A.escHtml(d.outcome)}</div>
+            <div style="font-size:11.5px;color:var(--text-3);margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <span>📅 ${A.formatDate(d.date,{day:"numeric",month:"short",year:"numeric"})}</span>
+              ${proj ? `<span>· ${proj.icon} ${A.escHtml(proj.name)}</span>` : ""}
+              <span>· 👤 ${A.escHtml(d.owner||"—")}</span>
+              ${d.deadline ? `<span style="${overdue?'color:var(--amber-800);font-weight:600':''}">· 🎯 ${overdue?"À rattraper · ":""}${A.formatDate(d.deadline)}</span>` : ""}
+              ${A.renderSourcePill(src)}
+              ${(d.tags||[]).map(t => `<span class="pill" style="padding:1px 6px;font-size:10px">${A.escHtml(t)}</span>`).join("")}
+            </div>
+            <div style="font-size:11.5px;color:var(--text-3);margin-top:4px">Parties : ${(d.parties||[]).map(p => A.escHtml(p)).join(" · ")}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end" onclick="event.stopPropagation()">
+            <span class="pill ${d.status==='to-execute'?'status hot':'status active'}">${d.status === "to-execute" ? "À exécuter" : "Exécutée"}</span>
+            ${d.status==='to-execute' ? `<button class="btn sm" onclick="event.stopPropagation(); AICEO.updateDecision('${d.id}',{status:'executed'});location.reload()">✓ Marquer exécutée</button>` : ""}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Modal d'ajout
+  content += `
+    <div class="modal-backdrop" id="dec-modal" onclick="if(event.target===this)AICEOdec.closeAdd()">
+      <div class="modal">
+        <div class="modal-header"><h2 class="modal-title">Nouvelle décision</h2><button class="modal-close" onclick="AICEOdec.closeAdd()">×</button></div>
+        <div class="modal-body">
+          <div class="form-field"><label class="form-label">Titre</label><input class="form-input" id="dec-title"></div>
+          <div class="form-field"><label class="form-label">Conclusion</label><textarea class="form-textarea" id="dec-outcome" rows="2"></textarea></div>
+          <div class="form-row">
+            <div class="form-field"><label class="form-label">Projet</label><select class="form-select" id="dec-project"><option value="">—</option>${(A.PROJECTS||[]).map(p => `<option value="${p.id}">${p.icon} ${A.escHtml(p.name)}</option>`).join("")}</select></div>
+            <div class="form-field"><label class="form-label">Deadline</label><input type="date" class="form-input" id="dec-deadline"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-field"><label class="form-label">Owner</label><input class="form-input" id="dec-owner" value="Feyçoil"></div>
+            <div class="form-field"><label class="form-label">Statut</label><select class="form-select" id="dec-status"><option value="to-execute">À exécuter</option><option value="executed">Exécutée</option></select></div>
+          </div>
+          <div class="form-field"><label class="form-label">Parties (séparées par virgule)</label><input class="form-input" id="dec-parties"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="AICEOdec.closeAdd()">Annuler</button>
+          <button class="btn primary" onclick="AICEOdec.submit()">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  window.AICEOdec = {
+    openAdd: () => document.getElementById("dec-modal").classList.add("open"),
+    closeAdd: () => document.getElementById("dec-modal").classList.remove("open"),
+    submit: () => {
+      const title = document.getElementById("dec-title").value.trim();
+      if (!title) return A.showToast("Titre requis","warn");
+      A.createDecision({
+        title,
+        outcome: document.getElementById("dec-outcome").value,
+        project: document.getElementById("dec-project").value || null,
+        deadline: document.getElementById("dec-deadline").value || null,
+        owner: document.getElementById("dec-owner").value || "Feyçoil",
+        status: document.getElementById("dec-status").value,
+        parties: document.getElementById("dec-parties").value.split(",").map(s => s.trim()).filter(Boolean),
+      });
+      A.showToast("Décision créée ✓","success");
+      setTimeout(()=>location.reload(),400);
+    }
+  };
+
+  A.mount({ page:"decisions", title:"Décisions", breadcrumb:"Intelligence · Décisions", content });
+})();
+</script>
+</body>
+</html>

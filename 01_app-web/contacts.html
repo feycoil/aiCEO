@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>aiCEO — Contacts</title>
+  <link rel="stylesheet" href="assets/app.css"/>
+</head>
+<body data-page="contacts">
+<div id="app-root"></div>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/app-nba.js"></script>
+<script>
+(function(){
+  const A = window.AICEO;
+  const all = A.CONTACTS || [];
+  let search = "";
+  let filterTag = "all";
+
+  function relatedEvents(c){
+    return (A.EVENTS||[]).filter(e => (e.attendees||[]).some(a => (c.name||"").split(" ").some(n => n && a.toLowerCase().includes(n.toLowerCase()))));
+  }
+  function relatedTasks(c){
+    return A.TASKS_ALL().filter(t => (t.delegate && (c.name||"").split(" ").some(n => n && t.delegate.toLowerCase().includes(n.toLowerCase()))));
+  }
+
+  function render(){
+    const filtered = all.filter(c => {
+      if (filterTag !== "all" && !(c.tags||[]).includes(filterTag)) return false;
+      if (search){
+        const s = search.toLowerCase();
+        return (c.name||"").toLowerCase().includes(s) || (c.org||"").toLowerCase().includes(s) || (c.role||"").toLowerCase().includes(s);
+      }
+      return true;
+    });
+    const allTags = Array.from(new Set(all.flatMap(c => c.tags||[]))).sort();
+
+    // Coach strip
+    const coach = A.coachMessage({ overdue: 0 });
+    let content = `<div class="coach-strip" style="margin-bottom:18px"><span class="coach-dot">AI</span><span><em>Copilote ·</em> ${A.escHtml(coach)}</span></div>`;
+
+    // KPIs discrets
+    const byTag = {};
+    all.forEach(c => (c.tags||[]).forEach(t => byTag[t] = (byTag[t]||0)+1));
+    content += `
+      <div class="grid-4" style="margin-bottom:18px">
+        <div class="kpi tinted sky"><div class="kpi-label">Contacts</div><div class="kpi-value tnum">${all.length}</div><div class="kpi-sub">${allTags.length} tags</div></div>
+        <div class="kpi tinted sage"><div class="kpi-label">Interlocuteurs clés</div><div class="kpi-value tnum">${byTag['clé']||byTag['cle']||all.filter(c=>(c.tags||[]).includes('clé')).length}</div><div class="kpi-sub">à entretenir</div></div>
+        <div class="kpi tinted violet"><div class="kpi-label">Avec projet</div><div class="kpi-value tnum">${all.filter(c=>(c.projects||[]).length).length}</div><div class="kpi-sub">reliés</div></div>
+        <div class="kpi tinted amber"><div class="kpi-label">Sans activité récente</div><div class="kpi-value tnum">${Math.max(0, all.length - all.filter(c=>relatedEvents(c).length||relatedTasks(c).length).length)}</div><div class="kpi-sub">à recontacter</div></div>
+      </div>
+    `;
+
+    // Filter bar
+    content += `
+      <div class="hstack" style="margin-bottom:14px;flex-wrap:wrap;gap:10px">
+        <input class="form-input" placeholder="Rechercher nom, organisation…" style="max-width:260px" value="${A.escHtml(search)}" oninput="AICEOcontacts.search(this.value)">
+        <select class="form-select" style="max-width:180px" onchange="AICEOcontacts.filterTag(this.value)">
+          <option value="all">Tous les tags</option>
+          ${allTags.map(t => `<option value="${t}" ${filterTag===t?'selected':''}>${A.escHtml(t)}</option>`).join("")}
+        </select>
+        <div class="spacer"></div>
+        <span class="pill outline small">${filtered.length} / ${all.length}</span>
+      </div>
+    `;
+
+    // Grid de cartes cliquables (drawer ouvre le détail)
+    content += `<div class="grid-3">`;
+    filtered.forEach(c => {
+      const evs = relatedEvents(c).length;
+      const tks = relatedTasks(c).length;
+      content += `
+        <div class="card panel" data-open-contact="${c.id}" role="button" tabindex="0" style="cursor:pointer;transition:transform .2s ease,box-shadow .2s ease" id="${c.id}">
+          <div style="display:flex;gap:12px;align-items:center">
+            <div class="contact-avatar">${A.escHtml((c.name||'').slice(0,1).toUpperCase())}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:700;letter-spacing:-0.01em;font-size:15px">${A.escHtml(c.name)}</div>
+              <div class="small muted">${A.escHtml(c.role||'')}</div>
+              <div class="small muted">${A.escHtml(c.org||'')}</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+            ${(c.tags||[]).slice(0,3).map(t => `<span class="pill small">${A.escHtml(t)}</span>`).join("")}
+          </div>
+          <div style="margin-top:10px;display:flex;gap:10px;font-size:11.5px;color:var(--text-3);font-variant-numeric:tabular-nums">
+            ${evs ? `<span>📅 ${evs}</span>` : ""}
+            ${tks ? `<span>✓ ${tks}</span>` : ""}
+            ${(c.projects||[]).length ? `<span>🗂 ${(c.projects||[]).length}</span>` : ""}
+          </div>
+        </div>
+      `;
+    });
+    content += `</div>`;
+    if (!filtered.length) content += `<div class="empty"><div class="empty-icon">👥</div>Aucun contact avec ces filtres</div>`;
+
+    A.mount({
+      page:"contacts",
+      title:"Contacts",
+      breadcrumb:"Intelligence · Contacts",
+      content,
+      onMounted: () => {
+        if (location.hash){
+          const id = location.hash.replace("#","");
+          setTimeout(()=>AICEOcontacts.openDetail(id), 250);
+        }
+      }
+    });
+  }
+
+  window.AICEOcontacts = {
+    search: v => { search = v; render(); },
+    filterTag: v => { filterTag = v; render(); },
+    openDetail: (id) => {
+      const c = all.find(x => x.id === id);
+      if (!c) return;
+      const evs = relatedEvents(c);
+      const tks = relatedTasks(c);
+      const projs = (c.projects||[]).map(pid => A.getProject(pid)).filter(Boolean);
+      const meta = [];
+      if (c.email) meta.push({ label:"Email", value: c.email });
+      if (c.phone) meta.push({ label:"Téléphone", value: c.phone });
+      if (c.role)  meta.push({ label:"Rôle", value: c.role });
+      if (c.org)   meta.push({ label:"Organisation", value: c.org });
+      if ((c.tags||[]).length) meta.push({ label:"Tags", value: (c.tags||[]).join(" · ") });
+
+      const related = [];
+      projs.forEach(p => related.push({ icon: p.icon, label: p.name, sub: p.tagline, href: `projets/${p.id}.html` }));
+      evs.slice(0,5).forEach(e => related.push({ icon:"📅", label: e.title, sub: A.formatDate(e.date), href: `agenda.html#${e.id}` }));
+      tks.slice(0,5).forEach(t => related.push({ icon:"✓", label: t.title, sub: "Tâche déléguée", href: `taches.html#${t.id}` }));
+
+      A.openDrawer({
+        eyebrow: c.org || "Contact",
+        title: c.name,
+        source: null,
+        meta,
+        related,
+        actions: [
+          { label:"✉️ Écrire", primary:true, onclick:`location.href='mailto:${c.email||""}'` },
+          { label:"📞 Appeler", onclick:`location.href='tel:${(c.phone||"").replace(/\\s/g,"")}'` },
+          { label:"✨ Résumé IA", onclick:`AICEO.showToast('Résumé IA en préparation…','info')` }
+        ]
+      });
+      history.replaceState(null,"","#"+id);
+    }
+  };
+
+  // Delegated click handler for contacts
+  document.addEventListener("click", (e) => {
+    const t = e.target.closest && e.target.closest("[data-open-contact]");
+    if (t){ e.preventDefault(); AICEOcontacts.openDetail(t.getAttribute("data-open-contact")); }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

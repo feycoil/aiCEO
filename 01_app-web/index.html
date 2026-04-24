@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>aiCEO — Cockpit</title>
+  <link rel="stylesheet" href="assets/app.css"/>
+</head>
+<body data-page="dashboard">
+<div id="app-root"></div>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/app-nba.js"></script>
+<script>
+(function(){
+  const A = window.AICEO;
+  const today = A.todayISO();
+  const now = new Date();
+
+  // ========= Revue courante (Big Rocks + intention) =========
+  const review = (A.REVIEWS||[]).find(r => r.status === "current");
+
+  // ========= Tâches scope =========
+  const allTasks = A.scopeTasks(A.TASKS_ALL());
+  const openTasks = allTasks.filter(t => !t.done);
+  const overdue = openTasks.filter(t => t.due && A.daysUntil(t.due) < 0);
+  const dueToday = openTasks.filter(t => t.due && A.daysUntil(t.due) === 0);
+  const dueTomorrow = openTasks.filter(t => t.due && A.daysUntil(t.due) === 1);
+  const starredOpen = openTasks.filter(t => t.starred);
+
+  // ========= Gamification / semaine =========
+  const wkTotalForGauge = Math.max(8, openTasks.length + A._countClosedThisWeek() || 12);
+  const closedWeek = A._countClosedThisWeek();
+  const progressPct = Math.min(100, Math.round((closedWeek / wkTotalForGauge) * 100));
+  const streak = A.getStreak();
+  const badges = A.getBadges();
+  const coach = A.coachMessage({ overdue: overdue.length, bigRocksProgress: review ? review.progress : 0, weekNum: 17 });
+
+  // ========= Focus du jour : 3 tâches max =========
+  const focusTasks = (() => {
+    const seen = new Set();
+    const chosen = [];
+    overdue.filter(t => t.priority === "critical").forEach(t => { if (!seen.has(t.id)){ chosen.push(t); seen.add(t.id); } });
+    dueToday.filter(t => t.starred).forEach(t => { if (!seen.has(t.id) && chosen.length < 3){ chosen.push(t); seen.add(t.id); } });
+    dueToday.forEach(t => { if (!seen.has(t.id) && chosen.length < 3){ chosen.push(t); seen.add(t.id); } });
+    starredOpen.forEach(t => { if (!seen.has(t.id) && chosen.length < 3){ chosen.push(t); seen.add(t.id); } });
+    return chosen.slice(0,3);
+  })();
+
+  // ========= Prochain événement =========
+  const nextEvent = (A.EVENTS||[]).filter(e => new Date(e.date) >= now).sort((a,b) => new Date(a.date) - new Date(b.date))[0];
+
+  // ========= Criticité — dot cloud par urgence =========
+  const buckets = { critical:[], high:[], medium:[], low:[] };
+  openTasks.forEach(t => {
+    const due = t.due ? A.daysUntil(t.due) : null;
+    if (t.priority === "critical" || (due !== null && due < 0)) buckets.critical.push(t);
+    else if (t.priority === "high" || (due !== null && due <= 2)) buckets.high.push(t);
+    else if (t.priority === "medium" || (due !== null && due <= 7)) buckets.medium.push(t);
+    else buckets.low.push(t);
+  });
+
+  // ========= Charge par jour (S17 : lun 20 → dim 26) =========
+  const dayNames = ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
+  const todayIdx = (now.getDay()+6)%7;
+  const weekStart = new Date(now); weekStart.setHours(0,0,0,0); weekStart.setDate(now.getDate() - todayIdx);
+  const loadPerDay = dayNames.map((lbl, i) => {
+    const d = new Date(weekStart); d.setDate(weekStart.getDate()+i);
+    const iso = d.toISOString().slice(0,10);
+    const wl = A.workloadForDate(iso);
+    return { label: lbl, iso, min: wl.totalMin, isToday: i === todayIdx };
+  });
+  const maxLoad = Math.max(1, ...loadPerDay.map(d => d.min));
+
+  // ========= Décisions en attente =========
+  const pendingDecisions = (A.DECISIONS_ALL()||[])
+    .filter(d => d.status !== "executed")
+    .sort((a,b) => (a.deadline||"9999-99-99").localeCompare(b.deadline||"9999-99-99"))
+    .slice(0,4);
+
+  // ========= HELPERS RENDU =========
+  function focusItemRow(t){
+    const src = A._sourceOfTask(t);
+    const srcPill = A.renderSourcePill(src);
+    const proj = t.project ? A.getProject(t.project) : null;
+    const due = t.due ? A.daysUntil(t.due) : null;
+    const dueLbl = t.due ? (due < 0 ? "En retard · " + A.formatDate(t.due) : A.formatDate(t.due)) : "";
+    return `
+      <div class="focus-item" data-open-task="${t.id}" role="button" tabindex="0">
+        <button class="focus-item-check" role="checkbox" aria-checked="${!!t.done}" aria-label="Marquer comme fait"
+          onclick="event.stopPropagation(); AICEO.toggleTaskDone('${t.id}');"></button>
+        <div class="focus-item-body">
+          <div class="focus-item-title ${t.done?'done':''}">${A.escHtml(t.title)}</div>
+          <div class="focus-item-meta">
+            ${proj ? `<span>${proj.icon} ${A.escHtml(proj.name)}</span>` : ""}
+            ${t.estimatedMin ? `<span>⏱ ${A.formatMin(t.estimatedMin)}</span>` : ""}
+            ${dueLbl ? `<span>· ${dueLbl}</span>` : ""}
+            ${srcPill}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function decisionMiniRow(d){
+    const proj = d.project ? A.getProject(d.project) : null;
+    const ddl = d.deadline ? A.formatDate(d.deadline) : "";
+    const overdueDdl = d.deadline && A.daysUntil(d.deadline) < 0;
+    return `
+      <div class="decision-mini" data-open-decision="${d.id}" role="button" tabindex="0">
+        <div class="decision-mini-body">
+          <div class="decision-mini-title">${A.escHtml(d.title)}</div>
+          <div class="decision-mini-meta">
+            ${proj ? `<span>${proj.icon} ${A.escHtml(proj.name)}</span>` : ""}
+            ${d.owner ? `<span>· ${A.escHtml(d.owner)}</span>` : ""}
+            ${ddl ? `<span>· ${overdueDdl ? "En retard " : "À exéc. "}${ddl}</span>` : ""}
+            ${A.renderSourcePill(A._sourceOfDecision(d))}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ========= BUILD CONTENT =========
+  let content = "";
+  const grpName = A.getActiveGroup() === "all" ? "Portefeuille complet" : (A.getGroup(A.getActiveGroup())||{}).name;
+
+  // ------- 1) INTENTION HERO -------
+  content += `<section class="intention-hero" aria-labelledby="intention-title">`;
+  content += `<div class="intention-hero-top">`;
+  content += `<div>`;
+  content += `<div class="intention-hero-eyebrow">${review ? A.escHtml(review.label) : "Cette semaine"} · Intention</div>`;
+  content += `<h1 class="intention-hero-title" id="intention-title">${review ? A.escHtml(review.intention) : "Semaine à définir"}</h1>`;
+  content += `<div class="intention-hero-sub">${grpName} · ${overdue.length ? `<strong>${overdue.length}</strong> en retard · ` : ""}${openTasks.length} tâches ouvertes · ${pendingDecisions.length} décisions en attente</div>`;
+  content += `</div>`;
+
+  content += `<div class="intention-hero-right">`;
+  content += `<div class="streak-badge" title="Jours consécutifs avec au moins une tâche soldée">
+    <span class="flame" aria-hidden="true"></span>
+    <span>Streak ${streak.days||0} jour${(streak.days||0)>1?"s":""}</span>
+  </div>`;
+  if (badges.length){
+    content += `<div class="badges-row">${badges.slice(-4).map(b => `<span class="badge-chip unlocked" title="${A.escHtml(b.label)}">${b.icon} ${A.escHtml(b.label)}</span>`).join("")}</div>`;
+  } else {
+    content += `<div class="badges-row"><span class="badge-chip">⭐ Première tâche à débloquer</span></div>`;
+  }
+  content += `</div>`;
+  content += `</div>`;
+
+  // Week gauge
+  content += `<div class="week-gauge" data-week-gauge data-closed="${closedWeek}" data-total="${wkTotalForGauge}">`;
+  content += `<div class="week-gauge-head">
+    <span>Semaine en cours</span>
+    <span class="count">${closedWeek}<span class="small-of"> / ${wkTotalForGauge} soldées</span></span>
+    <span class="pct">${progressPct}%</span>
+  </div>`;
+  content += `<div class="week-gauge-track"><div class="week-gauge-fill" style="width:${progressPct}%"></div></div>`;
+  content += `<div class="week-gauge-dots">${dayNames.map((n,i)=>`<span class="${i <= todayIdx ? 'on':''}">${n}</span>`).join("")}</div>`;
+  content += `</div>`;
+
+  // Coach strip
+  content += `<div class="coach-strip"><span class="coach-dot">AI</span><span><em>Copilote ·</em> ${A.escHtml(coach)}</span></div>`;
+
+  // Big Rocks
+  if (review && (review.bigRocks||[]).length){
+    content += `<div class="intention-rocks">`;
+    (review.bigRocks||[]).slice(0,3).forEach((r,i) => {
+      const rockPct = review.progress ? Math.round(review.progress * (1 - i*0.18)) : 0;
+      content += `
+        <div class="rock-card" role="button" tabindex="0" onclick='AICEO.openDrawer({eyebrow:"Big Rock #${i+1}",title:${JSON.stringify(r)},meta:[{label:"Intention",value:${JSON.stringify(review.intention)}},{label:"Progression estimée",value:"${rockPct}%"}],related:[{icon:"📝",label:"Revue ${A.escHtml(review.label)}",sub:"Ouvrir la revue",href:"revues/index.html"}]})'>
+          <div class="rock-card-head"><span class="rock-num">${i+1}</span><span>Big Rock</span></div>
+          <div class="rock-card-title">${A.escHtml(r)}</div>
+          <div class="rock-mini-bar"><span style="width:${Math.max(6,rockPct)}%"></span></div>
+          <div class="rock-card-meta"><span>${rockPct}% progression</span></div>
+        </div>
+      `;
+    });
+    content += `</div>`;
+  }
+  content += `</section>`;
+
+  // ------- 2) COCKPIT GRID : 4 structural cards -------
+  content += `<div class="cockpit-grid">`;
+
+  // CARD A — Aujourd'hui
+  content += `
+    <section class="cockpit-card" aria-labelledby="ck-today">
+      <div class="cockpit-card-head">
+        <span class="label">🔥 Focus</span>
+        <span class="title" id="ck-today">Aujourd'hui</span>
+        <span class="actions"><a class="btn sm" href="taches.html">Tout voir →</a></span>
+      </div>
+      <div class="focus-list">
+        ${focusTasks.length ? focusTasks.map(focusItemRow).join("") : '<div class="empty" style="padding:12px">Rien de critique aujourd\'hui · prenez le temps d\'un gros morceau.</div>'}
+      </div>
+      ${nextEvent ? (() => {
+        const d = new Date(nextEvent.date);
+        const nice = d.toLocaleDateString("fr-FR",{weekday:"short",day:"numeric",month:"short"}) + " · " + d.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+        return `
+          <div class="decision-mini" data-open-event="${nextEvent.id}" role="button" tabindex="0" style="margin-top:4px">
+            <div class="decision-mini-body">
+              <div class="decision-mini-title">📅 ${A.escHtml(nextEvent.title)}</div>
+              <div class="decision-mini-meta">
+                <span>${nice}</span>
+                ${nextEvent.location ? `<span>· ${A.escHtml(nextEvent.location)}</span>` : ""}
+                <button class="source-pill" data-open-event="${nextEvent.id}"><span class="src-ico">📅</span><span>Agenda</span><span class="src-arrow">↗</span></button>
+              </div>
+            </div>
+          </div>
+        `;
+      })() : ""}
+    </section>
+  `;
+
+  // CARD B — Criticité
+  content += `
+    <section class="cockpit-card" aria-labelledby="ck-crit">
+      <div class="cockpit-card-head">
+        <span class="label">⚡ Criticité</span>
+        <span class="title" id="ck-crit">Charge par urgence</span>
+        <span class="actions"><a class="btn sm" href="taches.html">Matrice →</a></span>
+      </div>
+      <div class="crit-cloud">
+        ${["critical","high","medium","low"].flatMap(k =>
+          buckets[k].slice(0, 12).map(t => `<span class="crit-dot ${k}" title="${A.escHtml(t.title)}" data-open-task="${t.id}" role="button" tabindex="0">${t.title.charAt(0).toUpperCase()}</span>`)
+        ).join("")}
+      </div>
+      <div class="crit-legend">
+        <span class="lg critical">Critique ${buckets.critical.length}</span>
+        <span class="lg high">Haute ${buckets.high.length}</span>
+        <span class="lg medium">Moyenne ${buckets.medium.length}</span>
+        <span class="lg low">Basse ${buckets.low.length}</span>
+      </div>
+    </section>
+  `;
+
+  // CARD C — Charge de la semaine
+  content += `
+    <section class="cockpit-card" aria-labelledby="ck-load">
+      <div class="cockpit-card-head">
+        <span class="label">📅 Semaine</span>
+        <span class="title" id="ck-load">Charge par jour</span>
+        <span class="actions"><a class="btn sm" href="agenda.html">Agenda →</a></span>
+      </div>
+      <div class="load-week">
+        ${loadPerDay.map(d => {
+          const pct = d.min / maxLoad;
+          const ticks = 8;
+          const on = Math.max(0, Math.min(ticks, Math.round(pct * ticks)));
+          return `
+            <div class="load-day ${d.isToday?'today':''}" role="button" tabindex="0" onclick="location.href='agenda.html#${d.iso}'">
+              <div class="load-day-label">${d.label}</div>
+              <div class="load-day-ticks">${Array.from({length:ticks}).map((_,i) => `<span class="${i < on ? 'on':''}" style="height:${6+i*2.5}px"></span>`).join("")}</div>
+              <div class="load-day-val">${d.min ? A.formatMin(d.min).replace(/ min/,'') : "·"}</div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    </section>
+  `;
+
+  // CARD D — Décisions en attente
+  content += `
+    <section class="cockpit-card" aria-labelledby="ck-dec">
+      <div class="cockpit-card-head">
+        <span class="label">⚖︎ Décisions</span>
+        <span class="title" id="ck-dec">En attente d'exécution</span>
+        <span class="actions"><a class="btn sm" href="decisions.html">Toutes →</a></span>
+      </div>
+      <div class="focus-list">
+        ${pendingDecisions.length ? pendingDecisions.map(decisionMiniRow).join("") : '<div class="empty" style="padding:12px">Aucune décision en attente.</div>'}
+      </div>
+    </section>
+  `;
+
+  content += `</div>`;
+
+  // ------- End-of-day CTA (visible si >=17h) -------
+  const showEOD = now.getHours() >= 17;
+  if (showEOD){
+    content += `
+      <section class="end-of-day" style="margin-top:20px" aria-labelledby="eod-title">
+        <div class="end-of-day-head">
+          <span class="end-of-day-eye">Bilan du jour</span>
+          <h3 class="end-of-day-title" id="eod-title">Clôturer la journée sereinement</h3>
+        </div>
+        <div class="end-of-day-coach">Faites le point · ce qui est fait, ce qui attend, ce qui peut glisser.</div>
+        <div class="end-of-day-actions">
+          <button class="btn primary" onclick="AICEO.openEndOfDay()">Ouvrir le bilan</button>
+          <button class="btn" onclick="location.href='taches.html'">Voir demain</button>
+        </div>
+      </section>
+    `;
+  }
+
+  // ========= MOUNT =========
+  const niceDate = now.toLocaleDateString("fr-FR",{ weekday:"long", day:"numeric", month:"long" });
+  A.mount({
+    page: "dashboard",
+    title: "Bonjour Feyçoil 👋",
+    breadcrumb: `${niceDate.charAt(0).toUpperCase()+niceDate.slice(1)} · ${grpName}`,
+    content,
+    onMounted(){
+      requestAnimationFrame(() => {
+        const fill = document.querySelector(".week-gauge-fill");
+        if (fill){ fill.style.width = progressPct + "%"; }
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

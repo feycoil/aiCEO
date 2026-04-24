@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>aiCEO — Portefeuille de groupes</title>
+  <link rel="stylesheet" href="assets/app.css"/>
+</head>
+<body data-page="groups">
+<div id="app-root"></div>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/app-nba.js"></script>
+<script>
+(function(){
+  const A = window.AICEO;
+  const allTasks = A.TASKS_ALL();
+  const scoped = A.scopeTasks(allTasks);
+  const overdueAll = scoped.filter(t => !t.done && t.due && A.daysUntil(t.due) < 0).length;
+
+  let content = "";
+
+  // Coach strip — ton calme
+  const coach = A.coachMessage({ overdue: overdueAll });
+  content += `<div class="coach-strip" style="margin-bottom:18px"><span class="coach-dot">AI</span><span><em>Copilote ·</em> ${A.escHtml(coach)}</span></div>`;
+
+  // 3 cartes groupe aérées
+  content += `<div class="grid-3">`;
+  (A.GROUPS||[]).forEach(g => {
+    const gColor = A.GROUP_COLOR[g.id];
+    const projects = (A.PROJECTS||[]).filter(p => p.group === g.id);
+    const projIds = projects.map(p => p.id);
+    const tasksOfG = allTasks.filter(t => projIds.includes(t.project));
+    const openOfG = tasksOfG.filter(t => !t.done);
+    const overdueOfG = openOfG.filter(t => t.due && A.daysUntil(t.due) < 0);
+    const workloadMin = openOfG.reduce((a,t)=>a+(t.estimatedMin||0),0);
+    const aiOfG = openOfG.filter(t => t.aiCapable).length;
+    const decsOfG = A.DECISIONS_ALL().filter(d => projIds.includes(d.project));
+    const pendingDecs = decsOfG.filter(d => d.status === "to-execute").length;
+    const eventsOfG = (A.EVENTS||[]).filter(e => projIds.includes(e.project) && new Date(e.date) >= new Date()).length;
+    const avgProgress = projects.length ? Math.round(projects.reduce((a,p)=>a+(p.progress||0),0)/projects.length) : 0;
+
+    content += `
+      <div class="card group-themed" style="--accent:${gColor.accent}">
+        <div style="display:flex;gap:14px;align-items:flex-start">
+          <div style="font-size:44px">${g.icon}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:${gColor.fg}">${A.escHtml(g.tagline)}</div>
+            <h3 style="margin:2px 0 6px;font-size:20px;letter-spacing:-0.02em">${A.escHtml(g.name)}</h3>
+            <p style="margin:0;font-size:13px;color:var(--text-2);line-height:1.45">${A.escHtml(g.description)}</p>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;height:6px;background:var(--surface-3);border-radius:4px;overflow:hidden"><div style="height:100%;background:${gColor.accent};width:${avgProgress}%;transition:width .4s"></div></div>
+        <div class="small muted" style="margin-top:4px;font-variant-numeric:tabular-nums">${avgProgress}% — progression moyenne</div>
+
+        <div style="margin-top:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;font-variant-numeric:tabular-nums">
+          <div><div class="kpi-label">Projets</div><div style="font-size:18px;font-weight:700">${projects.length}</div></div>
+          <div><div class="kpi-label">Tâches</div><div style="font-size:18px;font-weight:700">${openOfG.length}</div></div>
+          <div><div class="kpi-label">À rattraper</div><div style="font-size:18px;font-weight:700;${overdueOfG.length?'color:var(--amber-800)':''}">${overdueOfG.length}</div></div>
+          <div><div class="kpi-label">RDV</div><div style="font-size:18px;font-weight:700">${eventsOfG}</div></div>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
+          <span class="pill outline small">⏱ ${A.formatMin(workloadMin)}</span>
+          <span class="pill outline small">✨ ${aiOfG} IA</span>
+          <span class="pill outline small">⚖︎ ${pendingDecs} décisions</span>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px">
+          <button class="btn primary sm" onclick="AICEO.setActiveGroup('${g.id}'); setTimeout(()=>location.href='index.html',300)">Focus sur ${A.escHtml(g.name)} →</button>
+          <button class="btn sm" onclick="AICEOgroups.open('${g.id}')">Détail</button>
+        </div>
+      </div>
+    `;
+  });
+  content += `</div>`;
+
+  // Drawer détail groupe — remplace la duplication inline
+  window.AICEOgroups = {
+    open: (gid) => {
+      const g = A.getGroup(gid);
+      const gColor = A.GROUP_COLOR[gid];
+      const projects = (A.PROJECTS||[]).filter(p => p.group === gid);
+      const tasksOfG = allTasks.filter(t => projects.map(p=>p.id).includes(t.project));
+      const openOfG = tasksOfG.filter(t => !t.done);
+      const overdueOfG = openOfG.filter(t => t.due && A.daysUntil(t.due) < 0);
+      const decs = A.DECISIONS_ALL().filter(d => projects.map(p=>p.id).includes(d.project) && d.status === "to-execute");
+
+      A.openDrawer({
+        eyebrow: `${g.icon} Groupe`,
+        title: g.name,
+        source: null,
+        meta: [
+          { label: "Baseline", value: g.tagline },
+          { label: "Projets", value: `${projects.length}` },
+          { label: "Tâches ouvertes", value: `${openOfG.length}` },
+          { label: "À rattraper", value: `${overdueOfG.length}` },
+          { label: "Décisions en cours", value: `${decs.length}` },
+        ],
+        related: projects.map(p => ({
+          icon: p.icon,
+          label: p.name,
+          sub: `${p.progress}% · ${p.tagline}`,
+          href: `projets/${p.id}.html`,
+        })),
+        actions: [
+          { label: `Focus sur ${g.name}`, primary: true, onclick: `AICEO.setActiveGroup('${g.id}'); setTimeout(()=>location.href='index.html',300)` },
+          { label: "Voir tous les projets", onclick: `location.href='projets.html'` },
+        ],
+      });
+    }
+  };
+
+  A.mount({
+    page: "groups",
+    title: "Portefeuille",
+    subtitle: "Trois groupes. Choisissez celui qui a besoin d'attention aujourd'hui.",
+    breadcrumb: "Pilotage · Portefeuille",
+    content
+  });
+})();
+</script>
+</body>
+</html>

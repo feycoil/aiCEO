@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>aiCEO — Copilote IA</title>
+  <link rel="stylesheet" href="assets/app.css"/>
+</head>
+<body data-page="assistant">
+<div id="app-root"></div>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/app-nba.js"></script>
+<script>
+(function(){
+  const A = window.AICEO;
+  const proposals = A.PROPOSALS_ALL();
+  const pending = proposals.filter(p => (p.status||"pending") === "pending");
+  const accepted = proposals.filter(p => p.status === "accepted");
+  const rejected = proposals.filter(p => p.status === "rejected");
+
+  // Group by kind
+  const byKind = {};
+  pending.forEach(p => { (byKind[p.kind] = byKind[p.kind] || []).push(p); });
+
+  const kindMeta = {
+    "email-draft":       { label:"✉️ Brouillons mail",       desc:"Réponses et relances pré-rédigées, prêtes à envoyer." },
+    "meeting-prep":      { label:"📋 Préparations réunion",   desc:"ODJ, brief, synthèses pour vos RDV à venir." },
+    "task-from-event":   { label:"✓ Création de tâches",       desc:"L'IA détecte les rdv qui requièrent préparation." },
+    "workload-rebalance":{ label:"⚖︎ Rééquilibrage charge",   desc:"Alertes saturation et propositions de report." },
+    "automation":        { label:"⚙︎ Automatisations",         desc:"Workflows répétitifs à automatiser." },
+    "summary":           { label:"📝 Synthèses",              desc:"Résumés rapides pour gagner du temps." },
+  };
+
+  const gain = pending.reduce((a,p) => { const m = (p.estimatedGain||"").match(/(\d+)/); return a + (m ? parseInt(m[1]) : 0); }, 0);
+
+  let content = "";
+
+  // Intention hero pour le copilote
+  content += `
+    <div class="intention-hero">
+      <div class="intention-hero-left">
+        <div class="intention-hero-eyebrow">✨ Copilote · ${pending.length} proposition${pending.length>1?'s':''} en attente</div>
+        <h1 class="intention-hero-title">${pending.length ? `Je vous ai préparé ${pending.length} action${pending.length>1?'s':''} — gardez, ajustez, ou ignorez.` : "Tout est arbitré. Je continue à veiller en fond."}</h1>
+        <div class="intention-hero-sub">${gain ? `Gain total estimé : ~${gain} minutes.` : ""} ${accepted.length ? `${accepted.length} acceptée${accepted.length>1?'s':''} ce cycle.` : ""}</div>
+      </div>
+      <div class="intention-hero-right">
+        ${pending.length ? `<button class="btn primary" onclick="if(confirm('Accepter les ${pending.length} propositions ?')) { AICEO.PROPOSALS_ALL().forEach(p => { if((p.status||'pending')==='pending') AICEO.setProposalStatus(p.id,'accepted'); }); AICEO.showToast('${pending.length} propositions acceptées ✓','success'); setTimeout(()=>location.reload(),500); }">Tout accepter</button>` : ""}
+      </div>
+    </div>
+  `;
+
+  // Cockpit 4 cartes (tonalité calme)
+  content += `
+    <div class="grid-4" style="margin-bottom:18px">
+      <div class="kpi tinted violet"><div class="kpi-label">En attente</div><div class="kpi-value tnum">${pending.length}</div><div class="kpi-sub">à arbitrer</div></div>
+      <div class="kpi tinted sage"><div class="kpi-label">Acceptées</div><div class="kpi-value tnum">${accepted.length}</div><div class="kpi-sub">ce cycle</div></div>
+      <div class="kpi tinted amber"><div class="kpi-label">Urgentes</div><div class="kpi-value tnum">${pending.filter(p=>p.urgency==='now'||p.urgency==='today').length}</div><div class="kpi-sub">≤ aujourd'hui</div></div>
+      <div class="kpi tinted sky"><div class="kpi-label">Automatisations</div><div class="kpi-value tnum">${pending.filter(p=>p.kind==='automation').length}</div><div class="kpi-sub">gains récurrents</div></div>
+    </div>
+  `;
+
+  // Sections by kind — proposition = source pointant vers son origine
+  Object.keys(kindMeta).forEach(k => {
+    const items = byKind[k] || [];
+    if (!items.length) return;
+    const m = kindMeta[k];
+    content += `
+      <div class="card panel" style="margin-bottom:16px">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">${m.label} · ${items.length}</h3>
+            <div class="card-sub">${m.desc}</div>
+          </div>
+        </div>
+        <div style="display:grid;gap:10px">
+          ${items.map(p => renderAICard(p)).join("")}
+        </div>
+      </div>
+    `;
+  });
+
+  function renderAICard(p){
+    // Build source pill (origin of the proposal)
+    let src = null;
+    if (p.sourceType === "email" || p.kind === "email-draft"){
+      src = { type:"email", icon:"✉️", detail:"Outlook", subject:p.title, href:"#" };
+    } else if (p.sourceType === "event" || p.kind === "meeting-prep" || p.kind === "task-from-event"){
+      const e = p.sourceId ? (A.EVENTS||[]).find(x => x.id === p.sourceId) : null;
+      src = { type:"event", icon:"📅", detail: e ? A.formatDate(e.date) : "Agenda", subject: e ? e.title : p.title, href: e ? `agenda.html#${e.id}` : "agenda.html" };
+    }
+    const pill = src ? A.renderSourcePill(src) : "";
+    // Use A.aiCard but wrap with source pill — A.aiCard renders the card; we inject source pill after title
+    let card = A.aiCard(p);
+    if (pill){
+      // Insert source pill right after the .ai-card-kind line so origin sits next to label
+      card = card.replace(/(<div class="ai-card-kind">[\s\S]*?<\/div>)/, `$1 ${pill}`);
+    }
+    return card;
+  }
+
+  if (!pending.length){
+    content += `
+      <div class="card panel">
+        <div class="empty">
+          <div class="empty-icon">✨</div>
+          <div>Tout est arbitré. L'IA continue à vous suggérer des automatisations.</div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Historique
+  if (accepted.length || rejected.length){
+    content += `
+      <div class="card panel" style="margin-top:20px">
+        <div class="card-header"><h3 class="card-title">Historique · ${accepted.length + rejected.length}</h3></div>
+        <div style="display:grid;gap:6px">
+          ${[...accepted, ...rejected].map(p => `
+            <div style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;background:var(--surface);${p.status==='rejected'?'opacity:.6':''}">
+              <span>${p.status==='accepted'?'✓':'×'}</span>
+              <span class="small">${A.escHtml(p.title)}</span>
+              <span class="spacer"></span>
+              <span class="small muted">${p.status==='accepted'?'Accepté':'Ignoré'}</span>
+              <button class="btn sm" onclick="AICEO.setProposalStatus('${p.id}','pending'); location.reload()">Rouvrir</button>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  // Roadmap — ton plus calme
+  content += `
+    <div class="card panel" style="margin-top:20px">
+      <div class="card-header"><h3 class="card-title">🛤 À venir dans le copilote</h3></div>
+      <div style="display:grid;gap:12px;padding:4px 0">
+        <div style="display:flex;gap:10px"><span>🔌</span><div><strong>Outlook temps réel</strong><div class="small muted">Mails entrants → tâches + brouillons de réponse automatiques.</div></div></div>
+        <div style="display:flex;gap:10px"><span>📊</span><div><strong>Revue hebdo auto</strong><div class="small muted">Dimanche soir : synthèse S+1 + Big Rocks proposés.</div></div></div>
+        <div style="display:flex;gap:10px"><span>🎙</span><div><strong>Note vocale → tâche</strong><div class="small muted">Dicter en voiture, le copilote crée la tâche + rappel.</div></div></div>
+        <div style="display:flex;gap:10px"><span>🤝</span><div><strong>Délégation automatique</strong><div class="small muted">Une tâche "déléguer" est assignée + mail envoyé + suivi.</div></div></div>
+        <div style="display:flex;gap:10px"><span>📞</span><div><strong>Pré-brief avant chaque rdv</strong><div class="small muted">5 min avant : résumé dernière interaction + 3 points clés.</div></div></div>
+      </div>
+    </div>
+  `;
+
+  A.mount({
+    page: "assistant",
+    title: "Copilote IA",
+    breadcrumb: "Intelligence · Copilote",
+    content,
+    onMounted: () => {
+      if (location.hash){
+        const el = document.querySelector('[data-proposal-id="'+location.hash.replace("#","")+'"]');
+        if (el){ el.scrollIntoView({block:"center"}); el.style.boxShadow = "0 0 0 3px var(--text)"; setTimeout(()=>el.style.boxShadow="",1500); }
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>aiCEO — Agenda</title>
+  <link rel="stylesheet" href="assets/app.css"/>
+</head>
+<body data-page="agenda">
+<div id="app-root"></div>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/app-nba.js"></script>
+<script>
+(function(){
+  const A = window.AICEO;
+  const scope = A.getActiveGroup();
+  const projIds = (A.PROJECTS||[]).filter(p => scope==='all' || p.group===scope).map(p => p.id);
+  const events = (A.EVENTS||[])
+    .filter(e => !e.project || projIds.includes(e.project) || scope==='all')
+    .sort((a,b)=>new Date(a.date) - new Date(b.date));
+
+  const mode = (localStorage.getItem("aiCEO.agendaView") || "week");
+  // weekOffset in days from current week's Monday (0 = cette semaine)
+  let weekOffset = parseInt(localStorage.getItem("aiCEO.agendaWeekOffset") || "0", 10);
+
+  // Grid : de 7h à 21h → 14 heures, 56px/heure
+  const START_HOUR = 7;
+  const END_HOUR = 21;
+  const ROW_H = 56;
+
+  // Helpers date
+  function startOfWeek(d){
+    const x = new Date(d);
+    const day = x.getDay(); // 0=dim
+    const diff = (day === 0 ? -6 : 1 - day);
+    x.setDate(x.getDate() + diff);
+    x.setHours(0,0,0,0);
+    return x;
+  }
+  function addDays(d, n){ const x = new Date(d); x.setDate(x.getDate()+n); return x; }
+  function isoDay(d){ return d.toISOString().slice(0,10); }
+  function isoWeekNum(d){
+    const x = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    const dayNum = x.getUTCDay() || 7;
+    x.setUTCDate(x.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(x.getUTCFullYear(),0,1));
+    return Math.ceil((((x - yearStart)/86400000) + 1)/7);
+  }
+
+  const now = new Date();
+  const monday = addDays(startOfWeek(now), weekOffset * 7);
+  const sunday = addDays(monday, 6);
+  const weekNum = isoWeekNum(monday);
+  const weekLabel = `Semaine ${weekNum} · ${monday.getDate()} ${monday.toLocaleDateString("fr-FR",{month:"short"})}${monday.getMonth()!==sunday.getMonth() ? " — " + sunday.getDate() + " " + sunday.toLocaleDateString("fr-FR",{month:"short"}) : "–" + sunday.getDate() + " " + sunday.toLocaleDateString("fr-FR",{month:"short"})} ${sunday.getFullYear()}`;
+
+  const daysOfWeek = Array.from({length:7}, (_,i) => addDays(monday, i));
+
+  // Events in this week
+  const weekEvents = events.filter(e => {
+    const d = new Date(e.date);
+    return d >= monday && d < addDays(sunday, 1);
+  });
+
+  function setMode(m){ localStorage.setItem("aiCEO.agendaView", m); location.reload(); }
+  function shiftWeek(n){ weekOffset += n; localStorage.setItem("aiCEO.agendaWeekOffset", weekOffset); location.reload(); }
+  function thisWeek(){ weekOffset = 0; localStorage.setItem("aiCEO.agendaWeekOffset", 0); location.reload(); }
+  window.AICEOagenda = { setMode, shiftWeek, thisWeek };
+
+  // Coach strip
+  const scopedTasks = A.scopeTasks(A.TASKS_ALL());
+  const overdueAll = scopedTasks.filter(t => !t.done && t.due && A.daysUntil(t.due) < 0).length;
+  const coach = A.coachMessage({ overdue: overdueAll });
+
+  let content = `<div class="coach-strip" style="margin-bottom:16px"><span class="coach-dot">AI</span><span><em>Copilote ·</em> ${A.escHtml(coach)}</span></div>`;
+
+  // KPIs compacts (tonalité calme)
+  const upcoming = events.filter(e => new Date(e.date) >= now);
+  const thisWeekEv = upcoming.filter(e=>{const d=new Date(e.date);return (d-now)/86400000<=7;});
+  content += `
+    <div class="grid-4" style="margin-bottom:14px">
+      <div class="kpi tinted sky"><div class="kpi-label">Cette semaine</div><div class="kpi-value tnum">${weekEvents.length}</div><div class="kpi-sub">${A.formatMin(weekEvents.reduce((a,e)=>a+(e.duration_min||0),0))} planifié</div></div>
+      <div class="kpi tinted amber"><div class="kpi-label">Prép. à faire</div><div class="kpi-value tnum">${weekEvents.filter(e=>e.prep_needed).length}</div><div class="kpi-sub">brief en attente</div></div>
+      <div class="kpi tinted sage"><div class="kpi-label">À venir 30 j</div><div class="kpi-value tnum">${upcoming.length}</div><div class="kpi-sub">tous scopes</div></div>
+      <div class="kpi tinted violet"><div class="kpi-label">Avec projet</div><div class="kpi-value tnum">${weekEvents.filter(e=>e.project).length}</div><div class="kpi-sub">/ ${weekEvents.length} cette semaine</div></div>
+    </div>
+  `;
+
+  // Navigator row
+  content += `
+    <div class="agenda-nav">
+      <button class="agenda-nav-btn" aria-label="Semaine précédente" onclick="AICEOagenda.shiftWeek(-1)">‹</button>
+      <button class="agenda-nav-btn" aria-label="Semaine suivante" onclick="AICEOagenda.shiftWeek(1)">›</button>
+      <button class="agenda-nav-today" onclick="AICEOagenda.thisWeek()">Aujourd'hui</button>
+      <div style="display:flex;flex-direction:column;gap:2px;margin-left:4px">
+        <div class="agenda-nav-label">${A.escHtml(weekLabel)}</div>
+        <div class="agenda-nav-sub">${weekEvents.length} événement${weekEvents.length>1?'s':''} · ${weekEvents.filter(e=>e.prep_needed).length} à préparer</div>
+      </div>
+      <div class="spacer" style="flex:1"></div>
+      <div class="toggle-group">
+        <button class="${mode==='week'?'active':''}" onclick="AICEOagenda.setMode('week')">Semaine</button>
+        <button class="${mode==='list'?'active':''}" onclick="AICEOagenda.setMode('list')">Liste</button>
+        <button class="${mode==='past'?'active':''}" onclick="AICEOagenda.setMode('past')">Historique</button>
+      </div>
+    </div>
+  `;
+
+  if (mode === "week"){
+    content += renderWeekGrid();
+    // Legend
+    content += `
+      <div class="agenda-legend">
+        <div class="agenda-legend-item"><span class="agenda-legend-dot" style="color:var(--sky-800)"></span>AMANI</div>
+        <div class="agenda-legend-item"><span class="agenda-legend-dot" style="color:var(--violet)"></span>Adabu</div>
+        <div class="agenda-legend-item"><span class="agenda-legend-dot" style="color:var(--amber-800)"></span>ETIC / Terres Rouges</div>
+        <div class="agenda-legend-item"><span class="agenda-legend-dot" style="color:var(--emerald)"></span>Personnel</div>
+        <div class="agenda-legend-item">📋 Préparation requise</div>
+      </div>
+    `;
+  } else if (mode === "list"){
+    content += renderList();
+  } else {
+    content += renderPast();
+  }
+
+  function renderWeekGrid(){
+    const todayIso = isoDay(now);
+    const dayNames = ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
+
+    // Build header row
+    let head = `<div class="agenda-head-row"><div class="agenda-head-cell corner"></div>`;
+    daysOfWeek.forEach((d, i) => {
+      const iso = isoDay(d);
+      const isToday = iso === todayIso;
+      const isWeekend = i >= 5;
+      head += `
+        <div class="agenda-head-cell ${isToday?'today':''} ${isWeekend?'weekend':''}">
+          <div class="agenda-head-day">${dayNames[i]}</div>
+          <div class="agenda-head-num">${d.getDate()}</div>
+        </div>
+      `;
+    });
+    head += `</div>`;
+
+    // Time column rows
+    let timeCol = `<div class="agenda-time-col">`;
+    for (let h = START_HOUR; h <= END_HOUR; h++){
+      timeCol += `<div class="agenda-time-cell">${String(h).padStart(2,"0")}h</div>`;
+    }
+    timeCol += `</div>`;
+
+    // Day columns with events positioned
+    let dayCols = "";
+    daysOfWeek.forEach((d, i) => {
+      const iso = isoDay(d);
+      const isToday = iso === todayIso;
+      const isWeekend = i >= 5;
+      const evsOfDay = weekEvents.filter(e => isoDay(new Date(e.date)) === iso);
+
+      let col = `<div class="agenda-day-col ${isToday?'today':''} ${isWeekend?'weekend':''}">`;
+      // Hour grid lines
+      for (let h = START_HOUR; h <= END_HOUR; h++){
+        col += `<div class="agenda-hour-line"></div>`;
+      }
+      // Today's now-line
+      if (isToday){
+        const mins = now.getHours()*60 + now.getMinutes();
+        const startMins = START_HOUR*60;
+        if (mins >= startMins && mins <= END_HOUR*60){
+          const topPx = ((mins - startMins) / 60) * ROW_H;
+          col += `<div class="agenda-now-line" style="top:${topPx}px"><div class="agenda-now-label">${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}</div></div>`;
+        }
+      }
+      // Events — simple overlap: split side by side
+      const placed = []; // {e, col, maxCols}
+      const sorted = evsOfDay.slice().sort((a,b)=>new Date(a.date)-new Date(b.date));
+      sorted.forEach(e => {
+        const d0 = new Date(e.date);
+        const end0 = new Date(d0.getTime() + (e.duration_min||30)*60000);
+        // find first column where no overlap
+        let colIdx = 0;
+        while (placed.some(p => p.colIdx === colIdx && new Date(p.e.date) < end0 && new Date(new Date(p.e.date).getTime() + (p.e.duration_min||30)*60000) > d0)){
+          colIdx++;
+        }
+        placed.push({ e, colIdx, start:d0, end:end0 });
+      });
+      const maxCols = Math.max(1, ...placed.map(p => p.colIdx + 1));
+      placed.forEach(p => {
+        const startMinsToday = p.start.getHours()*60 + p.start.getMinutes();
+        const startGridMins = START_HOUR*60;
+        const top = Math.max(0, ((startMinsToday - startGridMins) / 60) * ROW_H);
+        const duration = Math.max(20, p.e.duration_min || 30);
+        const height = Math.max(28, (duration / 60) * ROW_H - 2);
+        const widthPct = 100 / maxCols;
+        const leftPct = p.colIdx * widthPct;
+        const cat = p.e.category || (p.e.project ? (A.getProject(p.e.project)?.group || "personal") : "personal");
+        const catClass = "cat-" + cat;
+        const compact = height < 48 ? " compact" : "";
+        col += `
+          <div class="agenda-event ${catClass}${compact}" data-open-event="${p.e.id}" role="button" tabindex="0"
+               style="top:${top}px;height:${height}px;left:calc(${leftPct}% + 4px);width:calc(${widthPct}% - 8px)">
+            ${p.e.prep_needed ? '<span class="evt-prep">📋</span>' : ''}
+            <div class="evt-time">${String(p.start.getHours()).padStart(2,"0")}:${String(p.start.getMinutes()).padStart(2,"0")} — ${String(p.end.getHours()).padStart(2,"0")}:${String(p.end.getMinutes()).padStart(2,"0")}</div>
+            <div class="evt-title">${A.escHtml(p.e.title)}</div>
+            ${p.e.location && height > 52 ? `<div class="evt-loc">📍 ${A.escHtml(p.e.location)}</div>` : ""}
+          </div>
+        `;
+      });
+      col += `</div>`;
+      dayCols += col;
+    });
+
+    return `
+      <div class="agenda-wrap">
+        ${head}
+        <div class="agenda-grid">
+          ${timeCol}
+          ${dayCols}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderList(){
+    const today = A.todayISO();
+    const byDay = {};
+    events.filter(e => (e.date||"").slice(0,10) >= today).forEach(e => {
+      const d = (e.date||"").slice(0,10); (byDay[d] = byDay[d] || []).push(e);
+    });
+    let html = "";
+    Object.keys(byDay).sort().forEach(d => {
+      const dd = new Date(d);
+      html += `
+        <div class="card panel" style="margin-bottom:14px">
+          <div class="day-header"><span>${dd.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})}</span><span class="pill outline small day-load">${byDay[d].length} RDV</span></div>
+          ${byDay[d].map(renderEv).join("")}
+        </div>
+      `;
+    });
+    if (!html) html = '<div class="empty"><div class="empty-icon">📅</div>Aucun événement à venir</div>';
+    return html;
+  }
+
+  function renderPast(){
+    const past = events.filter(e => new Date(e.date) < now).slice().reverse();
+    if (!past.length) return '<div class="empty">Aucun historique</div>';
+    return past.map(e => `<div class="card panel" style="margin-bottom:8px;opacity:.75">${renderEv(e)}</div>`).join("");
+  }
+
+  function renderEv(e){
+    const d = new Date(e.date);
+    const proj = e.project ? A.getProject(e.project) : null;
+    const srcPill = A.renderSourcePill({ type:"event", icon:"📅", detail:"Outlook", subject:e.title, href:"#"+e.id });
+    return `
+      <div class="event-row" data-open-event="${e.id}" role="button" tabindex="0" id="${e.id}" style="cursor:pointer">
+        <div class="event-time">${d.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</div>
+        <div class="event-body">
+          <div class="event-title">${A.escHtml(e.title)}</div>
+          <div class="event-meta" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+            <span>⏱ ${A.formatMin(e.duration_min)}</span>
+            ${e.location ? `<span>· 📍 ${A.escHtml(e.location)}</span>` : ""}
+            ${proj ? `<span>· ${proj.icon} ${A.escHtml(proj.name)}</span>` : ""}
+            ${e.prep_needed ? `<span style="color:var(--amber-800);font-weight:500">· 📋 prép.</span>` : ""}
+            ${e.attendees && e.attendees.length > 1 ? `<span>· 👥 ${e.attendees.length}</span>` : ""}
+            ${srcPill}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  A.mount({
+    page:"agenda",
+    title:"Agenda",
+    breadcrumb:"Pilotage · Agenda",
+    content,
+    onMounted: () => {
+      // Scroll grid to current hour on load (if this week)
+      if (mode === "week" && weekOffset === 0){
+        const grid = document.querySelector(".agenda-grid");
+        if (grid){
+          const h = now.getHours();
+          const scrollTop = Math.max(0, (h - START_HOUR - 1) * ROW_H);
+          grid.scrollTop = scrollTop;
+        }
+      }
+      if (location.hash){
+        const id = location.hash.replace("#","");
+        setTimeout(()=>A.openEventDrawer(id), 250);
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>

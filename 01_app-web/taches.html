@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>aiCEO — Tâches</title>
+  <link rel="stylesheet" href="assets/app.css"/>
+</head>
+<body data-page="tasks">
+<div id="app-root"></div>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/app-nba.js"></script>
+<script>
+(function(){
+  const A = window.AICEO;
+
+  // View mode : "list" | "matrix" | "timeline"
+  function getView(){ return localStorage.getItem("aiCEO.tasksView") || "list"; }
+  function setView(v){ localStorage.setItem("aiCEO.tasksView", v); render(); }
+
+  // Filter state
+  let filter = {
+    project: "all",
+    priority: "all",
+    energy: "all",
+    showDone: false,
+  };
+
+  function renderViewToggle(v){
+    return `
+      <div class="toggle-group">
+        <button class="${v==='list'?'active':''}" onclick="AICEOtasks.setView('list')">Liste</button>
+        <button class="${v==='matrix'?'active':''}" onclick="AICEOtasks.setView('matrix')">Matrice</button>
+        <button class="${v==='timeline'?'active':''}" onclick="AICEOtasks.setView('timeline')">Timeline</button>
+      </div>
+    `;
+  }
+
+  function filterControls(){
+    return `
+      <div class="hstack" style="flex-wrap:wrap;gap:10px;margin:16px 0 18px">
+        <select class="form-select" style="max-width:200px" onchange="AICEOtasks.setFilter('project', this.value)">
+          <option value="all">Tous les projets</option>
+          ${(A.PROJECTS||[]).map(p => `<option value="${p.id}" ${filter.project===p.id?'selected':''}>${p.icon} ${A.escHtml(p.name)}</option>`).join("")}
+        </select>
+        <select class="form-select" style="max-width:180px" onchange="AICEOtasks.setFilter('priority', this.value)">
+          <option value="all">Toute priorité</option>
+          <option value="critical" ${filter.priority==='critical'?'selected':''}>Critique</option>
+          <option value="high" ${filter.priority==='high'?'selected':''}>Haute</option>
+          <option value="medium" ${filter.priority==='medium'?'selected':''}>Moyenne</option>
+          <option value="low" ${filter.priority==='low'?'selected':''}>Basse</option>
+        </select>
+        <select class="form-select" style="max-width:180px" onchange="AICEOtasks.setFilter('energy', this.value)">
+          <option value="all">Toute énergie</option>
+          <option value="light" ${filter.energy==='light'?'selected':''}>Léger</option>
+          <option value="medium" ${filter.energy==='medium'?'selected':''}>Moyen</option>
+          <option value="deep" ${filter.energy==='deep'?'selected':''}>Deep</option>
+        </select>
+        <label class="hstack" style="gap:6px;cursor:pointer">
+          <input type="checkbox" ${filter.showDone?'checked':''} onchange="AICEOtasks.toggleDone()"> <span class="small">Afficher soldées</span>
+        </label>
+        <div class="spacer"></div>
+        <button class="btn primary" onclick="AICEO.openQuickAdd()">+ Nouvelle tâche</button>
+      </div>
+    `;
+  }
+
+  function applyFilters(list){
+    return list.filter(t => {
+      if (filter.project !== "all" && t.project !== filter.project) return false;
+      if (filter.priority !== "all" && t.priority !== filter.priority) return false;
+      if (filter.energy !== "all" && t.energy !== filter.energy) return false;
+      if (!filter.showDone && t.done) return false;
+      return true;
+    });
+  }
+
+  function renderKpis(list){
+    const open = list.filter(t => !t.done);
+    const overdue = open.filter(t => t.due && A.daysUntil(t.due) < 0);
+    const starred = open.filter(t => t.starred);
+    const totalMin = open.reduce((a,t)=>a+(t.estimatedMin||0), 0);
+    const aiCount = open.filter(t => t.aiCapable).length;
+    const closedWeek = A._countClosedThisWeek();
+    const streak = A.getStreak().days || 0;
+    return `
+      <div class="grid-4">
+        <div class="kpi tinted sage"><div class="kpi-label">Soldées cette semaine</div><div class="kpi-value tnum">${closedWeek}</div><div class="kpi-sub">streak ${streak} jour${streak>1?"s":""}</div></div>
+        <div class="kpi tinted sky"><div class="kpi-label">Ouvertes</div><div class="kpi-value tnum">${open.length}</div><div class="kpi-sub">dans le scope</div></div>
+        <div class="kpi tinted amber"><div class="kpi-label">En retard</div><div class="kpi-value tnum">${overdue.length}</div><div class="kpi-sub">${overdue.length ? "à prioriser calmement" : "tout à jour"}</div></div>
+        <div class="kpi tinted violet"><div class="kpi-label">Copilote IA</div><div class="kpi-value tnum">${aiCount}</div><div class="kpi-sub">tâches automatisables · ${A.formatMin(totalMin)} charge</div></div>
+      </div>
+    `;
+  }
+
+  function renderList(list){
+    const open = list.filter(t => !t.done);
+    const done = list.filter(t => t.done);
+    const overdue = open.filter(t => t.due && A.daysUntil(t.due) < 0);
+    const dueToday = open.filter(t => t.due && A.daysUntil(t.due) === 0);
+    const soon = open.filter(t => t.due && A.daysUntil(t.due) > 0 && A.daysUntil(t.due) <= 7);
+    const later = open.filter(t => !t.due || A.daysUntil(t.due) > 7);
+
+    function block(title, arr, opts){
+      if (!arr.length) return "";
+      return `
+        <div class="card panel" style="margin-top:16px">
+          <div class="card-header"><h3 class="card-title">${title} · ${arr.length}</h3></div>
+          ${arr.map(t => A.taskRow(t)).join("")}
+        </div>
+      `;
+    }
+
+    let html = "";
+    if (overdue.length)   html += block("À rattraper calmement", overdue);
+    if (dueToday.length)  html += block("🔥 Aujourd'hui", dueToday);
+    if (soon.length)      html += block("📅 Prochaine semaine", soon);
+    if (later.length)     html += block("Plus tard / non daté", later);
+    if (filter.showDone && done.length)  html += block("✓ Soldées", done);
+    if (!html) html = '<div class="empty"><div class="empty-icon">✓</div>Aucune tâche avec ces filtres</div>';
+    return html;
+  }
+
+  function renderMatrix(list){
+    const open = list.filter(t => !t.done);
+    const q = {
+      do:       open.filter(t => t.type === "do"),
+      plan:     open.filter(t => t.type === "plan"),
+      delegate: open.filter(t => t.type === "delegate"),
+      drop:     open.filter(t => t.type === "drop"),
+    };
+    function qc(key, icon, label){
+      return `
+        <div class="matrix-q ${key}">
+          <div class="matrix-q-title">${icon} ${label}<span class="matrix-q-count">${q[key].length}</span></div>
+          ${q[key].map(t => A.taskRow(t)).join("") || '<div class="empty small">Vide</div>'}
+        </div>
+      `;
+    }
+    return `
+      <div class="matrix-2x2" style="margin-top:16px">
+        ${qc("do","🔥","Faire maintenant")}
+        ${qc("plan","📅","Planifier")}
+        ${qc("delegate","📤","Déléguer")}
+        ${qc("drop","🗑","Abandonner")}
+      </div>
+    `;
+  }
+
+  function renderTimeline(list){
+    // Timeline par énergie + temps estimé — "comment organiser ma journée"
+    const open = list.filter(t => !t.done);
+    const buckets = {
+      morning: { label:"🌅 Matin (deep work)", filter: t => t.energy === "deep" },
+      midday:  { label:"☀️ Journée (tâches moyennes)", filter: t => t.energy === "medium" },
+      afternoon:{ label:"🌆 Fin de journée (quick wins)", filter: t => t.energy === "light" },
+    };
+    let html = `<div class="card panel" style="margin-top:16px"><div class="card-header"><h3 class="card-title">Timeline suggérée — organise ta journée par énergie</h3></div>`;
+    Object.keys(buckets).forEach(k => {
+      const b = buckets[k];
+      const items = open.filter(b.filter);
+      const totalMin = items.reduce((a,t)=>a+(t.estimatedMin||0),0);
+      html += `
+        <div style="margin-top:16px;padding:14px;background:var(--surface);border-radius:14px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <strong>${b.label}</strong>
+            <span class="pill outline small">${items.length} tâche${items.length>1?'s':''} · ${A.formatMin(totalMin)}</span>
+          </div>
+          ${items.length ? items.map(t => A.taskRow(t)).join("") : '<div class="empty small" style="padding:12px">—</div>'}
+        </div>
+      `;
+    });
+    html += `</div>`;
+    return html;
+  }
+
+  function render(){
+    const v = getView();
+    const all = A.scopeTasks(A.TASKS_ALL());
+    const filtered = applyFilters(all);
+
+    let body = "";
+    const coach = A.coachMessage({ overdue: filtered.filter(t=>!t.done && t.due && A.daysUntil(t.due)<0).length });
+    body += `<div class="coach-strip" style="margin-bottom:16px"><span class="coach-dot">AI</span><span><em>Copilote ·</em> ${A.escHtml(coach)}</span></div>`;
+    body += renderKpis(filtered);
+    body += `<div class="hstack" style="margin:18px 0 0"><div class="spacer"></div>${renderViewToggle(v)}</div>`;
+    body += filterControls();
+    if (v === "matrix") body += renderMatrix(filtered);
+    else if (v === "timeline") body += renderTimeline(filtered);
+    else body += renderList(filtered);
+
+    A.mount({
+      page: "tasks",
+      title: "Tâches",
+      breadcrumb: "Pilotage · Tâches",
+      content: body,
+      onMounted: () => {
+        // Scroll to hash if present
+        if (location.hash){
+          const id = location.hash.replace("#","");
+          const el = document.querySelector('[data-task-id="'+id+'"]');
+          if (el){ el.scrollIntoView({block:"center"}); el.style.transition="background .4s"; el.style.background="var(--amber-bg)"; setTimeout(()=>el.style.background="",1500); }
+        }
+      }
+    });
+  }
+
+  // Expose
+  window.AICEOtasks = {
+    setView,
+    setFilter: (k, v) => { filter[k] = v; render(); },
+    toggleDone: () => { filter.showDone = !filter.showDone; render(); },
+  };
+
+  render();
+})();
+</script>
+</body>
+</html>
