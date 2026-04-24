@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>aiCEO — Revues hebdo</title>
+  <link rel="stylesheet" href="../assets/app.css"/>
+</head>
+<body data-page="reviews">
+<div id="app-root"></div>
+<script src="../assets/data.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/app-nba.js"></script>
+<script>
+(function(){
+  const A = window.AICEO;
+  const weeks = (A.REVIEWS||[]).slice().sort((a,b) => (b.week || "").localeCompare(a.week || ""));
+  const current = weeks.find(w => w.status === "current");
+  const archived = weeks.filter(w => w.status === "archived");
+  const upcoming = weeks.filter(w => w.status === "upcoming");
+
+  function autoFillUpcoming(){
+    const up = weeks.find(w => w.status === "upcoming");
+    if (!up) return "";
+    const tasksNext = A.TASKS_ALL().filter(t => !t.done && t.due && t.due >= "2026-04-27" && t.due <= "2026-05-03");
+    const eventsNext = (A.EVENTS||[]).filter(e => e.date >= "2026-04-27" && e.date <= "2026-05-03T23:59");
+    const prepEvents = eventsNext.filter(e => e.prep_needed);
+    return `
+      <div class="card panel" style="margin-top:14px">
+        <div class="card-header">
+          <h3 class="card-title">✨ Revue S18 — préparée par le copilote</h3>
+          <div class="card-actions"><button class="btn sm primary" onclick="AICEO.showToast('Revue S18 acceptée ✓','success')">Valider</button></div>
+        </div>
+        <div class="small muted" style="margin-bottom:10px">Le copilote détecte ${tasksNext.length} tâche${tasksNext.length>1?'s':''} due${tasksNext.length>1?'s':''} S18, ${eventsNext.length} RDV dont ${prepEvents.length} à préparer.</div>
+        <div style="padding:12px;background:var(--surface);border-radius:12px">
+          <div class="nav-section-title" style="margin:0 0 6px;padding:0">Intention proposée</div>
+          <p style="margin:0 0 10px;font-size:13px;line-height:1.5">Semaine de terrain — mission Mayotte 27-29/04, arbitrages hôtel AMANI + confirmations contractuelles côté Adabu (comité stratégique 30/04).</p>
+          <div class="nav-section-title" style="margin:8px 0 6px;padding:0">Big Rocks proposés</div>
+          <div class="big-rock"><div class="big-rock-num">1</div><div class="big-rock-text">Réussir mission Mayotte : PV chantier + arbitrages matériaux + réunion équipe technique</div></div>
+          <div class="big-rock"><div class="big-rock-num">2</div><div class="big-rock-text">Préparer et tenir comité stratégique Adabu (30/04) avec go/no-go POC data center</div></div>
+          <div class="big-rock"><div class="big-rock-num">3</div><div class="big-rock-text">Solder dossiers juridiques : conseil SCI Start (25/04) + relance Lloyds</div></div>
+        </div>
+      </div>
+    `;
+  }
+
+  const subtitle = `${archived.length} revue${archived.length>1?'s':''} archivée${archived.length>1?'s':''} · 1 en cours · ${upcoming.length} à préparer`;
+  let content = ``;
+
+  // Coach strip
+  const overdueAll = A.scopeTasks(A.TASKS_ALL()).filter(t => !t.done && t.due && A.daysUntil(t.due) < 0).length;
+  const coach = A.coachMessage({ overdue: overdueAll });
+  content += `<div class="coach-strip" style="margin-bottom:18px"><span class="coach-dot">AI</span><span><em>Copilote ·</em> ${A.escHtml(coach)}</span></div>`;
+
+  // Intention hero — semaine courante
+  if (current){
+    const wkTotal = Math.max(10, (current.bigRocks||[]).length * 3);
+    content += `
+      <div class="intention-hero">
+        <div class="intention-hero-left">
+          <div class="intention-hero-eyebrow">${A.escHtml(current.label)} · Intention</div>
+          <h1 class="intention-hero-title">${A.escHtml(current.intention)}</h1>
+          <div class="intention-hero-sub">${(current.bigRocks||[]).length} Big Rocks · ${current.progress||0}% progressé</div>
+        </div>
+        <div class="intention-hero-right">
+          <span class="pill outline">${current.progress||0}%</span>
+        </div>
+      </div>
+      <div class="week-gauge" style="margin:-4px 0 18px">
+        <div class="week-gauge-track"><div class="week-gauge-fill" style="width:${current.progress||0}%"></div></div>
+      </div>
+      <div class="grid-3" style="margin-bottom:18px">
+        ${(current.bigRocks||[]).map((r,i) => {
+          const rockPct = Math.min(100, Math.round((current.progress||0) * (1 + (i===0?0.1:i===2?-0.1:0))));
+          return `
+          <div class="rock-card">
+            <div class="rock-card-head"><span class="rock-num">${i+1}</span><span>Big Rock</span></div>
+            <div class="rock-card-title">${A.escHtml(r)}</div>
+            <div class="rock-mini-bar"><div class="rock-mini-bar-fill" style="width:${rockPct}%"></div></div>
+            <div class="rock-card-meta"><span>${rockPct}% progression</span></div>
+          </div>
+          `;
+        }).join("")}
+      </div>
+      ${(current.pending||[]).length ? `
+        <div class="card panel" style="margin-bottom:18px">
+          <div class="card-header"><h3 class="card-title">En cours · ${current.pending.length}</h3></div>
+          <div style="display:grid;gap:6px">
+            ${current.pending.map(p => `<div class="small" style="padding:8px 12px;background:var(--surface);border-radius:10px">· ${A.escHtml(p)}</div>`).join("")}
+          </div>
+        </div>
+      `:""}
+    `;
+  }
+
+  // Upcoming (S18 auto-preparée)
+  content += autoFillUpcoming();
+
+  // Archives — ton calme, dépliables via drawer
+  if (archived.length){
+    content += `
+      <h2 class="page-title" style="font-size:18px;margin:28px 0 10px">Archives · ${archived.length}</h2>
+      <div class="grid-3">
+        ${archived.map(w => `
+          <div class="card panel" data-open-review="${w.week}" role="button" tabindex="0" style="cursor:pointer">
+            <div class="card-header">
+              <h3 class="card-title">${A.escHtml(w.label)}</h3>
+              <div class="card-actions"><span class="pill outline small tnum">${w.progress}%</span></div>
+            </div>
+            <p class="small muted" style="margin:4px 0 10px;line-height:1.45">${A.escHtml((w.intention||"").slice(0,110))}${(w.intention||"").length>110?'…':''}</p>
+            <div style="display:flex;gap:10px;font-size:11.5px;color:var(--text-3);font-variant-numeric:tabular-nums">
+              <span>✓ ${(w.done||[]).length} soldés</span>
+              ${(w.pending||[]).length ? `<span>→ ${w.pending.length} reportés</span>` : ""}
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
+  // Drawer pour archive
+  window.AICEOreviews = {
+    open: (weekKey) => {
+      const w = (A.REVIEWS||[]).find(r => r.week === weekKey);
+      if (!w) return;
+      const meta = [
+        { label:"Semaine", value: w.label || weekKey },
+        { label:"Progression", value: `${w.progress||0}%` },
+        { label:"Intention", value: w.intention || "—" },
+        { label:"Notes", value: w.notes || "—" },
+      ];
+      const related = [];
+      (w.done||[]).forEach(d => related.push({ icon:"✓", label: d, sub:"Soldé" }));
+      (w.pending||[]).forEach(p => related.push({ icon:"→", label: p, sub:"Reporté" }));
+      A.openDrawer({
+        eyebrow: "Revue archivée",
+        title: w.label || weekKey,
+        meta,
+        related
+      });
+    }
+  };
+
+  document.addEventListener("click", (e) => {
+    const t = e.target.closest && e.target.closest("[data-open-review]");
+    if (t){ AICEOreviews.open(t.getAttribute("data-open-review")); }
+  });
+
+  A.mount({ page:"reviews", title:"Revues hebdo", subtitle, rel:"../", breadcrumb:"Intelligence · Revues", content });
+})();
+</script>
+</body>
+</html>

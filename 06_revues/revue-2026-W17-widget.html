@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Revue hebdo — Semaine 17 · 2026</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="importmap">
+  {
+    "imports": {
+      "react": "https://esm.sh/react@18.3.1",
+      "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+      "lucide-react": "https://esm.sh/lucide-react@0.383.0?deps=react@18.3.1"
+    }
+  }
+  </script>
+  <link rel="stylesheet" href="../assets/app.css" />
+  <style>
+    /* Keep Tailwind body background; embed React widget inside app shell */
+    body { background: var(--bg, #f8fafc); }
+    /* The React widget uses its own Tailwind container with p-4 sm:p-6 — let it control layout */
+    main.page { padding: 0 !important; background: transparent; }
+    main.page > #root { min-height: calc(100vh - 56px); }
+  </style>
+</head>
+<body data-page="reviews">
+<div id="app-root"></div>
+<script src="../assets/data.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/app-nba.js"></script>
+<script>
+  window.AICEO.mount({
+    page: "reviews",
+    title: "Semaine 17 · 2026",
+    breadcrumb: [
+      { label: "Revues hebdo", href: "index.html" },
+      { label: "Semaine 17 · 20–26 avril 2026" }
+    ],
+    rel: "../",
+    content: '<div id="root"></div>',
+  });
+</script>
+
+
+  <script type="text/babel" data-type="module" data-presets="react">
+import React, { useState, useMemo } from "react";
+import { createRoot } from "react-dom/client";
+import {
+  CheckCircle2, Circle, Star, Target, Calendar,
+  TrendingUp, Mountain, ClipboardCheck, Building2,
+} from "lucide-react";
+
+const COMPANIES = {
+  TR:    { label: "TR",    name: "Terres Rouges Holding",   full: "TERRES ROUGES Holding SAS",  cls: "bg-slate-100 text-slate-700 border-slate-300" },
+  ADB:   { label: "ADB",   name: "Adabu Holding",           full: "Adabu Holding SAS",          cls: "bg-violet-100 text-violet-700 border-violet-300" },
+  ETIC:  { label: "ETIC",  name: "ETIC Services",           full: "ETIC Services SARL",         cls: "bg-blue-100 text-blue-700 border-blue-300" },
+  ITH:   { label: "ITH",   name: "ITH Data Center",         full: "ITH Data Center SAS",        cls: "bg-cyan-100 text-cyan-700 border-cyan-300" },
+  LTM:   { label: "LTM",   name: "LTM Technologies",        full: "LTM Technologies SARL",      cls: "bg-teal-100 text-teal-700 border-teal-300" },
+  SCIS:  { label: "SCIS",  name: "SCI Start",               full: "SCI START",                  cls: "bg-indigo-100 text-indigo-700 border-indigo-300" },
+  FEIR:  { label: "FEIR",  name: "Feirasin Holding",        full: "Feirasin Holding SASU",      cls: "bg-fuchsia-100 text-fuchsia-700 border-fuchsia-300" },
+  AMR:   { label: "AMR",   name: "AMANI Resorts",           full: "AMANI Resorts SAS",          cls: "bg-emerald-100 text-emerald-700 border-emerald-300" },
+  AMP:   { label: "AMP",   name: "AMANI Properties",        full: "AMANI Properties SA",        cls: "bg-orange-100 text-orange-700 border-orange-300" },
+  TAM:   { label: "TAM",   name: "TAMARIN LOC 38",          full: "TAMARIN LOC 38 SAS",         cls: "bg-yellow-100 text-yellow-700 border-yellow-300" },
+  SCIMB: { label: "SCIMB", name: "SCI MHSSN-Boustane",      full: "SCI MHSSN-BOUSTANE",         cls: "bg-lime-100 text-lime-700 border-lime-300" },
+};
+
+const initialData = {
+  week: 17,
+  dateRange: "20 avril – 26 avril 2026",
+  intention:
+    "Solder les honoraires Affejee (3ᵉ relance du 23/04), confirmer formellement le décalage du tirage CA Bretagne au 30/04, et sécuriser le FF&E AMANI (contrat Bénédicte + annexe BREEAM) avant les RV matériaux à Mayotte lundi 27/04.",
+  bigRocks: [
+    { id: "r1", text: "Exécuter virements honoraires Affejee + Franklin (3ᵉ relance 23/04) + valider convention SCI Start/Adabu", done: false },
+    { id: "r2", text: "Confirmer par écrit à Marie Ansquer (CA Bretagne) le décalage du tirage d'avance au 30/04", done: false },
+    { id: "r3", text: "Sécuriser le FF&E AMANI : contrat Bénédicte avec annexe BREEAM + brief RV matériaux Mayotte (lundi 27/04)", done: false },
+  ],
+  kpis: { open: 20, overdue: 4, pendingDecisions: 6, completedLastWeek: 9 },
+  quadrants: {
+    do: [
+      { id: "d1", companies: ["AMP"], text: "Instruire comptable — honoraires Affejee dossier Amani (3ᵉ relance 23/04)", meta: "Moi → Lamiae / compta · ÉCHU · Critique · 🔥 escalade", starred: true, done: false },
+      { id: "d2", companies: ["AMP"], text: "Confirmer par écrit le décalage tirage CA Bretagne au 30/04 (M. Ansquer 23/04)", meta: "Moi · éch. 30/04 · Critique", starred: true, done: false },
+      { id: "d3", companies: ["TAM"], text: "Valider contrat FF&E Bénédicte AVEC annexe critères BREEAM (demande Chafick)", meta: "Moi · éch. 24/04 · Critique", starred: true, done: false },
+      { id: "d4", companies: ["SCIS", "ADB"], text: "Valider convention SCI Start / Adabu (2025 inclus) — déclenche la mission Affejee", meta: "Moi + Lamiae · éch. 24/04 · Fort", starred: false, done: false },
+      { id: "d5", companies: ["TR"], text: "Communiquer une date de paiement à Géraldine Machinet (Franklin)", meta: "Moi · éch. 24/04 · Fort", starred: false, done: false },
+    ],
+    plan: [
+      { id: "p1", companies: ["AMR"], text: "Coordination Marc / Yann — arbitrage Marc full time Mayotte", meta: "Bloc jeudi AM · Fort", starred: true, done: false },
+      { id: "p2", companies: ["SCIS"], text: "Choisir notaire donation parts SCI Start (en attente 30j)", meta: "Bloc 30-45 min · Fort", starred: true, done: false },
+      { id: "p3", companies: ["ITH"], text: "Instruire proposition assurance Lloyd's ITH (Serge Vlody) — NOUVEAU", meta: "Bloc vendredi · Moyen", starred: false, done: false },
+      { id: "p4", companies: ["AMR"], text: "Préparer RV Thomas Delelis (CA Réunion) — déblocage AMANI", meta: "À caler · Fort", starred: false, done: false },
+      { id: "p5", companies: ["AMP"], text: "Réunion BREEAM OCIDIM (invit. Rémi Giannetti 22/04)", meta: "Réunion Teams planifiée · Moyen", starred: false, done: false },
+      { id: "p6", companies: ["AMR"], text: "Qualifier dossier FEDER MYT013568 (Nassebati Saïd) — NOUVEAU", meta: "Bloc mercredi 30 min · Moyen", starred: false, done: false },
+      { id: "p7", companies: ["AMR"], text: "Produire plaquette comptes AMANI-RESORTS 2025 (M. Troquier) — NOUVEAU", meta: "À déléguer EC · Moyen", starred: false, done: false },
+      { id: "p8", companies: ["SCIMB"], text: "Créer SCI Mhssn-Boustane (fratrie)", meta: "Call famille · Moyen", starred: false, done: false },
+    ],
+    delegate: [
+      { id: "g1", companies: ["AMP", "TR"], text: "Exécuter virements Affejee + Franklin + débours Amani", meta: "→ Lamiae / compta · AUJOURD'HUI 23/04 17h", starred: false, done: false },
+      { id: "g2", companies: ["AMR", "TAM"], text: "RV Bénédicte Mayotte lundi 27/04 — valider échantillons", meta: "→ Karim + Naïma + Naïr · rapport soir même", starred: false, done: false },
+      { id: "g3", companies: ["ETIC"], text: "Compiler pièces dépôts comptes ETIC 2019-2022", meta: "→ Comptable · selon plan Affejee", starred: false, done: false },
+      { id: "g4", companies: ["AMR"], text: "Produire plaquette comptes AMANI-RESORTS 2025", meta: "→ Expert-comptable · éch. 30/04", starred: false, done: false },
+    ],
+    drop: [
+      { id: "x1", companies: [], text: "Newsletters (Todoist, Alibaba, Meilleurtaux, Freeletics, Crunchyroll…)", meta: "Zéro valeur · désinscription batch", starred: false, done: false },
+      { id: "x2", companies: [], text: "Notification Revolut IBAN lituanien désactivé 25/05", meta: "Informationnel, archiver", starred: false, done: false },
+      { id: "x3", companies: [], text: "Alertes automatiques ArchiLid", meta: "Bruit · router dossier dédié", starred: false, done: false },
+      { id: "x4", companies: [], text: "Read.ai — relance renouvellement abonnement", meta: "Décision pour plus tard", starred: false, done: false },
+    ],
+  },
+  weekPlan: [
+    { day: "Lun", theme: "Kick-off semaine + lancement virements honoraires", rock: "r1" },
+    { day: "Mar", theme: "CA Bretagne tirage + validation SCI Start", rock: "r1" },
+    { day: "Mer", theme: "Weekly + suivi opérationnel (passé)", rock: "r1" },
+    { day: "Jeu", theme: "Virement Affejee impératif + date Géraldine + convention SCIS", rock: "r1" },
+    { day: "Ven", theme: "Contrat FF&E + annexe BREEAM + décalage CA Bretagne + revue hebdo 17h", rock: "r3" },
+  ],
+};
+
+const QUADRANT_CONFIG = {
+  do:       { title: "Faire",      subtitle: "Urgent + Important",       palette: { bg: "bg-rose-50",   border: "border-rose-300",   text: "text-rose-700",   badge: "bg-rose-500"   } },
+  plan:     { title: "Planifier",  subtitle: "Important, non urgent",    palette: { bg: "bg-amber-50",  border: "border-amber-300",  text: "text-amber-700",  badge: "bg-amber-500"  } },
+  delegate: { title: "Déléguer",   subtitle: "Urgent, moins important",  palette: { bg: "bg-sky-50",    border: "border-sky-300",    text: "text-sky-700",    badge: "bg-sky-500"    } },
+  drop:     { title: "Abandonner", subtitle: "Ni urgent ni important",   palette: { bg: "bg-slate-100", border: "border-slate-300",  text: "text-slate-600",  badge: "bg-slate-400"  }, noStar: true },
+};
+
+function KpiRow({ label, value, tone }) {
+  const toneMap = { rose: "text-rose-600", amber: "text-amber-600", emerald: "text-emerald-600", default: "text-slate-800" };
+  return (
+    <div className="flex justify-between items-center">
+      <span className="text-sm text-slate-600">{label}</span>
+      <span className={`font-bold ${toneMap[tone] || toneMap.default}`}>{value}</span>
+    </div>
+  );
+}
+
+function Quadrant({ config, items, onToggleDone, onToggleStar }) {
+  const { palette, title, subtitle, noStar } = config;
+  return (
+    <div className={`rounded-xl border-2 ${palette.border} ${palette.bg} p-4`}>
+      <div className="flex items-center justify-between mb-3">
+        <div>
+          <div className={`font-bold ${palette.text}`}>{title}</div>
+          <div className="text-xs text-slate-500">{subtitle}</div>
+        </div>
+        <span className={`${palette.badge} text-white text-xs font-bold px-2 py-1 rounded`}>{items.length}</span>
+      </div>
+      <div className="space-y-2">
+        {items.length === 0 ? (
+          <p className="text-xs text-slate-400 italic">Aucun item</p>
+        ) : (
+          items.map((item) => (
+            <div key={item.id} className="bg-white rounded-lg p-2.5 flex items-start gap-2 shadow-sm">
+              <button onClick={() => onToggleDone(item.id)} className="flex-shrink-0 mt-0.5" aria-label="Toggle done">
+                {item.done ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <Circle className="w-4 h-4 text-slate-300" />}
+              </button>
+              <div className="flex-1 min-w-0">
+                <div className={`text-sm leading-tight ${item.done ? "text-slate-400 line-through" : "text-slate-700"}`}>{item.text}</div>
+                {item.companies && item.companies.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {item.companies.map((code) => {
+                      const c = COMPANIES[code];
+                      if (!c) return null;
+                      return (
+                        <span key={code} title={c.full} className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${c.cls}`}>{c.label}</span>
+                      );
+                    })}
+                  </div>
+                )}
+                <div className="text-xs text-slate-500 mt-1">{item.meta}</div>
+              </div>
+              {!noStar && (
+                <button onClick={() => onToggleStar(item.id)} className="flex-shrink-0" aria-label="Toggle Vital Few">
+                  <Star className={`w-4 h-4 ${item.starred ? "text-indigo-500 fill-indigo-500" : "text-slate-300 hover:text-indigo-400"}`} />
+                </button>
+              )}
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+function WeeklyReviewWidget() {
+  const [data, setData] = useState(initialData);
+  const [companyFilter, setCompanyFilter] = useState(null);
+
+  const updateItem = (quadrant, id, patch) => {
+    setData((d) => ({
+      ...d,
+      quadrants: {
+        ...d.quadrants,
+        [quadrant]: d.quadrants[quadrant].map((it) => (it.id === id ? { ...it, ...patch } : it)),
+      },
+    }));
+  };
+
+  const toggleRock = (id) => {
+    setData((d) => ({
+      ...d,
+      bigRocks: d.bigRocks.map((r) => (r.id === id ? { ...r, done: !r.done } : r)),
+    }));
+  };
+
+  const matchesFilter = (item) => !companyFilter || (item.companies && item.companies.includes(companyFilter));
+
+  const filteredQuadrants = useMemo(() => {
+    const out = {};
+    Object.entries(data.quadrants).forEach(([k, items]) => { out[k] = items.filter(matchesFilter); });
+    return out;
+  }, [data.quadrants, companyFilter]);
+
+  const vitalFew = useMemo(() => {
+    const all = [];
+    Object.entries(filteredQuadrants).forEach(([k, items]) => {
+      items.forEach((item) => { if (item.starred) all.push({ ...item, quadrant: k }); });
+    });
+    return all;
+  }, [filteredQuadrants]);
+
+  const companyStats = useMemo(() => {
+    const stats = {};
+    Object.keys(COMPANIES).forEach((code) => { stats[code] = { open: 0, starred: 0, done: 0 }; });
+    Object.entries(data.quadrants).forEach(([k, items]) => {
+      items.forEach((item) => {
+        (item.companies || []).forEach((code) => {
+          if (!stats[code]) return;
+          stats[code].open += 1;
+          if (item.starred) stats[code].starred += 1;
+          if (item.done) stats[code].done += 1;
+        });
+      });
+    });
+    return stats;
+  }, [data.quadrants]);
+
+  const allItems = Object.values(filteredQuadrants).flat();
+  const doneCount = allItems.filter((i) => i.done).length;
+  const totalCount = allItems.length;
+  const progress = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
+  const rocksDone = data.bigRocks.filter((r) => r.done).length;
+
+  return (
+    <div className="min-h-screen bg-slate-50 p-4 sm:p-6 font-sans text-slate-800">
+      <div className="max-w-6xl mx-auto space-y-5">
+        <header className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
+            <div>
+              <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Revue hebdo · Semaine {data.week}</div>
+              <div className="text-sm text-slate-400 mt-0.5">{data.dateRange}</div>
+            </div>
+            <div className="flex items-center gap-6">
+              <div className="text-right">
+                <div className="text-xs text-slate-500">Big Rocks</div>
+                <div className="text-lg font-bold text-slate-800">{rocksDone} / {data.bigRocks.length}</div>
+              </div>
+              <div className="text-right">
+                <div className="text-xs text-slate-500">Progression</div>
+                <div className="text-2xl font-bold text-indigo-600">{progress}%</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3 bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded">
+            <Target className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <div className="text-xs font-semibold text-indigo-700 uppercase tracking-wider mb-1">Intention de la semaine</div>
+              <div className="text-slate-700">{data.intention}</div>
+            </div>
+          </div>
+        </header>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Mountain className="w-5 h-5 text-slate-700" />
+              <h2 className="font-bold text-slate-800">3 Big Rocks</h2>
+            </div>
+            <div className="space-y-2">
+              {data.bigRocks.map((rock) => (
+                <button key={rock.id} onClick={() => toggleRock(rock.id)} className="w-full text-left flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 transition">
+                  {rock.done ? <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0" /> : <Circle className="w-5 h-5 text-slate-300 flex-shrink-0" />}
+                  <span className={rock.done ? "text-slate-400 line-through" : "text-slate-700"}>{rock.text}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <TrendingUp className="w-5 h-5 text-slate-700" />
+              <h2 className="font-bold text-slate-800">État des lieux</h2>
+            </div>
+            <div className="space-y-3">
+              <KpiRow label="Engagements ouverts" value={data.kpis.open} />
+              <KpiRow label="En retard" value={data.kpis.overdue} tone="rose" />
+              <KpiRow label="Décisions en attente" value={data.kpis.pendingDecisions} tone="amber" />
+              <div className="pt-3 border-t border-slate-100">
+                <KpiRow label="Soldés S-1" value={data.kpis.completedLastWeek} tone="emerald" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="font-bold text-slate-800">Matrice d'Eisenhower — 4D</h2>
+            <div className="text-xs text-slate-500 flex items-center gap-1">
+              <Star className="w-3 h-3 fill-indigo-500 text-indigo-500" />
+              = Vital Few (80/20)
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {Object.entries(QUADRANT_CONFIG).map(([key, cfg]) => (
+              <Quadrant
+                key={key}
+                config={cfg}
+                items={filteredQuadrants[key]}
+                onToggleDone={(id) => updateItem(key, id, { done: !data.quadrants[key].find((i) => i.id === id).done })}
+                onToggleStar={(id) => updateItem(key, id, { starred: !data.quadrants[key].find((i) => i.id === id).starred })}
+              />
+            ))}
+          </div>
+        </section>
+
+        <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
+            <div className="flex items-center gap-2">
+              <Building2 className="w-5 h-5 text-slate-700" />
+              <h2 className="font-bold text-slate-800">Vue par société</h2>
+              <span className="text-xs text-slate-500 ml-1">Groupe TERRES ROUGES</span>
+            </div>
+            {companyFilter && (
+              <button onClick={() => setCompanyFilter(null)} className="text-xs font-semibold px-3 py-1 rounded-full bg-indigo-600 text-white hover:bg-indigo-700">
+                ✕ Réinitialiser le filtre
+              </button>
+            )}
+          </div>
+          <p className="text-xs text-slate-500 mb-3">Cliquez sur une société pour filtrer la matrice Eisenhower et le Vital Few.</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+            {Object.entries(COMPANIES).map(([code, cfg]) => {
+              const stat = companyStats[code];
+              const active = companyFilter === code;
+              const isEmpty = stat.open === 0;
+              return (
+                <button
+                  key={code}
+                  onClick={() => setCompanyFilter(active ? null : code)}
+                  disabled={isEmpty && !active}
+                  className={`text-left border rounded-lg p-3 transition ${active ? "ring-2 ring-indigo-500 border-indigo-500 bg-indigo-50" : isEmpty ? "border-slate-200 bg-slate-50 opacity-60 cursor-not-allowed" : "border-slate-200 hover:border-indigo-300 hover:bg-slate-50"}`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${cfg.cls}`}>{cfg.label}</span>
+                    <span className="text-xs font-bold text-slate-800">{stat.open}</span>
+                  </div>
+                  <div className="text-xs font-semibold text-slate-700 leading-tight">{cfg.name}</div>
+                  <div className="text-[10px] text-slate-500 mt-1 leading-tight">{cfg.full}</div>
+                  {stat.starred > 0 && (
+                    <div className="mt-1 flex items-center gap-1 text-[10px] text-indigo-600">
+                      <Star className="w-2.5 h-2.5 fill-indigo-500 text-indigo-500" />
+                      {stat.starred} Vital Few
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="bg-gradient-to-br from-indigo-50 to-white rounded-2xl shadow-sm border border-indigo-200 p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Star className="w-5 h-5 text-indigo-600 fill-indigo-600" />
+            <h2 className="font-bold text-slate-800">Vital Few — 80/20</h2>
+            <span className="text-xs text-slate-500 ml-1">{vitalFew.length} item{vitalFew.length > 1 ? "s" : ""} étoilé{vitalFew.length > 1 ? "s" : ""}</span>
+          </div>
+          {vitalFew.length === 0 ? (
+            <p className="text-sm text-slate-500 italic">Aucun item étoilé. Cliquez sur ★ dans la matrice pour identifier les 3–5 actions à plus fort impact.</p>
+          ) : (
+            <ol className="space-y-2">
+              {vitalFew.map((item, idx) => (
+                <li key={item.id} className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center">{idx + 1}</span>
+                  <div className="flex-1">
+                    <div className={item.done ? "text-slate-400 line-through" : "text-slate-700"}>{item.text}</div>
+                    <div className="text-xs text-slate-500 mt-0.5">{item.meta}</div>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          )}
+        </section>
+
+        <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Calendar className="w-5 h-5 text-slate-700" />
+            <h2 className="font-bold text-slate-800">Plan de la semaine — 4P (Préparer → Réaliser)</h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            {data.weekPlan.map((day, idx) => {
+              const rock = data.bigRocks.find((r) => r.id === day.rock);
+              return (
+                <div key={idx} className="border border-slate-200 rounded-lg p-3 bg-slate-50 hover:bg-slate-100 transition">
+                  <div className="text-xs font-bold text-slate-500 uppercase mb-1">{day.day}</div>
+                  <div className="text-sm text-slate-700 mb-2 min-h-[2.5rem]">{day.theme}</div>
+                  {rock && (
+                    <div className="text-[11px] text-indigo-600 flex items-center gap-1">
+                      <Mountain className="w-3 h-3" />
+                      {rock.text.slice(0, 28)}{rock.text.length > 28 ? "…" : ""}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <div className="flex items-center gap-2 mb-3">
+            <ClipboardCheck className="w-5 h-5 text-slate-700" />
+            <h2 className="font-bold text-slate-800">Revue de clôture — vendredi 17h</h2>
+          </div>
+          <p className="text-sm text-slate-500">Boucle de rétro qui alimente la revue du lundi suivant. Ce qui a marché, ce qui n'a pas marché, ce qui bascule sur S+1.</p>
+        </section>
+
+        <footer className="text-center text-xs text-slate-400 py-4">
+          Template CEO Weekly Review · Eisenhower 4D + 80/20 + 4P
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+const root = createRoot(document.getElementById("root"));
+root.render(<WeeklyReviewWidget />);
+  </script>
+</body>
+</html>
