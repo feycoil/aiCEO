@@ -1,40 +1,53 @@
 # aiCEO — Benchmark approfondi
 
-**Version 1.1 · 24 avril 2026 · 14 produits étudiés · 4 axes de comparaison**
+**Version 2.0 · 24 avril 2026 · 19 produits étudiés · 5 axes de comparaison (refonte Issue #2)**
 
 > Note : recherche web 2024-2026 complétée par analyse produit. Les tarifs sont indicatifs et évoluent. Re-vérifier avant décision d'acquisition ou de partenariat.
+> 
+> **Changelog v2.0** — Refonte post-fusion v0.5 (Issue #2 atelier cohérence 2026-04) :
+> (1) §0 aligné sur les 5 concurrents desktop-first explicites ;
+> (2) ajout de l'Axe 5 · Phase locale avec analyse produit de chacun des 5 ;
+> (3) ancre officielle pour les livrables externes (pitch, business case, deck) pendant la phase v0.5.
 
 ---
 
 ## 0. Deux marchés de référence, deux phases produit
 
-> ⚠️ Suite à la décision de trajectoire du 24/04/2026 ([DECISIONS.md](../00_BOUSSOLE/DECISIONS.md)), aiCEO traverse **deux positionnements successifs**. Le benchmark ci-dessous reste pertinent pour la **vision cible (V1+ cloud)** ; un second benchmark doit couvrir la **phase locale (v0.4/v0.5)**.
+> ⚠️ Suite à l'**ADR S1 · Trajectoire produit local → cloud + continuité** du 24/04/2026 ([DECISIONS.md](../00_BOUSSOLE/DECISIONS.md#adr-s1-trajectoire-produit)), aiCEO traverse **deux positionnements concurrentiels successifs**. Les deux sont traités dans ce document : phase locale dans l'Axe 5, phase cloud dans les Axes 1-4.
 
-**Phase actuelle — local Windows (v0.4 livré, v0.5 en cours)**
-Le marché de référence n'est plus le cloud SaaS productivité. Les comparables immédiats sont :
-- **Microsoft Copilot for Business** (Copilot dans Outlook + Teams, local + cloud M365)
-- **Rewind.ai** (mémoire locale chiffrée, captures continues, interrogation LLM locale)
-- **Motion Desktop** (côté planification + calendrier)
-- **Plugins Outlook IA** (Superhuman for Teams, Boomerang Respondable)
-- **TheBrain Pro** (réseau de connaissances local, base de 30 ans, cible CEO)
+**Phase actuelle — local Windows (v0.4 livré, v0.5 en cours, cible T3 2026)**
+Le marché de référence n'est plus le cloud SaaS productivité. Les 5 comparables directs sont :
 
-Point différenciant aiCEO dans cette phase : **arbitrage 3/2/N en langage de CEO multi-sociétés**, pas un chatbot générique branché sur Outlook. Souveraineté des données (tout reste sur le poste, proxy corp géré, mode démo sans API).
+1. **Microsoft Copilot for Business** — Copilot dans Outlook + Teams + Word, local + cloud M365
+2. **Rewind.ai** — mémoire locale chiffrée, captures continues, interrogation LLM locale ou cloud
+3. **Motion Desktop** — client desktop du SaaS Motion, planification auto + calendrier local
+4. **Reflect** — notes backlinkées avec client desktop cross-platform + sync cloud chiffré E2E
+5. **Superhuman — plugin Outlook** — email premium avec IA côté Outlook (pas la webapp)
 
-**Phase cible — cloud multi-CEO (V1 → V3)**
-Le marché de référence redevient le cloud SaaS chief-of-staff et productivité : Lattice, Motion, Sunsama, Superhuman, Clara Labs, Dust, Lindy, Athena, Ema, Martin — tous étudiés ci-dessous.
+Analyse détaillée dans l'**Axe 5** ci-dessous.
+
+Point différenciant aiCEO dans cette phase : **arbitrage 3/2/N en langage de CEO multi-sociétés** (pas un chatbot générique branché sur Outlook), **souveraineté données** (tout reste sur le poste, proxy corp géré, mode démo sans API Anthropic), **intégration Outlook desktop native** via PowerShell COM (pas Graph API).
+
+**Phase cible — cloud multi-CEO (V1 → V3, ouverture T4 2026 → 2027)**
+Le marché de référence redevient le cloud SaaS chief-of-staff et productivité : Lattice, Motion, Sunsama, Superhuman webapp, Clara Labs, Dust, Lindy, Athena, Ema, Martin — tous étudiés dans les Axes 1 à 4.
 
 Les deux benchmarks ne doivent pas être confondus : le produit local v0.5 ne prétend pas battre Motion sur la planification cloud, et le produit cloud V1+ ne prétend pas concurrencer Rewind sur la mémoire locale.
 
+**Renvoi — livrables externes phase v0.5** : les pitchs, business case et deck investisseur produits pendant la fenêtre v0.5 (Issues #3, #4, #5, #7) **doivent citer l'Axe 5 ci-dessous** comme ancre concurrentielle actuelle, pas les Axes 1-4 qui décrivent la phase cible encore non livrée. Ce point évite de promettre un positionnement cloud chief-of-staff qu'aiCEO ne peut pas encore démontrer.
+
 ---
 
-## Panorama — 14 produits, 4 familles
+## Panorama — 19 produits, 5 familles
 
-| Famille | Produits retenus |
-|---|---|
-| **IA proactive & chief-of-staff** | Dust, Lindy.ai, Athena, Ema, Martin |
-| **Pensée visuelle & graphique** | Tana, Reflect, Napkin AI, tldraw, Heptabase, Miro AI |
-| **Productivité & anti-surchauffe** | Motion, Reclaim.ai, Sunsama, Superhuman, Amie |
-| **Contexte IA émergent** | Claude Agent SDK, GPT-5 Agents, Gemini 2.5 copilots |
+| Famille | Phase produit | Produits retenus |
+|---|---|---|
+| **Phase locale — desktop-first (Axe 5)** | v0.4 / v0.5 | Microsoft Copilot for Business, Rewind.ai, Motion Desktop, Reflect, Superhuman (plugin Outlook) |
+| **IA proactive & chief-of-staff (Axe 1)** | V1+ cloud | Dust, Lindy.ai, Athena, Ema, Martin |
+| **Pensée visuelle & graphique (Axe 2)** | V1+ cloud | Tana, Reflect, Napkin AI, tldraw, Heptabase, Miro AI |
+| **Productivité & anti-surchauffe (Axe 3)** | V1+ cloud | Motion, Reclaim.ai, Sunsama, Superhuman (webapp), Amie |
+| **Contexte IA émergent (Axe 4)** | transverse | Claude Agent SDK, GPT-5 Agents, Gemini 2.5 copilots |
+
+> Reflect et Superhuman apparaissent dans deux axes : l'un pour leur expérience desktop-first actuelle (Axe 5, positionnement concurrentiel immédiat d'aiCEO v0.5), l'autre pour leur grammaire UX globale (Axes 2 et 3, utile pour préparer V1+).
 
 ---
 
@@ -228,6 +241,77 @@ Légende : ●●● = excellent · ●● = correct · ● = partiel · ○ = a
 **Frameworks agentiques** : LangGraph (workflows durables), Claude Agent SDK (sub-agents + skills + MCP), OpenAI Agents SDK (léger), Inngest (orchestration proactive).
 
 **Détails complets** : voir `06-architecture.md`.
+
+---
+
+## Axe 5 · Phase locale — marché desktop-first (v0.4 / v0.5)
+
+> Ancre concurrentielle **actuelle** d'aiCEO, à citer dans tous les livrables externes produits pendant la fenêtre v0.5 (Issues #3 à #7).
+> Les Axes 1 à 4 décrivent le marché de la **phase cible (V1+ cloud)** — utile pour la vision, pas pour le positionnement immédiat.
+
+### Microsoft Copilot for Business — le mastodonte intégré
+
+**Positioning** : Copilot IA dans toutes les apps Microsoft 365 (Outlook, Teams, Word, Excel, PowerPoint). Cible : entreprises déjà équipées M365.
+**Profil desktop/local** : hybride. Les données restent dans le tenant M365 (cloud Microsoft), l'UI est dans le client desktop. Pas d'option 100 % on-premise pour la couche IA.
+**Forces** : intégration native Outlook/Teams native, gouvernance M365, support entreprise, compatibilité proxy corp.
+**Faiblesses vs aiCEO v0.5** : (1) pas d'arbitrage multi-sociétés en langage de CEO — reste un assistant générique d'inbox ; (2) licence 30 €/utilisateur/mois minimum, nécessite M365 E3/E5 au-dessus ; (3) données passent chez Microsoft (OK pour ETIC, bloquant pour un CEO soucieux de souveraineté) ; (4) pas de mode "mono-poste sans tenant" pour un CEO nomade.
+**Pricing** : 28,10 €/utilisateur/mois + licence M365.
+**Verdict pour aiCEO** : concurrent le plus crédible côté achat rationnel CEO ETIC. **Angle de différenciation** : aiCEO ne remplace pas Copilot sur Outlook — il propose une **couche d'arbitrage par-dessus** qui raisonne sur les 4 sociétés du CEO (ETIC Services, ADABU, Cowork, ETIC Education), chose qu'un Copilot d'inbox ne fait pas.
+
+### Rewind.ai — mémoire locale chiffrée
+
+**Positioning** : "pensée auto-indexée" — capture continue d'écran + audio + messaging local, interrogeable par LLM. Cible : individus productifs exigeant confidentialité.
+**Profil desktop/local** : 100 % local macOS/Windows. Index chiffré par défaut, rien ne quitte la machine sauf si l'utilisateur active le cloud pour l'interrogation LLM (ou apporte sa clé Anthropic/OpenAI).
+**Forces** : souveraineté radicale (tout sur le disque), recherche temporelle ("ce que j'ai vu mardi entre 14h et 16h"), plugins (Zoom, Slack, Outlook).
+**Faiblesses vs aiCEO v0.5** : (1) pas d'arbitrage proactif — c'est un moteur de recherche, pas un copilote qui propose des décisions ; (2) pas de notion de société/projet/Big Rock — raisonne sur l'humain solo ; (3) coût stockage disque important (200 Go/mois d'index typiques) ; (4) pas d'intégration pilotée Outlook (les mails sont indexés mais pas actionnés).
+**Pricing** : 19 $/mois par utilisateur (Rewind), 29 $/mois Pro.
+**Verdict pour aiCEO** : concurrent direct sur l'angle "souveraineté locale". **Angle de différenciation** : aiCEO n'est pas un miroir passif de l'activité, c'est un **filtre actif** qui produit 3 priorités et 2 délégations par matin — une métaphore de chief-of-staff, pas de secrétaire mémoire.
+
+### Motion Desktop — planification auto calendrier
+
+**Positioning** : client desktop du SaaS Motion. Auto-scheduling agressif qui casse la journée en blocs selon les tâches ouvertes et leurs deadlines.
+**Profil desktop/local** : client Electron packagé sur macOS/Windows, mais **les données sont cloud Motion** (AWS). Le desktop sert d'UI temps réel et de notification, pas de mode offline complet.
+**Forces** : intégration calendrier Google/Outlook bidirectionnelle, déblocage de créneaux, alertes "tu vas déborder".
+**Faiblesses vs aiCEO v0.5** : (1) sèche tonalement — pas de langage de CEO, tout en anglais productivité ; (2) casse la serendipité (bloque tous les créneaux, pas d'espace de respiration) ; (3) données cloud Motion (OK pour indiv, non pour CEO confidentialité) ; (4) pas de notion de délégation humaine.
+**Pricing** : 19 $/mois individuel, 34 $/mois équipe.
+**Verdict pour aiCEO** : concurrent sur l'angle "ne rate rien". **Angle de différenciation** : aiCEO **propose**, n'impose pas — la décision reste au CEO (validation 3/2/N), et la grammaire est française-pair, pas américaine-productivité.
+
+### Reflect — notes backlinkées cross-platform
+
+**Positioning** : notes personnelles type Roam/Obsidian, mais avec IA native (Claude côté assistant) et sync cloud chiffrée E2E. Cible : penseurs exigeant bi-directional linking + IA.
+**Profil desktop/local** : clients natifs macOS / Windows / iOS / Android + web. Données chiffrées E2E côté cloud (Reflect ne peut pas les lire). Desktop garde un cache local.
+**Forces** : rapidité, IA intégrée dans la prise de note, backlinking propre, UX épurée.
+**Faiblesses vs aiCEO v0.5** : (1) c'est un outil de note, pas de décision — pas de verrouillage à 3 Big Rocks, pas de délégation ; (2) pas d'intégration Outlook active (les mails ne sont pas ingérés pour arbitrage) ; (3) pas de notion multi-sociétés ; (4) le CEO cible de Reflect est plutôt un penseur solo, pas un CEO multi-casquettes.
+**Pricing** : 10 $/mois, 100 $/an.
+**Verdict pour aiCEO** : concurrent latéral sur l'angle "mémoire CEO". **Angle de différenciation** : aiCEO ne remplace pas Reflect sur la prise de note — il se connecte à Reflect (V1 potentiel) comme source de préférences implicites.
+
+### Superhuman — plugin Outlook (côté desktop)
+
+**Positioning** : email premium "fastest email experience in the world". Historiquement webapp autonome ; en 2025 a lancé **Superhuman for Outlook** — un plugin qui pose son UI au-dessus du client Outlook desktop.
+**Profil desktop/local** : plugin COM / add-in qui s'injecte dans Outlook desktop. Traitement IA côté cloud Superhuman (via Azure OpenAI), les mails transitent par Superhuman pour le smart-sort et l'assist.
+**Forces** : ergonomie irréprochable (keyboard-first, tri automatique), compatibilité corp Outlook desktop (vs Superhuman webapp qui force le navigateur), snippets IA contextuels.
+**Faiblesses vs aiCEO v0.5** : (1) focus strict inbox — pas d'agenda, pas de décisions, pas de multi-sociétés ; (2) données transitent par Superhuman (acceptable pour la plupart, pas pour CEO très exigeants souveraineté) ; (3) prix élevé ; (4) pas de langage CEO, rester "power user email".
+**Pricing** : 30 $/mois utilisateur, 40 $/mois équipe.
+**Verdict pour aiCEO** : concurrent direct sur l'angle "CEO qui croule sous Outlook". **Angle de différenciation** : aiCEO **va plus loin que la boîte mail** — il arbitre entre mails + rendez-vous + décisions + délégations, là où Superhuman s'arrête à "trier et répondre vite".
+
+### Grille Axe 5 — comparaison synthétique
+
+| Critère | Copilot M365 | Rewind | Motion Desktop | Reflect | Superhuman | **aiCEO v0.5** |
+|---|---|---|---|---|---|---|
+| Locality des données | Cloud MS tenant | 100 % local | Cloud Motion | Cloud E2E | Cloud Superhuman | **100 % local poste** |
+| Proxy corp OK | oui | oui | oui | oui | oui | **oui (testé)** |
+| Mode démo sans API | non | non | non | non | non | **oui** |
+| Arbitrage 3/2/N | non | non | non | non | non | **oui (différenciateur clé)** |
+| Multi-sociétés natif | non | non | non | non | non | **oui (4 sociétés ETIC)** |
+| Langage CEO français | non | non | non | non | non | **oui** |
+| Délégation humaine outillée | non | non | non | non | non | **partielle (v0.4)** |
+| Intégration Outlook desktop | native (M365) | plugin | Graph API | non | plugin natif | **COM PowerShell** |
+| Coût mensuel | 30 €+licence | 19–29 $ | 19–34 $ | 10 $ | 30 $ | **~5 € Anthropic API** |
+| Courbe d'apprentissage | faible (M365 inclus) | moyenne | forte (auto-schedule) | faible | faible | **moyenne (rituel matin)** |
+
+**Lecture de la grille** : sur les 5 critères stratégiques (arbitrage 3/2/N, multi-sociétés, langage CEO, délégation, souveraineté locale), **aucun des 5 concurrents desktop-first ne coche plus de 0 ou 1 case**. aiCEO v0.5 coche 5/5. Le trou de marché desktop-first est au moins aussi franc que le trou cloud chief-of-staff décrit en Axe 1.
+
+**Limites de l'analyse** : (1) pricing CEO premium reste à trouver — aucun des 5 n'occupe le segment "100-300 €/mois par CEO pour un vrai copilote multi-sociétés" ; (2) la menace d'un Copilot M365 qui ajouterait une feature "multi-tenant aggregation" est réelle mais pas annoncée à date ; (3) la robustesse aiCEO dépend de la qualité d'intégration Outlook COM — à stabiliser pendant v0.5 (Issue #10 OpenAPI, Issue #11 Husky).
 
 ---
 
