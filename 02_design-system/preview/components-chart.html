@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>Income chart · Twisty signature</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body { margin:0; background:#fff; padding:22px 24px; font-family:var(--font-sans); }
+  .card { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:22px; box-shadow:var(--shadow-card); max-width:640px; }
+  .hd { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px; }
+  .hd .h { display:flex; gap:10px; align-items:center; }
+  .hd .ico { width:32px; height:32px; border-radius:10px; background:var(--surface-3); display:grid; place-items:center; color:var(--text-2); }
+  .hd .t { font:800 26px/1 var(--font-sans); letter-spacing:-0.03em; }
+  .hd .sub { font:500 12px var(--font-sans); color:var(--text-2); max-width:44ch; margin-top:6px; }
+  .pill { border:1px solid var(--border); border-radius:999px; padding:6px 12px; font:600 12px var(--font-sans); color:var(--text); display:inline-flex; gap:6px; align-items:center; background:#fff; }
+  .chart { display:grid; grid-template-columns: 180px 1fr; gap:24px; align-items:end; }
+  .bigstat .delta { font:800 44px/1 var(--font-sans); letter-spacing:-0.035em; color:var(--text); }
+  .bigstat .cap { font:500 11px/1.4 var(--font-sans); color:var(--text-2); max-width:18ch; margin-top:8px; }
+  .bars { display:grid; grid-template-columns: repeat(7, 1fr); gap:8px; height:240px; align-items:end; position:relative; padding:0 6px 32px; }
+  .col { display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; position:relative; }
+  .stem { width:2px; background:var(--border-2); border-radius:2px; }
+  .dot { width:10px; height:10px; border-radius:50%; background:var(--sky); margin-top:-5px; box-shadow:0 0 0 3px #fff; }
+  .col.active .stem { background:var(--text); width:3px; }
+  .col.active .dot { display:none; }
+  .tip { position:absolute; top:-14px; background:var(--text); color:#fff; font:700 11px var(--font-sans); padding:5px 10px; border-radius:999px; white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .tip::after { content:""; position:absolute; left:50%; bottom:-4px; transform:translateX(-50%) rotate(45deg); width:8px; height:8px; background:var(--text); }
+  .daylabels { position:absolute; left:6px; right:6px; bottom:0; display:grid; grid-template-columns:repeat(7,1fr); gap:8px; }
+  .d { text-align:center; font:700 11px var(--font-sans); color:var(--text-3); width:22px; height:22px; line-height:22px; margin:0 auto; border-radius:50%; }
+  .d.active { background:var(--text); color:#fff; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="hd">
+    <div>
+      <div class="h">
+        <div class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/></svg></div>
+        <div>
+          <div class="t">Cadence semaine</div>
+          <div class="sub">Suivi des tâches clôturées jour par jour — semaine 17</div>
+        </div>
+      </div>
+    </div>
+    <button class="pill">Semaine <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+  </div>
+  <div class="chart">
+    <div class="bigstat">
+      <div class="delta">+20%</div>
+      <div class="cap">Plus de tâches clôturées que la semaine dernière</div>
+    </div>
+    <div class="bars">
+      <div class="col" style="height:40%"><div class="stem" style="height:100%"></div><div class="dot"></div></div>
+      <div class="col" style="height:60%"><div class="stem" style="height:100%"></div><div class="dot"></div></div>
+      <div class="col active" style="height:86%"><div class="tip">17 tâches</div><div class="stem" style="height:100%"></div></div>
+      <div class="col" style="height:70%"><div class="stem" style="height:100%"></div><div class="dot"></div></div>
+      <div class="col" style="height:82%"><div class="stem" style="height:100%"></div><div class="dot"></div></div>
+      <div class="col" style="height:58%"><div class="stem" style="height:100%"></div><div class="dot"></div></div>
+      <div class="col" style="height:46%"><div class="stem" style="height:100%"></div><div class="dot"></div></div>
+      <div class="daylabels">
+        <div class="d">L</div><div class="d">M</div><div class="d active">M</div><div class="d">J</div><div class="d">V</div><div class="d">S</div><div class="d">D</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

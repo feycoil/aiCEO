@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>Type — Display numerals</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body { margin:0; background:#fff; padding:22px 24px; font-family:var(--font-sans); }
+  .row { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:18px; }
+  .one { display:flex; flex-direction:column; gap:4px; }
+  .lbl { font:700 10px/1 var(--font-sans); text-transform:uppercase; letter-spacing:.09em; color:var(--text-3); }
+  .cap { font:500 11px/1.4 var(--font-sans); color:var(--text-2); max-width:24ch; }
+  .big-fira { font:800 48px/1 var(--font-sans); letter-spacing:-0.035em; color:var(--text); font-variant-numeric:tabular-nums lining-nums; }
+  .big-fira.up { color:var(--emerald); }
+  .big-fira.down { color:var(--rose); }
+  .big-sol { font-family:var(--font-thin); font-weight:100; font-size:64px; letter-spacing:-0.02em; line-height:1; color:var(--text); font-variant-numeric:tabular-nums lining-nums; }
+  .big-script { font-family:var(--font-script); font-size:52px; line-height:1; color:var(--rose); }
+</style>
+</head>
+<body>
+<div class="row">
+  <div class="one">
+    <div class="lbl">Cadence semaine</div>
+    <div class="big-fira up">+20%</div>
+    <div class="cap">Fira Sans ExtraBold — standard KPI</div>
+  </div>
+  <div class="one">
+    <div class="lbl">Tirage YTD</div>
+    <div class="big-sol">2 567</div>
+    <div class="cap">Sol Thin — hero numerals rares</div>
+  </div>
+  <div class="one">
+    <div class="lbl">Week 17</div>
+    <div class="big-script">semaine 17</div>
+    <div class="cap">Aubrielle — moments signature</div>
+  </div>
+</div>
+</body>
+</html>

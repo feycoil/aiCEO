@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>Logo & Iconography</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body { margin:0; background:#fff; padding:24px; font-family:var(--font-sans); }
+  .title { font:700 11px var(--font-sans); letter-spacing:.08em; text-transform:uppercase; color:var(--text-2); margin:18px 0 10px; }
+  .title:first-child { margin-top:0; }
+  .row { display:flex; gap:18px; align-items:center; flex-wrap:wrap; }
+  .lockup { display:flex; align-items:center; gap:10px; }
+  .mark { width:44px; height:44px; border-radius:12px; background:var(--rose); display:grid; place-items:center; box-shadow: inset 0 -2px 0 rgba(0,0,0,.06), 0 4px 10px -4px rgba(217,109,62,.5); }
+  .mark.sm { width:32px; height:32px; border-radius:9px; }
+  .mark.lg { width:72px; height:72px; border-radius:20px; }
+  .wordmark { font:800 22px var(--font-sans); letter-spacing:-0.035em; color:var(--text); }
+  .wordmark small { display:block; font:600 10px var(--font-sans); letter-spacing:.12em; text-transform:uppercase; color:var(--text-3); margin-top:2px; }
+  .ico-grid { display:grid; grid-template-columns:repeat(10, 1fr); gap:14px; max-width:720px; }
+  .ico { display:flex; flex-direction:column; align-items:center; gap:4px; font:500 9.5px var(--font-sans); color:var(--text-3); text-align:center; }
+  .ico svg { width:22px; height:22px; color:var(--text); stroke-width:2; }
+  .emoji-grid { display:grid; grid-template-columns:repeat(10, 1fr); gap:14px; max-width:720px; }
+  .em { display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .em .e { width:40px; height:40px; border-radius:12px; display:grid; place-items:center; font-size:20px; }
+  .em .lbl { font:500 9.5px var(--font-sans); color:var(--text-3); }
+</style>
+</head>
+<body>
+
+<div class="title">Brand logo — twist mark (Twisty reference)</div>
+<div class="row">
+  <div class="lockup">
+    <div class="mark lg">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M11 10c6 0 10 4 10 10s4 10 10 10" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M11 20c6 0 10-4 10-10" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".75"/></svg>
+    </div>
+    <div class="wordmark">aiCEO<small>Pilotage Terres Rouges</small></div>
+  </div>
+  <div class="lockup">
+    <div class="mark">
+      <svg width="24" height="24" viewBox="0 0 40 40" fill="none"><path d="M11 10c6 0 10 4 10 10s4 10 10 10" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M11 20c6 0 10-4 10-10" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".75"/></svg>
+    </div>
+    <div class="wordmark">aiCEO</div>
+  </div>
+  <div class="lockup">
+    <div class="mark sm" style="background:var(--text)">
+      <svg width="18" height="18" viewBox="0 0 40 40" fill="none"><path d="M11 10c6 0 10 4 10 10s4 10 10 10" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M11 20c6 0 10-4 10-10" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".75"/></svg>
+    </div>
+    <span style="font:800 14px var(--font-sans);letter-spacing:-0.025em">aiCEO</span>
+  </div>
+  <div class="lockup">
+    <div class="mark sm" style="background:var(--rose);color:#fff;font:800 13px var(--font-sans);letter-spacing:-0.04em">Ai</div>
+    <span style="font:800 14px var(--font-sans);letter-spacing:-0.025em">aiCEO</span>
+  </div>
+</div>
+
+<div class="title">Icon set — Lucide stroke 2, round</div>
+<div class="ico-grid">
+  <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>dashboard</span></div>
+  <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>projets</span></div>
+  <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M9 11l2 2 4-4"/></svg><span>tâches</span></div>
+  <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v6h6"/><path d="M9 14h6M9 18h4"/></svg><span>décisions</span></div>
+  <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>agenda</span></div>
+  <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>horloge</span></div>
+  <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="3"/><path d="M22 19a5 5 0 0 0-5-5"/></svg><span>contacts</span></div>
+  <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>recherche</span></div>
+  <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.5 6.5L21 9l-5 4 2 7-6-4-6 4 2-7-5-4 6.5-.5z"/></svg><span>vital few</span></div>
+  <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span>alerte</span></div>
+</div>
+
+<div class="title">Project emoji — category tags</div>
+<div class="emoji-grid">
+  <div class="em"><div class="e" style="background:var(--amber-50)">🏨</div><span class="lbl">AMANI</span></div>
+  <div class="em"><div class="e" style="background:var(--rose-50)">🏗️</div><span class="lbl">SCI Start</span></div>
+  <div class="em"><div class="e" style="background:var(--sky-50)">💻</div><span class="lbl">ETIC</span></div>
+  <div class="em"><div class="e" style="background:var(--emerald-50)">🌴</div><span class="lbl">SCIMB</span></div>
+  <div class="em"><div class="e" style="background:var(--violet-50)">💾</div><span class="lbl">ITH</span></div>
+  <div class="em"><div class="e" style="background:var(--surface-3)">⚖️</div><span class="lbl">Honoraires</span></div>
+  <div class="em"><div class="e" style="background:var(--sky-50)">🇪🇺</div><span class="lbl">FEDER</span></div>
+  <div class="em"><div class="e" style="background:var(--rose-50)">🔥</div><span class="lbl">Faire</span></div>
+  <div class="em"><div class="e" style="background:var(--amber-50)">📅</div><span class="lbl">Planifier</span></div>
+  <div class="em"><div class="e" style="background:var(--sky-50)">📤</div><span class="lbl">Déléguer</span></div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>Shadow, Radius & Spacing</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body { margin:0; background:var(--bg); padding:22px 24px; font-family:var(--font-sans); }
+  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .card { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px 14px; }
+  .card .n { font:800 12px var(--font-sans); letter-spacing:-0.01em; color:var(--text); }
+  .card .v { font:500 10px var(--font-mono); color:var(--text-3); margin-top:2px; }
+  .sh1 { box-shadow: var(--shadow-xs); }
+  .sh2 { box-shadow: var(--shadow-sm); }
+  .sh3 { box-shadow: var(--shadow); }
+  .sh4 { box-shadow: var(--shadow-card); }
+  .sh5 { box-shadow: var(--shadow-hero); }
+  .sh6 { box-shadow: var(--shadow-app); }
+  .row2 { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-top:18px; }
+  .rbox { background:#fff; border:1px solid var(--border); padding:10px; display:flex; flex-direction:column; align-items:flex-start; justify-content:space-between; min-height:88px; }
+  .rbox .n { font:800 11px var(--font-sans); }
+  .rbox .v { font:500 10px var(--font-mono); color:var(--text-3); }
+  .title { font:700 11px var(--font-sans); letter-spacing:.08em; text-transform:uppercase; color:var(--text-2); margin-bottom:10px; }
+</style>
+</head>
+<body>
+<div class="title">Shadow tokens</div>
+<div class="grid">
+  <div class="card sh1"><div class="n">shadow-xs</div><div class="v">--shadow-xs</div></div>
+  <div class="card sh2"><div class="n">shadow-sm</div><div class="v">--shadow-sm</div></div>
+  <div class="card sh3"><div class="n">shadow</div><div class="v">--shadow</div></div>
+  <div class="card sh4"><div class="n">shadow-card</div><div class="v">default cards</div></div>
+  <div class="card sh5"><div class="n">shadow-hero</div><div class="v">Intention</div></div>
+  <div class="card sh6"><div class="n">shadow-app</div><div class="v">app frame halo</div></div>
+</div>
+<div class="title" style="margin-top:22px">Radius scale</div>
+<div class="row2">
+  <div class="rbox" style="border-radius:8px"><div class="n">xs</div><div class="v">8px</div></div>
+  <div class="rbox" style="border-radius:12px"><div class="n">sm</div><div class="v">12px · nav</div></div>
+  <div class="rbox" style="border-radius:18px"><div class="n">md</div><div class="v">18px · default</div></div>
+  <div class="rbox" style="border-radius:24px"><div class="n">lg</div><div class="v">24px · card</div></div>
+  <div class="rbox" style="border-radius:28px"><div class="n">xl</div><div class="v">28px · shell</div></div>
+</div>
+</body>
+</html>

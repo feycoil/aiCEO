@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>Task rows & Matrix cells</title>
+<link rel="stylesheet" href="../assets/product.app.css"/>
+<style>
+  body { margin:0; background:var(--bg); padding:24px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:980px; }
+  .task-overdue .task-meta strong { color:var(--rose); }
+</style>
+</head>
+<body>
+<div class="grid">
+  <div class="matrix-cell do">
+    <div class="matrix-cell-head"><div><strong>🔥 Faire</strong> · Urgent & Important</div><span class="matrix-cell-count">3</span></div>
+    <div class="matrix-cell-body">
+      <div class="task task-overdue">
+        <button class="task-check"></button>
+        <span class="task-star-btn"><svg class="task-star starred" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M12 2l2.5 6.5L21 9l-5 4 2 7-6-4-6 4 2-7-5-4 6.5-.5z"/></svg></span>
+        <div class="task-body">
+          <div class="task-text">Solder honoraires Affejee (3ᵉ relance)</div>
+          <div class="task-meta">Moi → Lamiae/compta <span class="dot"></span> <span class="company-chip c-ETIC">ETIC</span> <span class="dot"></span> <strong>AUJOURD'HUI 17h</strong></div>
+        </div>
+      </div>
+      <div class="task">
+        <button class="task-check"></button>
+        <span class="task-star-btn"><svg class="task-star starred" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M12 2l2.5 6.5L21 9l-5 4 2 7-6-4-6 4 2-7-5-4 6.5-.5z"/></svg></span>
+        <div class="task-body">
+          <div class="task-text">Valider FF&E étage 2 — AMANI Pamandzi</div>
+          <div class="task-meta">Moi → Karim <span class="dot"></span> <span class="company-chip c-AMP">AMP</span> <span class="dot"></span> demain</div>
+        </div>
+      </div>
+      <div class="task">
+        <button class="task-check"></button>
+        <span class="task-star-btn"><svg class="task-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2l2.5 6.5L21 9l-5 4 2 7-6-4-6 4 2-7-5-4 6.5-.5z"/></svg></span>
+        <div class="task-body">
+          <div class="task-text">Réponse CA Bretagne — décalage tirage 30/04</div>
+          <div class="task-meta">Moi → banque <span class="dot"></span> <span class="company-chip c-SCIS">SCIS</span> <span class="dot"></span> cette semaine</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="matrix-cell plan">
+    <div class="matrix-cell-head"><div><strong>📅 Planifier</strong> · Important non urgent</div><span class="matrix-cell-count">5</span></div>
+    <div class="matrix-cell-body">
+      <div class="task done">
+        <button class="task-check"></button>
+        <span class="task-star-btn"><svg class="task-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2l2.5 6.5L21 9l-5 4 2 7-6-4-6 4 2-7-5-4 6.5-.5z"/></svg></span>
+        <div class="task-body">
+          <div class="task-text">COPIL ITH T2 — slot 22/05</div>
+          <div class="task-meta">Moi <span class="dot"></span> <span class="company-chip c-ITH">ITH</span> <span class="dot"></span> planifié</div>
+        </div>
+      </div>
+      <div class="task">
+        <button class="task-check"></button>
+        <span class="task-star-btn"><svg class="task-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2l2.5 6.5L21 9l-5 4 2 7-6-4-6 4 2-7-5-4 6.5-.5z"/></svg></span>
+        <div class="task-body">
+          <div class="task-text">Préparer dossier FEDER — pièces BREEAM</div>
+          <div class="task-meta">Moi → Naïma <span class="dot"></span> S19</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

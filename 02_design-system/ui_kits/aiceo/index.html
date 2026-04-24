@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>aiCEO — UI Kit</title>
+<link rel="stylesheet" href="../../assets/product.app.css"/>
+<style>
+  /* kit-local additions, built on product theme */
+  .app { grid-template-columns: 248px 1fr; }
+  .page { padding: 24px 28px 48px; }
+  .grid.grid-12 { grid-template-columns: repeat(12, 1fr); }
+  .span-8 { grid-column: span 8; }
+  .span-4 { grid-column: span 4; }
+  .span-6 { grid-column: span 6; }
+  .span-3 { grid-column: span 3; }
+  .span-5 { grid-column: span 5; }
+  .span-7 { grid-column: span 7; }
+
+  /* Search field in topbar */
+  .search-pill {
+    background: #fff; border:1px solid var(--border);
+    border-radius:999px; padding:8px 14px 8px 38px;
+    width: 360px; max-width:100%;
+    font:500 13px var(--font-sans,'Inter'); color:var(--text);
+    position:relative; display:flex; align-items:center; gap:8px;
+  }
+  .search-pill svg.ico-s { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text-3); width:14px; height:14px; }
+  .search-pill kbd { margin-left:auto; background:var(--surface-3); border:1px solid var(--border); border-radius:6px; padding:1px 6px; font:700 10px ui-monospace,monospace; color:var(--text-2); }
+  .icon-btn { width:36px; height:36px; border-radius:50%; background:var(--surface-3); border:1px solid transparent; display:grid; place-items:center; color:var(--text-2); cursor:pointer; }
+  .icon-btn:hover { color:var(--text); background:#eae7de; }
+  .avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#b88237,#d96d3e); display:grid; place-items:center; color:#fff; font:800 13px var(--font-sans); letter-spacing:-0.02em; }
+
+  /* Intention hero */
+  .intention {
+    background: linear-gradient(135deg, #ffffff 0%, #fbf9f5 60%, #f5f0e6 100%);
+    border:1px solid var(--border); border-radius:28px;
+    padding: 26px 28px; box-shadow: var(--shadow-hero);
+    display:grid; grid-template-columns: 1fr auto; gap:24px; align-items:start;
+  }
+  .intention .eye { font:700 11px var(--font-sans); letter-spacing:.08em; text-transform:uppercase; color:var(--text-2); margin-bottom:8px; }
+  .intention .greet { font:800 28px/1.1 var(--font-sans); letter-spacing:-0.035em; margin-bottom:14px; }
+  .intention p { font:500 14.5px/1.55 var(--font-sans); color:var(--text); margin:0 0 16px; max-width:64ch; text-wrap:pretty; }
+  .intention .chips { display:flex; gap:8px; flex-wrap:wrap; }
+
+  /* Big-rocks ribbon */
+  .rocks { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:6px; }
+  .rock { display:flex; gap:12px; align-items:flex-start; background:#fff; border:1px solid var(--border); border-radius:16px; padding:12px 14px; }
+  .rock .num { width:28px; height:28px; border-radius:10px; background:var(--text); color:#fff; font:800 13px var(--font-sans); display:grid; place-items:center; box-shadow:0 6px 14px -8px rgba(17,20,24,.5); flex-shrink:0;}
+  .rock .t { font:700 13px var(--font-sans); letter-spacing:-0.01em; margin-bottom:2px;}
+  .rock .s { font:500 11.5px var(--font-sans); color:var(--text-2); }
+
+  /* Twisty chart */
+  .chart-card .hd { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; }
+  .chart-card .t { font:800 22px/1.1 var(--font-sans); letter-spacing:-0.03em; }
+  .chart-card .sub { font:500 12.5px var(--font-sans); color:var(--text-2); max-width:46ch; margin-top:6px; }
+  .chart-body { display:grid; grid-template-columns:170px 1fr; gap:24px; align-items:end; }
+  .bigstat .delta { font:800 48px/1 var(--font-sans); letter-spacing:-0.035em; color:var(--text); }
+  .bigstat .cap { font:500 11.5px/1.4 var(--font-sans); color:var(--text-2); max-width:18ch; margin-top:8px; }
+  .bars { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; height:220px; align-items:end; position:relative; padding:0 6px 32px; }
+  .col { height:100%; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; position:relative; }
+  .col .stem { width:2px; background:var(--border-2); border-radius:2px; }
+  .col .dot { width:10px; height:10px; border-radius:50%; background:var(--sky); margin-top:-5px; box-shadow:0 0 0 3px #fff; }
+  .col.active .stem { background:var(--text); width:3px; }
+  .col.active .dot { display:none; }
+  .tip { position:absolute; top:-14px; background:var(--text); color:#fff; font:700 11px var(--font-sans); padding:5px 10px; border-radius:999px; white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .tip::after { content:""; position:absolute; left:50%; bottom:-4px; transform:translateX(-50%) rotate(45deg); width:8px; height:8px; background:var(--text); }
+  .daylabels { position:absolute; left:6px; right:6px; bottom:0; display:grid; grid-template-columns:repeat(7,1fr); gap:8px; }
+  .daylabels .d { text-align:center; font:700 11px var(--font-sans); color:var(--text-3); width:22px; height:22px; line-height:22px; margin:0 auto; border-radius:50%; }
+  .daylabels .d.active { background:var(--text); color:#fff; }
+
+  /* Projects list */
+  .plist { display:flex; flex-direction:column; gap:10px; }
+  .prow { display:flex; gap:12px; align-items:center; padding:10px; border-radius:14px; }
+  .prow:hover { background:var(--surface-3); }
+  .prow .pic { width:40px; height:40px; border-radius:12px; display:grid; place-items:center; font-size:18px; box-shadow: inset 0 -2px 0 rgba(0,0,0,.06); flex-shrink:0; }
+  .prow .name { font:800 13.5px var(--font-sans); letter-spacing:-0.015em; }
+  .prow .sub { font:500 11.5px var(--font-sans); color:var(--text-2); }
+  .prow .side { margin-left:auto; display:flex; gap:8px; align-items:center; }
+
+  /* Contacts */
+  .clist { display:flex; flex-direction:column; gap:8px; }
+  .crow { display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:14px; border:1px solid var(--border); background:#fff; }
+  .crow .av { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#a9adbe,#7a6a8a); color:#fff; display:grid; place-items:center; font:800 12px var(--font-sans); }
+  .crow .av.rose { background:linear-gradient(135deg,#d96d3e,#8a3b1b); }
+  .crow .av.sage { background:linear-gradient(135deg,#3d7363,#234236); }
+  .crow .name { font:700 13.5px var(--font-sans); letter-spacing:-0.01em; display:flex; align-items:center; gap:6px; }
+  .crow .role { font:500 11.5px var(--font-sans); color:var(--text-2); }
+  .crow .tag { font:700 9.5px var(--font-sans); padding:2px 7px; border-radius:999px; letter-spacing:.03em; }
+  .crow .tag.sr { background:var(--rose-50); color:var(--rose-800); border:1px solid #f5d6bf; }
+  .crow .tag.md { background:var(--amber-50); color:var(--amber-800); border:1px solid #ead3ad; }
+  .crow .add { margin-left:auto; width:30px; height:30px; border-radius:50%; background:var(--surface-3); color:var(--text-2); display:grid; place-items:center; cursor:pointer; }
+  .crow .add:hover { color:var(--text); background:#eae7de; }
+
+  /* Dotted upsell */
+  .upsell {
+    background: var(--sky-50);
+    background-image: radial-gradient(circle, rgba(119,144,174,.42) 1px, transparent 1.4px), linear-gradient(135deg,transparent 0%,rgba(255,255,255,.85) 100%);
+    background-size: 14px 14px, 100% 100%;
+    border:1px solid var(--border); border-radius:24px;
+    padding:20px; display:flex; flex-direction:column; gap:10px; justify-content:center;
+    box-shadow: var(--shadow-card);
+  }
+  .upsell .t { font:800 17px var(--font-sans); letter-spacing:-0.02em; }
+  .upsell .p { font:500 12px/1.5 var(--font-sans); color:var(--text-2); max-width:32ch; }
+  .upsell .cta { margin-top:auto; display:flex; justify-content:space-between; align-items:center; padding:11px 16px; background:#fff; border-radius:999px; font:700 12.5px var(--font-sans); color:var(--text); }
+
+  /* Tick-bar card */
+  .ticks-card .hd { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+  .ticks-card .t { font:800 17px var(--font-sans); letter-spacing:-0.02em; }
+  .date-pill { display:inline-flex; gap:6px; align-items:center; border:1px solid var(--border); border-radius:999px; padding:6px 12px; font:600 12px var(--font-sans); color:var(--text); background:#fff; }
+  .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+  .stats .col2 { border-right:1px solid var(--border); padding-right:20px; }
+  .stats .col2:last-child { border-right:none; padding-right:0; }
+  .stats .lbl { font:600 11.5px var(--font-sans); color:var(--text-2); margin-bottom:4px; }
+  .stats .n { font:800 28px/1 var(--font-sans); letter-spacing:-0.035em; font-variant-numeric:tabular-nums; }
+  .row-ticks { display:flex; align-items:flex-end; gap:1px; height:30px; margin-top:10px; }
+  .row-ticks .tk { width:1.5px; background:var(--border-2); border-radius:1px; }
+
+  /* Agenda mini */
+  .agenda { display:flex; flex-direction:column; gap:6px; }
+  .ev { display:grid; grid-template-columns: 52px 1fr auto; gap:12px; padding:10px 12px; border-radius:12px; background:#fff; border:1px solid var(--border); align-items:center; }
+  .ev .when { font:800 13.5px var(--font-sans); letter-spacing:-0.02em; font-variant-numeric:tabular-nums; color:var(--text); line-height:1.1; }
+  .ev .when small { display:block; font:600 10px var(--font-sans); color:var(--text-3); margin-top:2px; letter-spacing:.08em; text-transform:uppercase; }
+  .ev .t { font:700 13px var(--font-sans); letter-spacing:-0.01em; }
+  .ev .m { font:500 11.5px var(--font-sans); color:var(--text-2); }
+  .ev.accent-rose { border-left:3px solid var(--rose); }
+  .ev.accent-sky { border-left:3px solid var(--sky); }
+  .ev.accent-amber { border-left:3px solid var(--amber); }
+
+  @media (max-width: 1100px) {
+    .chart-body { grid-template-columns: 1fr; }
+    .bars { height:180px; }
+    .rocks { grid-template-columns:1fr; }
+    .span-8, .span-4, .span-5, .span-7 { grid-column: span 12; }
+    .stats { grid-template-columns:repeat(3,1fr); gap:12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- ─── SIDEBAR ─── -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">
+        <svg width="22" height="22" viewBox="0 0 40 40" fill="none"><path d="M11 10c6 0 10 4 10 10s4 10 10 10" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M11 20c6 0 10-4 10-10" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".75"/></svg>
+      </div>
+      <div>
+        <div class="brand-title">aiCEO</div>
+        <div class="brand-sub">Terres Rouges</div>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Pilotage</div>
+      <a class="nav-item active" href="#"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>Dashboard</a>
+      <a class="nav-item" href="#"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>Projets<span class="count">7</span></a>
+      <a class="nav-item" href="#"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M9 11l2 2 4-4"/></svg></span>Tâches<span class="count">17</span></a>
+      <a class="nav-item" href="#"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v6h6"/><path d="M9 14h6M9 18h4"/></svg></span>Décisions<span class="count">42</span></a>
+      <a class="nav-item" href="#"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>Revues hebdo</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Opérations</div>
+      <a class="nav-item" href="#"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Agenda<span class="count">29</span></a>
+      <a class="nav-item" href="#"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="3"/><path d="M22 19a5 5 0 0 0-5-5"/></svg></span>Contacts</a>
+    </div>
+  </aside>
+
+  <!-- ─── MAIN ─── -->
+  <main class="main">
+    <header class="topbar">
+      <div class="crumbs"><a>Pilotage</a><span class="sep">/</span><span class="current">Dashboard</span></div>
+      <div class="topbar-actions">
+        <div class="search-pill">
+          <svg class="ico-s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <span class="muted">Rechercher un projet, une tâche, un contact…</span>
+          <kbd>⌘K</kbd>
+        </div>
+        <button class="icon-btn" aria-label="Paramètres"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.65 1.65 0 0 0-1.8-.3 1.65 1.65 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.65 1.65 0 0 0-1-1.5 1.65 1.65 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.65 1.65 0 0 0 .3-1.8 1.65 1.65 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.65 1.65 0 0 0 1.5-1 1.65 1.65 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.65 1.65 0 0 0 1.8.3h0a1.65 1.65 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.65 1.65 0 0 0 1 1.5h0a1.65 1.65 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.65 1.65 0 0 0-.3 1.8v0a1.65 1.65 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.65 1.65 0 0 0-1.5 1z"/></svg></button>
+        <button class="icon-btn" aria-label="Notifications"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></button>
+        <div class="avatar">FM</div>
+      </div>
+    </header>
+
+    <div class="page">
+
+      <!-- Page header -->
+      <div class="page-header">
+        <div>
+          <h1 class="page-title display">Bonjour Feyçoil 👋</h1>
+          <div class="page-subtitle">Semaine 17 · 20–26 avril 2026 — <strong>29 événements agenda · 80+ emails scannés</strong></div>
+        </div>
+        <div class="row">
+          <span class="chip">👤 Personnel</span>
+          <button class="btn">Exporter</button>
+          <button class="btn primary"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Nouvelle décision</button>
+        </div>
+      </div>
+
+      <!-- Intention hero + Big rocks -->
+      <div class="intention" style="margin-bottom:18px">
+        <div>
+          <div class="eye">🎯 Intention de la semaine</div>
+          <div class="greet">Solder Affejee, sécuriser Pamandzi,<br/>décaler le tirage Bretagne.</div>
+          <p>Solder les honoraires Affejee (3ᵉ relance), confirmer le décalage tirage CA Bretagne au 30/04, et sécuriser le FF&E AMANI avant les RV matériaux à Mayotte lundi 27/04.</p>
+          <div class="chips">
+            <span class="badge rose">3 en retard</span>
+            <span class="badge amber">8 à planifier</span>
+            <span class="badge emerald">12 soldées S16</span>
+            <span class="badge sky">5 déléguées</span>
+          </div>
+        </div>
+        <div style="min-width:300px">
+          <div class="eye" style="margin-bottom:10px">🪨 3 Big Rocks</div>
+          <div class="rocks">
+            <div class="rock"><div class="num">1</div><div><div class="t">Tirage CA Bretagne</div><div class="s">30/04 · <span class="company-chip c-SCIS">SCIS</span></div></div></div>
+            <div class="rock"><div class="num">2</div><div><div class="t">FF&E Pamandzi étage 2</div><div class="s">RV matériaux lundi · <span class="company-chip c-AMP">AMP</span></div></div></div>
+            <div class="rock"><div class="num">3</div><div><div class="t">Solder Affejee</div><div class="s">Aujourd'hui · <span class="company-chip c-ETIC">ETIC</span></div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI row -->
+      <div class="grid grid-4" style="margin-bottom:18px">
+        <div class="kpi rose"><div class="kpi-label">En retard</div><div class="kpi-value">3</div><div class="kpi-delta down">1 depuis lundi</div></div>
+        <div class="kpi amber"><div class="kpi-label">À planifier</div><div class="kpi-value">8</div><div class="kpi-delta flat">cette semaine</div></div>
+        <div class="kpi emerald"><div class="kpi-label">Soldé S17</div><div class="kpi-value">12</div><div class="kpi-delta up">20% vs S16</div></div>
+        <div class="kpi sky"><div class="kpi-label">Délégué</div><div class="kpi-value">5</div><div class="kpi-delta flat">en cours</div></div>
+      </div>
+
+      <!-- Chart + Projects -->
+      <div class="grid grid-12" style="margin-bottom:18px">
+        <div class="card chart-card span-8">
+          <div class="hd">
+            <div>
+              <div class="t">Cadence semaine</div>
+              <div class="sub">Tâches clôturées jour par jour — mercredi est votre meilleur jour cette semaine.</div>
+            </div>
+            <div class="seg">
+              <button class="active">Semaine</button><button>Mois</button><button>Trim.</button>
+            </div>
+          </div>
+          <div class="chart-body">
+            <div class="bigstat">
+              <div class="delta">+20%</div>
+              <div class="cap">De tâches clôturées vs. la semaine dernière</div>
+            </div>
+            <div class="bars">
+              <div class="col" style="height:40%"><div class="stem" style="height:100%"></div><div class="dot"></div></div>
+              <div class="col" style="height:60%"><div class="stem" style="height:100%"></div><div class="dot"></div></div>
+              <div class="col active" style="height:86%"><div class="tip">17 tâches</div><div class="stem" style="height:100%"></div></div>
+              <div class="col" style="height:70%"><div class="stem" style="height:100%"></div><div class="dot"></div></div>
+              <div class="col" style="height:82%"><div class="stem" style="height:100%"></div><div class="dot"></div></div>
+              <div class="col" style="height:58%"><div class="stem" style="height:100%"></div><div class="dot"></div></div>
+              <div class="col" style="height:46%"><div class="stem" style="height:100%"></div><div class="dot"></div></div>
+              <div class="daylabels">
+                <div class="d">L</div><div class="d">M</div><div class="d active">M</div><div class="d">J</div><div class="d">V</div><div class="d">S</div><div class="d">D</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card span-4">
+          <div class="card-head">
+            <h3 class="card-title">Projets prioritaires</h3>
+            <a class="btn ghost" href="#">Tout voir →</a>
+          </div>
+          <div class="plist">
+            <a class="prow" href="#">
+              <div class="pic" style="background:var(--amber-50)">🏨</div>
+              <div><div class="name">AMANI — Pamandzi</div><div class="sub">Hôtel · HMA signée · T3 2026</div></div>
+              <div class="side"><span class="badge rose">Brûlant</span></div>
+            </a>
+            <a class="prow" href="#">
+              <div class="pic" style="background:var(--rose-50)">🏗️</div>
+              <div><div class="name">SCI Start — CA Bretagne</div><div class="sub">Tirage · 30/04 · 2,8 M€</div></div>
+              <div class="side"><span class="badge amber">À valider</span></div>
+            </a>
+            <a class="prow" href="#">
+              <div class="pic" style="background:var(--sky-50)">💻</div>
+              <div><div class="name">ETIC — SaaS v4</div><div class="sub">Sprint 7 · 78%</div></div>
+              <div class="side"><span class="badge emerald">En piste</span></div>
+            </a>
+            <a class="prow" href="#">
+              <div class="pic" style="background:var(--violet-50)">💾</div>
+              <div><div class="name">ITH — Data Center T2</div><div class="sub">COPIL · 22/05</div></div>
+              <div class="side"><span class="badge slate">Planifié</span></div>
+            </a>
+            <a class="prow" href="#">
+              <div class="pic" style="background:var(--sky-50)">🇪🇺</div>
+              <div><div class="name">FEDER — pièces BREEAM</div><div class="sub">Dossier · S19</div></div>
+              <div class="side"><span class="badge sky">Délégué</span></div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Matrix 4D -->
+      <div class="card" style="margin-bottom:18px; padding:18px;">
+        <div class="card-head">
+          <h3 class="card-title">Matrice d'Eisenhower 4D</h3>
+          <div class="card-sub">17 ouvertes · 5 vital few ★</div>
+        </div>
+        <div class="matrix-2x2" style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+
+          <div class="matrix-cell do">
+            <div class="matrix-cell-head"><div><strong>🔥 Faire</strong> · Urgent &amp; Important</div><span class="matrix-cell-count">3</span></div>
+            <div class="matrix-cell-body">
+              <div class="task task-overdue">
+                <button class="task-check"></button>
+                <span class="task-star-btn"><svg class="task-star starred" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M12 2l2.5 6.5L21 9l-5 4 2 7-6-4-6 4 2-7-5-4 6.5-.5z"/></svg></span>
+                <div class="task-body"><div class="task-text">Solder honoraires Affejee (3ᵉ relance)</div><div class="task-meta">Moi → Lamiae <span class="dot"></span> <span class="company-chip c-ETIC">ETIC</span> <span class="dot"></span> <span style="color:var(--rose);font-weight:700">AUJOURD'HUI 17h</span></div></div>
+              </div>
+              <div class="task">
+                <button class="task-check"></button>
+                <span class="task-star-btn"><svg class="task-star starred" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M12 2l2.5 6.5L21 9l-5 4 2 7-6-4-6 4 2-7-5-4 6.5-.5z"/></svg></span>
+                <div class="task-body"><div class="task-text">Valider FF&amp;E étage 2 — AMANI Pamandzi</div><div class="task-meta">Moi → Karim <span class="dot"></span> <span class="company-chip c-AMP">AMP</span> <span class="dot"></span> demain</div></div>
+              </div>
+              <div class="task">
+                <button class="task-check"></button>
+                <span class="task-star-btn"><svg class="task-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2l2.5 6.5L21 9l-5 4 2 7-6-4-6 4 2-7-5-4 6.5-.5z"/></svg></span>
+                <div class="task-body"><div class="task-text">Réponse CA Bretagne — décalage tirage 30/04</div><div class="task-meta">Moi → banque <span class="dot"></span> <span class="company-chip c-SCIS">SCIS</span> <span class="dot"></span> cette semaine</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="matrix-cell plan">
+            <div class="matrix-cell-head"><div><strong>📅 Planifier</strong> · Important non urgent</div><span class="matrix-cell-count">5</span></div>
+            <div class="matrix-cell-body">
+              <div class="task done">
+                <button class="task-check"></button>
+                <span class="task-star-btn"><svg class="task-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2l2.5 6.5L21 9l-5 4 2 7-6-4-6 4 2-7-5-4 6.5-.5z"/></svg></span>
+                <div class="task-body"><div class="task-text">COPIL ITH T2 — slot 22/05</div><div class="task-meta">Moi <span class="dot"></span> <span class="company-chip c-ITH">ITH</span> <span class="dot"></span> planifié</div></div>
+              </div>
+              <div class="task">
+                <button class="task-check"></button>
+                <span class="task-star-btn"><svg class="task-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2l2.5 6.5L21 9l-5 4 2 7-6-4-6 4 2-7-5-4 6.5-.5z"/></svg></span>
+                <div class="task-body"><div class="task-text">Préparer dossier FEDER — pièces BREEAM</div><div class="task-meta">Moi → Naïma <span class="dot"></span> S19</div></div>
+              </div>
+              <div class="task">
+                <button class="task-check"></button>
+                <span class="task-star-btn"><svg class="task-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2l2.5 6.5L21 9l-5 4 2 7-6-4-6 4 2-7-5-4 6.5-.5z"/></svg></span>
+                <div class="task-body"><div class="task-text">Préparer revue hebdo S18 — 3 Big Rocks</div><div class="task-meta">Moi <span class="dot"></span> dimanche soir</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="matrix-cell delegate">
+            <div class="matrix-cell-head"><div><strong>📤 Déléguer</strong> · Urgent non important</div><span class="matrix-cell-count">4</span></div>
+            <div class="matrix-cell-body">
+              <div class="task">
+                <button class="task-check"></button>
+                <span class="task-star-btn"><svg class="task-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2l2.5 6.5L21 9l-5 4 2 7-6-4-6 4 2-7-5-4 6.5-.5z"/></svg></span>
+                <div class="task-body"><div class="task-text">Relance KYC Société Générale</div><div class="task-meta">→ EC <span class="dot"></span> <span class="company-chip c-TR">TR</span></div></div>
+              </div>
+              <div class="task">
+                <button class="task-check"></button>
+                <span class="task-star-btn"><svg class="task-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2l2.5 6.5L21 9l-5 4 2 7-6-4-6 4 2-7-5-4 6.5-.5z"/></svg></span>
+                <div class="task-body"><div class="task-text">Consolidation notes de frais T1</div><div class="task-meta">→ Lamiae <span class="dot"></span> vendredi</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="matrix-cell drop">
+            <div class="matrix-cell-head"><div><strong>🗑️ Abandonner</strong> · ni urgent ni important</div><span class="matrix-cell-count">2</span></div>
+            <div class="matrix-cell-body">
+              <div class="task">
+                <button class="task-check"></button>
+                <span class="task-star-btn"><svg class="task-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2l2.5 6.5L21 9l-5 4 2 7-6-4-6 4 2-7-5-4 6.5-.5z"/></svg></span>
+                <div class="task-body"><div class="task-text">Répondre newsletter DAF club</div><div class="task-meta">Moi <span class="dot"></span> archivé</div></div>
+              </div>
+              <div class="task">
+                <button class="task-check"></button>
+                <span class="task-star-btn"><svg class="task-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2l2.5 6.5L21 9l-5 4 2 7-6-4-6 4 2-7-5-4 6.5-.5z"/></svg></span>
+                <div class="task-body"><div class="task-text">Sondage satisfaction conf. SIATI</div><div class="task-meta">Moi <span class="dot"></span> ignorer</div></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Bottom row: contacts + upsell + tick-bars -->
+      <div class="grid grid-12">
+        <div class="card span-4">
+          <div class="card-head">
+            <h3 class="card-title">⚡ Synchro équipe</h3>
+            <a class="btn ghost" href="#">Tout voir →</a>
+          </div>
+          <div class="clist">
+            <div class="crow">
+              <div class="av rose">KR</div>
+              <div><div class="name">Karim Rabia <span class="tag sr">Senior</span></div><div class="role">Direction travaux — AMP</div></div>
+              <div class="add">+</div>
+            </div>
+            <div class="crow">
+              <div class="av sage">NS</div>
+              <div><div class="name">Naïma Siddiki <span class="tag md">Middle</span></div><div class="role">Dossiers FEDER — TR</div></div>
+              <div class="add">+</div>
+            </div>
+            <div class="crow">
+              <div class="av">LM</div>
+              <div><div class="name">Lamiae Moulay <span class="tag md">Middle</span></div><div class="role">Compta — ETIC / TR</div></div>
+              <div class="add">+</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="upsell span-3">
+          <div class="t">Synchroniser Outlook</div>
+          <div class="p">Brancher votre calendrier et votre boîte pour alimenter projets, tâches et décisions.</div>
+          <div class="cta">Connecter <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></div>
+        </div>
+
+        <div class="card ticks-card span-5">
+          <div class="hd">
+            <div class="t">Avancement décisions</div>
+            <div class="date-pill"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Avril 2026 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
+          </div>
+          <div class="stats">
+            <div class="col2"><div class="lbl">Instruites</div><div class="n">64</div><div class="row-ticks" id="tk1"></div></div>
+            <div class="col2"><div class="lbl">Actées</div><div class="n">42</div><div class="row-ticks" id="tk2"></div></div>
+            <div class="col2"><div class="lbl">En attente</div><div class="n">10</div><div class="row-ticks" id="tk3"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agenda strip -->
+      <div class="card" style="margin-top:18px">
+        <div class="card-head">
+          <h3 class="card-title">📅 Prochains rendez-vous</h3>
+          <div class="card-sub">Semaine 17 · 4 événements</div>
+        </div>
+        <div class="agenda">
+          <div class="ev accent-rose"><div class="when">17:00<small>AUJ.</small></div><div><div class="t">Call Affejee — solder relance 3</div><div class="m">avec Lamiae · <span class="company-chip c-ETIC">ETIC</span></div></div><span class="badge rose">Urgent</span></div>
+          <div class="ev accent-amber"><div class="when">09:30<small>LUN 27</small></div><div><div class="t">RV matériaux Pamandzi · FF&amp;E étage 2</div><div class="m">sur site · Karim + Naïr · <span class="company-chip c-AMP">AMP</span></div></div><span class="badge amber">Chantier</span></div>
+          <div class="ev accent-sky"><div class="when">14:00<small>MAR 28</small></div><div><div class="t">COPIL hebdo ETIC — sprint 7</div><div class="m">visio · 4 participants · <span class="company-chip c-ETIC">ETIC</span></div></div><span class="badge sky">↻ Récurrent</span></div>
+          <div class="ev accent-sky"><div class="when">11:00<small>JEU 30</small></div><div><div class="t">CA Bretagne · point tirage</div><div class="m">visio · banque · <span class="company-chip c-SCIS">SCIS</span></div></div><span class="badge sky">Banque</span></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  function fillTicks(id, rose) {
+    const n = document.getElementById(id);
+    for (let i=0; i<44; i++) {
+      const t = document.createElement('div'); t.className='tk';
+      t.style.height = (6 + Math.abs(Math.sin(i*1.3 + id.length))*22) + 'px';
+      if (i >= rose) t.style.background = 'var(--rose)';
+      n.appendChild(t);
+    }
+  }
+  fillTicks('tk1', 24); fillTicks('tk2', 30); fillTicks('tk3', 36);
+</script>
+</body>
+</html>

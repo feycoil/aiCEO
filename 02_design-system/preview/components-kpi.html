@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>KPI cards</title>
+<link rel="stylesheet" href="../assets/product.app.css"/>
+<style>
+  body { margin:0; background:var(--bg); padding:24px; }
+  .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .kpi {
+    background: linear-gradient(170deg, var(--t50) 0%, #fff 75%);
+    border:1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px 18px;
+    box-shadow: var(--shadow-card);
+    display:flex; flex-direction:column; gap:6px;
+    position:relative; overflow:hidden;
+  }
+  .kpi .lbl { font:700 10px var(--font-sans); letter-spacing:.09em; text-transform:uppercase; color:var(--text-2); }
+  .kpi .n { font:800 30px/1 var(--font-sans); letter-spacing:-0.03em; color:var(--text); font-variant-numeric:tabular-nums; margin-top:6px; }
+  .kpi .meta { font:500 11.5px var(--font-sans); color:var(--text-2); }
+  .kpi .delta { font:700 11px var(--font-sans); color:var(--emerald); }
+  .kpi .delta.down { color:var(--rose); }
+</style>
+</head>
+<body>
+<div class="grid">
+  <div class="kpi" style="--t50:var(--rose-50)"><div class="lbl">En retard</div><div class="n">3</div><div class="meta"><span class="delta down">▲ 1</span> depuis lundi</div></div>
+  <div class="kpi" style="--t50:var(--amber-50)"><div class="lbl">À planifier</div><div class="n">8</div><div class="meta">cette semaine</div></div>
+  <div class="kpi" style="--t50:var(--emerald-50)"><div class="lbl">Soldé YTD</div><div class="n">42</div><div class="meta"><span class="delta">▲ 12%</span> vs S16</div></div>
+  <div class="kpi" style="--t50:var(--sky-50)"><div class="lbl">Délégué</div><div class="n">5</div><div class="meta">en cours chez EC</div></div>
+</div>
+</body>
+</html>

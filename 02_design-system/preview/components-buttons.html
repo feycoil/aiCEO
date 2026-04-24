@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>Buttons & Pills</title>
+<link rel="stylesheet" href="../assets/product.app.css"/>
+<style>
+  body { margin:0; background:#fff; padding:22px 24px; }
+  .grp { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; align-items:center; }
+  .title { font:700 11px var(--font-sans); letter-spacing:.08em; text-transform:uppercase; color:var(--text-2); margin-bottom:10px; }
+  .btn svg { width:14px; height:14px; }
+</style>
+</head>
+<body>
+<div class="title">Buttons</div>
+<div class="grp">
+  <button class="btn primary">Nouvelle décision</button>
+  <button class="btn">Exporter</button>
+  <button class="btn ghost">Annuler</button>
+  <button class="btn primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Ajouter</button>
+  <button class="btn">Semaine ▾</button>
+</div>
+<div class="title">Badges</div>
+<div class="grp">
+  <span class="badge rose">En retard</span>
+  <span class="badge amber">À planifier</span>
+  <span class="badge emerald">Soldé</span>
+  <span class="badge sky">Délégué</span>
+  <span class="badge violet">ADB</span>
+  <span class="badge indigo">FEDER</span>
+  <span class="badge slate">Archivé</span>
+</div>
+<div class="title">Filter chips</div>
+<div class="grp">
+  <span class="chip active">🔥 Retard (3)</span>
+  <span class="chip">★ Vital Few (5)</span>
+  <span class="chip">👤 Personnel</span>
+  <span class="chip">📅 Cette semaine</span>
+</div>
+</body>
+</html>

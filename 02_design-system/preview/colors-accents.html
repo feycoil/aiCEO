@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>Colors — Accents</title>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body { margin:0; background:#fff; padding:20px 24px; font-family: var(--font-sans); }
+  .row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .row:last-child { margin-bottom:0; }
+  .label { width:80px; font: 700 12px var(--font-sans); letter-spacing:-0.01em; }
+  .tri { flex:1; display:grid; grid-template-columns: 1fr 1fr 1fr; gap:6px; }
+  .sw { border-radius:12px; padding:8px 10px; min-height:52px; display:flex; flex-direction:column; justify-content:space-between; border:1px solid rgba(17,20,24,.06); }
+  .sw .hex { font: 700 10px/1 var(--font-mono); opacity:.85; font-variant-numeric: tabular-nums; }
+  .sw .tok { font: 600 10px var(--font-sans); letter-spacing:0.02em; text-transform:uppercase; opacity:.9; }
+</style>
+</head>
+<body>
+<div class="row">
+  <div class="label">Rose</div>
+  <div class="tri">
+    <div class="sw" style="background:#fdecdf;color:#8a3b1b"><div class="tok">rose-50</div><div class="hex">#FDECDF</div></div>
+    <div class="sw" style="background:#d96d3e;color:#fff"><div class="tok">rose</div><div class="hex">#D96D3E</div></div>
+    <div class="sw" style="background:#8a3b1b;color:#fff"><div class="tok">rose-800</div><div class="hex">#8A3B1B</div></div>
+  </div>
+</div>
+<div class="row">
+  <div class="label">Amber</div>
+  <div class="tri">
+    <div class="sw" style="background:#f5e8d6;color:#6d4816"><div class="tok">amber-50</div><div class="hex">#F5E8D6</div></div>
+    <div class="sw" style="background:#b88237;color:#fff"><div class="tok">amber</div><div class="hex">#B88237</div></div>
+    <div class="sw" style="background:#6d4816;color:#fff"><div class="tok">amber-800</div><div class="hex">#6D4816</div></div>
+  </div>
+</div>
+<div class="row">
+  <div class="label">Emerald</div>
+  <div class="tri">
+    <div class="sw" style="background:#e2ece8;color:#234236"><div class="tok">emerald-50</div><div class="hex">#E2ECE8</div></div>
+    <div class="sw" style="background:#3d7363;color:#fff"><div class="tok">emerald</div><div class="hex">#3D7363</div></div>
+    <div class="sw" style="background:#234236;color:#fff"><div class="tok">emerald-800</div><div class="hex">#234236</div></div>
+  </div>
+</div>
+<div class="row">
+  <div class="label">Sky</div>
+  <div class="tri">
+    <div class="sw" style="background:#e9eef4;color:#3b506a"><div class="tok">sky-50</div><div class="hex">#E9EEF4</div></div>
+    <div class="sw" style="background:#7790ae;color:#fff"><div class="tok">sky</div><div class="hex">#7790AE</div></div>
+    <div class="sw" style="background:#3b506a;color:#fff"><div class="tok">sky-800</div><div class="hex">#3B506A</div></div>
+  </div>
+</div>
+<div class="row">
+  <div class="label">Violet</div>
+  <div class="tri">
+    <div class="sw" style="background:#ece7f0;color:#463a54"><div class="tok">violet-50</div><div class="hex">#ECE7F0</div></div>
+    <div class="sw" style="background:#7a6a8a;color:#fff"><div class="tok">violet</div><div class="hex">#7A6A8A</div></div>
+    <div class="sw" style="background:#463a54;color:#fff"><div class="tok">violet-800</div><div class="hex">#463A54</div></div>
+  </div>
+</div>
+</body>
+</html>
