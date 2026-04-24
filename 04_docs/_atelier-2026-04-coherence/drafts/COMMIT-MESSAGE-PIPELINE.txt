@@ -1,0 +1,58 @@
+design(ds): first pipeline run + fix export.js + triage MVP gap
+
+Exécution de la validation §1.1 POST-ATELIER (pipeline DS → CSS, ADR S7
+2026-04-24). Trois choses dans ce commit :
+
+1. Pipeline DS → CSS fonctionnel
+   - tokens.json (source canonique) → scripts/export.js régénère le bloc
+     entre marqueurs GENERATED de colors_and_type.css puis pousse un miroir
+     vers 03_mvp/public/assets/.
+   - Premier run : 12 @font-face + 92 tokens / 12 groupes, 18 153 octets
+     côté 02_design-system, 5 592 octets côté 03_mvp.
+   - Section "Semantic type roles" (hand-written, post-marqueurs) préservée
+     intégralement.
+   → Validation S7 pipeline = OK.
+
+2. Fix export.js (lastIndexOf sur GEN_END)
+   - Bug constaté au premier run : le script utilisait indexOf(GEN_END)
+     et matchait une citation littérale du marqueur de fin dans un
+     commentaire descriptif placé entre les bornes (pré-run, le fichier
+     source contenait "...entre les marqueurs /* === GENERATED ... === */
+     et /* === END GENERATED === */ est réécrit par..."). Résultat : bloc
+     @font-face + :root dupliqué, commentaire coupé en deux, 18 153 octets
+     au lieu de 9 922.
+   - Patch : scripts/export.js ligne 84 utilise désormais
+     lastIndexOf(GEN_END) — robustesse contre toute mention littérale du
+     marqueur en prose entre les bornes. Commentaire documentant le bug
+     ajouté.
+
+3. Gap MVP ↔ DS découvert et tracé
+   - Lancement du MVP (localhost:4747) post-run montre que la page
+     "Arbitrage matinal" s'affiche en serif (fallback Cambria/Georgia) et
+     avec des couleurs qui divergent des tokens DS.
+   - Root cause : 03_mvp/public/index.html et evening.html ont 350 lignes
+     de CSS inliné avec leur propre palette (--cream, --ink, --lilac,
+     --sage, --coral) et aucun <link> vers /assets/colors_and_type.css.
+     Polices Fira Sans pas déployées dans 03_mvp/public/assets/fonts/
+     (les @font-face de colors_and_type.css font donc 404 quand le CSS
+     est chargé).
+   - Divergences matérielles constatées : --sage #A8C8A4 MVP vs --emerald
+     #3d7363 DS, --amber #E0B25C MVP vs --amber #b88237 DS, --lilac
+     #A895DB MVP vs --violet #7a6a8a DS.
+   - Traçage : Issue 1 du backlog atelier élargie de "copier fonts" à
+     trois volets (A: polices, B: link CSS, C: migration variables), scope
+     MVP, P1, Sprint 1 fusion v0.5. Contenu complet dans
+     04_docs/_atelier-2026-04-coherence/drafts/ISSUES-A-OUVRIR.md §Issue 1.
+     POST-ATELIER-ACTIONS.md §2.1 mis à jour en conséquence.
+
+Fichiers touchés
+----------------
+- 02_design-system/scripts/export.js — fix lastIndexOf
+- 02_design-system/colors_and_type.css — régénéré (9 922 octets)
+- 03_mvp/public/assets/colors_and_type.css — nouveau (5 592 octets)
+- 04_docs/_atelier-2026-04-coherence/POST-ATELIER-ACTIONS.md — §1.1 + §2.1
+- 04_docs/_atelier-2026-04-coherence/drafts/ISSUES-A-OUVRIR.md — Issue 1
+
+Closes : validation §1.1 POST-ATELIER (pipeline).
+Refs : ADR 2026-04-24 S7 · Pipeline tokens DS → CSS + maintien unifié.
+Ne closes PAS : gap MVP (Issue 1 à ouvrir et exécuter en Sprint 1 v0.5).
