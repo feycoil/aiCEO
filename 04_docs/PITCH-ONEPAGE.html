@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>aiCEO — Pitch onepage</title>
+<style>
+/* ───── Webfonts (chemins relatifs depuis 04_docs/ vers le DS) ───── */
+@font-face { font-family: "Fira Sans"; font-weight: 300; src: url("../02_design-system/fonts/FiraSans-Light.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Fira Sans"; font-weight: 400; src: url("../02_design-system/fonts/FiraSans-Regular.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Fira Sans"; font-weight: 500; src: url("../02_design-system/fonts/FiraSans-Medium.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Fira Sans"; font-weight: 600; src: url("../02_design-system/fonts/FiraSans-SemiBold.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Fira Sans"; font-weight: 700; src: url("../02_design-system/fonts/FiraSans-Bold.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Fira Sans"; font-weight: 800; src: url("../02_design-system/fonts/FiraSans-ExtraBold.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Aubrielle"; font-weight: 400; src: url("../02_design-system/fonts/Aubrielle_Demo.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Sol"; font-weight: 100; src: url("../02_design-system/fonts/SolThin.otf") format("opentype"); font-display: swap; }
+
+:root {
+  --surface: #f5f3ef;
+  --surface-2: #ece7dd;
+  --border: #e4e1d9;
+  --text: #111418;
+  --text-2: #3a3d44;
+  --text-3: #6b6f78;
+  --emerald: #3d7363;
+  --rose: #d96d3e;
+  --amber: #b88237;
+  --sky: #7790ae;
+  --violet: #7a6a8a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+@page { size: A4 portrait; margin: 0; }
+
+html, body {
+  font-family: "Fira Sans", system-ui, sans-serif;
+  font-weight: 400;
+  color: var(--text);
+  background: #a9adbe;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.page {
+  width: 210mm;
+  height: 297mm;
+  padding: 10mm 12mm;
+  background: var(--surface);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5mm;
+  overflow: hidden;
+}
+
+/* ───── Header ───── */
+.hero {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6mm;
+  align-items: end;
+  padding-bottom: 3mm;
+  border-bottom: 0.6mm solid var(--emerald);
+}
+.hero .mark {
+  font-family: "Aubrielle", cursive;
+  font-size: 52pt;
+  line-height: 0.85;
+  color: var(--emerald);
+  letter-spacing: -0.02em;
+}
+.hero .meta { display: flex; flex-direction: column; gap: 1.5mm; padding-bottom: 2mm; }
+.hero .tagline { font-size: 13pt; font-weight: 600; color: var(--text); line-height: 1.2; }
+.hero .sub { font-size: 9pt; font-weight: 400; color: var(--text-3); }
+.hero .filter {
+  font-size: 7.5pt; font-weight: 500; color: var(--text-2);
+  background: var(--surface-2);
+  border-left: 0.8mm solid var(--amber);
+  padding: 1.5mm 2.5mm;
+  line-height: 1.4;
+  margin-top: 1.5mm;
+}
+
+/* ───── Problème / Solution two-col ───── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6mm;
+}
+.block h2 {
+  font-size: 10pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 2mm;
+  display: flex;
+  align-items: center;
+  gap: 2.5mm;
+}
+.block h2::before {
+  content: "";
+  width: 3mm; height: 3mm;
+  border-radius: 50%;
+  background: var(--accent, var(--text));
+}
+.block.problem h2 { color: var(--rose); --accent: var(--rose); }
+.block.solution h2 { color: var(--emerald); --accent: var(--emerald); }
+
+.block p {
+  font-size: 9pt;
+  line-height: 1.4;
+  color: var(--text-2);
+  margin-bottom: 1.5mm;
+}
+.block p strong { color: var(--text); font-weight: 600; }
+
+/* ───── Preuve — gros chiffres SolThin ───── */
+.proof {
+  background: var(--surface-2);
+  padding: 4mm 5mm;
+  border-radius: 2mm;
+}
+.proof .label {
+  font-size: 9pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--violet);
+  margin-bottom: 2mm;
+  display: flex; align-items: center; gap: 2mm;
+}
+.proof .label::before {
+  content: "";
+  width: 3mm; height: 3mm;
+  background: var(--violet);
+  border-radius: 50%;
+}
+.proof .grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4mm;
+  margin-top: 2mm;
+}
+.proof .stat {
+  display: flex;
+  flex-direction: column;
+  gap: 1mm;
+}
+.proof .num {
+  font-family: "Sol", "Fira Sans", sans-serif;
+  font-weight: 100;
+  font-size: 26pt;
+  line-height: 1;
+  color: var(--emerald);
+  letter-spacing: -0.02em;
+}
+.proof .num small { font-size: 12pt; color: var(--text-2); }
+.proof .key { font-size: 8pt; font-weight: 600; color: var(--text); margin-top: 1mm; }
+.proof .desc { font-size: 7.5pt; color: var(--text-3); line-height: 1.3; }
+
+.proof .source {
+  font-size: 7.5pt;
+  color: var(--text-3);
+  margin-top: 3mm;
+  font-style: italic;
+}
+
+/* ───── Trajectoire ribbon 5 jalons ───── */
+.trajectory .label {
+  font-size: 9pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--sky);
+  margin-bottom: 2mm;
+  display: flex; align-items: center; gap: 2mm;
+}
+.trajectory .label::before {
+  content: "";
+  width: 3mm; height: 3mm;
+  background: var(--sky);
+  border-radius: 50%;
+}
+.ribbon {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2mm;
+}
+.milestone {
+  background: var(--surface);
+  border: 0.3mm solid var(--border);
+  border-radius: 2mm;
+  padding: 2.5mm 2mm;
+  display: flex; flex-direction: column; gap: 1mm;
+  min-width: 0;
+}
+.milestone.done { border-color: var(--emerald); }
+.milestone.doing { border-color: var(--rose); }
+.milestone .dot {
+  width: 4mm; height: 4mm; border-radius: 50%;
+  background: var(--text-3);
+  align-self: flex-start;
+}
+.milestone.done .dot { background: var(--emerald); }
+.milestone.doing .dot { background: var(--rose); }
+.milestone .name {
+  font-size: 8.5pt;
+  font-weight: 700;
+  color: var(--text);
+}
+.milestone .when {
+  font-size: 7pt;
+  font-weight: 500;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.milestone .what {
+  font-size: 7.5pt;
+  color: var(--text-2);
+  line-height: 1.3;
+}
+
+.constraint {
+  margin-top: 2.5mm;
+  font-size: 8pt;
+  color: var(--text-2);
+  font-style: italic;
+}
+.constraint strong { font-style: normal; color: var(--rose); font-weight: 600; }
+
+/* ───── CTA ───── */
+.cta .label {
+  font-size: 9pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--amber);
+  margin-bottom: 2mm;
+  display: flex; align-items: center; gap: 2mm;
+}
+.cta .label::before {
+  content: "";
+  width: 3mm; height: 3mm;
+  background: var(--amber);
+  border-radius: 50%;
+}
+.cta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4mm;
+}
+.cta-card {
+  border: 0.3mm solid var(--border);
+  border-radius: 2mm;
+  padding: 2.5mm 3mm;
+  display: flex; flex-direction: column; gap: 1mm;
+}
+.cta-card .step {
+  font-family: "Sol", "Fira Sans", sans-serif;
+  font-weight: 100;
+  font-size: 18pt;
+  line-height: 1;
+  color: var(--amber);
+}
+.cta-card .title {
+  font-size: 9.5pt;
+  font-weight: 700;
+  color: var(--text);
+}
+.cta-card .body {
+  font-size: 7.5pt;
+  color: var(--text-2);
+  line-height: 1.35;
+}
+
+/* ───── Footer ───── */
+.footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 3mm;
+  border-top: 0.3mm solid var(--border);
+  font-size: 7.5pt;
+  color: var(--text-3);
+}
+.footer .contact { color: var(--text); font-weight: 600; }
+.footer a { color: var(--emerald); text-decoration: none; }
+
+@media print {
+  html, body { background: white; }
+  .page { box-shadow: none; margin: 0; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ───── HERO ───── -->
+  <header class="hero">
+    <div class="mark">aiCEO</div>
+    <div class="meta">
+      <div class="tagline">Le copilote du CEO multi-sociétés.</div>
+      <div class="sub">Pitch onepage · v1.0 · 24 avril 2026 · Pour CEO pair / business angel</div>
+      <div class="filter">
+        Audience : CEO pair ETIC ou business angel early. Éléments redactés : budget précis, ventilation ETIC interne, échantillons mails. Référentiel chiffré : <em>BUSINESS-CASE.md</em>.
+      </div>
+    </div>
+  </header>
+
+  <!-- ───── PROBLÈME / SOLUTION ───── -->
+  <section class="two-col">
+    <div class="block problem">
+      <h2>Le problème</h2>
+      <p>Un CEO qui pilote <strong>4 à 7 entités</strong> vit un triple déficit. <strong>Attention</strong> — chaque société exige 100 % de présence et passer de l'une à l'autre coûte 15 à 25 minutes de recalibrage. <strong>Délégation</strong> — le perfectionniste pense faire plus vite, vrai à 20 %, faux pour les 80 % qu'il absorbe en silence. <strong>Respiration</strong> — la journée se termine sans clôture, le sommeil s'érode.</p>
+      <p>Microsoft Copilot, Motion, Sunsama, Superhuman traitent <strong>un silo chacun</strong>. Aucun n'arbitre simultanément mails + agenda + décisions, sur plusieurs sociétés, dans la langue d'un patron, sur le poste du CEO.</p>
+    </div>
+    <div class="block solution">
+      <h2>La solution</h2>
+      <p>aiCEO est un <strong>copilote desktop installé sur le poste du CEO</strong>. Chaque matin, arbitrage <strong>3 / 2 / N</strong> : 3 priorités, 2 décisions à déléguer avec brouillon prêt à envoyer, N à différer. Le soir, boucle de 3 minutes pour clôturer et capitaliser. Tout reste sur le poste — aucun mail ne quitte le tenant Outlook.</p>
+      <p>Triple différenciateur : <strong>arbitrage multi-sociétés</strong> en langage de CEO, <strong>souveraineté locale</strong> (proxy corp, mode démo sans API), <strong>Outlook desktop natif</strong> (PowerShell COM). Sur ces 5 critères, <strong>aucun des 5 concurrents desktop-first ne coche plus de 0 à 1 case</strong>.</p>
+    </div>
+  </section>
+
+  <!-- ───── PREUVE ───── -->
+  <section class="proof">
+    <div class="label">Preuve · MVP v0.4 livré le 24 avril 2026</div>
+    <div class="grid">
+      <div class="stat">
+        <div class="num">28<small>/28</small></div>
+        <div class="key">Tâches arbitrées</div>
+        <div class="desc">Run réel sur les vrais mails du CEO pilote, en 41 secondes d'inférence Claude Sonnet 4.5.</div>
+      </div>
+      <div class="stat">
+        <div class="num">926</div>
+        <div class="key">Mails Outlook ingérés</div>
+        <div class="desc">PowerShell COM sur 3 boîtes (principale + 2 déléguées), 30 jours, normalisés et reproductibles.</div>
+      </div>
+      <div class="stat">
+        <div class="num">≈ 1<small> ct</small></div>
+        <div class="key">Coût par arbitrage</div>
+        <div class="desc">5,2 k tokens in / 2,5 k out. Budget quotidien observé ≈ 1,5 ct, soit ≈ 5 € / mois d'API.</div>
+      </div>
+      <div class="stat">
+        <div class="num">v0.4</div>
+        <div class="key">Tag publié sur GitHub</div>
+        <div class="desc">Délégation un-clic, boucle du soir, contexte email injecté, support proxy corp, chip d'alerte.</div>
+      </div>
+    </div>
+    <div class="source">Sources : <em>03_mvp/README.md</em> · <em>00_BOUSSOLE/CHANGELOG.md</em> · positionnement <em>02-benchmark.md</em> Axe 5.</div>
+  </section>
+
+  <!-- ───── TRAJECTOIRE ───── -->
+  <section class="trajectory">
+    <div class="label">Trajectoire · 18 mois · 5 jalons</div>
+    <div class="ribbon">
+      <div class="milestone done">
+        <div class="dot"></div>
+        <div class="name">MVP v0.4</div>
+        <div class="when">24 avr. 2026 ✓</div>
+        <div class="what">Local Windows mono-poste, Node + JSON. L'arbitrage marche sur les vrais mails.</div>
+      </div>
+      <div class="milestone doing">
+        <div class="dot"></div>
+        <div class="name">v0.5 fusion</div>
+        <div class="when">T2 2026 · en cours</div>
+        <div class="what">SQLite + Service Windows + 13 pages unifiées. Usage quotidien, sans interruption.</div>
+      </div>
+      <div class="milestone">
+        <div class="dot"></div>
+        <div class="name">V1 cloud</div>
+        <div class="when">T3-T4 2026</div>
+        <div class="what">Bascule Supabase + Graph OAuth + Inngest. Premier CEO pair ETIC en pilote.</div>
+      </div>
+      <div class="milestone">
+        <div class="dot"></div>
+        <div class="name">V2 équipe</div>
+        <div class="when">T1-T2 2027</div>
+        <div class="what">Multi-tenant + RLS + Teams + délégation end-to-end. DG et AE rejoignent.</div>
+      </div>
+      <div class="milestone">
+        <div class="dot"></div>
+        <div class="name">V3 coach</div>
+        <div class="when">T3-T4 2027</div>
+        <div class="what">PWA mobile + offline + Claude Opus coach + 2-3 CEO pairs en production.</div>
+      </div>
+    </div>
+    <div class="constraint">Contrainte produit assumée : à chaque bascule, <strong>le CEO ne perd jamais l'usage</strong>. Mode parallèle, pas big-bang.</div>
+  </section>
+
+  <!-- ───── CTA ───── -->
+  <section class="cta">
+    <div class="label">S'engager · trois portes</div>
+    <div class="cta-grid">
+      <div class="cta-card">
+        <div class="step">1</div>
+        <div class="title">Tester en pair · 1 heure</div>
+        <div class="body">Installation Service Windows + import Outlook 30 j + premier arbitrage. Procédure : <em>ONBOARDING-CEO-PAIR.md</em>. Coût opérationnel ≈ 5 € / mois d'API Anthropic personnelle.</div>
+      </div>
+      <div class="cta-card">
+        <div class="step">2</div>
+        <div class="title">Sponsoriser le pilote V1 (T3-T4 2026)</div>
+        <div class="body">2 à 3 CEO pairs ETIC valident la bascule cloud avant ouverture plus large. Tickets : ordres de grandeur dans <em>BUSINESS-CASE.md</em>.</div>
+      </div>
+      <div class="cta-card">
+        <div class="step">3</div>
+        <div class="title">Investir early V1 → V3</div>
+        <div class="body">Trajectoire 18 mois cadrée, équipe et coûts cumulés détaillés dans <em>BUSINESS-CASE.md</em>. Ouverture commerciale externe positionnée post-V2.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───── FOOTER ───── -->
+  <footer class="footer">
+    <div class="contact">Feycoil Mouhoussoune · CEO ETIC Services · feycoil@etic-services.net</div>
+    <div>Réf. : BUSINESS-CASE.md · 02-benchmark.md (Axe 5) · 08-roadmap.md</div>
+  </footer>
+
+</div>
+</body>
+</html>
+                                                                                                                                                                                     
