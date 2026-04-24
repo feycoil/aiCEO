@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>aiCEO — Roadmap interactive</title>
+<style>
+:root {
+  --plum:#241B3A; --plumD:#16102A; --plumL:#3A2E57;
+  --coral:#E8604C; --coralD:#C44A37;
+  --lilac:#6A4F91; --lilacL:#B89BD9;
+  --gold:#E8B54C; --cream:#F8F1E7;
+  --ink:#1A1628; --mute:#6E6780; --line:#E3D9CC;
+  --done:#4A9B6E; --doing:#E8B54C; --todo:#B6ADC4;
+}
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; background:var(--cream); color:var(--ink); font-family:-apple-system,"Segoe UI",Calibri,sans-serif; }
+.wrap { max-width:1480px; margin:0 auto; padding:32px 40px 80px; }
+
+header { display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid var(--plum); padding-bottom:18px; margin-bottom:28px; }
+.title { font-family:Georgia,serif; }
+.title h1 { margin:0 0 6px; font-size:34px; letter-spacing:-0.5px; color:var(--plum); font-weight:700; }
+.title .subtitle { font-size:13px; color:var(--mute); letter-spacing:0.5px; text-transform:uppercase; }
+.version { font-size:11px; color:var(--mute); font-family:Consolas,monospace; background:#fff; padding:6px 10px; border:1px solid var(--line); border-radius:3px; }
+
+.controls { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; align-items:center; }
+.controls .label { font-size:11px; color:var(--mute); letter-spacing:1.5px; text-transform:uppercase; margin-right:6px; }
+.filter { border:1px solid var(--line); background:#fff; color:var(--ink); padding:6px 14px; border-radius:18px; font-size:12px; cursor:pointer; font-family:inherit; transition:all 0.15s; letter-spacing:0.3px; }
+.filter:hover { border-color:var(--plum); }
+.filter.active { background:var(--plum); color:var(--cream); border-color:var(--plum); }
+.filter.done.active { background:var(--done); border-color:var(--done); }
+.filter.doing.active { background:var(--doing); color:var(--plum); border-color:var(--doing); }
+.filter.todo.active { background:var(--lilacL); border-color:var(--lilacL); color:var(--plum); }
+
+.map-card { background:#fff; border:1px solid var(--line); border-radius:10px; padding:28px 20px 24px; box-shadow:0 1px 3px rgba(36,27,58,0.04); position:relative; overflow-x:auto; }
+.map-card::before { content:""; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,var(--lilacL) 0%,var(--lilac) 33%,var(--gold) 50%,var(--coral) 67%,var(--coralD) 100%); border-radius:10px 10px 0 0; }
+
+.lanes-legend { display:flex; gap:32px; margin-bottom:22px; padding:0 10px; font-size:12px; flex-wrap:wrap; }
+.lane-tag { display:flex; align-items:center; gap:8px; color:var(--mute); }
+.lane-tag .dot { width:10px; height:10px; border-radius:2px; }
+
+.map-viewport { position:relative; min-width:1280px; height:540px; }
+svg.timeline { display:block; position:absolute; inset:0; width:100%; height:100%; }
+.nodes { position:absolute; inset:0; }
+
+.node { position:absolute; transform:translate(-50%,-50%); cursor:pointer; text-align:center; width:140px; transition:transform 0.15s; }
+.node:hover { transform:translate(-50%,-50%) scale(1.05); z-index:10; }
+.node.selected { z-index:20; }
+.node .dot { width:18px; height:18px; border-radius:50%; margin:0 auto 6px; border:3px solid #fff; box-shadow:0 0 0 2px currentColor; }
+.node .m-title { font-family:Georgia,serif; font-size:12px; font-weight:700; line-height:1.2; color:var(--plum); margin-bottom:2px; }
+.node .m-date { font-size:10px; color:var(--mute); font-family:Consolas,monospace; letter-spacing:0.3px; }
+.node.selected .dot { transform:scale(1.25); }
+.node.selected .m-title { text-decoration:underline; text-underline-offset:3px; }
+.node.done { color:var(--done); }
+.node.doing { color:var(--doing); }
+.node.todo { color:var(--todo); }
+.node.hidden { opacity:0.18; pointer-events:none; }
+
+.hub { position:absolute; transform:translate(-50%,-50%); text-align:center; width:170px; z-index:5; cursor:pointer; }
+.hub .star { width:64px; height:64px; margin:0 auto 8px; display:flex; align-items:center; justify-content:center; background:var(--gold); color:var(--plum); border-radius:50%; font-family:Georgia,serif; font-size:22px; font-weight:700; box-shadow:0 4px 14px rgba(232,181,76,0.35),0 0 0 6px rgba(232,181,76,0.14); transition:transform 0.15s; }
+.hub:hover .star { transform:scale(1.08); }
+.hub .h-title { font-family:Georgia,serif; font-size:15px; font-weight:700; color:var(--plum); margin-bottom:2px; }
+.hub .h-sub { font-size:11px; color:var(--mute); letter-spacing:0.3px; }
+
+.lane-label { position:absolute; font-family:Georgia,serif; font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; background:#fff; padding:5px 12px; border-radius:14px; white-space:nowrap; }
+.lane-label.web { color:var(--lilac); border:1px solid var(--lilacL); top:12px; left:16px; }
+.lane-label.mvp { color:var(--coralD); border:1px solid var(--coral); bottom:12px; left:16px; }
+.lane-label.v2 { color:var(--plum); border:1px solid var(--plum); top:50%; right:16px; transform:translateY(-50%); }
+
+.detail { margin-top:28px; background:#fff; border:1px solid var(--line); border-radius:10px; padding:24px 28px; display:grid; grid-template-columns:220px 1fr; gap:24px; min-height:200px; }
+.detail .meta { border-right:1px solid var(--line); padding-right:20px; }
+.detail .meta .pill { display:inline-block; padding:4px 10px; border-radius:12px; font-size:10px; letter-spacing:1px; text-transform:uppercase; font-weight:700; margin-bottom:10px; }
+.detail .meta .pill.done { background:rgba(74,155,110,0.12); color:var(--done); }
+.detail .meta .pill.doing { background:rgba(232,181,76,0.16); color:#A07A10; }
+.detail .meta .pill.todo { background:rgba(182,173,196,0.25); color:var(--lilac); }
+.detail .meta .lane-badge { display:inline-block; padding:3px 8px; border-radius:3px; font-size:10px; font-weight:700; letter-spacing:0.5px; margin-bottom:10px; }
+.detail .meta .lane-badge.web { background:var(--lilacL); color:var(--plum); }
+.detail .meta .lane-badge.mvp { background:var(--coral); color:#fff; }
+.detail .meta .lane-badge.v1 { background:var(--gold); color:var(--plum); }
+.detail .meta .lane-badge.v2 { background:var(--plum); color:var(--cream); }
+.detail .meta .d-date { font-family:Consolas,monospace; font-size:12px; color:var(--mute); margin-top:6px; }
+.detail .body h3 { margin:0 0 8px; font-family:Georgia,serif; font-size:22px; color:var(--plum); font-weight:700; }
+.detail .body p { margin:0 0 12px; font-size:14px; line-height:1.55; color:var(--ink); }
+.detail .body .artefacts { font-size:12px; color:var(--mute); border-top:1px dashed var(--line); padding-top:10px; margin-top:12px; }
+.detail .body .artefacts strong { color:var(--plum); font-weight:700; letter-spacing:0.5px; text-transform:uppercase; font-size:10px; }
+.detail .body code { background:var(--cream); padding:1px 6px; border-radius:3px; font-family:Consolas,monospace; font-size:12px; color:var(--coralD); }
+.detail .empty { color:var(--mute); font-style:italic; grid-column:1/-1; text-align:center; padding:40px 0; font-size:14px; }
+
+.counters { margin-top:24px; display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+.counter { background:#fff; border:1px solid var(--line); border-radius:8px; padding:16px 18px; border-left:4px solid var(--plum); }
+.counter.done { border-left-color:var(--done); }
+.counter.doing { border-left-color:var(--doing); }
+.counter.todo { border-left-color:var(--lilacL); }
+.counter .n { font-family:Georgia,serif; font-size:34px; font-weight:700; color:var(--plum); line-height:1; }
+.counter .l { font-size:11px; color:var(--mute); letter-spacing:1.5px; text-transform:uppercase; margin-top:4px; }
+
+footer { margin-top:40px; text-align:center; font-size:11px; color:var(--mute); letter-spacing:0.5px; }
+footer code { font-family:Consolas,monospace; color:var(--plum); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="title">
+      <h1>Roadmap produit aiCEO</h1>
+      <div class="subtitle">Carte de convergence · App Web + MVP → V1 → V2+</div>
+    </div>
+    <div class="version">v0.1 · 24/04/2026</div>
+  </header>
+
+  <div class="controls">
+    <span class="label">Statut</span>
+    <button class="filter active" data-filter="all">Tout</button>
+    <button class="filter done" data-filter="done">Fait</button>
+    <button class="filter doing" data-filter="doing">En cours</button>
+    <button class="filter todo" data-filter="todo">À faire</button>
+    <span class="label" style="margin-left:24px;">Branche</span>
+    <button class="filter active" data-lane="all">Toutes</button>
+    <button class="filter" data-lane="web">App Web</button>
+    <button class="filter" data-lane="mvp">MVP Node</button>
+    <button class="filter" data-lane="v2">V2+</button>
+  </div>
+
+  <div class="map-card">
+    <div class="lanes-legend">
+      <span class="lane-tag"><span class="dot" style="background:var(--lilacL);"></span>App Web Twisty — HTML/CSS/JS statique</span>
+      <span class="lane-tag"><span class="dot" style="background:var(--coral);"></span>MVP Node — Express + Claude API</span>
+      <span class="lane-tag"><span class="dot" style="background:var(--gold);"></span>V1 — produit unifié</span>
+      <span class="lane-tag"><span class="dot" style="background:var(--plum);"></span>V2+ — extensions</span>
+    </div>
+
+    <div class="map-viewport">
+      <svg class="timeline" viewBox="0 0 1280 540" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="grad-web" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stop-color="#B89BD9"/><stop offset="1" stop-color="#6A4F91"/>
+          </linearGradient>
+          <linearGradient id="grad-mvp" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stop-color="#E8604C"/><stop offset="1" stop-color="#C44A37"/>
+          </linearGradient>
+          <linearGradient id="grad-v2" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stop-color="#E8B54C"/><stop offset="1" stop-color="#241B3A"/>
+          </linearGradient>
+        </defs>
+        <line x1="60" y1="130" x2="820" y2="130" stroke="url(#grad-web)" stroke-width="6" stroke-linecap="round"/>
+        <line x1="60" y1="410" x2="820" y2="410" stroke="url(#grad-mvp)" stroke-width="6" stroke-linecap="round"/>
+        <path d="M 820 130 Q 870 130 890 200 T 905 268" fill="none" stroke="url(#grad-web)" stroke-width="6" stroke-linecap="round"/>
+        <path d="M 820 410 Q 870 410 890 340 T 905 272" fill="none" stroke="url(#grad-mvp)" stroke-width="6" stroke-linecap="round"/>
+        <line x1="955" y1="270" x2="1230" y2="270" stroke="url(#grad-v2)" stroke-width="6" stroke-linecap="round" stroke-dasharray="10 6"/>
+      </svg>
+
+      <div class="nodes" id="nodes-container">
+        <div class="lane-label web">App Web Twisty</div>
+        <div class="lane-label mvp">MVP Node · Copilote local</div>
+        <div class="lane-label v2">V2+</div>
+
+        <div class="hub" id="v1-hub" style="left:70.7%; top:50%;">
+          <div class="star">V1</div>
+          <div class="h-title">Produit unifié</div>
+          <div class="h-sub">App Web + Copilote</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="detail" id="detail-panel">
+    <div class="empty">Cliquez un jalon pour voir le détail</div>
+  </div>
+
+  <div class="counters" id="counters"></div>
+
+  <footer>
+    <code>aiCEO_Agent/docs/11-roadmap-map.html</code> · éditez la constante <code>MILESTONES</code> en tête de script pour mettre à jour la carte
+  </footer>
+
+</div>
+
+<script>
+const MILESTONES = [
+  { id:"web-01", lane:"web", x:6,  status:"done",  title:"Cockpit v1", date:"Mars 2026",
+    desc:"Première version du cockpit Twisty : index.html + pages projet coquilles. Esquisse de l'expérience utilisateur.",
+    artefacts:"aiCEO_Agent/index.html, projets.html, taches.html" },
+  { id:"web-02", lane:"web", x:14, status:"done",  title:"5 journey maps", date:"Avril 2026",
+    desc:"Scénarios UX clés documentés : arbitrage, délégation, debrief, revue hebdo, apprentissage.",
+    artefacts:"aiCEO_Agent/journeys/*.md" },
+  { id:"web-03", lane:"web", x:22, status:"done",  title:"Design System v1", date:"Avril 2026",
+    desc:"Tokens Twisty (couleurs, typo, espacements). Actuellement dans dossier séparé aiCEO_Design_System.",
+    artefacts:"aiCEO_Design_System/tokens/*.json" },
+  { id:"web-04", lane:"web", x:31, status:"done",  title:"Pages complètes", date:"Avril 2026",
+    desc:"Agenda, contacts, décisions, groupes, assistant. 7 pages projet structurelles.",
+    artefacts:"agenda.html, contacts.html, decisions.html, …" },
+  { id:"web-05", lane:"web", x:40, status:"done",  title:"App Web v4 abouti", date:"Avril 2026",
+    desc:"Refonte SPEC_v31 livrée. Cockpit cohérent et consultable. Sert de vitrine UX.",
+    artefacts:"SPEC_v31.md, REFONTE_v3.md" },
+  { id:"web-06", lane:"web", x:50, status:"todo",  title:"Alignement design tokens", date:"Mai 2026",
+    desc:"Fusionner aiCEO_Design_System dans aiCEO_Agent et réutiliser les mêmes tokens dans le MVP (palette hardcodée côté MVP aujourd'hui).",
+    artefacts:"design-system/tokens.css partagé" },
+  { id:"web-07", lane:"web", x:60, status:"todo",  title:"Branchement données MVP", date:"Mai 2026",
+    desc:"Les pages app web consomment les endpoints du serveur MVP (GET /api/tasks, /api/decisions, /api/emails/summary).",
+    artefacts:"fetch vers localhost:4747" },
+
+  { id:"mvp-01", lane:"mvp", x:6,  status:"done",  title:"Scaffold Express + SDK", date:"Début avril 2026",
+    desc:"Serveur Node/Express sur port 4747. SDK Anthropic intégré, mode démo en fallback (aucune clé requise).",
+    artefacts:"mvp/server.js, src/llm.js" },
+  { id:"mvp-02", lane:"mvp", x:14, status:"done",  title:"Arbitrage 3/2/N", date:"11 avril 2026",
+    desc:"Claude classe toutes les tâches : 3 FAIRE max, 2 DÉLÉGUER max, REPORTER absorbe tout le reste (0 tâche perdue).",
+    artefacts:"src/prompt.js, src/arbitrage.js" },
+  { id:"mvp-03", lane:"mvp", x:22, status:"done",  title:"Drag & drop + validation", date:"15 avril 2026",
+    desc:"Reshuffle manuel depuis les 3 colonnes avant figeage dans data/decisions.json.",
+    artefacts:"public/index.html" },
+  { id:"mvp-04", lane:"mvp", x:31, status:"done",  title:"Flux délégation", date:"18 avril 2026",
+    desc:"Brouillon mail généré par Claude, destinataire pré-rempli depuis le contact projet, mailto: vers Outlook.",
+    artefacts:"src/drafts.js, POST /api/delegate" },
+  { id:"mvp-05", lane:"mvp", x:40, status:"done",  title:"Boucle du soir", date:"20 avril 2026",
+    desc:"Debrief 2 min : Fait / Partiel / Pas fait + énergie + humeur. Résumé calculé localement (pas de LLM).",
+    artefacts:"src/evening.js, public/evening.html" },
+  { id:"mvp-06", lane:"mvp", x:50, status:"done",  title:"Import Outlook 30j", date:"22 avril 2026",
+    desc:"PowerShell COM extrait inbox + envoyés sur 30 jours. 926 mails utiles sur 3 comptes après normalisation + filtrage bruit.",
+    artefacts:"scripts/fetch-outlook.ps1, normalize-emails.js" },
+  { id:"mvp-07", lane:"mvp", x:58, status:"done",  title:"Contexte email dans prompt", date:"23 avril 2026",
+    desc:"Digest global + signaux par tâche (relances contact ≥ 2, non lus ≥ 3). Chip coral sur cartes sous pression.",
+    artefacts:"src/emails-context.js" },
+  { id:"mvp-08", lane:"mvp", x:60, status:"done",  title:"Proxy corp + SSL MITM", date:"24 avril 2026",
+    desc:"Factory Anthropic route via HTTPS_PROXY + NODE_EXTRA_CA_CERTS. Passe Zscaler / proxy d'entreprise.",
+    artefacts:"src/anthropic-client.js" },
+  { id:"mvp-09", lane:"mvp", x:62, status:"done",  title:"Run réel 24/04 validé", date:"24 avril 2026",
+    desc:"28/28 tâches classées en 41 s · 5,2 k tokens in / 2,5 k out · ≈ 1 ct d'arbitrage, budget quotidien ≈ 1,5 ct.",
+    artefacts:"mvp/docs/aiCEO-MVP-description-v2.pptx" },
+
+  { id:"v2-01", lane:"v2", x:79, status:"todo", title:"Démarrage auto Windows", date:"Mai 2026",
+    desc:"Scheduled task qui lance node server.js au login. Plus besoin de PowerShell manuel.",
+    artefacts:"skill schedule / start.bat" },
+  { id:"v2-02", lane:"v2", x:86, status:"todo", title:"Auto-sync Outlook 2h", date:"Mai 2026",
+    desc:"Fin des PS1 à la main. Rafraîchissement transparent du contexte email toutes les 2 heures.",
+    artefacts:"node cron ou scheduled task" },
+  { id:"v2-03", lane:"v2", x:91, status:"todo", title:"Envoi natif Graph", date:"Juin 2026",
+    desc:"Enregistrement Azure AD + Microsoft Graph. Remplace mailto: par envoi authentifié.",
+    artefacts:"src/graph-client.js (à créer)" },
+  { id:"v2-04", lane:"v2", x:96, status:"todo", title:"Mémoire patterns", date:"Été 2026",
+    desc:"Claude apprend des patterns récurrents : reports chroniques, perfectionnisme, surcharge. Personnalisation.",
+    artefacts:"src/memory.js (à créer)" }
+];
+
+const V1_HUB = {
+  id:"v1-hub", lane:"v1", status:"todo",
+  title:"V1 — Produit unifié", date:"Juin 2026 (cible)",
+  desc:"Fusion App Web + MVP : une seule UI Twisty branchée sur le serveur Node. Design system partagé. Livrable candidat pour déploiement interne ETIC.",
+  artefacts:"unification UI Twisty · intégration server Node dans app · tokens CSS partagés"
+};
+
+function renderNodes() {
+  const container = document.getElementById("nodes-container");
+  // Viewport is 1280×540. Lanes drawn at y=130 (top) and y=410 (bottom). Convert to %.
+  const Y_WEB = (130/540)*100;  // ≈ 24%
+  const Y_MVP = (410/540)*100;  // ≈ 76%
+  const Y_V2  = 50;
+  // Horizontal % corresponds to x=60..820 for web/mvp (60 → 820/1280), v2 x=955..1230
+  MILESTONES.forEach(m => {
+    const el = document.createElement("div");
+    el.className = `node ${m.status}`;
+    el.dataset.id = m.id;
+    el.dataset.lane = m.lane;
+    el.dataset.status = m.status;
+    let leftPct;
+    if (m.lane === "v2") {
+      // map m.x (79..96) across v2 lane in % (955..1230 on 1280 viewport = 74.6%..96%)
+      leftPct = m.x;
+    } else {
+      // web/mvp lane spans x=60..820 in viewBox = 4.7%..64% in px of 1280
+      // but we want to use m.x (0..70) mapped to 5%..64%
+      leftPct = 5 + (m.x * 0.85);
+    }
+    const y = m.lane === "web" ? Y_WEB : (m.lane === "mvp" ? Y_MVP : Y_V2);
+    el.style.left = leftPct + "%";
+    el.style.top  = y + "%";
+    el.innerHTML = `
+      <div class="dot" style="background: currentColor;"></div>
+      <div class="m-title">${m.title}</div>
+      <div class="m-date">${m.date}</div>
+    `;
+    el.addEventListener("click", () => selectMilestone(m));
+    container.appendChild(el);
+  });
+  document.getElementById("v1-hub").addEventListener("click", () => selectMilestone(V1_HUB));
+}
+
+function selectMilestone(m) {
+  document.querySelectorAll(".node.selected").forEach(n => n.classList.remove("selected"));
+  const el = document.querySelector(`[data-id="${m.id}"]`);
+  if (el) el.classList.add("selected");
+  const panel = document.getElementById("detail-panel");
+  const laneLabel = { web:"App Web", mvp:"MVP Node", v1:"V1 (hub)", v2:"V2+" }[m.lane];
+  const statusLabel = { done:"Fait", doing:"En cours", todo:"À faire" }[m.status];
+  panel.innerHTML = `
+    <div class="meta">
+      <span class="lane-badge ${m.lane}">${laneLabel}</span><br>
+      <span class="pill ${m.status}">${statusLabel}</span>
+      <div class="d-date">${m.date}</div>
+    </div>
+    <div class="body">
+      <h3>${m.title}</h3>
+      <p>${m.desc}</p>
+      <div class="artefacts"><strong>Artéfacts</strong> · ${m.artefacts}</div>
+    </div>
+  `;
+}
+
+function renderCounters() {
+  const all = MILESTONES.concat([V1_HUB]);
+  const stats = { total: all.length, done:0, doing:0, todo:0 };
+  all.forEach(m => stats[m.status]++);
+  const pct = Math.round((stats.done / stats.total) * 100);
+  document.getElementById("counters").innerHTML = `
+    <div class="counter"><div class="n">${stats.total}</div><div class="l">Jalons totaux</div></div>
+    <div class="counter done"><div class="n">${stats.done}</div><div class="l">Fait · ${pct}%</div></div>
+    <div class="counter doing"><div class="n">${stats.doing}</div><div class="l">En cours</div></div>
+    <div class="counter todo"><div class="n">${stats.todo}</div><div class="l">À faire</div></div>
+  `;
+}
+
+let statusFilter = "all", laneFilter = "all";
+function applyFilters() {
+  document.querySelectorAll(".node").forEach(n => {
+    const okS = statusFilter === "all" || n.dataset.status === statusFilter;
+    const okL = laneFilter === "all" || n.dataset.lane === laneFilter;
+    n.classList.toggle("hidden", !(okS && okL));
+  });
+}
+document.querySelectorAll(".filter[data-filter]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".filter[data-filter]").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    statusFilter = btn.dataset.filter;
+    applyFilters();
+  });
+});
+document.querySelectorAll(".filter[data-lane]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".filter[data-lane]").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    laneFilter = btn.dataset.lane;
+    applyFilters();
+  });
+});
+
+renderNodes();
+renderCounters();
+selectMilestone(MILESTONES.find(m => m.id === "mvp-09"));
+</script>
+</body>
+</html>
