@@ -1,0 +1,22 @@
+﻿KPIs — Indicateurs de succès par horizon,,,,,,
+,,,,,,
+Catégorie,Indicateur,S+30,S+90,S+180,S+365,Méthode de mesure
+CEO,Temps CEO gagné / semaine (h),2,5,8,10,Sondage hebdo + tracking tâches déléguées
+CEO,Ratio délégation / exécution (%),20,40,55,65,Comptage tâches assignées vs self-exécutées
+CEO,Heure médiane shutdown,20h30,20h00,19h30,19h15,Timestamp shutdown rituel
+CEO,Weekends totalement off (%),40,60,70,80,Absence ouverture app sam+dim
+CEO,Nuits >7h déclarées (%),45,55,60,65,Déclaratif check-in matin
+IA,Taux acceptation propositions (%),40,55,60,65,Tracking interactions UI propositions
+IA,Propositions/jour actives,8,12,14,15,Comptage daily
+IA,Coût LLM/proposition acceptée (€),0.8,0.6,0.45,0.35,Langfuse cost tracking
+Produit,DAU Feycoil (j/30),25,28,29,30,Sessions authentifiées
+Produit,Temps ouverture écran → action (s),45,30,25,20,Instrumentation front
+Produit,NPS mono-utilisateur,50,70,75,80,Sondage trimestriel
+Produit,Uptime (%),99.5,99.8,99.9,99.95,Better Stack monitoring
+Rituel,Matin effectué (%),70,80,85,90,Tracking écran matin
+Rituel,Shutdown effectué (%),60,70,80,85,Tracking écran soir
+Rituel,Revue hebdo effectuée (%),80,85,90,95,Tracking dimanche
+Coaching,Score humeur moyen /5,3.2,3.5,3.7,4.0,Déclaratif matin
+Coaching,Mails envoyés après 22h (nb/sem),5,3,2,1,Log Outlook
+Équipe (V2+),Utilisateurs actifs,1,3,5,8,Sessions authentifiées
+Équipe (V2+),Tâches déléguées end-to-end,5,15,25,40,Tracking délégations

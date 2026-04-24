@@ -1,0 +1,19 @@
+﻿aiCEO — Backlog produit & roadmap,
+,
+Version 1.0 · 23 avril 2026 · Pour Feycoil Mouhoussoune,
+,
+Contenu du fichier,
+,
+Backlog,Liste priorisée RICE des 40+ features sur 18 mois
+Roadmap,Plan par trimestre (MVP / V1 / V2 / V3)
+RICE,Méthodologie de scoring détaillée
+KPIs,Indicateurs de succès par horizon
+Budget,Estimation coûts par phase
+Risques,Top risques avec mitigation
+,
+Méthodologie RICE,
+Reach × Impact × Confidence / Effort = Score de priorité,
+Reach : nombre d'utilisateurs touchés (1-10),
+Impact : 0.25 (minimal) → 3 (massive),
+Confidence : 0.5 (low) → 1 (high),
+Effort : semaines-personne,

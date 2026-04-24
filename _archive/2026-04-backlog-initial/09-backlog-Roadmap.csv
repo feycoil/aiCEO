@@ -1,0 +1,8 @@
+﻿Roadmap trimestrielle — 18 mois,,,,,,,
+,,,,,,,
+Phase,Trimestre,Durée (sem),Périmètre principal,Budget (k€),Équipe (ETP),Critères go/no-go,Livrable
+MVP,T2 2026,10,Cockpit + sociétés + agenda + tâches + Outlook + copilote réactif + délégation assistée,132,3,Feycoil actif 5j/7 · 2 délégations/sem · rituels ≥60% · zéro incident · NPS ≥7,Web app utilisable Feycoil
+V1,T3-T4 2026,16,Copilote proactif + mémoire LT + rituels + SharePoint + viz riches + SolidJS,290,4.3,Taux acceptation ≥55% · 5h/sem gagnées · délégation ≥40% · rituels ≥80% · validation équipe,Copilote proactif prod
+V2,T1-T2 2027,20,Multi-tenant + délégation e2e + Teams + canvas IA + graphe + SOC 2,693,8,5 users DAU · 8h/sem gagnées · Teams remplacé ≥30% · SOC 2 obtenu · go commercialisation,App équipe certifiée
+V3,T3-T4 2027,16,Coach stratégique + burnout actif + offline + mobile + multi-CEO,598,9.2,NPS ≥75 · shutdown 80% · weekends off 70% · multi-CEO stable,Produit complet
+TOTAL,18 mois,62,Vision complète,1713,-,-,-

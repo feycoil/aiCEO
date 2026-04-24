@@ -1,0 +1,13 @@
+﻿Budget estimatif par phase (18 mois),,,,,,
+,,,,,,
+Hypothèses,,,,,,
+TJM consultant senior,900 €,,,,,
+Jours ouvrés / semaine,4.5,,,,,
+Infra mensuelle V1 (estimation),"2,000 €",,,,,
+,,,,,,
+Phase,Durée (sem),ETP,Dev (k€),Infra (k€),Autres (k€),Total (k€)
+MVP,10,3,122,2,10,134
+V1,16,4.3,279,8,0,287
+V2,20,8,648,20,25,693
+V3,16,9.2,596,24,15,635
+TOTAL,62,,"1,645",54,50,"1,749"
