@@ -4,65 +4,48 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>aiCEO · Arbitrage matinal</title>
+<link rel="stylesheet" href="/assets/colors_and_type.css">
 <style>
-  :root {
-    --cream: #FAF6EF;
-    --cream-deep: #F2EBDD;
-    --ink: #1C1A22;
-    --ink-2: #3A3542;
-    --ink-3: #6A6277;
-    --line: #D9CFBC;
-    --lilac: #A895DB;
-    --lilac-soft: #EEE7FA;
-    --coral: #EC7A6A;
-    --coral-soft: #FBE1DC;
-    --sage: #A8C8A4;
-    --sage-soft: #E3EEE0;
-    --sage-ac: #3E6F3A;
-    --amber: #E0B25C;
-    --amber-soft: #F6E6C7;
-    --sky: #7FB5D9;
-    --sky-soft: #DCEBF4;
-    --shadow: 0 2px 12px rgba(28,26,34,0.06);
-  }
+  /* :root tokens consommés depuis /assets/colors_and_type.css (source : 02_design-system/tokens.json). */
+  /* Issue 1 · ds/wire-mvp-to-ds · 2026-04 : bloc :root inline supprimé, palette migrée sur DS. */
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    font-family: "Fira Sans", Calibri, -apple-system, system-ui, sans-serif;
-    background: var(--cream);
-    color: var(--ink);
+    font-family: var(--font-sans);
+    background: var(--surface);
+    color: var(--text);
     font-size: 15px;
     line-height: 1.5;
   }
   header {
     padding: 28px 40px 16px;
-    border-bottom: 1px solid var(--line);
-    background: var(--cream);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
     position: sticky; top: 0; z-index: 10;
   }
   .eyebrow {
     text-transform: uppercase;
     letter-spacing: 0.14em;
     font-size: 11px;
-    color: var(--ink-3);
+    color: var(--text-3);
     font-weight: 700;
     margin-bottom: 6px;
   }
   h1 {
-    font-family: "Fira Sans", Cambria, Georgia, serif;
+    font-family: var(--font-sans);
     font-size: 32px;
     font-weight: 700;
     margin: 0 0 6px;
     letter-spacing: -0.02em;
   }
-  .subtitle { color: var(--ink-3); font-size: 14px; }
+  .subtitle { color: var(--text-3); font-size: 14px; }
   .badge {
     display: inline-block; margin-left: 10px;
     padding: 2px 8px; border-radius: 6px;
     font-size: 11px; font-weight: 700;
-    background: var(--lilac-soft); color: #5f4a94;
+    background: var(--violet-50); color: var(--violet-800);
   }
-  .badge.demo { background: var(--amber-soft); color: #7a5a10; }
+  .badge.demo { background: var(--amber-50); color: var(--amber-800); }
   .top-links {
     position: absolute; top: 30px; right: 40px;
     display: flex; gap: 8px;
@@ -70,31 +53,31 @@
   .top-links a {
     padding: 6px 12px;
     font-size: 12.5px;
-    color: var(--ink-2);
+    color: var(--text-2);
     text-decoration: none;
     border-radius: 8px;
-    border: 1px solid var(--line);
+    border: 1px solid var(--border);
     background: white;
   }
-  .top-links a:hover { border-color: var(--ink-3); }
+  .top-links a:hover { border-color: var(--text-3); }
   main { padding: 24px 40px 60px; }
 
   .coach-strip {
     display: flex; align-items: flex-start; gap: 12px;
     padding: 14px 18px; border-radius: 14px;
-    background: var(--lilac-soft);
+    background: var(--violet-50);
     margin-bottom: 20px;
     font-size: 14px;
   }
-  .coach-strip.alert { background: var(--coral-soft); }
+  .coach-strip.alert { background: var(--rose-50); }
   .coach-strip .dot {
     flex: 0 0 auto;
     width: 28px; height: 28px; border-radius: 50%;
-    background: var(--lilac); color: white;
+    background: var(--violet); color: white;
     font-size: 11px; font-weight: 700;
     display: flex; align-items: center; justify-content: center;
   }
-  .coach-strip.alert .dot { background: var(--coral); }
+  .coach-strip.alert .dot { background: var(--rose); }
 
   .columns {
     display: grid;
@@ -112,53 +95,53 @@
     min-height: 200px;
   }
   .col h2 {
-    font-family: "Fira Sans", Cambria, Georgia, serif;
+    font-family: var(--font-sans);
     font-size: 18px;
     margin: 0 0 4px;
     display: flex; align-items: center; gap: 10px;
   }
   .col h2 .pill {
-    font-family: "Fira Sans", Calibri, sans-serif;
+    font-family: var(--font-sans);
     font-size: 12px;
     padding: 2px 10px;
     border-radius: 10px;
-    background: var(--cream-deep); color: var(--ink-2);
+    background: var(--surface-3); color: var(--text-2);
   }
-  .col.faire { background: var(--sage-soft); }
-  .col.faire h2 { color: var(--sage-ac); }
-  .col.faire h2 .pill { background: var(--sage); color: white; }
-  .col.deleguer { background: var(--lilac-soft); }
-  .col.deleguer h2 { color: #5f4a94; }
-  .col.deleguer h2 .pill { background: var(--lilac); color: white; }
-  .col.reporter { background: var(--amber-soft); }
-  .col.reporter h2 { color: #7a5a10; }
+  .col.faire { background: var(--emerald-50); }
+  .col.faire h2 { color: var(--emerald-800); }
+  .col.faire h2 .pill { background: var(--emerald); color: white; }
+  .col.deleguer { background: var(--violet-50); }
+  .col.deleguer h2 { color: var(--violet-800); }
+  .col.deleguer h2 .pill { background: var(--violet); color: white; }
+  .col.reporter { background: var(--amber-50); }
+  .col.reporter h2 { color: var(--amber-800); }
   .col.reporter h2 .pill { background: var(--amber); color: white; }
   .veille {
     margin-top: 24px; padding: 16px 18px;
-    background: var(--cream); border: 1px dashed var(--line);
+    background: var(--surface); border: 1px dashed var(--border);
     border-radius: 10px;
   }
   .veille h3 {
-    font-family: "Fira Sans", Cambria, Georgia, serif;
+    font-family: var(--font-sans);
     font-size: 16px; font-weight: 700; margin: 0 0 4px;
-    color: var(--ink-2); display: flex; align-items: center; gap: 8px;
+    color: var(--text-2); display: flex; align-items: center; gap: 8px;
   }
   .veille h3 .pill {
     font-size: 11px; padding: 2px 8px; border-radius: 10px;
-    background: var(--ink-3); color: white;
+    background: var(--text-3); color: white;
   }
-  .veille .sub { color: var(--ink-3); font-size: 12px; margin-bottom: 10px; }
+  .veille .sub { color: var(--text-3); font-size: 12px; margin-bottom: 10px; }
   .veille .list.compact .item {
     padding: 8px 10px; margin: 0 0 6px; font-size: 13px;
-    background: white; border: 1px solid var(--line); border-radius: 6px;
+    background: white; border: 1px solid var(--border); border-radius: 6px;
   }
   .veille .list.compact .meta { font-size: 11px; }
   button.link {
-    background: none; border: none; color: var(--lilac);
+    background: none; border: none; color: var(--violet);
     cursor: pointer; font-size: 12px; text-decoration: underline;
     padding: 0;
   }
-  .col .sub { font-size: 12px; color: var(--ink-3); margin-bottom: 14px; }
+  .col .sub { font-size: 12px; color: var(--text-3); margin-bottom: 14px; }
 
   .item {
     background: white;
@@ -172,32 +155,32 @@
   .item.dragging { opacity: 0.4; }
   .item .title { font-weight: 600; margin-bottom: 4px; line-height: 1.35; }
   .item .meta {
-    font-size: 11.5px; color: var(--ink-3);
+    font-size: 11.5px; color: var(--text-3);
     display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 6px;
   }
   .item .meta span { display: inline-flex; align-items: center; gap: 4px; }
   .item .reason {
-    font-size: 12.5px; color: var(--ink-2);
+    font-size: 12.5px; color: var(--text-2);
     font-style: italic;
     padding: 6px 10px;
-    background: var(--cream);
+    background: var(--surface);
     border-radius: 8px;
     margin-top: 6px;
   }
   .item .extras {
     font-size: 11.5px;
-    margin-top: 6px; color: var(--ink-3);
+    margin-top: 6px; color: var(--text-3);
   }
-  .item .extras b { color: var(--ink-2); }
+  .item .extras b { color: var(--text-2); }
   .item .email-signal {
     display: inline-flex; align-items: center; gap: 4px;
     margin-top: 8px; padding: 4px 10px;
     font-size: 11.5px; font-weight: 600;
-    background: var(--coral-soft); color: #a63b2b;
+    background: var(--rose-50); color: var(--rose-800);
     border-radius: 10px;
   }
-  .item .email-signal.calm { background: var(--sky-soft); color: #2a5c82; }
-  .item .email-signal-title { font-size: 11px; color: var(--ink-3); margin-top: 4px; }
+  .item .email-signal.calm { background: var(--sky-50); color: var(--sky-800); }
+  .item .email-signal-title { font-size: 11px; color: var(--text-3); margin-top: 4px; }
   .item .item-actions {
     display: flex; gap: 6px; margin-top: 8px;
   }
@@ -205,13 +188,13 @@
     font-size: 11.5px;
     padding: 5px 10px;
     border-radius: 8px;
-    border: 1px solid var(--lilac);
+    border: 1px solid var(--violet);
     background: white;
-    color: #5f4a94;
+    color: var(--violet-800);
     cursor: pointer;
   }
   .item .item-actions button:hover {
-    background: var(--lilac); color: white;
+    background: var(--violet); color: white;
   }
 
   .tag {
@@ -219,10 +202,10 @@
     border-radius: 6px; font-size: 10.5px; font-weight: 600;
     letter-spacing: 0.02em;
   }
-  .tag.prio-critical { background: var(--coral-soft); color: #a63b2b; }
-  .tag.prio-high     { background: var(--amber-soft); color: #7a5a10; }
-  .tag.prio-medium   { background: var(--sky-soft);   color: #2a5c82; }
-  .tag.prio-low      { background: var(--cream-deep); color: var(--ink-3); }
+  .tag.prio-critical { background: var(--rose-50); color: var(--rose-800); }
+  .tag.prio-high     { background: var(--amber-50); color: var(--amber-800); }
+  .tag.prio-medium   { background: var(--sky-50);   color: var(--sky-800); }
+  .tag.prio-low      { background: var(--surface-3); color: var(--text-3); }
 
   .actions {
     display: flex; gap: 10px; align-items: center;
@@ -231,16 +214,16 @@
   button {
     font-family: inherit; font-size: 14px;
     padding: 10px 18px; border-radius: 10px;
-    border: 1px solid var(--line); background: white;
-    color: var(--ink); cursor: pointer;
+    border: 1px solid var(--border); background: white;
+    color: var(--text); cursor: pointer;
     transition: all .15s;
   }
-  button:hover { border-color: var(--ink-3); }
+  button:hover { border-color: var(--text-3); }
   button.primary {
-    background: var(--ink); color: var(--cream);
-    border-color: var(--ink);
+    background: var(--text); color: var(--surface);
+    border-color: var(--text);
   }
-  button.primary:hover { background: var(--ink-2); }
+  button.primary:hover { background: var(--text-2); }
   button:disabled { opacity: 0.5; cursor: not-allowed; }
 
   .skeleton {
@@ -252,20 +235,20 @@
 
   .empty {
     text-align: center; padding: 24px 16px;
-    font-size: 13px; color: var(--ink-3);
+    font-size: 13px; color: var(--text-3);
     font-style: italic;
   }
   #summary {
-    font-family: "Fira Sans", Cambria, Georgia, serif;
+    font-family: var(--font-sans);
     font-size: 20px; line-height: 1.4;
     margin: 10px 0 18px;
-    color: var(--ink);
+    color: var(--text);
   }
 
   .toast {
     position: fixed; bottom: 24px; left: 50%;
     transform: translateX(-50%);
-    background: var(--ink); color: var(--cream);
+    background: var(--text); color: var(--surface);
     padding: 12px 20px; border-radius: 24px;
     font-size: 13.5px; font-weight: 500;
     opacity: 0; pointer-events: none;
@@ -292,11 +275,11 @@
     box-shadow: 0 20px 60px rgba(0,0,0,0.25);
   }
   .modal h3 {
-    font-family: "Fira Sans", Cambria, Georgia, serif;
+    font-family: var(--font-sans);
     font-size: 20px; margin: 0 0 6px;
   }
   .modal .modal-sub {
-    color: var(--ink-3); font-size: 13px; margin-bottom: 18px;
+    color: var(--text-3); font-size: 13px; margin-bottom: 18px;
   }
   .modal .field {
     display: flex; flex-direction: column; gap: 4px;
@@ -305,20 +288,20 @@
   .modal .field label {
     font-size: 11.5px; font-weight: 700;
     letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--ink-3);
+    color: var(--text-3);
   }
   .modal .field input, .modal .field textarea, .modal .field select {
-    font-family: "Fira Sans", Calibri, sans-serif; font-size: 14px;
+    font-family: var(--font-sans); font-size: 14px;
     padding: 9px 12px; border-radius: 8px;
-    border: 1px solid var(--line);
-    background: var(--cream);
-    color: var(--ink); width: 100%;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text); width: 100%;
   }
   .modal .field textarea {
     min-height: 170px; resize: vertical; line-height: 1.5;
   }
   .modal .field input:focus, .modal .field textarea:focus, .modal .field select:focus {
-    outline: 2px solid var(--lilac);
+    outline: 2px solid var(--violet);
     outline-offset: -1px;
   }
   .modal .two-col {
@@ -330,21 +313,21 @@
   }
   .modal .modal-actions .spacer { flex: 1; }
   .modal .reasoning {
-    font-size: 12px; color: var(--ink-3); font-style: italic;
-    padding: 8px 12px; background: var(--lilac-soft);
+    font-size: 12px; color: var(--text-3); font-style: italic;
+    padding: 8px 12px; background: var(--violet-50);
     border-radius: 8px; margin-bottom: 12px;
   }
   .modal .hint {
-    font-size: 11.5px; color: var(--ink-3); font-style: italic;
+    font-size: 11.5px; color: var(--text-3); font-style: italic;
     margin-top: 4px; line-height: 1.4;
   }
   .modal .field select optgroup {
     font-style: normal; font-weight: 700;
-    color: var(--ink-2); background: var(--cream);
+    color: var(--text-2); background: var(--surface);
   }
   .modal .loading {
     padding: 40px 20px; text-align: center;
-    color: var(--ink-3); font-style: italic;
+    color: var(--text-3); font-style: italic;
   }
 </style>
 </head>
@@ -366,7 +349,7 @@
     <button class="primary" id="btn-arbitrate">✨ Lancer l'arbitrage</button>
     <button id="btn-reload-data">↻ Recharger données</button>
     <button id="btn-validate" disabled>Valider l'arbitrage</button>
-    <span id="meta" style="color:var(--ink-3);font-size:12px;margin-left:auto"></span>
+    <span id="meta" style="color:var(--text-3);font-size:12px;margin-left:auto"></span>
   </div>
 
   <div class="columns">

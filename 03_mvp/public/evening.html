@@ -4,58 +4,41 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>aiCEO · Boucle du soir</title>
+<link rel="stylesheet" href="/assets/colors_and_type.css">
 <style>
-  :root {
-    --cream: #FAF6EF;
-    --cream-deep: #F2EBDD;
-    --ink: #1C1A22;
-    --ink-2: #3A3542;
-    --ink-3: #6A6277;
-    --line: #D9CFBC;
-    --lilac: #A895DB;
-    --lilac-soft: #EEE7FA;
-    --coral: #EC7A6A;
-    --coral-soft: #FBE1DC;
-    --sage: #A8C8A4;
-    --sage-soft: #E3EEE0;
-    --sage-ac: #3E6F3A;
-    --amber: #E0B25C;
-    --amber-soft: #F6E6C7;
-    --sky: #7FB5D9;
-    --sky-soft: #DCEBF4;
-    --shadow: 0 2px 12px rgba(28,26,34,0.06);
-  }
+  /* :root tokens consommés depuis /assets/colors_and_type.css (source : 02_design-system/tokens.json). */
+  /* Issue 1 · ds/wire-mvp-to-ds · 2026-04 : bloc :root inline supprimé, palette migrée sur DS. */
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    font-family: "Fira Sans", Calibri, -apple-system, system-ui, sans-serif;
-    background: var(--cream);
-    color: var(--ink);
+    font-family: var(--font-sans);
+    background: var(--surface);
+    color: var(--text);
     font-size: 15px;
     line-height: 1.5;
   }
   header {
     padding: 28px 40px 18px;
-    border-bottom: 1px solid var(--line);
-    background: var(--cream);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
     position: relative;
   }
   .eyebrow {
     text-transform: uppercase;
     letter-spacing: 0.14em;
     font-size: 11px;
-    color: var(--ink-3);
+    color: var(--text-3);
     font-weight: 700;
     margin-bottom: 6px;
   }
   h1 {
-    font-family: "Fira Sans", Cambria, Georgia, serif;
+    font-family: var(--font-sans);
     font-size: 30px;
     font-weight: 700;
     margin: 0 0 6px;
     letter-spacing: -0.02em;
   }
-  .subtitle { color: var(--ink-3); font-size: 14px; }
+  .subtitle { color: var(--text-3); font-size: 14px; }
   .top-links {
     position: absolute; top: 30px; right: 40px;
     display: flex; gap: 8px;
@@ -63,13 +46,13 @@
   .top-links a {
     padding: 6px 12px;
     font-size: 12.5px;
-    color: var(--ink-2);
+    color: var(--text-2);
     text-decoration: none;
     border-radius: 8px;
-    border: 1px solid var(--line);
+    border: 1px solid var(--border);
     background: white;
   }
-  .top-links a:hover { border-color: var(--ink-3); }
+  .top-links a:hover { border-color: var(--text-3); }
   main { padding: 24px 40px 60px; max-width: 860px; }
 
   .section {
@@ -80,21 +63,21 @@
     margin-bottom: 20px;
   }
   .section h2 {
-    font-family: "Fira Sans", Cambria, Georgia, serif;
+    font-family: var(--font-sans);
     font-size: 18px;
     margin: 0 0 12px;
     display: flex; align-items: center; gap: 10px;
   }
   .section .pill {
-    font-family: "Fira Sans", Calibri, sans-serif;
+    font-family: var(--font-sans);
     font-size: 12px;
     padding: 2px 10px;
     border-radius: 10px;
-    background: var(--cream-deep); color: var(--ink-2);
+    background: var(--surface-3); color: var(--text-2);
   }
-  .section.faire { background: var(--sage-soft); }
-  .section.deleguer { background: var(--lilac-soft); }
-  .section.reporter { background: var(--amber-soft); }
+  .section.faire { background: var(--emerald-50); }
+  .section.deleguer { background: var(--violet-50); }
+  .section.reporter { background: var(--amber-50); }
 
   .eve-item {
     background: white;
@@ -108,7 +91,7 @@
     align-items: flex-start;
   }
   .eve-item .title { font-weight: 600; line-height: 1.35; margin-bottom: 4px; }
-  .eve-item .meta { font-size: 11.5px; color: var(--ink-3); }
+  .eve-item .meta { font-size: 11.5px; color: var(--text-3); }
   .eve-item .status-group {
     display: flex; gap: 4px;
   }
@@ -116,20 +99,20 @@
     padding: 6px 10px;
     font-size: 11.5px;
     border-radius: 8px;
-    border: 1px solid var(--line);
-    background: var(--cream);
-    color: var(--ink-3);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-3);
     cursor: pointer;
     font-weight: 600;
   }
   .eve-item .status-btn.done.active {
-    background: var(--sage); color: white; border-color: var(--sage);
+    background: var(--emerald); color: white; border-color: var(--emerald);
   }
   .eve-item .status-btn.partial.active {
     background: var(--amber); color: white; border-color: var(--amber);
   }
   .eve-item .status-btn.skipped.active {
-    background: var(--coral); color: white; border-color: var(--coral);
+    background: var(--rose); color: white; border-color: var(--rose);
   }
   .eve-item .note-input {
     grid-column: 1 / -1;
@@ -138,8 +121,8 @@
     margin-top: 6px;
     padding: 6px 10px;
     border-radius: 8px;
-    border: 1px solid var(--line);
-    background: var(--cream);
+    border: 1px solid var(--border);
+    background: var(--surface);
     font-family: inherit; font-size: 13px;
   }
   .eve-item.has-status .note-input { display: block; }
@@ -156,13 +139,13 @@
   .mood-row label {
     font-size: 11.5px; font-weight: 700;
     letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--ink-3);
+    color: var(--text-3);
   }
   .mood-row input, .mood-row select {
     font-family: inherit; font-size: 14px;
     padding: 9px 12px; border-radius: 8px;
-    border: 1px solid var(--line);
-    background: var(--cream);
+    border: 1px solid var(--border);
+    background: var(--surface);
   }
 
   .actions {
@@ -173,43 +156,43 @@
   button {
     font-family: inherit; font-size: 14px;
     padding: 10px 18px; border-radius: 10px;
-    border: 1px solid var(--line); background: white;
-    color: var(--ink); cursor: pointer;
+    border: 1px solid var(--border); background: white;
+    color: var(--text); cursor: pointer;
   }
-  button:hover { border-color: var(--ink-3); }
-  button.primary { background: var(--ink); color: var(--cream); border-color: var(--ink); }
-  button.primary:hover { background: var(--ink-2); }
+  button:hover { border-color: var(--text-3); }
+  button.primary { background: var(--text); color: var(--surface); border-color: var(--text); }
+  button.primary:hover { background: var(--text-2); }
   button:disabled { opacity: 0.5; cursor: not-allowed; }
 
   .empty-state {
     padding: 36px 24px; text-align: center;
-    color: var(--ink-3); font-style: italic;
+    color: var(--text-3); font-style: italic;
     background: white; border-radius: 18px; box-shadow: var(--shadow);
   }
   .summary-card {
-    background: var(--lilac-soft);
+    background: var(--violet-50);
     border-radius: 16px;
     padding: 20px 22px;
     margin-top: 16px;
   }
   .summary-card .rate {
-    font-family: "Fira Sans", Cambria, Georgia, serif;
+    font-family: var(--font-sans);
     font-size: 42px; font-weight: 700;
-    color: #5f4a94;
+    color: var(--violet-800);
     display: inline-block; margin-right: 12px;
     vertical-align: baseline;
   }
   .summary-card .tone { font-size: 15px; line-height: 1.5; }
   .summary-card .alert {
     margin-top: 10px; padding: 8px 12px;
-    background: var(--coral-soft); color: #a63b2b;
+    background: var(--rose-50); color: var(--rose-800);
     border-radius: 8px; font-size: 13px;
   }
 
   .toast {
     position: fixed; bottom: 24px; left: 50%;
     transform: translateX(-50%);
-    background: var(--ink); color: var(--cream);
+    background: var(--text); color: var(--surface);
     padding: 12px 20px; border-radius: 24px;
     font-size: 13.5px; font-weight: 500;
     opacity: 0; pointer-events: none;
@@ -256,7 +239,7 @@
 
     <div class="actions">
       <button class="primary" id="btn-finalize">Clore la journée</button>
-      <span id="progress" style="color:var(--ink-3);font-size:12.5px"></span>
+      <span id="progress" style="color:var(--text-3);font-size:12.5px"></span>
     </div>
 
     <div id="result" style="display:none"></div>
@@ -389,7 +372,7 @@
     $("#result").innerHTML = `
       <div class="summary-card">
         <div><span class="rate">${s.rate}%</span> <span class="tone">${escapeHtml(s.tone)}</span></div>
-        <div style="margin-top:8px;font-size:12.5px;color:var(--ink-3)">
+        <div style="margin-top:8px;font-size:12.5px;color:var(--text-3)">
           ✅ ${s.counts.done} fait · 🟡 ${s.counts.partial} partiel · 🔴 ${s.counts.skipped} pas fait
         </div>
         ${s.alert ? `<div class="alert">${escapeHtml(s.alert)}</div>` : ""}
