@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>aiCEO — Business case synthèse</title>
+<style>
+/* ───── Webfonts (chemins relatifs depuis 04_docs/ vers le DS) ───── */
+@font-face { font-family: "Fira Sans"; font-weight: 300; src: url("../02_design-system/fonts/FiraSans-Light.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Fira Sans"; font-weight: 400; src: url("../02_design-system/fonts/FiraSans-Regular.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Fira Sans"; font-weight: 500; src: url("../02_design-system/fonts/FiraSans-Medium.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Fira Sans"; font-weight: 600; src: url("../02_design-system/fonts/FiraSans-SemiBold.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Fira Sans"; font-weight: 700; src: url("../02_design-system/fonts/FiraSans-Bold.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Fira Sans"; font-weight: 800; src: url("../02_design-system/fonts/FiraSans-ExtraBold.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Aubrielle"; font-weight: 400; src: url("../02_design-system/fonts/Aubrielle_Demo.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "Sol"; font-weight: 100; src: url("../02_design-system/fonts/SolThin.otf") format("opentype"); font-display: swap; }
+
+:root {
+  --surface: #f5f3ef;
+  --surface-2: #ece7dd;
+  --border: #e4e1d9;
+  --text: #111418;
+  --text-2: #3a3d44;
+  --text-3: #6b6f78;
+  --emerald: #3d7363;
+  --rose: #d96d3e;
+  --amber: #b88237;
+  --sky: #7790ae;
+  --violet: #7a6a8a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+@page { size: A4 portrait; margin: 0; }
+
+html, body {
+  font-family: "Fira Sans", system-ui, sans-serif;
+  font-weight: 400;
+  color: var(--text);
+  background: #a9adbe;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.page {
+  width: 210mm;
+  height: 297mm;
+  padding: 11mm 12mm;
+  background: var(--surface);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4mm;
+  overflow: hidden;
+  page-break-after: always;
+}
+.page:last-of-type { page-break-after: auto; }
+
+/* ───── Hero (page 1 only) ───── */
+.hero {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6mm;
+  align-items: end;
+  padding-bottom: 3mm;
+  border-bottom: 0.6mm solid var(--emerald);
+}
+.hero .mark {
+  font-family: "Aubrielle", cursive;
+  font-size: 50pt;
+  line-height: 0.85;
+  color: var(--emerald);
+  letter-spacing: -0.02em;
+}
+.hero .meta { display: flex; flex-direction: column; gap: 1.5mm; padding-bottom: 2mm; }
+.hero .tagline { font-size: 13pt; font-weight: 600; color: var(--text); line-height: 1.2; }
+.hero .sub { font-size: 9pt; font-weight: 400; color: var(--text-3); }
+.hero .filter {
+  font-size: 7.5pt; font-weight: 500; color: var(--text-2);
+  background: var(--surface-2);
+  border-left: 0.8mm solid var(--amber);
+  padding: 1.5mm 2.5mm;
+  line-height: 1.4;
+  margin-top: 1.5mm;
+}
+
+/* ───── Page header (pages 2-3) ───── */
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 2.5mm;
+  border-bottom: 0.3mm solid var(--border);
+}
+.page-head .brand {
+  font-family: "Aubrielle", cursive;
+  font-size: 22pt;
+  color: var(--emerald);
+  line-height: 0.85;
+}
+.page-head .ctx {
+  font-size: 8.5pt;
+  color: var(--text-3);
+  font-weight: 500;
+}
+.page-head .ctx strong { color: var(--text); font-weight: 700; }
+
+/* ───── Section labels ───── */
+.label {
+  font-size: 9pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 2mm;
+  margin-bottom: 2mm;
+}
+.label::before {
+  content: "";
+  width: 3mm; height: 3mm;
+  background: var(--accent, var(--text));
+  border-radius: 50%;
+}
+.label.emerald { color: var(--emerald); --accent: var(--emerald); }
+.label.rose { color: var(--rose); --accent: var(--rose); }
+.label.amber { color: var(--amber); --accent: var(--amber); }
+.label.sky { color: var(--sky); --accent: var(--sky); }
+.label.violet { color: var(--violet); --accent: var(--violet); }
+
+/* ───── TL;DR card ───── */
+.tldr {
+  background: var(--surface-2);
+  border-radius: 2mm;
+  padding: 4mm 5mm;
+}
+.tldr p {
+  font-size: 9.5pt;
+  line-height: 1.5;
+  color: var(--text-2);
+  margin-bottom: 1.5mm;
+}
+.tldr p:last-child { margin-bottom: 0; }
+.tldr p strong { color: var(--text); font-weight: 600; }
+
+/* ───── Stats row (Sol thin big numbers) ───── */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4mm;
+  margin-top: 1.5mm;
+}
+.stat {
+  border: 0.3mm solid var(--border);
+  border-radius: 2mm;
+  padding: 3mm 3.5mm;
+  display: flex; flex-direction: column; gap: 0.8mm;
+  background: var(--surface);
+}
+.stat .num {
+  font-family: "Sol", "Fira Sans", sans-serif;
+  font-weight: 100;
+  font-size: 24pt;
+  line-height: 1;
+  color: var(--emerald);
+  letter-spacing: -0.02em;
+}
+.stat .num small { font-size: 11pt; color: var(--text-2); }
+.stat .key { font-size: 8pt; font-weight: 600; color: var(--text); margin-top: 0.5mm; }
+.stat .desc { font-size: 7.2pt; color: var(--text-3); line-height: 1.3; }
+
+/* ───── Budget table ───── */
+table.budget {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 8.5pt;
+  background: var(--surface);
+}
+table.budget th, table.budget td {
+  padding: 2mm 2.5mm;
+  text-align: left;
+  border-bottom: 0.2mm solid var(--border);
+}
+table.budget th {
+  background: var(--surface-2);
+  color: var(--text);
+  font-weight: 700;
+  font-size: 7.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+table.budget td.num, table.budget th.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.budget tr.total td {
+  font-weight: 700;
+  color: var(--emerald);
+  border-top: 0.4mm solid var(--emerald);
+  border-bottom: none;
+  background: var(--surface-2);
+}
+table.budget td .phase {
+  font-weight: 600;
+  color: var(--text);
+}
+table.budget td .when {
+  display: block;
+  font-size: 7pt;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ───── Two-column generic ───── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5mm;
+}
+.col h3 {
+  font-size: 9.5pt;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 1.5mm;
+}
+.col p, .col li {
+  font-size: 8.5pt;
+  line-height: 1.45;
+  color: var(--text-2);
+}
+.col p { margin-bottom: 1.5mm; }
+.col p strong { color: var(--text); font-weight: 600; }
+.col ul { padding-left: 4mm; }
+.col li { margin-bottom: 1mm; }
+.col li::marker { color: var(--emerald); }
+
+/* ───── Revenue scenarios card ───── */
+.scenarios {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3mm;
+}
+.scenario {
+  border: 0.3mm solid var(--border);
+  border-radius: 2mm;
+  padding: 3mm 3.5mm;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 1mm;
+}
+.scenario.bas { border-left: 1.2mm solid var(--sky); }
+.scenario.central { border-left: 1.2mm solid var(--emerald); background: var(--surface-2); }
+.scenario.haut { border-left: 1.2mm solid var(--amber); }
+.scenario .tag {
+  font-size: 7pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-3);
+}
+.scenario .arr {
+  font-family: "Sol", "Fira Sans", sans-serif;
+  font-weight: 100;
+  font-size: 22pt;
+  line-height: 1;
+  color: var(--emerald);
+  letter-spacing: -0.02em;
+}
+.scenario .arr small { font-size: 10pt; color: var(--text-2); }
+.scenario .body {
+  font-size: 7.5pt;
+  color: var(--text-2);
+  line-height: 1.35;
+}
+.scenario .body strong { color: var(--text); font-weight: 600; }
+
+/* ───── ROI band ───── */
+.roi {
+  background: var(--surface-2);
+  border-radius: 2mm;
+  padding: 3.5mm 4mm;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 4mm;
+  align-items: start;
+}
+.roi-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5mm;
+}
+.roi-stat .num {
+  font-family: "Sol", "Fira Sans", sans-serif;
+  font-weight: 100;
+  font-size: 22pt;
+  line-height: 1;
+  color: var(--rose);
+  letter-spacing: -0.02em;
+}
+.roi-stat .num small { font-size: 9pt; color: var(--text-2); }
+.roi-stat .key { font-size: 8pt; font-weight: 700; color: var(--text); margin-top: 0.5mm; }
+.roi-stat .desc { font-size: 7.2pt; color: var(--text-3); line-height: 1.3; }
+
+/* ───── Risks list ───── */
+.risk {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 3mm;
+  align-items: start;
+  padding: 2.5mm 3mm;
+  border-left: 1mm solid var(--accent, var(--rose));
+  background: var(--surface);
+  border-radius: 0 2mm 2mm 0;
+}
+.risk + .risk { margin-top: 2mm; }
+.risk.p0 { --accent: var(--rose); }
+.risk.p1 { --accent: var(--amber); }
+.risk.p2 { --accent: var(--sky); }
+.risk .badge {
+  font-size: 7pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: var(--accent);
+  color: white;
+  padding: 0.8mm 2mm;
+  border-radius: 1mm;
+  align-self: start;
+}
+.risk .body h4 {
+  font-size: 9pt;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.8mm;
+}
+.risk .body p {
+  font-size: 7.8pt;
+  color: var(--text-2);
+  line-height: 1.4;
+}
+.risk .body p strong { color: var(--text); font-weight: 600; }
+.risk .body p.mit { margin-top: 0.8mm; color: var(--text-3); }
+.risk .body p.mit strong { color: var(--emerald); }
+.risk .severity {
+  font-size: 6.5pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-3);
+  align-self: start;
+}
+
+/* ───── Decisions ───── */
+.decisions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4mm;
+}
+.decision {
+  border: 0.3mm solid var(--border);
+  border-radius: 2mm;
+  padding: 3mm 3.5mm;
+  display: flex; flex-direction: column; gap: 1mm;
+  background: var(--surface);
+}
+.decision .step {
+  font-family: "Sol", "Fira Sans", sans-serif;
+  font-weight: 100;
+  font-size: 18pt;
+  line-height: 1;
+  color: var(--amber);
+}
+.decision .title {
+  font-size: 9pt;
+  font-weight: 700;
+  color: var(--text);
+}
+.decision .when {
+  font-size: 7pt;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.decision .body {
+  font-size: 7.5pt;
+  color: var(--text-2);
+  line-height: 1.35;
+}
+.decision .body strong { color: var(--text); font-weight: 600; }
+
+/* ───── Footer ───── */
+.footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 3mm;
+  border-top: 0.3mm solid var(--border);
+  font-size: 7.5pt;
+  color: var(--text-3);
+}
+.footer .contact { color: var(--text); font-weight: 600; }
+.footer a { color: var(--emerald); text-decoration: none; }
+
+@media print {
+  html, body { background: white; }
+  .page { box-shadow: none; margin: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- ═════════════════════════ PAGE 1 ══════════════════════════ -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<div class="page">
+
+  <header class="hero">
+    <div class="mark">aiCEO</div>
+    <div class="meta">
+      <div class="tagline">Business case 18 mois — synthèse.</div>
+      <div class="sub">Synthèse v1.0 · 25 avril 2026 · Pour CEO pair / business angel</div>
+      <div class="filter">
+        Audience : investisseur business angel · CEO pair · Comex ETIC. Éléments redactés : ventilation salaires individuels, identité CEO pilotes, conditions agence Twisty. Toutes les hypothèses chiffrées sont des supports de modélisation à challenger, pas des engagements. Référentiel détaillé : <em>BUSINESS-CASE.md</em>.
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="label emerald">TL;DR — investissement plateforme + écosystème</div>
+    <div class="tldr">
+      <p>aiCEO est un <strong>copilote stratégique pour CEO de PME</strong> qui transforme la charge mentale du dirigeant en arbitrage matinal de 5 minutes. <strong>MVP v0.4 livré le 24 avril 2026</strong> (28/28 tâches arbitrées, ≈ 1 ct/jour de coût LLM).</p>
+      <p>Trajectoire 18 mois : <strong>v0.5 fusion (T2 2026) → V1 cloud proactif (T3-T4 2026) → V2 multi-tenant équipe (T1-T2 2027) → V3 coach + mobile (T3-T4 2027)</strong>. Coût total ≈ <strong>1,69 M€</strong>, financé fonds propres ETIC + appoint éventuel business angel sur la phase V2.</p>
+      <p>Modèle économique : <strong>dogfood interne ETIC sur v0.5 → V1</strong> (gain de temps CEO valorisé, pas de revenue), puis <strong>SaaS premium 300-800 €/CEO/mois à partir de V2</strong> sur 1-3 CEO pairs ETIC, ouverture sélective fin 2027. Le projet est pensé comme un <strong>investissement plateforme réutilisable</strong>, pas comme un startup play classique.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="label sky">Trajectoire 18 mois — équipe, durée, budget</div>
+    <table class="budget">
+      <thead>
+        <tr>
+          <th>Phase</th>
+          <th>Périmètre clé</th>
+          <th class="num">Durée</th>
+          <th class="num">ETP</th>
+          <th class="num">Dev</th>
+          <th class="num">Infra & spéc.</th>
+          <th class="num">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="phase">v0.5 Fusion</span><span class="when">T2 2026 ✓ en cours</span></td>
+          <td>SQLite + 13 pages unifiées + Service Windows + import Outlook 30 j</td>
+          <td class="num">10 sem</td>
+          <td class="num">2,6</td>
+          <td class="num">105 k€</td>
+          <td class="num">5 k€</td>
+          <td class="num">110 k€</td>
+        </tr>
+        <tr>
+          <td><span class="phase">V1 Proactif</span><span class="when">T3-T4 2026</span></td>
+          <td>Postgres + pgvector + Graph OAuth + Inngest + sub-agents + Langfuse</td>
+          <td class="num">16 sem</td>
+          <td class="num">4,3</td>
+          <td class="num">280 k€</td>
+          <td class="num">10 k€</td>
+          <td class="num">290 k€</td>
+        </tr>
+        <tr>
+          <td><span class="phase">V2 Multi-tenant</span><span class="when">T1-T2 2027</span></td>
+          <td>RLS Supabase + Teams + délégation E2E + tldraw + SOC 2 Type II</td>
+          <td class="num">20 sem</td>
+          <td class="num">8,0</td>
+          <td class="num">648 k€</td>
+          <td class="num">45 k€</td>
+          <td class="num">693 k€</td>
+        </tr>
+        <tr>
+          <td><span class="phase">V3 Coach + Mobile</span><span class="when">T3-T4 2027</span></td>
+          <td>Claude Opus coach + détection burnout + PWA offline ElectricSQL + multi-CEO</td>
+          <td class="num">16 sem</td>
+          <td class="num">9,0</td>
+          <td class="num">583 k€</td>
+          <td class="num">15 k€</td>
+          <td class="num">598 k€</td>
+        </tr>
+        <tr class="total">
+          <td>Total 18 mois</td>
+          <td>Plateforme V3 prête pour 2-3 CEO pairs en production</td>
+          <td class="num">62 sem</td>
+          <td class="num">—</td>
+          <td class="num">1 616 k€</td>
+          <td class="num">75 k€</td>
+          <td class="num">≈ 1 691 k€</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <div class="label violet">Preuve livrée — MVP v0.4</div>
+    <div class="stats">
+      <div class="stat">
+        <div class="num">28<small>/28</small></div>
+        <div class="key">Tâches arbitrées</div>
+        <div class="desc">Run réel en 41 s sur les vrais mails du CEO pilote (Claude Sonnet 4.5).</div>
+      </div>
+      <div class="stat">
+        <div class="num">926</div>
+        <div class="key">Mails Outlook ingérés</div>
+        <div class="desc">3 boîtes (principale + 2 déléguées), 30 jours, normalisés.</div>
+      </div>
+      <div class="stat">
+        <div class="num">≈ 1<small> ct</small></div>
+        <div class="key">Coût par arbitrage</div>
+        <div class="desc">5,2 k tokens in / 2,5 k out. ≈ 5 €/mois d'API personnelle.</div>
+      </div>
+      <div class="stat">
+        <div class="num">v0.4</div>
+        <div class="key">Tag publié</div>
+        <div class="desc">Délégation un-clic, boucle du soir, support proxy corp, chip d'alerte.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="contact">Page 1 / 3 · Synthèse cadrage</div>
+    <div>Réf. : <em>BUSINESS-CASE.md</em> · <em>08-roadmap.md</em> · <em>02-benchmark.md</em></div>
+  </footer>
+
+</div>
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- ═════════════════════════ PAGE 2 ══════════════════════════ -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<div class="page">
+
+  <header class="page-head">
+    <div class="brand">aiCEO</div>
+    <div class="ctx"><strong>Business case</strong> · Hypothèses revenue & ROI · Page 2 / 3</div>
+  </header>
+
+  <section>
+    <div class="label emerald">Hypothèses revenue — trois scénarios fin 2027</div>
+    <div class="scenarios">
+      <div class="scenario bas">
+        <div class="tag">Bas</div>
+        <div class="arr">24<small> k€ ARR</small></div>
+        <div class="body"><strong>5 CEO clients × 400 €/mois.</strong> Pas de comptes entreprise. Couverture coût total ≈ <strong>1,4 %</strong> — projet reste un investissement ETIC, pivot SaaS standalone non viable.</div>
+      </div>
+      <div class="scenario central">
+        <div class="tag">Central · Recommandé</div>
+        <div class="arr">146<small> k€ ARR</small></div>
+        <div class="body"><strong>12 CEO × 600 €/mois + 1 entreprise 5 k€/mois</strong> (équipe 10+ CEO, type ETI 200-500 salariés). Couverture coût total ≈ <strong>8,6 %</strong>. Cohérent avec écosystème ETIC + 1 client moyen.</div>
+      </div>
+      <div class="scenario haut">
+        <div class="tag">Haut</div>
+        <div class="arr">528<small> k€ ARR</small></div>
+        <div class="body"><strong>25 CEO × 800 €/mois + 2 entreprises 12 k€/mois.</strong> Suppose un canal de distribution actif (France Digitale, Bpifrance Excellence). Couverture coût total ≈ <strong>31 %</strong>.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="label rose">ROI utilisateur — pour le CEO qui paye</div>
+    <div class="roi">
+      <div class="roi-stat">
+        <div class="num">7,2<small> k€</small></div>
+        <div class="key">Coût SaaS / an</div>
+        <div class="desc">Hypothèse centrale 600 €/mois × 12 mois. Bande tarifaire calibrée 300-800 €/mois selon profil CEO et taille structure.</div>
+      </div>
+      <div class="roi-stat">
+        <div class="num">45-65<small> k€</small></div>
+        <div class="key">Gain temps / an</div>
+        <div class="desc">5-7 h/sem × 45 sem ouvrées × 200 €/h (valeur horaire CEO PME, hypothèse de modélisation). Cible mesurée à partir de V1.</div>
+      </div>
+      <div class="roi-stat">
+        <div class="num">6-9×</div>
+        <div class="key">Ratio ROI</div>
+        <div class="desc">Le ROI tient même en scénario dégradé : 2 h/sem × 150 €/h = 13,5 k€/an gagnés vs 7,2 k€ dépensés (ratio 1,9×). Gains qualitatifs non valorisés ici.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="label sky">Lecture interne ETIC — point mort plateforme</div>
+    <div class="two-col">
+      <div class="col">
+        <h3>v0.5 → V1 — usage interne, pas de revenue</h3>
+        <p>Le bénéfice économique est mesuré par le <strong>gain de temps CEO Feycoil</strong> (45-65 k€/an de valeur reproductible à partir de V1) et la <strong>capitalisation sur la plateforme + design system Twisty</strong> réutilisable par l'agence ETIC.</p>
+        <p>Le seul gain Feycoil rembourse environ <strong>13-18 % des coûts V1 annualisés</strong>. Le reste est un investissement R&D ETIC (modèle agence-startup classique).</p>
+      </div>
+      <div class="col">
+        <h3>V2+ — point mort opex vs total</h3>
+        <p>Coût marginal CEO additionnel post-V2 ≈ <strong>415-845 €/mois</strong> en early V2 (LLM + infra + support fondateur), descendant à <strong>100-200 €/mois</strong> en V3 standardisé.</p>
+        <p>À 600 €/mois, le <strong>point mort cash sur opex est atteint dès le 2-3<sup>ème</sup> CEO pilote</strong>. Couverture du coût total trajectoire (≈ 1,75 M€ tout inclus) suppose <strong>250-350 CEO clients</strong>, horizon réaliste 2029-2030.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="label amber">Coûts détaillés par phase</div>
+    <div class="two-col">
+      <div class="col">
+        <h3>v0.5 — 110 k€ · 10 sem · 2,6 ETP</h3>
+        <ul>
+          <li><strong>Dev</strong> 105 k€ — lead Feycoil 0,8 + dev intervenant 1,2 + design 0,4 + PMO 0,2</li>
+          <li><strong>Infra</strong> 5 k€ — SQLite local, Sonnet 4.5 inchangé, GitHub Actions, hébergement doc</li>
+        </ul>
+        <h3>V1 — 290 k€ · 16 sem · 4,3 ETP</h3>
+        <ul>
+          <li><strong>Dev</strong> 280 k€ — lead + 2 backend cloud + 1 frontend + 0,3 PMO</li>
+          <li><strong>Infra</strong> 8-10 k€ — Supabase Team + Inngest + Bedrock EU + Langfuse</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h3>V2 — 693 k€ · 20 sem · 8 ETP</h3>
+        <ul>
+          <li><strong>Dev</strong> 648 k€ — CTO + 3 backend (multi-tenant + RLS + Teams) + 2 frontend + SRE + PMO + design</li>
+          <li><strong>Infra</strong> 18-20 k€ — Supabase Pro + Datadog + Teams Graph</li>
+          <li><strong>SOC 2 Type II</strong> 25 k€ — audit Vanta/Drata + contrôles</li>
+        </ul>
+        <h3>V3 — 598 k€ · 16 sem · 9 ETP</h3>
+        <ul>
+          <li><strong>Dev</strong> 583 k€ — équipe V2 + coach produit psycho + 2 frontend mobile/PWA</li>
+          <li><strong>Consulting psycho-clinicien</strong> 12-15 k€ — modes coach Opus, anti-burnout</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="contact">Page 2 / 3 · Hypothèses chiffrées</div>
+    <div>900 €/jour dev · 4,5 j/sem · hypothèses à challenger</div>
+  </footer>
+
+</div>
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!-- ═════════════════════════ PAGE 3 ══════════════════════════ -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<div class="page">
+
+  <header class="page-head">
+    <div class="brand">aiCEO</div>
+    <div class="ctx"><strong>Business case</strong> · Risques & décisions attendues · Page 3 / 3</div>
+  </header>
+
+  <section>
+    <div class="label rose">Risques connus & mitigations — vue priorisée</div>
+
+    <div class="risk p0">
+      <div class="badge">P0</div>
+      <div class="body">
+        <h4>Pont jetable v0.5 — risque produit</h4>
+        <p>v0.5 local-first (SQLite + Outlook COM + Service Windows) sera <strong>intégralement re-architecturée en V1 cloud</strong>. Une partie du code sera jetée.</p>
+        <p class="mit"><strong>Mitigation</strong> — schéma SQLite 13 tables conçu pour migrer 1:1 vers Postgres ; couche d'abstraction <em>services/outlook.js</em> remplaçable par msal-node Graph sans toucher l'agent ; documentation explicite des morceaux jetables vs capitalisés (SPEC-TECHNIQUE-FUSION §13).</p>
+      </div>
+      <div class="severity">PRODUIT</div>
+    </div>
+
+    <div class="risk p0">
+      <div class="badge">P0</div>
+      <div class="body">
+        <h4>Modèle économique externe non validé — risque marché</h4>
+        <p>Le pricing 300-800 €/CEO/mois repose sur des comparables (Welcome to the Jungle Solo 199 €, Pennylane Premium 320 €, Spendesk 400 €) et une intuition métier, <strong>pas sur 5+ entretiens validation acheteur</strong> ni sur un test landing page ouvert.</p>
+        <p class="mit"><strong>Mitigation</strong> — vague entretiens validation acheteur pré-V2 (10-15 CEO PME francophones hors écosystème ETIC) ; pilote V2 réel facturé sur 1-3 CEO pairs avec NPS mesuré M+3 / M+6 / M+12 ; option pivot outil interne ETIC standalone si la bande basse 300 €/mois ne tient pas.</p>
+      </div>
+      <div class="severity">MARCHÉ</div>
+    </div>
+
+    <div class="risk p1">
+      <div class="badge">P1</div>
+      <div class="body">
+        <h4>Dépendance Anthropic — risque technique</h4>
+        <p>v0.4 → V1 reposent sur Claude Sonnet 4.5 via API directe Anthropic. Pricing × 5, coupure ou variation qualité = produit compromis.</p>
+        <p class="mit"><strong>Mitigation</strong> — V1 mirroring AWS Bedrock EU Frankfurt (même modèle, autre canal contractuel) ; V2 LiteLLM comme couche multi-vendeur (Anthropic + Bedrock + Mistral + GPT fallback) ; prompts versionnés <em>02_design-system/prompts/</em> pour re-tuning rapide.</p>
+      </div>
+      <div class="severity">TECHNIQUE</div>
+    </div>
+
+    <div class="risk p1">
+      <div class="badge">P1</div>
+      <div class="body">
+        <h4>CEO pilote unique — risque opérationnel</h4>
+        <p>Dogfood v0.4 → V1 entièrement porté par Major Fey. Indisponibilité ≥ 4 sem ou pivot de focus = boucle feedback cassée.</p>
+        <p class="mit"><strong>Mitigation</strong> — objectif COPIL T4 2026 : identifier 2 CEO pilotes additionnels écosystème ETIC pour entrée V2 ; rituel dogfood documenté (revue hebdo + ADR systématiques) reprenable par un autre CEO ; lead produit dédié provisionné dans budget V2.</p>
+      </div>
+      <div class="severity">OPÉRATIONNEL</div>
+    </div>
+
+    <div class="risk p1">
+      <div class="badge">P1</div>
+      <div class="body">
+        <h4>Écart compétences cloud / multi-tenant — risque équipe</h4>
+        <p>v0.5 livrable par 2-3 ETP. V2 exige 8 ETP avec compétences cloud + Postgres RLS + multi-tenant + SOC 2 + DevOps : profils rares et chers en France.</p>
+        <p class="mit"><strong>Mitigation</strong> — sourcing CTO/lead infra dès go V1 (mi-2026) ; surcoût 12-15 % déjà intégré (900 €/jour, haut du marché senior) ; partenariat externalisé Padok / Theodo Cloud pour SOC 2 et DevOps.</p>
+      </div>
+      <div class="severity">ÉQUIPE</div>
+    </div>
+
+  </section>
+
+  <section>
+    <div class="label amber">Décisions attendues — COPIL ETIC</div>
+    <div class="decisions">
+      <div class="decision">
+        <div class="step">1</div>
+        <div class="title">Go / no-go V1</div>
+        <div class="when">Fin T2 2026 · 290 k€</div>
+        <div class="body">Critère suffisant : <strong>v0.5 stable 6 semaines en dogfood Major Fey</strong> + ≥ 1 CEO pair identifié intéressé pour V2.</div>
+      </div>
+      <div class="decision">
+        <div class="step">2</div>
+        <div class="title">Modèle financement V2</div>
+        <div class="when">T4 2026 · 693 k€</div>
+        <div class="body">Fonds propres ETIC seuls, ou <strong>tour minoritaire business angel 200-400 k€</strong> pour accélérer sourcing équipe + marketing pilote.</div>
+      </div>
+      <div class="decision">
+        <div class="step">3</div>
+        <div class="title">Périmètre commercial V3</div>
+        <div class="when">T2 2027 · 598 k€</div>
+        <div class="body">Reste outil ETIC + écosystème (max 5-10 CEO clients), ou <strong>pivot SaaS ouvert</strong> (50-100 clients fin 2028, demande tour Série A 1,5-3 M€).</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="contact">Feycoil Mouhoussoune · CEO ETIC Services · feycoil@etic-services.net</div>
+    <div>Réf. : <em>BUSINESS-CASE.md</em> · <em>PITCH-ONEPAGE.md</em> · <em>02-benchmark.md</em></div>
+  </footer>
+
+</div>
+
+</body>
+</html>
