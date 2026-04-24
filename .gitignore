@@ -1,0 +1,53 @@
+# ═══════════════════════════════════════════════════════════
+# .gitignore — aiCEO (produit copilote CEO)
+# ═══════════════════════════════════════════════════════════
+
+# ─── OneDrive lockfiles ───
+~$*
+~BROMIUM/
+**/~BROMIUM/
+.DS_Store
+Thumbs.db
+
+# ─── Node ───
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-error.log
+
+# ─── Secrets ───
+.env
+**/.env
+.env.local
+*.key
+*.pem
+
+# ─── MVP : données générées (privées, ne JAMAIS commit) ───
+03_mvp/data/emails-raw.json
+03_mvp/data/emails.json
+03_mvp/data/emails-summary.json
+03_mvp/data/seed.json
+03_mvp/data/decisions.json
+03_mvp/data/drafts.json
+03_mvp/data/evenings.json
+03_mvp/data/self-emails.json
+03_mvp/data/team.json
+
+# ─── Scratch (bac à sable, hors versionnage) ───
+_scratch/
+
+# ─── Archives temporaires Office ───
+*.pptx.tmp
+*.docx.tmp
+*.xlsx.tmp
+
+# ─── OS / IDE ───
+.idea/
+.vscode/settings.json
+.vscode/launch.json
+
+# ─── Vieux dossiers vides post-migration (OneDrive les relâchera) ───
+/docs/
+/journeys/
+/mvp/
+/revues/
