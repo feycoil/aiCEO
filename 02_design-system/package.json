@@ -1,0 +1,12 @@
+{
+  "name": "aiceo-design-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "aiCEO Design System — tokens source (tokens.json) + export script → colors_and_type.css. Voir 00_BOUSSOLE/GOUVERNANCE.md §chemin type pour le processus de modification.",
+  "type": "module",
+  "scripts": {
+    "ds:export": "node scripts/export.js"
+  },
+  "author": "Feycoil Mouhoussoune (ETIC Services)",
+  "license": "UNLICENSED"
+}

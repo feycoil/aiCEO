@@ -1,6 +1,24 @@
 # aiCEO — Vision produit
 
-**Version 1.0 · 23 avril 2026 · Pour Feycoil Mouhoussoune**
+**Version 1.1 · 24 avril 2026 · Pour Feycoil Mouhoussoune**
+
+---
+
+## 0. État actuel vs horizon — à lire en premier
+
+> ⚠️ Ce document décrit la **vision horizon 2027**. La trajectoire pour y arriver passe par une phase **locale Windows** (v0.4 livrée, v0.5 en cours de fusion) avant une bascule **cloud** en V1. Cette étape locale est assumée comme un **pont** permettant de valider le produit sur un CEO pilote réel sans dépendance cloud, et non comme la destination finale.
+
+| Phase | Période | Nature | Ce qu'elle prouve |
+|---|---|---|---|
+| **MVP v0.4** (livré 24/04/2026) | aujourd'hui | App locale Windows, Node + JSON, mono-utilisateur | L'arbitrage 3/2/N fonctionne sur des vrais mails (28/28 tâches classées en 41 s, ≈ 1 ct/arbitrage) |
+| **v0.5 Fusion** (T2 2026) | +6 à 10 semaines | Local Windows, SQLite, Service Windows, 13 pages unifiées | L'expérience produit complète tient sur un poste, le CEO utilise quotidiennement |
+| **V1 Copilote proactif** (T3-T4 2026) | +6 mois | **Bascule cloud** : Supabase, Graph API OAuth, Inngest, sub-agents | Le produit devient autonome 24/7, premier CEO pair ETIC testable |
+| **V2 Équipe** (T1-T2 2027) | +12 mois | Cloud multi-tenant, RLS, Teams, délégation end-to-end | Le produit quitte le silo CEO pour atteindre DG + AE |
+| **V3 Coach & mobile** (T3-T4 2027) | +18 mois | Offline-first, PWA mobile, Claude Opus coach | Le produit devient vraiment compagnon |
+
+**Contrainte produit assumée** (ADR 2026-04-24) : le CEO **ne perd jamais l'usage** pendant les transitions. Chaque bascule (local v0.4 → v0.5, puis local → cloud V1) se fait **par vagues avec mode parallèle**, pas en big-bang. Le CEO pilote teste en continu et rétroagit sur le produit.
+
+Références : [SPEC-FONCTIONNELLE-FUSION.md](SPEC-FONCTIONNELLE-FUSION.md) · [SPEC-TECHNIQUE-FUSION.md](SPEC-TECHNIQUE-FUSION.md) · [08-roadmap.md](08-roadmap.md) · [DECISIONS.md § 2026-04-24 Trajectoire produit](../00_BOUSSOLE/DECISIONS.md)
 
 ---
 

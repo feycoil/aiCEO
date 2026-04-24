@@ -3,7 +3,10 @@
    See README.md for guidance on usage. */
 
 /* ─── WEBFONT ─── */
-@import url('https://rsms.me/inter/inter.css');
+/* Fira Sans canonique (ADR 2026-04-24 · Typographie canonique).
+   Les @font-face Fira Sans / Aubrielle / Sol Thin sont déclarés dans
+   ../colors_and_type.css et chargés depuis 02_design-system/fonts/ (self-hosted). */
+@import url('../colors_and_type.css');
 
 :root {
   /* Neutres — palette warm-cream */

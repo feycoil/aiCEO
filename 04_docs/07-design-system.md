@@ -1,8 +1,21 @@
 # aiCEO — Design system & spec UX/UI
 
-**Version 1.0 · 23 avril 2026 · Twisty design language · Spec complète**
+**Version 1.0 · 23 avril 2026 · Twisty design language · Spec complète** · dernière relecture 24/04/2026
 
 > Ce document décrit les principes, tokens, composants et parcours du design system aiCEO — baptisé **Twisty**. Il complète `04-visualisation.md` (patterns visuels) et sert de référence pour tout chantier UI.
+
+## Sources canoniques des assets
+
+Trois silos à connaître (pas de pont programmatique entre eux — voir `00_BOUSSOLE/GOUVERNANCE.md` §"Synchronisation") :
+
+| Source | Emplacement | Rôle |
+|---|---|---|
+| **Repo** `02_design-system/` | Dossier du dépôt (import complet effectué au 24/04/2026) | **Source vivante**. Contient tokens (`colors_and_type.css`), assets (`app.css`, `product.app.css` 895 lignes, `app.js`, `data.js`, `logo.svg`), fonts (Fira Sans 10 poids + Aubrielle + Sol), 12 previews HTML, `ui_kits/aiceo/`, et `REPO-CONTEXT.md` (note repo spécifique). |
+| **Design System OneDrive** `aiCEO_Design_System/` | `C:\Users\feycoil.ETIC\ETIC Services\EXECUTIVE BOARD [ExCom] - Direction - Documents\1. Gouvernance et Décisions\aiCEO_Design_System\` | Atelier amont. Les itérations faites hors Git y arrivent, puis sont resyncées dans `02_design-system/` via la procédure de `REPO-CONTEXT.md`. |
+| **Code app** `01_app-web/assets/` puis `03_mvp/public/assets/` (post-fusion) | `app.css`, `data.js`, `app.js` | Implémentation effective dans le cockpit. |
+| **Claude Design** | Projets `aiCEO Design System`, `aiCEO v1`, `aiCEO_mvp_v1` | Atelier visuel — maquettes, itérations UI. Jamais "la vérité finale". |
+
+**Règle opérationnelle** : toute nouvelle règle UI créée en Claude Design passe par `_drafts/design-claude-YYYY-MM-DD.md` avant promotion vers `02_design-system/` via session Cowork. Sinon elle s'évapore.
 
 ---
 
@@ -83,9 +96,23 @@ Chaque page propose *une* action primaire claire (un bouton vif, un CTA dominant
 
 ### 2.3 Typographie
 
+> **Source canonique des tokens** : `02_design-system/tokens.json` (depuis S7 atelier cohérence, ADR `2026-04-24 · Pipeline tokens DS → CSS + maintien unifié`). Le fichier `colors_and_type.css` est **en partie généré** — le bloc entre les marqueurs `/* === GENERATED FROM tokens.json === */` et `/* === END GENERATED === */` est réécrit par `npm run ds:export` ; la section "Semantic type roles" en fin de fichier reste hand-written. Pour modifier un token (couleur, typo, espacement, radius, shadow), voir `00_BOUSSOLE/GOUVERNANCE.md` §"Chemin type d'un changement de token".
+
+**Fira Sans est la typographie canonique d'aiCEO** (ADR 2026-04-24 · Typographie canonique, dans `00_BOUSSOLE/DECISIONS.md`). Elle est self-hostée depuis `02_design-system/fonts/` (10 poids, du Thin 100 au Heavy 900), via les `@font-face` déclarés dans `02_design-system/colors_and_type.css`. Aucune dépendance à Google Fonts / rsms.me / CDN externe — conforme à la trajectoire souveraine locale-first (cf. vision produit § 0).
+
+Deux polices d'**accent** sont utilisables sparsely :
+- **Aubrielle** — display script, pour titres d'intention, salutations, moments "hero". Jamais en corps de texte.
+- **Sol Thin** — ultra-light, pour très grands chiffres ou sous-titres stylisés. Jamais en corps.
+
 ```css
---font-body : 'Inter', system-ui, -apple-system, sans-serif;
---font-mono : 'JetBrains Mono', ui-monospace, monospace;
+--font-sans   : "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+--font-script : "Aubrielle", Georgia, serif;   /* display uniquement */
+--font-thin   : "Sol", "Fira Sans", sans-serif; /* accents ultra-légers */
+--font-mono   : ui-monospace, SFMono-Regular, "JetBrains Mono", monospace;
+
+/* OpenType features Fira Sans : alternates contextuelles + formes
+   caractéristiques (chiffres ronds, a à un étage) */
+font-feature-settings: "calt", "ss02", "ss03";
 
 --fs-xs   : 11.5px;  /* labels, stats tabulaires */
 --fs-sm   : 13px;    /* small, sub-labels */
@@ -96,21 +123,29 @@ Chaque page propose *une* action primaire claire (un bouton vif, un CTA dominant
 --fs-3xl  : 32px;    /* hero titles */
 --fs-4xl  : 44px;    /* grande intention */
 
---fw-regular : 400;
---fw-medium  : 500;
---fw-semibold: 600;
---fw-bold    : 700;
+--fw-thin       : 100;
+--fw-extralight : 200;
+--fw-light      : 300;
+--fw-regular    : 400;
+--fw-book       : 450;
+--fw-medium     : 500;
+--fw-semibold   : 600;
+--fw-bold       : 700;
+--fw-extrabold  : 800;
+--fw-heavy      : 900;
 
 --lh-tight : 1.2;
 --lh-normal: 1.5;
 --lh-loose : 1.7;
 
---letter-tight : -0.01em;  /* titres */
---letter-normal: 0em;
---letter-wide  : 0.08em;   /* uppercase labels */
+--letter-tight : -0.025em;  /* titres — Fira demande un peu plus de tracking négatif */
+--letter-normal: 0em;        /* corps — Fira lit mieux au neutre */
+--letter-wide  : 0.08em;     /* uppercase labels */
 ```
 
 Tabular numerics sur tous les chiffres : `font-variant-numeric: tabular-nums;`
+
+**Purge 2026-04-24** : les sources contradictoires antérieures (Inter via CDN `rsms.me` dans les CSS, Cambria/Calibri inline dans `03_mvp/public/*.html`) ont été remplacées. Fira Sans est première dans la stack partout ; les anciennes fontes restent en fallback temporaire le temps que les `@font-face` soient servis depuis `03_mvp/public/assets/fonts/` (fusion v0.5). Traces dans `S2-typographie.md` et `REPO-CONTEXT.md`.
 
 ### 2.4 Espaces & rayons
 
@@ -666,4 +701,4 @@ Au clic, léger scale(0.98) + shadow réduite — rétroaction tactile sans mouv
 
 ---
 
-*Document lié : `04-visualisation.md` · `01-vision-produit.md` · code : `aiCEO_Agent/assets/app.css`*
+*Documents liés : `04-visualisation.md` · `01-vision-produit.md` · `SPEC-FONCTIONNELLE-FUSION.md` · `SPEC-TECHNIQUE-FUSION.md` · code : `01_app-web/assets/app.css` (actuel) → `03_mvp/public/assets/app.css` (cible post-fusion) · source canonique : `02_design-system/` (en cours d'import depuis OneDrive `aiCEO_Design_System/`)*

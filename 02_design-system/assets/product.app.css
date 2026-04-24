@@ -1,11 +1,14 @@
 /* aiCEO Platform — Theme "Twisty"
    DA : cadre lilas extérieur + app card 28px crème + cards blanches à grands radii
    Accents : coral (rose), sauge (emerald), ciel poudré (sky), ambre, violet doux
-   Typo : Inter (variable), tabular-nums sur les chiffres, tracking serré.
+   Typo : Fira Sans (self-hosted, 10 poids), tabular-nums sur les chiffres, tracking serré.
 */
 
 /* ─── WEBFONT ─── */
-@import url('https://rsms.me/inter/inter.css');
+/* Fira Sans canonique (ADR 2026-04-24 · Typographie canonique).
+   Les @font-face Fira Sans / Aubrielle / Sol Thin sont déclarés dans
+   ../colors_and_type.css et chargés depuis 02_design-system/fonts/ (self-hosted). */
+@import url('../colors_and_type.css');
 
 :root {
   /* Neutres — palette warm-cream */
@@ -78,8 +81,8 @@ html, body {
   margin: 0; padding: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: "Inter var", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-feature-settings: "cv11","ss01","ss03";
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-feature-settings: "calt","ss02","ss03";  /* Fira Sans OT features : alternates + characteristic shapes */
   font-size: 14px;
   line-height: 1.5;
   letter-spacing: -0.005em;

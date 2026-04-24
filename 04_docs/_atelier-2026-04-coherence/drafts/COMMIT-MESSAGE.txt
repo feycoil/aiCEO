@@ -1,0 +1,51 @@
+chore: atelier cohérence 2026-04 — clôture S1-S8 (8 sessions, 8 ADRs, ~45 livrables)
+
+Atelier de cohérence du 2026-04-24 — résolution des 7 dissonances critiques
+identifiées dans 04_docs/AUDIT-COHERENCE-2026-04-24.md. 8 sessions structurées
+(S1 trajectoire → S8 clôture), pattern Contexte → Options → Bundle reco → Décision
+→ Livrables → Validation.
+
+ADRs (00_BOUSSOLE/DECISIONS.md) — 8 produites par l'atelier, horodatées 24/04 :
+- S1 · Trajectoire produit local → cloud avec continuité
+- S2 · Typographie Fira Sans canonique (Inter éradiquée)
+- S3 · Hiérarchie sources canoniques (4_docs vs 00_BOUSSOLE vs _drafts)
+- S3 · Règle _drafts : promotion ou archivage sous 4 sem
+- S4 · Timing v0.5 : 10 sem / 6 sprints / 110 k€ / 2,6 ETP
+- S5 · Livrables externes cadrage (6 actifs + 2 parqueurs)
+- S6 · Livrables dev : ONBOARDING-DEV + openapi.yaml + RUNBOOK-OPS
+- S7 · Pipeline tokens DS → CSS + règle maintien unifiée (triple gouvernance)
++ 4 ADRs pré-atelier datées du même jour (fusion app-web, backlog xlsx → GitHub,
+restructuration aiCEO/, GitHub perso privé) = 12 ADRs totales au 24/04.
+
+Livrables : ~45 au total
+- 8 documents patchés : 01-vision, 02-benchmark, 06-architecture, 07-design-system,
+  08-roadmap, 00-README, SPEC-TECHNIQUE-FUSION, SPEC-FONCTIONNELLE-FUSION
+- 2 nouveaux livrables dev : 03_mvp/docs/ONBOARDING-DEV.md + RUNBOOK-OPS.md
+- 4 READMEs dossiers orphelins
+- 8 session files atelier + JOURNAL.md + CADRE.md
+- Pipeline technique DS : 02_design-system/tokens.json (source) +
+  scripts/export.js (~90 lignes ESM) + package.json + marqueurs GENERATED dans
+  colors_and_type.css (bloc auto-régénéré, "Semantic type roles" préservé)
+- Refonte GOUVERNANCE.md : chemin type tokens 7 étapes + règle maintien unifié +
+  calendrier trimestriel figé Q2 2026 → Q1 2027
+
+Coûts cachés résolus :
+- 4 durées v0.5 conflictuelles (6/7/9/10 sem) → 10 sem partout
+- 3 silos Claude Design ↔ Cowork ↔ GitHub sans chemin type → 7 étapes documentées,
+  coordination ~1 h → ~15 min
+- 3 règles "maintien continu + audit trimestriel" déposées par S3+S6+S7 →
+  mutualisées une seule fois dans GOUVERNANCE.md
+
+Post-atelier (actions hors périmètre Claude) tracées dans
+04_docs/_atelier-2026-04-coherence/POST-ATELIER-ACTIONS.md :
+- 11 issues GitHub à ouvrir (contenu prêt dans drafts/ISSUES-A-OUVRIR.md)
+- Calendrier trimestriel agenda (drafts/audits-trimestriels.ics)
+- First run npm run ds:export (validation pipeline)
+- Sprint livrables externes 05/05 → 11/05/2026
+- Sprint openapi.yaml 12/05 → 18/05/2026
+
+Dossier atelier conservé in-place comme trace vivante
+(04_docs/_atelier-2026-04-coherence/). Reconsidérer archivage 3 mois si
+consultation tombe à 0.
+
+Trace complète : 04_docs/_atelier-2026-04-coherence/JOURNAL.md

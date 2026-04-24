@@ -1,8 +1,42 @@
 /* aiCEO — v3 DA Twisty étendue (23 avril 2026)
    Palette : frame lilac, surface cream, accent coral/sage/sky/amber
-   Nouveautés v3 : thème par groupe, cockpit, workload meter, AI cards, quick-add modal, forms */
+   Nouveautés v3 : thème par groupe, cockpit, workload meter, AI cards, quick-add modal, forms
+   Typo : Fira Sans canonique — ADR 2026-04-24 (app-web gelé, purge Inter effectuée).
+*/
 
-@import url('https://rsms.me/inter/inter.css');
+/* ─── WEBFONT — Fira Sans self-hosted ─── */
+/* Chemin relatif vers 02_design-system/fonts. Fonctionne en navigation file:// et
+   sera unifié sous /public/assets/fonts/ lors de la fusion v0.5. */
+@font-face {
+  font-family: "Fira Sans"; font-style: normal; font-weight: 300;
+  src: url("../../02_design-system/fonts/FiraSans-Light.otf") format("opentype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Fira Sans"; font-style: normal; font-weight: 400;
+  src: url("../../02_design-system/fonts/FiraSans-Regular.otf") format("opentype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Fira Sans"; font-style: normal; font-weight: 500;
+  src: url("../../02_design-system/fonts/FiraSans-Medium.otf") format("opentype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Fira Sans"; font-style: normal; font-weight: 600;
+  src: url("../../02_design-system/fonts/FiraSans-SemiBold.otf") format("opentype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Fira Sans"; font-style: normal; font-weight: 700;
+  src: url("../../02_design-system/fonts/FiraSans-Bold.otf") format("opentype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Fira Sans"; font-style: normal; font-weight: 800;
+  src: url("../../02_design-system/fonts/FiraSans-ExtraBold.otf") format("opentype");
+  font-display: swap;
+}
 
 :root{
   /* Tokens Twisty (conservés) */
@@ -45,9 +79,9 @@
   --shadow-card: 0 1px 2px rgba(17,20,24,0.04), 0 2px 6px rgba(17,20,24,0.04);
   --shadow-pop: 0 20px 40px rgba(17,20,24,0.20);
 
-  /* Typography */
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-feature-settings: 'cv11', 'ss01';
+  /* Typography — Fira Sans canonique (ADR 2026-04-24) */
+  font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-feature-settings: "calt", "ss02", "ss03";
 }
 
 /* ---------- Base ---------- */

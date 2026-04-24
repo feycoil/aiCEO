@@ -1,0 +1,128 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//aiCEO//Atelier Coherence 2026-04//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:aiCEO — Audits trimestriels
+X-WR-TIMEZONE:Europe/Paris
+X-WR-CALDESC:Audits trimestriels des livrables vivants aiCEO. Règle GOUVERNANCE.md section "Maintien des livrables". Calendrier figé en S7 atelier cohérence 2026-04-24.
+
+BEGIN:VEVENT
+UID:aiceo-audit-trim-q2-2026@feycoil.etic-services.net
+DTSTAMP:20260424T000000Z
+DTSTART;VALUE=DATE:20260724
+DTEND;VALUE=DATE:20260725
+SUMMARY:aiCEO · Ouvrir 3 issues audit trimestriel Q2 2026
+DESCRIPTION:Créer dans feycoil/aiCEO les 3 issues trimestrielles Q2 :\n\n1. audit/drafts Q2 — scope _drafts/* (promouvoir ou archiver les > 4 sem)\n2. audit/livrables-dev Q2 — scope 03_mvp/docs/ONBOARDING-DEV.md + RUNBOOK-OPS.md + openapi.yaml (lecture complète, corrections PR, diff vs SPEC §6)\n3. audit/ds Q2 — scope 02_design-system/tokens.json + CSS générés (cohérence tokens ↔ preview ↔ 03_mvp)\n\nLabel : type/audit-trimestriel\nMilestone : Q2 2026\nDélai d'exécution visé : 10 jours ouvrés (soit ≤ 07/08/2026). Sinon flag en revue hebdo dominicale.\n\nVoir 00_BOUSSOLE/GOUVERNANCE.md section "Calendrier trimestriel figé".\nPOST-ATELIER-ACTIONS.md §3.1
+LOCATION:GitHub feycoil/aiCEO
+CATEGORIES:aiCEO,Atelier,Audit trimestriel
+PRIORITY:5
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+RRULE:FREQ=YEARLY
+BEGIN:VALARM
+TRIGGER:-PT9H
+ACTION:DISPLAY
+DESCRIPTION:aiCEO · Audit trimestriel Q2 à ouvrir aujourd'hui (3 issues GitHub)
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+UID:aiceo-audit-trim-q3-2026@feycoil.etic-services.net
+DTSTAMP:20260424T000000Z
+DTSTART;VALUE=DATE:20261024
+DTEND;VALUE=DATE:20261025
+SUMMARY:aiCEO · Ouvrir 3 issues audit trimestriel Q3 2026
+DESCRIPTION:Créer dans feycoil/aiCEO les 3 issues trimestrielles Q3 :\n\n1. audit/drafts Q3 — scope _drafts/*\n2. audit/livrables-dev Q3 — scope 03_mvp/docs/ (ONBOARDING-DEV + RUNBOOK-OPS + openapi.yaml)\n3. audit/ds Q3 — scope 02_design-system/tokens.json + CSS générés\n\nLabel : type/audit-trimestriel\nMilestone : Q3 2026\nDélai d'exécution visé : 10 jours ouvrés (soit ≤ 07/11/2026).\n\nVoir 00_BOUSSOLE/GOUVERNANCE.md section "Calendrier trimestriel figé".
+LOCATION:GitHub feycoil/aiCEO
+CATEGORIES:aiCEO,Atelier,Audit trimestriel
+PRIORITY:5
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+RRULE:FREQ=YEARLY
+BEGIN:VALARM
+TRIGGER:-PT9H
+ACTION:DISPLAY
+DESCRIPTION:aiCEO · Audit trimestriel Q3 à ouvrir aujourd'hui (3 issues GitHub)
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+UID:aiceo-audit-trim-q4-2027@feycoil.etic-services.net
+DTSTAMP:20260424T000000Z
+DTSTART;VALUE=DATE:20270124
+DTEND;VALUE=DATE:20270125
+SUMMARY:aiCEO · Ouvrir 3 issues audit trimestriel Q4 2026
+DESCRIPTION:Créer dans feycoil/aiCEO les 3 issues trimestrielles Q4 (dernière période de l'année 2026, ouverte en janvier 2027) :\n\n1. audit/drafts Q4\n2. audit/livrables-dev Q4\n3. audit/ds Q4\n\nLabel : type/audit-trimestriel\nMilestone : Q4 2026\nDélai d'exécution visé : 10 jours ouvrés (soit ≤ 06/02/2027).\n\nVoir 00_BOUSSOLE/GOUVERNANCE.md section "Calendrier trimestriel figé".
+LOCATION:GitHub feycoil/aiCEO
+CATEGORIES:aiCEO,Atelier,Audit trimestriel
+PRIORITY:5
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+RRULE:FREQ=YEARLY
+BEGIN:VALARM
+TRIGGER:-PT9H
+ACTION:DISPLAY
+DESCRIPTION:aiCEO · Audit trimestriel Q4 à ouvrir aujourd'hui (3 issues GitHub)
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+UID:aiceo-audit-trim-q1-2027@feycoil.etic-services.net
+DTSTAMP:20260424T000000Z
+DTSTART;VALUE=DATE:20270424
+DTEND;VALUE=DATE:20270425
+SUMMARY:aiCEO · Ouvrir 3 issues audit trimestriel Q1 2027 + anniversaire atelier
+DESCRIPTION:Créer dans feycoil/aiCEO les 3 issues trimestrielles Q1 2027 :\n\n1. audit/drafts Q1\n2. audit/livrables-dev Q1\n3. audit/ds Q1\n\nLabel : type/audit-trimestriel\nMilestone : Q1 2027\nDélai d'exécution visé : 10 jours ouvrés (soit ≤ 07/05/2027).\n\n**1 AN DE L'ATELIER DE COHÉRENCE** — prendre 30 min pour re-auditer le repo. Décision à prendre : ré-ouverture d'un atelier cohérence v2 ?\n\nVoir 00_BOUSSOLE/GOUVERNANCE.md section "Calendrier trimestriel figé".
+LOCATION:GitHub feycoil/aiCEO
+CATEGORIES:aiCEO,Atelier,Audit trimestriel
+PRIORITY:5
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+RRULE:FREQ=YEARLY
+BEGIN:VALARM
+TRIGGER:-PT9H
+ACTION:DISPLAY
+DESCRIPTION:aiCEO · Audit trimestriel Q1 à ouvrir aujourd'hui (3 issues GitHub) + anniversaire atelier
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+UID:aiceo-sprint-livrables-externes-2026@feycoil.etic-services.net
+DTSTAMP:20260424T000000Z
+DTSTART;VALUE=DATE:20260505
+DTEND;VALUE=DATE:20260512
+SUMMARY:aiCEO · Sprint S2 plan audit — 5 livrables externes (CEO pair + investisseur)
+DESCRIPTION:Sprint de production post-atelier cohérence. Fenêtre 05/05 → 11/05/2026.\n\nProduction des 5 livrables externes cadrés en S5 :\n- PITCH-ONEPAGE.md\n- BUSINESS-CASE.md\n- ONBOARDING-CEO-PAIR.md\n- LETTRE-INTRO-CEO-PAIR.md\n- PITCH-DECK-INVESTISSEUR.pptx\n\nDépendance bloquante P0 : patch 02-benchmark.md (positionnement v2) à exécuter en amont.\n\nCritère de clôture atelier : envoi d'au moins 1 livrable à 1 CEO pair ETIC pour valider réception.\n\nVoir POST-ATELIER-ACTIONS.md §4.1 + sessions/S5-livrables-externes.md
+LOCATION:Cowork + GitHub feycoil/aiCEO
+CATEGORIES:aiCEO,Sprint,Plan audit
+PRIORITY:3
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:aiCEO · Sprint livrables externes démarre demain (05/05 → 11/05)
+END:VALARM
+END:VEVENT
+
+BEGIN:VEVENT
+UID:aiceo-sprint-openapi-2026@feycoil.etic-services.net
+DTSTAMP:20260424T000000Z
+DTSTART;VALUE=DATE:20260512
+DTEND;VALUE=DATE:20260519
+SUMMARY:aiCEO · Sprint S3 plan audit — openapi.yaml hand-written
+DESCRIPTION:Sprint de production post-atelier cohérence. Fenêtre 12/05 → 18/05/2026.\n\nProduction de 03_mvp/docs/openapi.yaml hand-written sur la base de SPEC-TECHNIQUE-FUSION §6 (~40 endpoints / 14 domaines, ~1,5 j de travail doc).\n\nBascule vers génération automatique depuis code en Sprint 3-4 fusion v0.5 (issue infra/openapi-generated-from-code).\n\nVoir POST-ATELIER-ACTIONS.md §4.2 + sessions/S6-livrables-dev.md
+LOCATION:Cowork + GitHub feycoil/aiCEO
+CATEGORIES:aiCEO,Sprint,Plan audit
+PRIORITY:3
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:aiCEO · Sprint openapi.yaml démarre demain (12/05 → 18/05)
+END:VALARM
+END:VEVENT
+
+END:VCALENDAR

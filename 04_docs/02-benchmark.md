@@ -1,8 +1,29 @@
 # aiCEO — Benchmark approfondi
 
-**Version 1.0 · 23 avril 2026 · 14 produits étudiés · 4 axes de comparaison**
+**Version 1.1 · 24 avril 2026 · 14 produits étudiés · 4 axes de comparaison**
 
 > Note : recherche web 2024-2026 complétée par analyse produit. Les tarifs sont indicatifs et évoluent. Re-vérifier avant décision d'acquisition ou de partenariat.
+
+---
+
+## 0. Deux marchés de référence, deux phases produit
+
+> ⚠️ Suite à la décision de trajectoire du 24/04/2026 ([DECISIONS.md](../00_BOUSSOLE/DECISIONS.md)), aiCEO traverse **deux positionnements successifs**. Le benchmark ci-dessous reste pertinent pour la **vision cible (V1+ cloud)** ; un second benchmark doit couvrir la **phase locale (v0.4/v0.5)**.
+
+**Phase actuelle — local Windows (v0.4 livré, v0.5 en cours)**
+Le marché de référence n'est plus le cloud SaaS productivité. Les comparables immédiats sont :
+- **Microsoft Copilot for Business** (Copilot dans Outlook + Teams, local + cloud M365)
+- **Rewind.ai** (mémoire locale chiffrée, captures continues, interrogation LLM locale)
+- **Motion Desktop** (côté planification + calendrier)
+- **Plugins Outlook IA** (Superhuman for Teams, Boomerang Respondable)
+- **TheBrain Pro** (réseau de connaissances local, base de 30 ans, cible CEO)
+
+Point différenciant aiCEO dans cette phase : **arbitrage 3/2/N en langage de CEO multi-sociétés**, pas un chatbot générique branché sur Outlook. Souveraineté des données (tout reste sur le poste, proxy corp géré, mode démo sans API).
+
+**Phase cible — cloud multi-CEO (V1 → V3)**
+Le marché de référence redevient le cloud SaaS chief-of-staff et productivité : Lattice, Motion, Sunsama, Superhuman, Clara Labs, Dust, Lindy, Athena, Ema, Martin — tous étudiés ci-dessous.
+
+Les deux benchmarks ne doivent pas être confondus : le produit local v0.5 ne prétend pas battre Motion sur la planification cloud, et le produit cloud V1+ ne prétend pas concurrencer Rewind sur la mémoire locale.
 
 ---
 
