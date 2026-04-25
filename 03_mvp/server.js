@@ -1,6 +1,8 @@
 /**
  * server.js — backend Express local pour aiCEO v0.5.
- * Usage : npm start → http://localhost:4747
+ * Usage : npm start → http://localhost:3001
+ *
+ * Port 3001 aligné sur DOSSIER-SPRINT-S2 §1 (contrat dogfood) — ADR S2.00.
  */
 require("dotenv").config();
 const express = require("express");
@@ -20,7 +22,7 @@ const groupsRouter    = require("./src/routes/groups");
 const eventsRouter    = require("./src/routes/events");
 
 const app = express();
-const PORT = Number(process.env.PORT) || 4747;
+const PORT = Number(process.env.PORT) || 3001;
 
 app.use(express.json({ limit: "2mb" }));
 app.use(express.static(path.join(__dirname, "public")));

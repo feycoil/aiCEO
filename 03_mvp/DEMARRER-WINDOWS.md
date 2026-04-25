@@ -30,7 +30,7 @@ C:\Users\feycoil.ETIC\ETIC Services\EXECUTIVE BOARD [ExCom] - Direction - Docume
 
 Double-cliquez sur **`start.bat`**.
 
-Une fenêtre noire s'ouvre, puis votre navigateur s'ouvre automatiquement sur `http://localhost:4747`.
+Une fenêtre noire s'ouvre, puis votre navigateur s'ouvre automatiquement sur `http://localhost:3001`.
 
 **Pour arrêter** : fermez la fenêtre noire.
 
@@ -46,7 +46,7 @@ npm install
 node server.js
 ```
 
-Puis ouvrez http://localhost:4747 dans votre navigateur.
+Puis ouvrez http://localhost:3001 dans votre navigateur.
 
 ---
 
@@ -80,8 +80,8 @@ Puis quand vous voulez synchroniser avec votre version SharePoint, copiez juste 
 | Symptôme | Cause | Solution |
 |----------|-------|----------|
 | "Node.js n'est pas installé" | Node pas dans le PATH | Réinstallez Node.js en cochant "Add to PATH", redémarrez PowerShell |
-| `localhost:4747` ne charge pas | Serveur pas démarré | Double-cliquez `start.bat`, attendez le message "Serveur en cours de démarrage" |
-| "Port 4747 already in use" | Autre appli utilise le port | Éditez `.env`, mettez `PORT=4848` |
+| `localhost:3001` ne charge pas | Serveur pas démarré | Double-cliquez `start.bat`, attendez le message "Serveur en cours de démarrage" |
+| "Port 3001 already in use" | Autre appli utilise le port | Éditez `.env`, mettez `PORT=3002` |
 | `npm install` échoue avec "ENAMETOOLONG" | Chemin Windows trop long | Copiez le dossier vers `C:\aiceo\` (voir plus haut) |
 | Windows Defender bloque | Antivirus paranoïaque | Clic droit sur `start.bat` → Propriétés → Débloquer |
 | Écran blanc dans le navigateur | Cache | Ctrl+F5 pour recharger |

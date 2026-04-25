@@ -2,6 +2,21 @@
 
 ---
 
+## 2026-05-19 · S2.00 — Port serveur aligné sur 3001 (contrat DOSSIER S2)
+
+**Contexte** : `server.js` utilise par défaut `PORT=4747` depuis le MVP S1, mais l'ensemble des livrables S2 (DOSSIER-SPRINT-S2 §1, NOTE-CADRAGE-S2 §6, POA, KICKOFF) publie le contrat dogfood à `http://localhost:3001`. Tant que le code par défaut diverge des docs, chaque CEO pair / dev découvre un faux problème dès l'onboarding.
+
+**Décision** : abaisser le default `PORT` de `server.js` à **3001**, propager dans README, DEMARRER-WINDOWS et ONBOARDING-DEV. La variable `PORT` reste surchargeable via `.env` pour conserver la flexibilité ops. Les docs S1 historiques (RUNBOOK-OPS, SPRINT-S1-RECETTE) sont laissées en l'état — elles documentent l'historique, pas le contrat actif.
+
+**Conséquences** :
+- `npm start` ouvre désormais directement la cible dogfood `localhost:3001` documentée partout dans S2.
+- Migration zéro pour le CEO : `.env` non versionné, donc s'il avait surchargé à 4747 il garde son setup. S'il n'a pas de `.env`, il bénéficie automatiquement du nouveau défaut.
+- **Pré-requis levé** pour S2.01 (cockpit endpoint) et S2.07 (Playwright e2e qui ciblent `localhost:3001`).
+
+**Sources** : `03_mvp/server.js` (commit `S2.00`), `04_docs/DOSSIER-SPRINT-S2.md §1.1`, `04_docs/_sprint-s2/NOTE-CADRAGE-S2.md §6`.
+
+---
+
 ## 2026-04-25 · Sprint S2 — périmètre élargi à `taches.html` (4 pages au lieu de 3)
 
 **Contexte** : Sprint S1 livré ce 25/04 (tag `v0.5-s1`, 14 tables SQLite, 41 routes REST, 23/23 tests verts) avec **~2 jours d'avance** sur la planche initiale (cible 9 mai), grâce au pivot `node:sqlite` qui a supprimé la friction `better-sqlite3` + au dogfood CEO démarré dès le 22/04 (4 jours, 0 incident bloquant). En préparation du kickoff S2 (DOSSIER-SPRINT-S2.md, POA-SPRINT-S2.xlsx, KICKOFF-S2.pptx), la question du périmètre se pose : tenir le scope d'origine (3 pages : `index.html` · `arbitrage.html` · `evening.html`) en 2 semaines confortables, ou absorber en S2 la page `taches.html` initialement prévue en S3.
