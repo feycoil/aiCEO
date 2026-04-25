@@ -215,4 +215,5 @@ if (Test-Path $dumpScript) {
     Write-Host "  Dump regenere -> ../github-state.json" -ForegroundColor Green
 } else {
     Write-Host "  consistence-dump.ps1 introuvable a $dumpScript" -ForegroundColor Yellow
-    Write-Host "  Lancer manuellement : pwsh 
+    Write-Host "  Lancer manuellement : pwsh -File 04_docs/_audit-2026-04-25/consistence-dump.ps1" -ForegroundColor Cyan
+}
