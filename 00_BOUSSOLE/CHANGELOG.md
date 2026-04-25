@@ -22,6 +22,26 @@ Versionnage : les jalons correspondent à des tags Git (`v0.4`, `v0.5`…).
 
 **Dossier atelier conservé in-place** comme trace vivante (pas d'archivage physique maintenant ; reconsidérer 3 mois si consultation tombe à 0).
 
+### Sprint S3 — kickoff cadré 2026-04-25 (démarrage 02/06/2026)
+
+4 piliers, 11 issues (S3.00 → S3.10), 11,1 j-dev sur 20 j de capacité (45 % de marge). Pages migrées API SQLite : `agenda.html` (S3.01) + `revues/index.html` (S3.02). Câblage SSE front (S3.05, exploite le bus livré en S2.10). Autosync Outlook 2 h via `schtasks` (S3.06). Spike Service Windows POC time-boxé 1,5 j strict avec critère stop net (S3.10). Demos 06/06 puis 13/06, tag cible `v0.5-s3` le 16/06. Cumul tâches v0.5 : **60 %** post-S3. Voir `DECISIONS.md` 2026-04-25 + `04_docs/_sprint-s3/DOSSIER-S3.md` + `04_docs/_sprint-s3/POA-S3.xlsx` + `04_docs/_sprint-s3/KICKOFF-S3.pptx`.
+
+### Sprint S2 — v0.5-s2 livré 2026-04-25 (release/v0.5-s2 → main, tag v0.5-s2 pending)
+
+**Sprint clos en avance** (cible 01/06, livré 25/04 — schedule variance −37 j) : 10/10 issues fermées, 11 commits (`accea60` → `6f4e6e8`), **55/55 tests verts** (49 S1 + 6 S2 nouveaux), zéro régression v0.4. PR `release/v0.5-s2` prête, voir `.github/PR-S2.md`.
+
+- **Cockpit live** : `GET /api/cockpit/today` agrège tâches + décisions + events + intention de semaine + alertes (overdue, stale, big rocks manquants). Zéro `localStorage` applicatif (ADR S2.00).
+- **Rituels matin/soir** : `POST /api/arbitrage/start|commit` (top 3 P0/P1 → faire, ai_capable → déléguer, reste → reporter), `POST /api/evening/start|commit` (humeur ∈ {bien, moyen, mauvais}, énergie ∈ [1,5], top 3 demain) avec **streak persistant** dans `settings.evening.longest_streak`.
+- **Modèles métier élargis** : tables `projects`, `groups`, `contacts` + CRUD complet, recherche globale `GET /api/search?q=…` (full-text léger sur tasks/decisions/contacts/projects), `PATCH /api/tasks/:id` accepte `eisenhower` ∈ {UI, UnI, nUI, nUnI, --} avec filtre `?eisenhower=…`.
+- **IA décisionnelle** : `POST /api/decisions/:id/recommend` — recommandation Claude argumentée, fallback offline si pas de clé.
+- **Documentation API** : `docs/API.md` 487 lignes / 15 sections / **38 exemples curl** + smoke-test 1 commande, README mis à jour v0.5.
+- **Spike SSE** (S2.10, time-boxé 3 j → livré 1,5 j) : `docs/SPIKE-WEBSOCKET.md` (ADR SSE retenu vs WS — mono-user, mono-directionnel, zéro dépendance, `EventSource` natif), `src/realtime.js` (bus EventEmitter), `GET /api/cockpit/stream` (SSE + heartbeat 25 s). Câblage front différé S3.05.
+- **Tests e2e** (3 parcours matin / journée / soir) en HTTP boundary tests dans `tests/e2e.test.js` ; Playwright différé S3+ (Chromium infaisable en sandbox). Isolation par `AICEO_DB_OVERRIDE` + nettoyage WAL/SHM systématique.
+- **ADRs livrés** : S2.00 (zéro localStorage applicatif, source de vérité = SQLite serveur) + S2.10 (SSE plutôt que WebSocket).
+- **Time-box** : gain 1,5 j sur S2.10 redéployé sur S2.07 (3 parcours e2e) malgré contrainte sandbox.
+
+Tag `v0.5-s2` à appliquer post-merge : `git tag -a v0.5-s2 -m "Sprint S2 — cockpit live + rituels + SSE" && git push origin v0.5-s2`.
+
 ### Ajouté
 - **Décision majeure** : fusion app-web ↔ MVP en produit unifié (MVP absorbe app-web, SQLite remplace localStorage + JSON). Voir `DECISIONS.md` 2026-04-24.
 - Spec fonctionnelle fusion : `04_docs/SPEC-FONCTIONNELLE-FUSION.md` (vision, 21→13 pages, user flows matin/soir/hebdo, critères MVP, horizon V1-V3)
@@ -33,69 +53,4 @@ Versionnage : les jalons correspondent à des tags Git (`v0.4`, `v0.5`…).
 ### Ajouté (suite)
 - Dossier `02_design-system/` vérifié **présent et complet dans le repo** (audit initial erroné — le dossier existait déjà avec tokens, fonts, preview, ui_kits)
 - `02_design-system/REPO-CONTEXT.md` — note de contexte repo : origine, dernière resync, écart Inter/Fira Sans documenté, procédure de resync PowerShell
-- `04_docs/AUDIT-COHERENCE-2026-04-24.md` — audit sans concession sur 4 axes (fond/forme/complétude/consistance), 7 dissonances critiques identifiées, plan d'action 4 semaines P0→P2
-
-### Modifié
-- **Refonte `04_docs/08-roadmap.md` v2.0** : MVP remis en "livré v0.4", ajout du palier v0.5 (fusion) comme jalon en cours, backlog pointe GitHub Issues, RICE mis à jour avec états (✅ / 🔜 / 📋 / 🔬), budgets réalignés sur la réalité (v0.4 ≈ 1,5 ct/jour).
-- **Refonte `04_docs/06-architecture.md` v2.0** : §1 décrit le stack **réellement déployé** (Node + Express + vanilla JS + JSON + PowerShell COM + Anthropic SDK direct) au lieu du stack cible V1+. §2 détaille le delta fusion v0.5 (better-sqlite3 + Zod + Pino + Vitest + Playwright + Service Windows). §3-5 maintiennent la trajectoire V1-V3 avec transitions explicites.
-- **Refonte `00_BOUSSOLE/ROADMAP.md`** : tableau d'état aligné sur 4 milestones GitHub, jalons par milestone, pointeurs vers SPEC-FUSION, règle de mise à jour hebdo.
-
-### En cours
-- Migration Inter → Fira Sans dans `02_design-system/assets/app.css` + `product.app.css` (planifiée en sprint DS dédié — à ouvrir comme Issue GitHub)
-
----
-
-## [0.4] — 2026-04-24
-
-### Ajouté
-- MVP : support proxy corp `HTTPS_PROXY` + `NODE_EXTRA_CA_CERTS` (factory Anthropic)
-- MVP : contexte email injecté dans le prompt d'arbitrage (digest global + signaux par tâche)
-- Chip coral sur cartes sous pression (≥ 2 relances ou ≥ 3 non lus)
-
-### Modifié
-- Prompt arbitrage : REPORTER sans plafond (toutes les tâches hors FAIRE/DÉLÉGUER y vont, 0 perdue)
-- Prompt délégation : ton plus clair, placeholders remplacés
-
-### Validé
-- Run réel 28/28 tâches classées en 41 s
-- 5,2 k tokens in / 2,5 k out · ≈ 1 ct / arbitrage · budget quotidien ≈ 1,5 ct
-- Import Outlook : 926 mails utiles sur 3 comptes (30 jours)
-
-### Added
-- Migration backlog xlsx vers GitHub Issues : 78 issues, 4 milestones, 29 labels
-- Script `setup-github-issues.ps1` pour reproductibilité
-- Épic transverse "Infrastructure & DX" pour chantiers sans feature parent
-
-### Changed
-- Backlog source de vérité : `04_docs/09-backlog.xlsx` → GitHub Issues `feycoil/aiCEO`
-
-### Archived
-- `04_docs/09-backlog.xlsx` + CSVs → `_archive/2026-04-backlog-initial/`
-- `_drafts/BACKLOG_*.md` → `_archive/2026-04-backlog-initial/`
-- `_scratch/setup-github-issues.ps1` → `_archive/2026-04-backlog-initial/`
-
----
-
-## [0.3] — 2026-04-20
-
-### Ajouté
-- Boucle du soir : `public/evening.html`, endpoints `/api/evening/*`
-- Flux délégation : brouillon mail généré par Claude, mailto: Outlook, archive locale
-- Import Outlook 30 jours via PowerShell COM + normalisation JS
-
----
-
-## [0.2] — 2026-04-15
-
-### Ajouté
-- Drag & drop entre colonnes FAIRE / DÉLÉGUER / REPORTER
-- Validation d'arbitrage persistée dans `data/decisions.json`
-
----
-
-## [0.1] — 2026-04-11
-
-### Ajouté
-- Scaffold Express port 4747
-- Endpoint `/api/arbitrage` avec prompt système + wrapper SDK Anthropic
-- UI 3 colonnes + mode démo fallback (sans clé API)
+- `04_docs/AUDIT-COHERENCE-2026-04-24.md` — audit sa

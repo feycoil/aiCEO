@@ -2,6 +2,48 @@
 
 ---
 
+## 2026-04-25 · Sprint S3 — cadrage 4 piliers + spike Service Windows time-boxé
+
+**Contexte** : Sprint S2 livré complet le 25/04 (cf. ADR « Sprint S2 livré » ci-dessous) avec 1,5 j de gain time-box (spike SSE bouclé en 1,5 j vs 3 j prévus). La question du périmètre S3 se pose : tenir le scope d'origine (`agenda.html` + `revues/index.html`) sur 2 semaines confortables, ou densifier S3 pour anticiper deux dettes opérationnelles connues — (a) le bus SSE prototypé en S2.10 reste **non câblé front**, (b) l'import Outlook reste **lancé manuellement par le CEO** depuis PowerShell. À cela s'ajoute une décision à prendre pour S5 : packaging Service Windows. Sans POC, le risque est de découvrir trop tard une incompatibilité COM/registry/permissions au moment du cutover.
+
+**Décision** : **densifier S3 à 4 piliers** — (1) `agenda.html` migré API SQLite (vue hebdo lun-dim, drag-drop tâche → `due_at`), (2) `revues/index.html` migré API (Big Rocks éditables max 3/sem, auto-draft Claude rubric ≥ 5/6, archives W17+), (3) **câblage SSE front** (cockpit + tâches re-fetch < 1 s sur émission bus, reconnexion auto navigateur), (4) **Outlook autosync 2 h** via `schtasks /sc HOURLY /mo 2` + endpoint introspection `GET /api/system/last-sync` + alerte cockpit si > 4 h sans sync. **Spike S3.10 Service Windows time-boxé 1,5 j strict** (POC node-windows install/start/stop) : ADR uniquement si dépassement, pas de blocage S3 si POC échoue. 11 issues `S3.00` → `S3.10` · **11,1 j-dev sur 20 j capacité** (45 % marge dailys/retro/demos). Démarrage **lundi 02/06/2026 09:00** · demo intermédiaire **vendredi 06/06 16:00** · démo finale **vendredi 13/06 16:00** · tag cible **`v0.5-s3`** lundi 16/06.
+
+**Conséquences** :
+
+- **Cumul v0.5 fin S3 = 66,3 k€ / 110 k€ = 60 %** budget consommé (S1 22,1 + S2 22,1 + S3 22,1). Reste 33,7 k€ pour S4-S5-S6 + V1 amorçage. Marge confortable mais pas excessive.
+- **Câblage SSE front en S3.05** : la dette technique laissée par S2.10 est purgée avant que le bus ne devienne un mort-vivant en backend. Le front re-fetch automatiquement sur événement → fin de la friction « tab A modifie, tab B ne voit pas ». Heartbeat 25 s testé Zscaler-safe poste CEO J3.
+- **Outlook autosync en S3.06** : fin du lancement PowerShell manuel par le CEO matin/midi/soir. Le binôme `schtasks /create aiCEO-Outlook-Sync /sc HOURLY /mo 2` + endpoint `/api/system/last-sync` rend la fraîcheur du contexte agent IA observable et alerte le CEO si la chaîne tombe (> 4 h sans sync). Risque admin (R1 du dossier) : escaladé **issue P0 IT ETIC J1**, fallback tâche utilisateur si droits admin refusés.
+- **POC Service Windows en S3.10** : prépare S5 cutover. Décision ADR si POC ouvre une question structurelle (ex. node-windows incompatible Win Server 2019, ou install MSI/NSSM préférable). Si POC vert silencieux : pas d'ADR, S5 démarre directement sur l'install pré-validée.
+- **Critères de fin S3** : 10 conditions (2 pages curl 200, zéro localStorage, agenda drag-drop e2e + SQL, Big Rocks max 3/sem 400, auto-draft rubric ≥ 5/6, SSE live cockpit < 1 s, Outlook autosync planifié, `/api/system/last-sync` structuré, ≥ 65 tests unitaires, e2e P4 vert).
+- **Top 5 risques S3** identifiés avec mitigation + déclencheur : R1 schtasks droits admin (Moy/P1), R2 auto-draft Claude faible (Moy/P2), R3 SSE coupé Zscaler (Faible/P2), R4 drag-drop Edge legacy (Faible/P3), R5 spike Service Windows déborde (Moy/P2).
+- **Roadmap interactive** (`04_docs/11-roadmap-map.html`) : Phase 2 marquée *Livrée* (badge S2 ✓), Phase 3 marquée *En cours* (badge S3 KICKOFF), bandeau « Vous êtes ici » réécrit, jalon `v05-s3` ajouté avec `status:"doing"`, période `juin-s2` activée (`now:true`), entrées JOURNAL « livraison Sprint S2 livré (delta -37 j) » et « décision Sprint S3 — kickoff préparé ».
+
+**Sources** : `04_docs/DOSSIER-SPRINT-S3.md`, `04_docs/POA-SPRINT-S3.xlsx` (6 feuilles, 25 formules, 0 erreur), `04_docs/KICKOFF-S3.pptx` (12 slides QA passé), `04_docs/11-roadmap-map.html` (jalon `v05-s3`, JOURNAL 25/04).
+
+---
+
+## 2026-04-25 · Sprint S2 livré (release/v0.5-s2) — cockpit live + rituels + spike SSE
+
+**Contexte** : Sprint S2 cadré sur la fenêtre 19/05 → 01/06/2026, démarrage prévu lundi 19/05. Effectivement démarré et **livré complet en avance le 25/04** par binôme CEO + Claude (vélocité supérieure aux hypothèses du DOSSIER-SPRINT-S2). Les 10 issues prévues ont été traitées dans l'ordre du POA, sans bascule du Plan B (`taches.html` est resté dans le périmètre S2, pas re-décalé en S3).
+
+**Décision** : **acter la livraison de Sprint S2** avec scellement formel : **10/10 issues closes** (`S2.00` → `S2.10`), **11 commits** sur la branche `release/v0.5-s2` (`accea60` → `6f4e6e8`), **55/55 tests verts** (49 hérités S1 + 6 nouveaux S2). PR `.github/PR-S2.md` rédigée prête à merger sur `main`. Tag cible **`v0.5-s2`** posé post-merge.
+
+**Conséquences** :
+
+- **Cockpit live opérationnel** : `GET /api/cockpit/today` agrège counters SQL (overdue / done today / week stats) + alertes (overdue, stale, big rocks manquants) + intention de semaine + events. Source de vérité unique côté serveur, **zéro `localStorage` applicatif** (ADR S2.00 livré).
+- **Rituels matin/soir stables** : arbitrage matinal (`POST /api/arbitrage/start|commit` — top 3 P0/P1 → faire, ai_capable → déléguer, reste → reporter) + bilan du soir (`POST /api/evening/start|commit` avec validations humeur ∈ {bien, moyen, mauvais} et énergie ∈ [1,5]) + **streak persistant** dans `settings.evening.longest_streak`.
+- **Modèles métier élargis** : projects/groups/contacts CRUD complet + recherche globale full-text léger sur tasks/decisions/contacts/projects. IA décisions Anthropic + fallback offline (`POST /api/decisions/:id/recommend`).
+- **Documentation API** : `docs/API.md` (487 lignes, 15 sections, 38 exemples curl, smoke-test 1 commande). README mis à jour v0.5.
+- **Spike SSE retenu vs WS** (ADR S2.10 livré) : mono-user, mono-directionnel, zéro dépendance, `EventSource` natif navigateur. Bus `EventEmitter` + `GET /api/cockpit/stream` + heartbeat 25 s + 3 tests realtime. **Câblage front DIFFÉRÉ S3.05** (point de dette technique acté) — WebSocket reconsidéré v0.6+ si cas bidir apparaît.
+- **Time-box bénéfique** : spike S2.10 livré en 1,5 j vs 3 j estimés. Gain 1,5 j redéployé sur **S2.07** pour livrer 3 parcours e2e HTTP-boundary malgré l'impossibilité de Playwright en sandbox (Chromium infaisable).
+- **Tests** : 55/55 verts via isolation `AICEO_DB_OVERRIDE` (un fichier SQLite dédié par suite, supprimé en `after`, nettoyage WAL/SHM systématique). Aucune régression sur le périmètre v0.4.
+- **Schedule variance vs BASELINE** : -37 j (livré 25/04 vs planifié 01/06). Gain à réinjecter en S3 (densification 4 piliers) plutôt qu'en avance calendaire pure — la cadence 10 sem reste la cible de pilotage produit.
+- **Tag** : `v0.5-s2` posé post-merge sur `main` via `git tag -a v0.5-s2 -m "Sprint S2 — cockpit live + rituels + SSE"`.
+
+**Sources** : `.github/PR-S2.md`, branche `release/v0.5-s2` (commits `accea60` → `6f4e6e8`), `data/migrations/2026-04-25-init-schema.sql`, `docs/API.md`, `docs/SPIKE-WEBSOCKET.md`, `tests/e2e.test.js`, `tests/realtime.test.js`.
+
+---
+
 ## 2026-05-19 · S2.00 — Port serveur aligné sur 3001 (contrat DOSSIER S2)
 
 **Contexte** : `server.js` utilise par défaut `PORT=4747` depuis le MVP S1, mais l'ensemble des livrables S2 (DOSSIER-SPRINT-S2 §1, NOTE-CADRAGE-S2 §6, POA, KICKOFF) publie le contrat dogfood à `http://localhost:3001`. Tant que le code par défaut diverge des docs, chaque CEO pair / dev découvre un faux problème dès l'onboarding.
@@ -431,81 +473,4 @@ Tableau de référence unique (à citer dans tout nouveau document qui porte un 
 - Tout nouveau draft doit inclure une date ISO dans son en-tête (`**Créé** : YYYY-MM-DD`) pour faciliter l'audit.
 - Un audit trimestriel de `_drafts/` est prévu dans `GOUVERNANCE.md` (à patcher en S7 ou immédiatement).
 
-**Conditions de revisite** : si le volume de drafts devient ingérable (> 10 simultanés) ou si la durée de 4 semaines s'avère trop courte pour certains types (ex. spec longue en incubation), affiner par type dans un nouvel ADR.
-
----
-
-## 2026-04-24 · Timing & budget v0.5 réconciliés
-
-**Contexte** : l'audit de cohérence (dissonances C1 et C5) a relevé que le dossier produit avance **quatre durées différentes** pour la fusion v0.5 (6 sem dans le chemin critique, 7 sem dans la synthèse, 9 sem dans SPEC-TECHNIQUE-FUSION, 10 sem dans la table des sprints) et **deux budgets incompatibles** (95 k€ dans la synthèse roadmap sans dérivation, 132 kEUR dans SPEC-TECHNIQUE-FUSION qui est en fait le budget v0.4 MVP). L'équipe v0.5 n'est par ailleurs documentée nulle part. Conséquence : le CEO ne peut pas citer un chiffre de v0.5 à un interlocuteur externe sans être contredit par un autre passage du dossier. Atelier de cohérence, Session 4.
-
-**Options étudiées** :
-- (A) Accepter le bundle reco — 6 sprints / 10 sem / 110 k€ / équipe 2,6 ETP documentée, V1 = 16 sem canonique avec §8 clarifié
-- (B) Compresser à 5 sprints / 9 sem comme le propose SPEC-TECHNIQUE-FUSION
-- (C) Viser 78 k€ avec une équipe serrée à 1,8 ETP (1 lead dev + 0,5 designer + 0,3 PMO)
-
-**Décision** : **A — bundle reco**.
-
-1. **6 sprints, 10 semaines** pour la fusion v0.5. S6 dédié au scellement (tag `v0.5`, release interne, rétro, communication) est conservé distinct du S5 (durcissement technique + Service Windows + tests e2e + CI).
-2. **Équipe v0.5 = 2,6 ETP** : 2 fullstack dev + 0,3 product designer + 0,3 PMO. Feycoil reste dogfood user quotidien, non budgété.
-3. **Budget v0.5 = ~110 k€** (10 sem × 2,6 ETP × 900 €/j × 4,5 j/sem ≈ 105 k€ dev + 5 k€ infra/LLM).
-4. **V1 = 16 semaines canonique** (périmètre complet, budget 290 k€). Le chiffre "14 sem" du chemin critique §8 désigne le chemin vers "V1 cœur" (migration Postgres + Graph API + Inngest + sub-agents), les 8 sem restantes couvrent les enrichissements F15 SharePoint RAG, F19 viz riches, F12 rituels auto-draftés.
-
-**Conséquences** :
-- Patch `04_docs/08-roadmap.md` : §3.2 (retirer "~1,5 mois dev temps plein"), §3.2bis "Équipe v0.5" créée, §3.2ter "Budget v0.5" créée (dérivation explicite), §8 chemin critique (6→10 sem fusion + clarification V1 cœur vs V1 complet), §13 synthèse (7 sem → 10 sem, 95 k€ → 110 k€).
-- Patch `04_docs/SPEC-TECHNIQUE-FUSION.md` §13 : ajout du Sprint 6 (scellement, 1 sem) ; remplacement de "132 kEUR conforme roadmap" par "110 kEUR (dérivation dans `08-roadmap.md` §3.2ter)".
-- À partir de cet ADR, **tout chiffre v0.5** cité dans le dossier doit être aligné sur 10 sem / 110 k€ / 2,6 ETP ou amender cet ADR.
-- Budget total 18 mois ajusté : MVP v0.4 dogfood (bien sous 132 k€) + v0.5 110 k€ + V1 290 k€ + V2 693 k€ + V3 598 k€ ≈ 1,69 M€ (ligne §13 `Budget 18 mois total ≈ 1,68 M€` reste valide).
-
-**Conditions de revisite** : si la fusion v0.5 dépasse 12 semaines ou 130 k€, ouvrir un nouvel ADR avec analyse de la dérive (dette technique sous-estimée, équipe insuffisante, périmètre sous-estimé).
-
----
-
-## 2026-04-24 · Livrables externes : cadrage
-
-**Contexte** : l'audit de cohérence (dissonance C4) a relevé que le dossier produit est *« prêt à être utilisé, pas à être présenté »* — score complétude **0 % CEO pair**, **0 % client**, **40 % investisseur**. L'audit §5.3 insiste : *« le premier vrai test externe (CEO pair ETIC) est l'événement le plus important de la trajectoire post-v0.5 »*. Parallèlement, la dissonance C7 (positionnement obsolète — benchmark Lattice/Motion/Superhuman incompatible avec la réalité local-first post-fusion) bloque tout pitch crédible. Atelier de cohérence, Session 5.
-
-**Options étudiées** :
-- (A) CEO pair uniquement — scope minimal, 2-3 j
-- (B) **CEO pair + Investisseur** — couvre P1-4 de l'audit intégralement, 4-5 j
-- (C) Tout (+ client + partenaire tech) — 10+ j, livrables périmés avant V1
-
-**Décision** : **B — CEO pair + Investisseur traités maintenant**, client et partenaire tech parqués (reco révisable post-V1 pour le client, post-V2 pour le partenaire tech).
-
-**Cadrage S5** :
-1. **5 livrables à produire** (sprint dédié 4-5 j, fenêtre S2 du plan audit 05/05 → 11/05) :
-   - `04_docs/PITCH-ONEPAGE.md` — problème/solution/preuve/trajectoire/CTA, 1 page PDF
-   - `04_docs/BUSINESS-CASE.md` — hypothèses revenue, coûts 18 mois (1,69 M€), point mort, ROI CEO utilisateur
-   - `04_docs/ONBOARDING-CEO-PAIR.md` — prérequis, install Service Windows, import Outlook, premier arbitrage, FAQ
-   - `04_docs/LETTRE-INTRO-CEO-PAIR.md` — template 1 page signée Feycoil, pair-à-pair
-   - `04_docs/PITCH-DECK-INVESTISSEUR.pptx` — adaptation de `10-exec-deck.pptx` (redactions + traction + positionnement à jour + slides "pas encore construit")
-2. **Dépendance bloquante P0** : patch `04_docs/02-benchmark.md` (refonte §3 : Copilot for Business / Rewind / Motion-desktop / plugin Outlook ; §0 ajouté "Deux marchés de référence selon phase produit"). Sans ce patch, le pitch investisseur ne tient pas.
-3. **Stockage** : tous les livrables dans `04_docs/` avec préfixes MAJUSCULES (cohérent avec `SPEC-FONCTIONNELLE-FUSION.md` et `SPEC-TECHNIQUE-FUSION.md`). Nouvelle section "Livrables externes" ajoutée dans `04_docs/00-README.md`.
-4. **Confidentialité** : un seul fichier par audience, pas de double version. En-tête de filtrage explicite obligatoire sur chaque livrable externe : `Audience : <CEO pair | Investisseur>. Éléments redactés : <liste>. Version interne de référence : <fichier>.`
-5. **Cadence** : maintien continu, pas de fichiers versionnés (`-v0.5.md`). Chaque livrable porte `**Version produit visée** : <v0.5 | V1 | ...> · **Dernière mise à jour** : YYYY-MM-DD`. Revue systématique à chaque jalon produit scellé (v0.5, V1, V2).
-
-**Conséquences** :
-- **6 issues GitHub à ouvrir manuellement** (contenu préparé dans `04_docs/_atelier-2026-04-coherence/sessions/S5-livrables-externes.md` §9) : `doc/02-benchmark-v2-positionnement-a-jour` (P0), puis les 5 issues `doc/PITCH-ONEPAGE`, `doc/BUSINESS-CASE`, `doc/ONBOARDING-CEO-PAIR`, `doc/LETTRE-INTRO-CEO-PAIR`, `doc/PITCH-DECK-INVESTISSEUR`. Labels : `lane/docs` + `priority/P1` (sauf benchmark = P0) + `scope/externe` + milestone `V1`.
-- Section "Livrables externes" ajoutée dans `04_docs/00-README.md`, en creux aujourd'hui, à alimenter au fil de la production.
-- Le `10-exec-deck.pptx` actuel reste **interne uniquement** (ExCom ADABU 30/04). Toute adaptation pour l'externe passe par un nouveau fichier (pas de variante confuse du même nom).
-- Client et partenaire tech : créer 2 issues GitHub parqueurs avec milestone `V2` et label `status/parked` pour garder la trace de la décision (rouvrir post-V1 et post-V2 respectivement).
-
-**Conditions de revisite** : si une opportunité externe se présente avant T1 2027 (intérêt concret d'un client-test, approche d'un VC qualifié, sollicitation d'un partenaire tech), rouvrir cet ADR pour ajouter le livrable pertinent. Ne pas produire préventivement ce qui peut être obsolète.
-
----
-
-## Template pour la prochaine décision
-
-```markdown
-## YYYY-MM-DD · Titre court
-
-**Contexte** : (en 2-3 lignes)
-
-**Options étudiées** :
-- (A) …
-- (B) …
-
-**Décision** : …
-
-**Conséquences** : …
-```
+**Conditions de revisite** : si le volume de drafts devient ingérable (> 10
