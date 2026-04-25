@@ -40,7 +40,7 @@ Critères d''acceptation
 ### Le format qui CASSE : here-string double-quoted `@"..."@`
 
 ```powershell
-# ❌ NE PAS UTILISER pour des bodies markdown
+# NE PAS UTILISER pour des bodies markdown
 $body01 = @"
 - [ ] `index.html` doit consommer l'API
 - [ ] Patcher `notes.html` pour le drag-drop
@@ -96,14 +96,21 @@ function Ensure-Milestone($title, $description, $dueOn) {
 }
 Ensure-Milestone "v0.5-sX" "Description courte" "2026-MM-DDTHH:MM:SSZ"
 
-# 4. Création des issues — body file via UTF-8 explicite
+# 4. Création des issues — body file via UTF-8 explicite + capture des numéros GitHub
 $tmpDir = Join-Path $env:TEMP "aiCEO-issues-sX-$(Get-Random)"
 New-Item -ItemType Directory -Path $tmpDir | Out-Null
+$createdIssues = @()
 
 function Create-Issue($num, $title, $labelsCsv, $milestone, $body) {
   $bodyFile = Join-Path $tmpDir "issue-$num.md"
   [System.IO.File]::WriteAllText($bodyFile, $body, [System.Text.Encoding]::UTF8)
-  & gh issue create --repo $repo --title $title --body-file $bodyFile --label $labelsCsv --milestone $milestone
+  # --json url,number capture les vrais refs GitHub pour le PR body
+  $result = & gh issue create --repo $repo --title $title --body-file $bodyFile `
+    --label $labelsCsv --milestone $milestone | Out-String
+  $url = ($result -split "`n" | Where-Object { $_ -match "^https://" } | Select-Object -First 1).Trim()
+  if ($url -match '/issues/(\d+)$') {
+    $script:createdIssues += [PSCustomObject]@{ tag = $num; number = [int]$matches[1]; url = $url }
+  }
 }
 
 $commonLabels = "sprint/sX,phase/v0.5-sX"
@@ -112,6 +119,11 @@ $body00 = @'
 ... markdown ici ...
 '@
 Create-Issue "SX.00" "[SX.00] Titre" "$commonLabels,lane/mvp,type/adr,priority/P0,owner/pmo" "v0.5-sX" $body00
+
+# Sortie : JSON des numéros pour le PR body
+$createdIssues | ConvertTo-Json -Depth 2 | Out-File "04_docs/_sprint-sX/issues-sX.json" -Encoding UTF8
+Write-Host "Closes line for PR body :" -ForegroundColor Cyan
+Write-Host ("Closes " + (($createdIssues | ForEach-Object { "#$($_.number)" }) -join ", "))
 ```
 
 ### Pièges historiques (ne pas refaire)
@@ -122,6 +134,8 @@ Create-Issue "SX.00" "[SX.00] Titre" "$commonLabels,lane/mvp,type/adr,priority/P
 | 2 | Bodies en `@"..."@` cassent les backticks markdown et les `` `n `` deviennent newlines | S3 | Bodies en `@'...'@` |
 | 3 | `''` doublé dans `@"..."@` produit deux apostrophes littérales | S3 | Bodies en `@'...'@` (où `''` = `'` correct) |
 | 4 | `--body "string"` mange les newlines selon les politiques de quoting Windows | S2 | Toujours passer par `--body-file <tmp>.md` UTF-8 |
+| 5 | **PowerShell 5 lit le `.ps1` en cp1252 si pas de BOM** -> mojibake (`—` -> `â€"`, `é` -> `Ã©`) qui casse le parser | S3 | Sauver le `.ps1` en **UTF-8 avec BOM** (`EF BB BF`). Vérifier : `(Get-Content $file -Encoding Byte -TotalCount 3) -join ','` doit donner `239,187,191`. Côté Linux : `printf '\xef\xbb\xbf'; cat fichier.ps1` |
+| 6 | **`Closes #SX.NN` ne ferme rien** — GitHub n'auto-close que sur numéros décimaux (`Closes #15`). Le tag `SX.NN` est dans le titre, pas l'ID. | S2 | (a) Capturer les numéros GitHub à la création (cf. squelette ci-dessus, sortie `issues-sX.json`). (b) Générer le `PR-SX.md` avec les vrais refs `Closes #15, #16, ...`. (c) Fallback post-merge : `gh issue list --milestone v0.5-sX --state open --json number \| ConvertFrom-Json \| ForEach-Object { gh issue close $_.number --reason completed }` (idempotent, ne touche pas aux issues déjà closes ni aux autres milestones) |
 
 ---
 
@@ -133,6 +147,7 @@ souffre d'un problème de sync avec les writes atomiques de git :
 - `.git/index` peut être corrompu (`bad signature 0x00000000`) après un `git add`
   qui passait pourtant proprement.
 - `git status` peut "rater" des fichiers modifiés malgré un `git diff` qui voit l'écart.
+- Les writes via Edit tool peuvent **truncater** un fichier (lecture cache stale, write tronqué) — vérifier avec `wc -l` après chaque Edit, et au besoin réécrire en `Write` complet ou via `python3 /tmp/build.py`.
 
 ### Le pattern qui marche : index sur tmpfs
 
@@ -154,6 +169,7 @@ cp /tmp/git-index-work .git/index   # resync .git/index seulement après commit 
 | `git status` clean alors que le contenu a clairement changé | `cp .git/index /tmp/git-index-work && GIT_INDEX_FILE=/tmp/git-index-work git status` |
 | `fatal: index file corrupt` | `git reset` (récupère l'index depuis HEAD sans toucher le working tree) |
 | `git add` reporte tous les fichiers en "deleted" | Workflow tmpfs `GIT_INDEX_FILE=/tmp/git-index-work` |
+| Fichier truncaté après `Edit` tool | `Read` complet -> `Write` du fichier en entier, OU mieux : `cat > fichier <<'EOF_DELIM' ... EOF_DELIM` via bash |
 
 ### Push depuis le sandbox
 
@@ -173,11 +189,11 @@ côté Windows. Pattern récurrent :
 
 ## 3. Conventions transverses (toutes plateformes)
 
-- **Encoding** : UTF-8 partout, BOM-less. PowerShell : forcer
-  `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8`.
+- **Encoding** : UTF-8 partout. PowerShell : forcer
+  `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8` + sauver les `.ps1` **avec BOM**.
 - **EOL** : `.gitattributes` impose `*.ps1 text eol=crlf`, le warning
   "LF will be replaced by CRLF" est attendu et bénin.
-- **Idempotence** : tout script setup (labels, milestone, labels GitHub)
+- **Idempotence** : tout script setup (labels, milestone, etc.)
   doit être ré-exécutable sans effet de bord (vérifier l'existence avant de créer).
 - **Préfixe d'issue** : titre = `[SX.NN] <verbe d'action>` pour faciliter `gh issue list --search "SX.NN"`.
 - **Labels** : `sprint/sX`, `phase/v0.5-sX`, `lane/mvp|tests`, `type/feat|adr|spike|test|docs`, `priority/P0|P1|P2`, `area/api|ux|ai|realtime|integration|deploy`, `owner/dev1|dev2|pmo`.
@@ -188,7 +204,9 @@ côté Windows. Pattern récurrent :
   - Dépendances : aucune | **SX.NN**
   ```
 - **Source** : dernière ligne du body, pointe vers le DOSSIER-SPRINT et la section concernée.
+- **Auto-close PR -> issues** : capturer les numéros à la création (sortie `issues-sX.json`),
+  les utiliser dans `PR-SX.md` (`Closes #15, #16, ...`). Le tag `SX.NN` du titre **n'est pas un ID GitHub**.
 
 ---
 
-*Dernière maj : 2026-04-25 (post-fix S3 heredoc PowerShell). À enrichir au fil des sprints.*
+*Dernière maj : 2026-04-25 (post-fix S3 heredoc + BOM + auto-close issues). À enrichir au fil des sprints.*
