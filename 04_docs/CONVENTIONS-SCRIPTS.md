@@ -136,6 +136,7 @@ Write-Host ("Closes " + (($createdIssues | ForEach-Object { "#$($_.number)" }) -
 | 4 | `--body "string"` mange les newlines selon les politiques de quoting Windows | S2 | Toujours passer par `--body-file <tmp>.md` UTF-8 |
 | 5 | **PowerShell 5 lit le `.ps1` en cp1252 si pas de BOM** -> mojibake (`—` -> `â€"`, `é` -> `Ã©`) qui casse le parser | S3 | Sauver le `.ps1` en **UTF-8 avec BOM** (`EF BB BF`). Vérifier : `(Get-Content $file -Encoding Byte -TotalCount 3) -join ','` doit donner `239,187,191`. Côté Linux : `printf '\xef\xbb\xbf'; cat fichier.ps1` |
 | 6 | **`Closes #SX.NN` ne ferme rien** — GitHub n'auto-close que sur numéros décimaux (`Closes #15`). Le tag `SX.NN` est dans le titre, pas l'ID. | S2 | (a) Capturer les numéros GitHub à la création (cf. squelette ci-dessus, sortie `issues-sX.json`). (b) Générer le `PR-SX.md` avec les vrais refs `Closes #15, #16, ...`. (c) Fallback post-merge : `gh issue list --milestone v0.5-sX --state open --json number \| ConvertFrom-Json \| ForEach-Object { gh issue close $_.number --reason completed }` (idempotent, ne touche pas aux issues déjà closes ni aux autres milestones) |
+| 7 | **`ConvertTo-Json` tronque silencieusement** quand l'objet contient des `@{}` (hashtables) imbriqués + profondeur insuffisante. Symptôme : fichier JSON cut au milieu d'une entrée, sans erreur PowerShell. | Audit 25/04 | (a) Toujours `[pscustomobject]@{...}` plutôt que `@{...}` pour les sous-objets sérialisés. (b) `-Depth 20` minimum au lieu de la valeur historique 8. (c) Pipeline systématique : `$json \| ConvertFrom-Json -ErrorAction Stop` pré-write, puis `Get-Content $out -Raw -Encoding UTF8 \| ConvertFrom-Json -ErrorAction Stop` post-write. Si l'un échoue : on dump le `.bad` et on `throw`. |
 
 ---
 
@@ -196,17 +197,4 @@ côté Windows. Pattern récurrent :
 - **Idempotence** : tout script setup (labels, milestone, etc.)
   doit être ré-exécutable sans effet de bord (vérifier l'existence avant de créer).
 - **Préfixe d'issue** : titre = `[SX.NN] <verbe d'action>` pour faciliter `gh issue list --search "SX.NN"`.
-- **Labels** : `sprint/sX`, `phase/v0.5-sX`, `lane/mvp|tests`, `type/feat|adr|spike|test|docs`, `priority/P0|P1|P2`, `area/api|ux|ai|realtime|integration|deploy`, `owner/dev1|dev2|pmo`.
-- **Charge / Owner / Dépendances** : section obligatoire en pied de body, format
-  ```
-  - Charge : N j-dev
-  - Owner  : Dev1 | Dev2 | PMO
-  - Dépendances : aucune | **SX.NN**
-  ```
-- **Source** : dernière ligne du body, pointe vers le DOSSIER-SPRINT et la section concernée.
-- **Auto-close PR -> issues** : capturer les numéros à la création (sortie `issues-sX.json`),
-  les utiliser dans `PR-SX.md` (`Closes #15, #16, ...`). Le tag `SX.NN` du titre **n'est pas un ID GitHub**.
-
----
-
-*Dernière maj : 2026-04-25 (post-fix S3 heredoc + BOM + auto-close issues). À enrichir au fil des sprints.*
+- **Labels** : `sprint/sX`, `phase/v0.5-sX`, `lane/mvp|tests`, `type/feat|adr|spike|test|docs`, `priority/P0|P1|P2`, `area/api|ux|ai|realtime|integration|deploy`, `owner/de

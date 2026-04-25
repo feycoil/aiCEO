@@ -63,8 +63,8 @@ $issuesOut = @($issuesRaw | Where-Object { -not $_.pull_request } | ForEach-Obje
     title     = $_.title
     state     = $_.state
     state_reason = $_.state_reason
-    labels    = @($_.labels | ForEach-Object { @{ name = $_.name; color = $_.color } })
-    milestone = if ($_.milestone) { @{ number = $_.milestone.number; title = $_.milestone.title; state = $_.milestone.state } } else { $null }
+    labels    = @($_.labels | ForEach-Object { [pscustomobject]@{ name = $_.name; color = $_.color } })
+    milestone = if ($_.milestone) { [pscustomobject]@{ number = $_.milestone.number; title = $_.milestone.title; state = $_.milestone.state } } else { $null }
     assignees = @($_.assignees | ForEach-Object { $_.login })
     body      = if ($_.body) { ($_.body -split "`n")[0..([Math]::Min(2,([string]$_.body -split "`n").Length-1))] -join "`n" } else { '' }
     html_url  = $_.html_url
@@ -82,7 +82,7 @@ $prsOut = @($prsRaw | ForEach-Object {
   $detail  = gh api "repos/$repo/pulls/$($pr.number)" | ConvertFrom-Json
   $reviews = gh api "repos/$repo/pulls/$($pr.number)/reviews" | ConvertFrom-Json
   $reqRev  = if ($detail.requested_reviewers) { @($detail.requested_reviewers | ForEach-Object { $_.login }) } else { @() }
-  $doneRev = if ($reviews) { @($reviews | ForEach-Object { @{ user = $_.user.login; state = $_.state } }) } else { @() }
+  $doneRev = if ($reviews) { @($reviews | ForEach-Object { [pscustomobject]@{ user = $_.user.login; state = $_.state } }) } else { @() }
 
   [pscustomobject]@{
     number      = $pr.number
@@ -92,8 +92,8 @@ $prsOut = @($prsRaw | ForEach-Object {
     merged_at   = $detail.merged_at
     head        = $pr.head.ref
     base        = $pr.base.ref
-    labels      = @($pr.labels | ForEach-Object { @{ name = $_.name; color = $_.color } })
-    milestone   = if ($pr.milestone) { @{ number = $pr.milestone.number; title = $pr.milestone.title; state = $pr.milestone.state } } else { $null }
+    labels      = @($pr.labels | ForEach-Object { [pscustomobject]@{ name = $_.name; color = $_.color } })
+    milestone   = if ($pr.milestone) { [pscustomobject]@{ number = $pr.milestone.number; title = $pr.milestone.title; state = $pr.milestone.state } } else { $null }
     assignees   = @($pr.assignees | ForEach-Object { $_.login })
     requested_reviewers = $reqRev
     reviews     = $doneRev
@@ -121,10 +121,32 @@ $payload = [pscustomobject]@{
   pulls      = $prsOut
 }
 
-$json = $payload | ConvertTo-Json -Depth 8
+# Profondeur 20 (vs 8 historiquement) pour absorber labels/reviews/milestones imbriques
+$json = $payload | ConvertTo-Json -Depth 20
+
+# Validation pre-write : si le JSON serialise n'est pas parseable on s'arrete net.
+# Cause connue PS5 : ConvertTo-Json sur objets contenant des hashtables peut produire
+# du JSON tronque silencieusement. On a remplace tous les @{} imbriques par
+# [pscustomobject]@{} pour serialisation deterministe.
+try {
+  $null = $json | ConvertFrom-Json -ErrorAction Stop
+} catch {
+  $badPath = "$out.bad"
+  [IO.File]::WriteAllText($badPath, $json, [Text.UTF8Encoding]::new($false))
+  throw "[FAIL] JSON serialisation invalide. Dump brut sauve dans $badPath. Erreur : $_"
+}
+
 $utf8NoBom = [Text.UTF8Encoding]::new($false)
 [IO.File]::WriteAllText($out, $json, $utf8NoBom)
 
+# Validation post-write : on relit le fichier et on parse. Si KO on arrete.
+try {
+  $null = (Get-Content $out -Raw -Encoding UTF8) | ConvertFrom-Json -ErrorAction Stop
+} catch {
+  throw "[FAIL] Fichier ecrit mais non-parseable. Verifier $out. Erreur : $_"
+}
+
 Write-Host ""
 Write-Host "[OK] $($issuesOut.Count) issues, $($prsOut.Count) PRs, $($milestonesOut.Count) milestones, $($labelsOut.Count) labels"
+Write-Host "[OK] JSON valide ($([Math]::Round((Get-Item $out).Length/1KB, 1)) Ko)"
 Write-Host "[OK] Sortie : $out"
