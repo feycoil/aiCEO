@@ -175,6 +175,40 @@ router.get('/today', (req, res) => {
   }
 });
 
+// --- SSE stream (Spike S2.10) -------------------------------------
+// Push temps réel pour le cockpit. Voir docs/SPIKE-WEBSOCKET.md pour la décision
+// (SSE retenu plutôt que WebSocket — zéro dépendance, mono-directionnel suffisant).
+
+const { bus } = require('../realtime');
+
+router.get('/stream', (req, res) => {
+  res.set({
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache, no-transform',
+    Connection: 'keep-alive',
+    'X-Accel-Buffering': 'no',
+  });
+  if (typeof res.flushHeaders === 'function') res.flushHeaders();
+
+  // Hello + horodatage initial pour confirmer la connexion.
+  res.write(`event: hello\ndata: ${JSON.stringify({ ts: new Date().toISOString() })}\n\n`);
+
+  const onChange = (e) => {
+    res.write(`event: ${e.type}\ndata: ${JSON.stringify({ ...e.payload, ts: e.ts })}\n\n`);
+  };
+  bus.on('change', onChange);
+
+  // Heartbeat toutes les 25 s pour traverser les proxies (Zscaler timeout 60 s).
+  const heartbeat = setInterval(() => {
+    res.write(`: ping ${Date.now()}\n\n`);
+  }, 25000);
+
+  req.on('close', () => {
+    clearInterval(heartbeat);
+    bus.off('change', onChange);
+  });
+});
+
 module.exports = router;
 module.exports.buildCockpit = buildCockpit;
 module.exports.isoWeekId = isoWeekId;
