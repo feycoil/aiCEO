@@ -637,7 +637,7 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
 
   <nav class="tabs" role="tablist" aria-label="Vues de la roadmap">
     <button class="tab" data-tab="convergence" role="tab" aria-selected="true" aria-controls="tab-convergence" id="tab-btn-convergence">Carte de convergence</button>
-    <button class="tab" data-tab="fusion-v05" role="tab" aria-selected="false" aria-controls="tab-fusion-v05" id="tab-btn-fusion-v05">Plan v0.5 fusion <span class="badge">S3 KICKOFF</span></button>
+    <button class="tab" data-tab="fusion-v05" role="tab" aria-selected="false" aria-controls="tab-fusion-v05" id="tab-btn-fusion-v05">Plan v0.5 fusion <span class="badge">S3 LIVRÉ ✓</span></button>
     <button class="tab" data-tab="release-notes" role="tab" aria-selected="false" aria-controls="tab-release-notes" id="tab-btn-release-notes">Release notes</button>
     <button class="tab" data-tab="journal" role="tab" aria-selected="false" aria-controls="tab-journal" id="tab-btn-journal">Journal &amp; écarts <span class="badge" id="journal-badge">live</span></button>
   </nav>
@@ -1084,7 +1084,7 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
       <div class="gate">
         <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4738;"><strong>S1 ✓</strong>livré · tag v0.5-s1 sur 141ca0f · 0 incident dogfood</div>
         <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4738;"><strong>S2 ✓</strong>livré 25/04 · 10/10 issues · 55/55 tests · branche release/v0.5-s2</div>
-        <div class="gate-pill" style="background:#fff;border-color:#d96d3e;color:#8a3b1b;"><strong>S3 KICKOFF</strong>préparé · démarrage 02/06 · agenda + revues + SSE + autosync</div>
+        <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4536;"><strong>S3 LIVRÉ ✓</strong> 25/04 · 11/11 issues · 75/75 tests · 4 piliers (agenda + revues + SSE + autosync) · −49 j vs BASELINE</div>
         <div class="gate-pill" style="background:#fff;border-color:#b88237;color:#6d4816;"><strong>NEXT</strong>tag v0.5-s3 cible 16/06 · puis S4 service Windows + E2E</div>
       </div>
     </div>
@@ -1284,8 +1284,8 @@ const PERIODS = [
   { id:"avril-s1",    label:"Avril 2026",       sub:"S14-S15 · sprint cockpit + MVP scaffolds" },
   { id:"avril-s2",    label:"Avril 2026",       sub:"S16 · pages app + arbitrage 3/2/N" },
   { id:"avril-s3",    label:"Avril 2026",       sub:"S17 · Outlook + cockpit serenity" },
-  { id:"avril-s4",    label:"Avril 2026",       sub:"S18 · GO ExCom v0.5 internalisée + Sprint S1 livré (tag v0.5-s1) + Sprint S2 livré (release/v0.5-s2 · 10/10 issues · 55/55 tests)" },
-  { id:"juin-s2",     label:"Juin 2026",        sub:"S23-S24 · Sprint S3 — agenda hebdo + revues + SSE live + Outlook autosync (kickoff prêt)", now:true },
+  { id:"avril-s4",    label:"Avril 2026",       sub:"S18 · GO ExCom v0.5 internalisée + Sprints S1+S2+S3 livrés en avance (75/75 tests · v0.5-s3 tag posé · S4 prêt)", now:true },
+  { id:"juin-s2",     label:"Juin 2026",        sub:"S23-S24 · Sprint S3 livré en avance le 25/04 (−49 j vs BASELINE) · 11/11 issues · 75/75 tests" },
   { id:"mai-juin",    label:"Mai-juin 2026",    sub:"Sprints S4 → S6 · service Windows + E2E · polish + handoff" },
   { id:"juillet",     label:"Juillet 2026",     sub:"Tag v0.5 · cutover", banner:true },
   { id:"annee-2027",  label:"2027",             sub:"V1 cloud-ready · 290 k€" },
@@ -1406,10 +1406,10 @@ const MILESTONES = [
     artefacts:["release/v0.5-s2","11 commits accea60 → 6f4e6e8","docs/API.md (487 lignes)","docs/SPIKE-WEBSOCKET.md","data/migrations/2026-04-25-init-schema.sql",".github/PR-S2.md","tag cible v0.5-s2 post-merge"] },
 
   // ── Sprint S3 — Agenda + Revues + SSE live + Outlook autosync (KICKOFF) ──
-  { id:"v05-s3", lane:"mvp", period:"juin-s2", status:"doing", title:"Sprint S3 — Agenda + Revues + SSE live + Outlook autosync", date:"02 → 13 juin 2026 · 10 j-ouvrés · 22,1 k€", planned:"2026-06-13", actual:null,
-    gh:{ milestone:"v0.5-s3", branch:"docs/sprint-s3-kickoff", pr:112, issues:[113,114,115,116,117,118,119,120,121,122,123] },
-    desc:"Migration des 2 dernières pages métier (agenda.html · revues/index.html) + 2 chantiers transverses (câblage SSE front + Outlook autosync 2 h via schtasks). Spike Service Windows (POC node-windows) prépare S5. 11 issues S3.00 → S3.10 · 11,1 j-dev sur 20 j capacité (45 % marge dailys/retro/demos). Démarrage lundi 02/06 09:00 · demo intermédiaire 06/06 (agenda + cockpit live) · démo finale 13/06 16:00 · tag cible v0.5-s3 lundi 16/06.",
-    artefacts:["04_docs/DOSSIER-SPRINT-S3.md","04_docs/POA-SPRINT-S3.xlsx","04_docs/KICKOFF-S3.pptx","branche release/v0.5-s3","tag cible v0.5-s3 sur 16/06"] },
+  { id:"v05-s3", lane:"mvp", period:"avril-s4", status:"done", title:"Sprint S3 livré — Agenda + Revues + SSE live + Outlook autosync", date:"25 avril 2026 (livré en avance, plan 02 → 13 juin) · 22,1 k€", planned:"2026-06-13", actual:"2026-04-25",
+    gh:{ milestone:"v0.5-s3", tag:"v0.5-s3", branch:"docs/sprint-s3-kickoff", pr:112, issues:[113,114,115,116,117,118,119,120,121,122,123] },
+    desc:"Sprint S3 LIVRÉ EN AVANCE (~3 h dogfood) le 25/04 vs planifié 13/06 (−49 j vs BASELINE). 11/11 issues closes · 5 commits ce22641 → 990be37 · 75/75 tests verts (62 hérités + 11 nouveaux). 4 piliers : agenda.html migré API + drag-drop natif HTML5 + A11y clavier · revues/index.html migré API + Big Rocks max 3 + auto-draft Claude rubric 6 critères + archives · SSE câblé front (cockpit + tâches + agenda avec reconnexion exponentielle) · Outlook autosync côté serveur (GET /api/system/last-sync + alerte cockpit outlook_stale). POC node-windows S3.10 livré en code, install à valider en dogfood admin CEO.",
+    artefacts:["04_docs/DOSSIER-SPRINT-S3.md","04_docs/POA-SPRINT-S3.xlsx","04_docs/KICKOFF-S3.pptx","04_docs/_release-notes/v0.5-s3.md","tag v0.5-s3 (commit 5a322dd)","GitHub Release v0.5-s3 publiée"] },
 
   // ═════════════════════════════════════════════════════════════
   // Hub fusion — Specs + Pipeline GitHub + Pré-requis dev
