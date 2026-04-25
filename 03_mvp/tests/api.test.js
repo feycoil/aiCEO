@@ -12,58 +12,43 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const http = require('node:http');
-const Database = require('better-sqlite3');
+const Database = require('../src/db-driver');
 const express = require('express');
 
-// ----- Setup base de test -----
+// ----- Setup base de test isolee -----
+// Strategie : on force AICEO_DB_OVERRIDE AVANT de require('../src/db') pour que
+// la base aiceo.db de prod ne soit jamais touchee. Plus de backup/restore.
 const TEST_DB = path.resolve(__dirname, '..', 'data', 'aiceo-test.db');
-process.env.AICEO_DB_OVERRIDE = TEST_DB; // (non utilisé pour l'instant — db.js lit chemin fixe)
+process.env.AICEO_DB_OVERRIDE = TEST_DB;
 
-// On va patcher db.js avant import : nettoyer la base de prod test.
-// Le plus simple : monkey-patch DB_PATH via require.cache
-const dbModulePath = require.resolve('../src/db');
-delete require.cache[dbModulePath];
+// Nettoyage complet de la base de test (au cas ou un run precedent l'a laissee sale).
+for (const ext of ['', '-wal', '-shm']) {
+  const f = TEST_DB + ext;
+  if (fs.existsSync(f)) fs.unlinkSync(f);
+}
 
-// Force une base dédiée test en patchant le module avant import
-const dbModule = require('../src/db');
-// Si la base prod existe déjà, ferme-la et bascule
-dbModule.close();
-
-// Hot-swap : on ré-écrit le getter (workaround simple : on remplace le fichier requis par le path test)
-// Plus simple : on supprime aiceo-test.db et on copie le schema
-if (fs.existsSync(TEST_DB)) fs.unlinkSync(TEST_DB);
-const wal = TEST_DB + '-wal'; if (fs.existsSync(wal)) fs.unlinkSync(wal);
-const shm = TEST_DB + '-shm'; if (fs.existsSync(shm)) fs.unlinkSync(shm);
-
-// On crée la base test depuis migrations
+// Cree la base de test depuis la migration.
 const initDb = new Database(TEST_DB);
 initDb.pragma('foreign_keys = ON');
 initDb.pragma('journal_mode = WAL');
-const sql = fs.readFileSync(path.resolve(__dirname, '..', 'data', 'migrations', '2026-04-25-init-schema.sql'), 'utf8');
+const sql = fs.readFileSync(
+  path.resolve(__dirname, '..', 'data', 'migrations', '2026-04-25-init-schema.sql'),
+  'utf8'
+);
 initDb.exec(sql);
 initDb.close();
 
-// Re-patch db.js pour qu'il pointe sur TEST_DB (override via fs symlink ou override-style)
-// Approche pragmatique : on a déjà aiceo.db en prod ; on copie aiceo-test.db par-dessus
-// pour cette session de test, puis on restaurera via finally.
-const PROD_DB = path.resolve(__dirname, '..', 'data', 'aiceo.db');
-const PROD_BACKUP = PROD_DB + '.bak-test';
-
-before(() => {
-  if (fs.existsSync(PROD_DB)) fs.copyFileSync(PROD_DB, PROD_BACKUP);
-  fs.copyFileSync(TEST_DB, PROD_DB);
-  // Re-import db.js fresh pour qu'il ouvre la nouvelle aiceo.db (= test schema)
-  delete require.cache[dbModulePath];
-});
+// Module db.js : importe APRES avoir defini AICEO_DB_OVERRIDE.
+const dbModule = require('../src/db');
 
 after(() => {
-  // Restore prod db
-  const db2 = require('../src/db');
-  db2.close();
-  delete require.cache[dbModulePath];
-  if (fs.existsSync(PROD_BACKUP)) {
-    fs.copyFileSync(PROD_BACKUP, PROD_DB);
-    fs.unlinkSync(PROD_BACKUP);
+  dbModule.close();
+  // Nettoie les fichiers de test (optionnel, mais propre).
+  for (const ext of ['', '-wal', '-shm']) {
+    const f = TEST_DB + ext;
+    if (fs.existsSync(f)) {
+      try { fs.unlinkSync(f); } catch { /* swallow */ }
+    }
   }
 });
 

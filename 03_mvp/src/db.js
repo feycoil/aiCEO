@@ -1,19 +1,22 @@
 /**
- * src/db.js — accès SQLite singleton + helpers CRUD partagés.
+ * src/db.js — acces SQLite singleton + helpers CRUD partages.
  *
  * Exporte :
  *   - getDb() : Database (singleton, lazy init)
- *   - uuid7() : ID UUIDv7-like, triable chronologiquement (ms timestamp + 80 bits aléatoires)
+ *   - uuid7() : ID UUIDv7-like, triable chronologiquement (ms timestamp + 80 bits aleatoires)
  *   - now()   : timestamp ISO 8601 UTC
- *   - crud(table)            : générateur de helpers CRUD pour une table simple
- *   - asJsonOrNull(v)        : sérialise/désérialise les colonnes JSON en transparence
+ *   - crud(table)            : generateur de helpers CRUD pour une table simple
+ *   - asJsonOrNull(v)        : serialise/deserialise les colonnes JSON en transparence
  *   - parseJsonOrNull(v)
  */
 const path = require('node:path');
 const crypto = require('node:crypto');
-const Database = require('better-sqlite3');
+const Database = require('./db-driver');
 
-const DB_PATH = path.resolve(__dirname, '..', 'data', 'aiceo.db');
+// Permet aux tests/scripts d'utiliser une base isolee via AICEO_DB_OVERRIDE.
+const DB_PATH = process.env.AICEO_DB_OVERRIDE
+  ? path.resolve(process.env.AICEO_DB_OVERRIDE)
+  : path.resolve(__dirname, '..', 'data', 'aiceo.db');
 
 let _db = null;
 
@@ -33,20 +36,17 @@ function close() {
 }
 
 /**
- * UUIDv7-like : 48 bits de timestamp ms + 80 bits aléatoires.
+ * UUIDv7-like : 48 bits de timestamp ms + 80 bits aleatoires.
  * Format : 018xxxxx-xxxx-7xxx-yxxx-xxxxxxxxxxxx (RFC 9562 compatible).
  */
 function uuid7() {
   const ts = BigInt(Date.now());
   const tsHex = ts.toString(16).padStart(12, '0'); // 12 hex = 48 bits
   const randBytes = crypto.randomBytes(10);
-  // Force version 7 (0111) dans le 7e octet (index 6 dans 16 octets, mais ici on construit en hex).
   const rand = randBytes.toString('hex'); // 20 hex chars
-  // Layout : 8-4-4-4-12 = tsHex(8)-tsHex(4)-7+rand(3)-yrand(4)-rand(12)
   const seg1 = tsHex.slice(0, 8);
   const seg2 = tsHex.slice(8, 12);
   const seg3 = '7' + rand.slice(0, 3);
-  // Variant 10xx pour le 9e bit du seg4.
   const variantHex = (parseInt(rand.slice(3, 4), 16) & 0x3 | 0x8).toString(16);
   const seg4 = variantHex + rand.slice(4, 7);
   const seg5 = rand.slice(7, 19);
@@ -59,7 +59,7 @@ function now() {
 
 function asJsonOrNull(v) {
   if (v === undefined || v === null) return null;
-  if (typeof v === 'string') return v; // déjà sérialisé
+  if (typeof v === 'string') return v;
   return JSON.stringify(v);
 }
 
@@ -74,19 +74,11 @@ function parseJsonOrNull(v) {
 }
 
 /**
- * Génère un set de helpers CRUD pour une table à clé primaire `id` (TEXT).
- * Exemple :
- *   const tasks = crud('tasks', { jsonFields: ['attendees'] });
- *   tasks.list({ done: 0 });
- *   tasks.get(id);
- *   tasks.insert({ ... });
- *   tasks.update(id, { ... });
- *   tasks.remove(id);
+ * Genere un set de helpers CRUD pour une table a cle primaire `id` (TEXT).
  */
 function crud(table, opts = {}) {
   const db = getDb();
   const jsonFields = new Set(opts.jsonFields || []);
-  const allowedColumns = opts.columns || null;
 
   const decode = (row) => {
     if (!row) return row;
@@ -106,11 +98,6 @@ function crud(table, opts = {}) {
   };
 
   return {
-    /**
-     * list(filters?, opts?)
-     *   filters : { col: value, ... } => col = ? AND ...
-     *   opts    : { orderBy, limit, offset, where (raw) }
-     */
     list(filters = {}, options = {}) {
       const where = [];
       const params = [];
@@ -137,9 +124,6 @@ function crud(table, opts = {}) {
       return decode(row);
     },
 
-    /**
-     * insert(data) : génère id si absent, applique created_at/updated_at si colonne présente.
-     */
     insert(data) {
       const row = { ...encode(data) };
       if (!row.id) row.id = uuid7();
@@ -156,7 +140,6 @@ function crud(table, opts = {}) {
       delete row.created_at;
       const cols = Object.keys(row);
       if (!cols.length) return this.get(id);
-      // updated_at peut ne pas exister dans toutes les tables (ex: contacts_projects)
       const sql = `UPDATE ${table} SET ${cols.map((c) => `${c} = ?`).join(', ')} WHERE id = ?`;
       try {
         db.prepare(sql).run(...cols.map((c) => row[c]), id);
