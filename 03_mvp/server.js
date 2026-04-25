@@ -23,6 +23,8 @@ const eventsRouter    = require("./src/routes/events");
 const cockpitRouter   = require("./src/routes/cockpit");
 const arbitrageRouter = require("./src/routes/arbitrage");
 const eveningRouter   = require("./src/routes/evening");
+const weeklyReviewsRouter = require("./src/routes/weekly-reviews");
+const bigRocksRouter      = require("./src/routes/big-rocks");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3001;
@@ -65,6 +67,8 @@ app.use("/api/events",    eventsRouter);
 app.use("/api/cockpit",   cockpitRouter);
 app.use("/api/arbitrage", arbitrageRouter);
 app.use("/api/evening",   eveningRouter);
+app.use("/api/weekly-reviews", weeklyReviewsRouter);
+app.use("/api/big-rocks",      bigRocksRouter);
 
 // --- Legacy seed (compat arbitrage UI tant que la migration n'est pas finalisee) ---
 app.get("/api/seed", (req, res) => {

@@ -4,6 +4,8 @@
  *   GET    /api/events                  filtres: from, to, project, source_type
  *   GET    /api/events/today
  *   GET    /api/events/week             (7 jours à partir de date|aujourd'hui)
+ *                                       ?with_tasks=true        ajoute tasks[] dans la fenêtre (S3.01)
+ *                                       ?week=YYYY-Www          alternative à ?from (ISO week, S3.01)
  *   POST   /api/events                  (event manuel)
  *   GET    /api/events/:id
  *   PATCH  /api/events/:id              (refuse de patcher events Outlook)
@@ -13,10 +15,26 @@ const express = require('express');
 const { getDb, crud } = require('../db');
 
 const events = crud('events', { jsonFields: ['attendees'] });
+const tasks = crud('tasks');
 const router = express.Router();
 
 function isoDay(d) {
   return new Date(d).toISOString().slice(0, 10);
+}
+
+// Convertit '2026-W23' -> { from: '2026-06-01T00:00:00.000Z', to: '2026-06-08T00:00:00.000Z' }
+// Lundi inclus (00:00 UTC), lundi suivant exclu — fenêtre [from, to[ alignée ISO 8601.
+function isoWeekRange(weekId) {
+  const m = String(weekId).match(/^(\d{4})-W(\d{2})$/);
+  if (!m) return null;
+  const year = Number(m[1]);
+  const wk = Number(m[2]);
+  const jan4 = new Date(Date.UTC(year, 0, 4));
+  const jan4Dow = jan4.getUTCDay() || 7;
+  const week1Monday = new Date(jan4.getTime() - (jan4Dow - 1) * 86400000);
+  const monday = new Date(week1Monday.getTime() + (wk - 1) * 7 * 86400000);
+  const nextMonday = new Date(monday.getTime() + 7 * 86400000);
+  return { from: monday.toISOString(), to: nextMonday.toISOString() };
 }
 
 router.get('/', (req, res) => {
@@ -56,15 +74,43 @@ router.get('/today', (req, res) => {
 
 router.get('/week', (req, res) => {
   try {
-    const start = new Date(req.query.from || new Date());
-    const end = new Date(start.getTime() + 7 * 86400000);
-    const fromIso = start.toISOString();
-    const toIso = end.toISOString();
-    const rows = events.list({}, {
+    let fromIso;
+    let toIso;
+    let weekId = null;
+
+    if (req.query.week) {
+      const range = isoWeekRange(req.query.week);
+      if (!range) {
+        return res.status(400).json({ error: 'parametre week invalide (attendu: YYYY-Www, ex: 2026-W23)' });
+      }
+      fromIso = range.from;
+      toIso = range.to;
+      weekId = String(req.query.week);
+    } else {
+      const start = new Date(req.query.from || new Date());
+      const end = new Date(start.getTime() + 7 * 86400000);
+      fromIso = start.toISOString();
+      toIso = end.toISOString();
+    }
+
+    const evRows = events.list({}, {
       orderBy: 'starts_at ASC',
       where: `starts_at >= '${fromIso}' AND starts_at < '${toIso}'`,
     });
-    res.json({ from: fromIso, to: toIso, events: rows, count: rows.length });
+
+    const payload = { from: fromIso, to: toIso, events: evRows, count: evRows.length };
+    if (weekId) payload.week = weekId;
+
+    if (String(req.query.with_tasks) === 'true') {
+      const taskRows = tasks.list({}, {
+        orderBy: 'due_at ASC',
+        where: `due_at IS NOT NULL AND due_at >= '${fromIso}' AND due_at < '${toIso}'`,
+      });
+      payload.tasks = taskRows;
+      payload.tasks_count = taskRows.length;
+    }
+
+    res.json(payload);
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
@@ -97,16 +143,16 @@ router.post('/', (req, res) => {
 
 router.get('/:id', (req, res) => {
   const ev = events.get(req.params.id);
-  if (!ev) return res.status(404).json({ error: 'événement introuvable' });
+  if (!ev) return res.status(404).json({ error: 'evenement introuvable' });
   res.json({ event: ev });
 });
 
 router.patch('/:id', (req, res) => {
   try {
     const existing = events.get(req.params.id);
-    if (!existing) return res.status(404).json({ error: 'événement introuvable' });
+    if (!existing) return res.status(404).json({ error: 'evenement introuvable' });
     if (existing.source_type === 'outlook') {
-      return res.status(409).json({ error: 'événement Outlook lecture-seule (notes/project_id seuls modifiables)' });
+      return res.status(409).json({ error: 'evenement Outlook lecture-seule (notes/project_id seuls modifiables)' });
     }
     const allowed = ['title', 'project_id', 'starts_at', 'ends_at', 'duration_min', 'location', 'attendees', 'notes'];
     const patch = {};
@@ -119,11 +165,10 @@ router.patch('/:id', (req, res) => {
   }
 });
 
-// Permettre annotations partielles sur événements Outlook
 router.patch('/:id/annotate', (req, res) => {
   try {
     const existing = events.get(req.params.id);
-    if (!existing) return res.status(404).json({ error: 'événement introuvable' });
+    if (!existing) return res.status(404).json({ error: 'evenement introuvable' });
     const allowed = ['notes', 'project_id'];
     const patch = {};
     for (const k of allowed) if (k in req.body) patch[k] = req.body[k];
@@ -138,9 +183,9 @@ router.patch('/:id/annotate', (req, res) => {
 router.delete('/:id', (req, res) => {
   try {
     const existing = events.get(req.params.id);
-    if (!existing) return res.status(404).json({ error: 'événement introuvable' });
+    if (!existing) return res.status(404).json({ error: 'evenement introuvable' });
     if (existing.source_type === 'outlook') {
-      return res.status(409).json({ error: 'événement Outlook non supprimable (re-synchroniser depuis Outlook)' });
+      return res.status(409).json({ error: 'evenement Outlook non supprimable (re-synchroniser depuis Outlook)' });
     }
     events.remove(req.params.id);
     res.json({ ok: true, removed: existing.id });
