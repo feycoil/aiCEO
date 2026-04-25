@@ -8,6 +8,27 @@ Versionnage : les jalons correspondent à des tags Git (`v0.4`, `v0.5`…).
 
 ## [Non publié]
 
+### Sprint externe v0.5 — clos le 2026-04-25
+
+Production séquentielle des 6 livrables externes décidés en atelier S5 (cadrage CEO pair / investisseur / Comex ETIC) + ouverture des 11 issues GitHub du backlog atelier 2026-04. Référentiel : [`04_docs/_atelier-2026-04-coherence/drafts/ISSUES-A-OUVRIR.md`](../04_docs/_atelier-2026-04-coherence/drafts/ISSUES-A-OUVRIR.md) + [`04_docs/_atelier-2026-04-coherence/scripts/gh-create-issues.ps1`](../04_docs/_atelier-2026-04-coherence/scripts/gh-create-issues.ps1).
+
+**6 livrables externes produits sur 6 branches dédiées** (toutes commitées localement, push out-of-band sur `origin`) :
+
+- `docs/benchmark-v2` — `04_docs/02-benchmark.md` v2 (Issue #2, P0 bloquant) : 19 produits étudiés, matrice 5 critères × 5 desktop-first prioritaires, angle ouvert « arbitrage multi-sociétés × Outlook desktop natif × souveraineté locale ».
+- `docs/pitch-onepage` — `PITCH-ONEPAGE.md` + `.html` + `.pdf` (Issue #3, P1) : 1 page A4 audience investisseur, en-tête de filtrage explicite, palette DS Twisty (Aubrielle + Fira Sans + Sol Thin), généré WeasyPrint.
+- `docs/business-case` — `BUSINESS-CASE.md` (~20 KB, 7 sections : TL;DR, Pourquoi maintenant, Hypothèses revenue 3 phases, Coûts cumulés ≈ 1,69 M€, Point mort 250-350 CEO clients horizon 2029-2030, ROI utilisateur, Risques) + `BUSINESS-CASE-SYNTHESE.html/.pdf` (3 pages A4 visuelles) (Issue #4, P1).
+- `docs/onboarding-ceo` — `ONBOARDING-CEO-PAIR.md` (318 lignes) : prérequis Windows + Outlook desktop + Node 20 + clé Anthropic ~5 €/mois, installation 15 min, import Outlook 30 j 5 min, premier arbitrage 15 min, FAQ confidentialité/coût/rollback (Issue #5, P1).
+- `docs/lettre-intro` — `LETTRE-INTRO-CEO-PAIR.md` (144 lignes) : gabarit 1 page signée Feycoil avec placeholders, 4 blocs (pourquoi je t'envoie ça / ce que tu trouveras / ce que j'attends — 3 options dont test silencieux 30 j / quand je rappelle), variantes connaissance forte/faible (Issue #6, P1).
+- `docs/pitch-deck` — `PITCH-DECK-INVESTISSEUR.pptx` (16 slides, LAYOUT_WIDE 13.33×7.5) + `.pdf` : Cover Aubrielle filtrage / Triple déficit / Solution is-isn't / Traction MVP v0.4 dogfood / Honnêteté pas livré / Positionnement matrix 6 concurrents / 3 piliers / 3 couches archi / Roadmap 5 jalons / Stack EU-only / Équipe 9 ETP ramping / 3 scénarios ARR + sincérité / Coûts trajectoire 1,69 M€ / 5 risques 2 P0 + 3 P1 / 9 KPIs / Manifeste + 3 portes (tester pair / sponsoriser pilote / investir V1→V3) (Issue #7, P1).
+
+**4 issues GitHub ouvertes en plus** (sans livrable repo) : Issue #8 `[DOC-PARQUE] PITCH-CLIENT.md — post-V1` (P3 parqué milestone V2), Issue #9 `[DOC-PARQUE] KIT-PARTENAIRE-TECH.md — post-V2` (P3 parqué milestone V2), Issue #10 `[INFRA] OpenAPI 3.0 généré (Zod + zod-to-openapi)` (P1 milestone V1, sprint 3-4 fusion v0.5), Issue #11 `[INFRA] Pre-commit Husky pour ds:export` (P2 milestone V1, sprint 3 fusion v0.5).
+
+**Issue #1 hors sprint externe** déjà clos en amont sur branche `ds/wire-mvp-to-ds` (3 commits Volet A fonts / Volet B link CSS / Volet C tokens DS, déjà poussée sur `origin`).
+
+**Pattern de production validé** : branche dédiée `docs/<sujet>` créée depuis `main` → contenu rédigé avec en-tête de filtrage audience-spécifique → vérif visuelle (PDF via WeasyPrint, PPTX via LibreOffice + pdftoppm + Read tool image) → commit signé `Closes #N` → retour `main`. Réutilisable pour les prochains livrables.
+
+**Reste à faire côté CEO** : `git push origin docs/benchmark-v2 docs/pitch-onepage docs/business-case docs/onboarding-ceo docs/lettre-intro docs/pitch-deck chore/changelog-sprint-externe` puis ouvrir 6 PRs (auto-fermeture des issues #2-#7 via `Closes #N`).
+
 ### Atelier de cohérence 2026-04 — clos le 2026-04-24
 
 8 sessions structurées (S1 → S8) pour résoudre les 7 dissonances critiques identifiées dans `04_docs/AUDIT-COHERENCE-2026-04-24.md`. Trace complète : [`04_docs/_atelier-2026-04-coherence/JOURNAL.md`](../04_docs/_atelier-2026-04-coherence/JOURNAL.md).
