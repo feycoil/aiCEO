@@ -1,5 +1,5 @@
 /**
- * server.js — backend Express local pour l'arbitrage matinal + délégation + soir.
+ * server.js — backend Express local pour aiCEO v0.5.
  * Usage : npm start → http://localhost:4747
  */
 require("dotenv").config();
@@ -10,6 +10,14 @@ const { buildArbitrage, saveDecision, readHistory, loadSeed } = require("./src/a
 const { generateDraft, saveDraft, readDrafts, resolveContactsForTask, loadTeam } = require("./src/drafts");
 const { latestArbitrageFor, saveEvening, readEvenings, buildEveningSummary } = require("./src/evening");
 const { loadEmails, contextForTask } = require("./src/emails-context");
+
+// --- Routes REST SQLite (Sprint S1) ---
+const tasksRouter     = require("./src/routes/tasks");
+const decisionsRouter = require("./src/routes/decisions");
+const contactsRouter  = require("./src/routes/contacts");
+const projectsRouter  = require("./src/routes/projects");
+const groupsRouter    = require("./src/routes/groups");
+const eventsRouter    = require("./src/routes/events");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 4747;
@@ -32,7 +40,17 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-app.get("/api/tasks", (req, res) => {
+// --- API REST SQLite (Sprint S1) ---
+//   /api/tasks, /api/decisions, /api/contacts, /api/projects, /api/groups, /api/events
+app.use("/api/tasks",     tasksRouter);
+app.use("/api/decisions", decisionsRouter);
+app.use("/api/contacts",  contactsRouter);
+app.use("/api/projects",  projectsRouter);
+app.use("/api/groups",    groupsRouter);
+app.use("/api/events",    eventsRouter);
+
+// --- Legacy seed (compat arbitrage UI tant que la migration n'est pas finalisee) ---
+app.get("/api/seed", (req, res) => {
   try {
     const seed = loadSeed();
     res.json({ tasks: seed.tasks, projects: seed.projects, events: seed.events, contacts: seed.contacts });
@@ -43,7 +61,7 @@ app.get("/api/tasks", (req, res) => {
 
 app.post("/api/arbitrage", async (req, res) => {
   try {
-    const date = req.body?.date;
+    const date = req.body && req.body.date;
     const result = await buildArbitrage({ date });
     res.json(result);
   } catch (e) {
@@ -65,7 +83,7 @@ app.get("/api/history", (req, res) => {
   res.json({ history: readHistory() });
 });
 
-// --- Reseed endpoint (utile si data.js a changé) ---
+// --- Reseed endpoint (utile si data.js a change) ---
 app.post("/api/reseed", (req, res) => {
   try {
     const { execSync } = require("child_process");
@@ -76,18 +94,17 @@ app.post("/api/reseed", (req, res) => {
   }
 });
 
-// --- Délégation : génère un brouillon de mail ---
+// --- Delegation : genere un brouillon de mail ---
 app.post("/api/delegate", async (req, res) => {
   try {
     const { task_id, reason } = req.body || {};
     if (!task_id) return res.status(400).json({ error: "task_id requis" });
     const seed = loadSeed();
     const task = (seed.tasks_all || seed.tasks).find(t => t.id === task_id);
-    if (!task) return res.status(404).json({ error: `Tâche ${task_id} introuvable` });
+    if (!task) return res.status(404).json({ error: `Tache ${task_id} introuvable` });
     const project = (seed.projects || []).find(p => p.id === task.project) || null;
     const contacts = resolveContactsForTask(task, seed.contacts || []);
 
-    // Contexte email lié à cette tâche (si import Outlook dispo)
     const { emails, available: emailsAvailable } = loadEmails();
     const since = new Date(Date.now() - 7 * 86400e3).toISOString();
     const emailContext = emailsAvailable
@@ -127,7 +144,7 @@ app.get("/api/evening/context", (req, res) => {
   try {
     const date = req.query.date || new Date().toISOString().slice(0, 10);
     const arb = latestArbitrageFor(date);
-    if (!arb) return res.json({ date, arbitrage: null, message: "Aucun arbitrage ce jour — lancez la vue matinale d'abord." });
+    if (!arb) return res.json({ date, arbitrage: null, message: "Aucun arbitrage ce jour - lancez la vue matinale d'abord." });
     const seed = loadSeed();
     const byId = Object.fromEntries((seed.tasks_all || seed.tasks).map(t => [t.id, t]));
     const hydrate = (arr) => (arr || []).map(x => ({ ...x, task: byId[x.task_id] || null }));
@@ -166,7 +183,7 @@ app.get("/api/evening/history", (req, res) => {
   res.json({ evenings: readEvenings() });
 });
 
-// --- Emails ingérés (optionnel — si normalize-emails.js a tourné) ---
+// --- Emails ingeres (optionnel - si normalize-emails.js a tourne) ---
 app.get("/api/emails/summary", (req, res) => {
   const p = path.join(__dirname, "data", "emails-summary.json");
   if (!fs.existsSync(p)) return res.json({ available: false, hint: "Lancez scripts/fetch-outlook.ps1 puis node scripts/normalize-emails.js" });
@@ -177,10 +194,11 @@ app.get("/api/emails/summary", (req, res) => {
 
 app.listen(PORT, () => {
   const demo = !process.env.ANTHROPIC_API_KEY || process.env.DEMO_MODE === "1";
-  console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-  console.log(`  aiCEO MVP · copilote exécutif`);
-  console.log(`  → http://localhost:${PORT}          (matin — arbitrage)`);
-  console.log(`  → http://localhost:${PORT}/evening  (soir — debrief)`);
-  console.log(`  → mode : ${demo ? "DÉMO (pas de clé API)" : "RÉEL · " + (process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6")}`);
-  console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
+  console.log(`\n--------------------------------------`);
+  console.log(`  aiCEO v0.5 - copilote executif`);
+  console.log(`  -> http://localhost:${PORT}          (matin - arbitrage)`);
+  console.log(`  -> http://localhost:${PORT}/evening  (soir - debrief)`);
+  console.log(`  -> mode : ${demo ? "DEMO (pas de cle API)" : "REEL - " + (process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6")}`);
+  console.log(`  -> API REST SQLite : /api/{tasks,decisions,contacts,projects,groups,events}`);
+  console.log(`--------------------------------------\n`);
 });

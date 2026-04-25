@@ -3,3 +3,12 @@ node_modules/
 data/decisions.json
 data/seed.json
 *.log
+
+# SQLite (creee par db:init / migrations)
+data/aiceo.db
+data/aiceo.db-wal
+data/aiceo.db-shm
+data/aiceo-test.db
+data/aiceo-test.db-wal
+data/aiceo-test.db-shm
+data/aiceo.db.bak-test

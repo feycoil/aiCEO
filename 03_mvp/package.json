@@ -1,19 +1,25 @@
 {
   "name": "aiceo-mvp",
-  "version": "0.1.0",
-  "description": "aiCEO MVP — arbitrage matinal + copilote proactif (local, souverain)",
+  "version": "0.5.0-s1",
+  "description": "aiCEO v0.5 - produit unifie local (App Web Twisty + serveur Node + SQLite)",
   "type": "commonjs",
   "private": true,
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "seed": "node scripts/extract-data.js"
+    "seed": "node scripts/extract-data.js",
+    "db:init": "node scripts/init-db.js",
+    "db:reset": "node scripts/init-db.js --reset",
+    "db:migrate-from-appweb": "node scripts/migrate-from-appweb.js",
+    "db:migrate-json": "node scripts/migrate-json-to-sqlite.js",
+    "test": "node --test tests/"
   },
   "engines": {
     "node": ">=18.0.0"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.27.0",
+    "better-sqlite3": "^11.5.0",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "https-proxy-agent": "^9.0.0",
