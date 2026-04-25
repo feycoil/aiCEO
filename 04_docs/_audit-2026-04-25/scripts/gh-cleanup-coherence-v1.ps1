@@ -17,7 +17,16 @@
 # Tout est idempotent : re-execution sans effet de bord.
 # ============================================================
 
-$ErrorActionPreference = "Stop"
+# Note : pas de $ErrorActionPreference = "Stop" — sinon les ecritures de gh.exe
+# sur stderr (qui contiennent les messages de succes ✓ Closed issue ...) sont
+# converties en RemoteException et stoppent le script meme quand $LASTEXITCODE = 0.
+# On utilise $LASTEXITCODE explicitement pour controler chaque appel natif.
+$ErrorActionPreference = "Continue"
+# PS 7.4+ : decoupler les codes natifs du systeme d'erreur PowerShell
+if ($PSVersionTable.PSVersion.Major -ge 7) {
+    $PSNativeCommandUseErrorActionPreference = $false
+}
+
 $repo = "feycoil/aiCEO"
 
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -28,7 +37,7 @@ Write-Host "Repo : $repo`n"
 
 # ---------- 0. Auth check ----------
 Write-Host "[0/6] Auth check..." -ForegroundColor Yellow
-& gh auth status 2>&1 | Out-Null
+& gh auth status *>$null
 if ($LASTEXITCODE -ne 0) {
     Write-Host "ERREUR : gh auth status KO. Faire 'gh auth login' d'abord." -ForegroundColor Red
     exit 1
@@ -53,10 +62,10 @@ foreach ($n in 124..134) {
     # Comment
     $tmpComment = New-TemporaryFile
     [System.IO.File]::WriteAllText($tmpComment.FullName, $dupCloseComment, [System.Text.Encoding]::UTF8)
-    & gh issue comment $n --repo $repo --body-file $tmpComment.FullName 2>&1 | Out-Null
+    & gh issue comment $n --repo $repo --body-file $tmpComment.FullName *>$null
     Remove-Item $tmpComment.FullName -Force
     # Close avec state_reason
-    & gh issue close $n --repo $repo --reason "not planned" 2>&1 | Out-Null
+    & gh issue close $n --repo $repo --reason "not planned" *>$null
     if ($LASTEXITCODE -eq 0) {
         Write-Host "  #$n : closed (not planned)" -ForegroundColor Green
     } else {
@@ -80,7 +89,7 @@ function Ensure-MilestoneClosed($title, $description, $dueOn) {
         Write-Host "  $title : existe deja (#$($existing.number), state=$($existing.state))" -ForegroundColor DarkGray
         # Si deja closed, rien a faire ; sinon on close
         if ($existing.state -ne "closed") {
-            & gh api -X PATCH "repos/$repo/milestones/$($existing.number)" -f state=closed 2>&1 | Out-Null
+            & gh api -X PATCH "repos/$repo/milestones/$($existing.number)" -f state=closed *>$null
             Write-Host "    -> close" -ForegroundColor Green
         }
         return
@@ -119,7 +128,7 @@ $ms = ($msJson | ConvertFrom-Json) | Where-Object { $_.title -eq "v0.5-s2" } | S
 if (-not $ms) {
     Write-Host "  ERREUR : milestone v0.5-s2 introuvable" -ForegroundColor Red
 } else {
-    & gh api -X PATCH "repos/$repo/issues/111" -F "milestone=$($ms.number)" 2>&1 | Out-Null
+    & gh api -X PATCH "repos/$repo/issues/111" -F "milestone=$($ms.number)" *>$null
     Write-Host "  milestone : v0.5-s2 (#$($ms.number)) OK" -ForegroundColor Green
 }
 
@@ -128,13 +137,13 @@ if (-not $ms) {
     --add-label "phase/v0.5-s2" `
     --add-label "sprint/s2" `
     --add-label "lane/mvp" `
-    --add-label "type/release" 2>&1 | Out-Null
+    --add-label "type/release" *>$null
 Write-Host "  labels : phase/v0.5-s2, sprint/s2, lane/mvp, type/release OK" -ForegroundColor Green
 
 # Reviewer (auto-merge en self-review impossible, mais on ajoute le CEO comme reviewer pour traçabilité)
 # Note : reviewer = login GitHub. Adapter si besoin.
 $prReviewer = "feycoil"
-& gh pr edit 111 --repo $repo --add-reviewer $prReviewer 2>&1 | Out-Null
+& gh pr edit 111 --repo $repo --add-reviewer $prReviewer *>$null
 Write-Host "  reviewer : $prReviewer (peut echouer si self-review, normal)" -ForegroundColor DarkGray
 Write-Host ""
 
@@ -144,16 +153,16 @@ $ms3 = ($msJson | ConvertFrom-Json) | Where-Object { $_.title -eq "v0.5-s3" } | 
 if (-not $ms3) {
     Write-Host "  ERREUR : milestone v0.5-s3 introuvable" -ForegroundColor Red
 } else {
-    & gh api -X PATCH "repos/$repo/issues/112" -F "milestone=$($ms3.number)" 2>&1 | Out-Null
+    & gh api -X PATCH "repos/$repo/issues/112" -F "milestone=$($ms3.number)" *>$null
     Write-Host "  milestone : v0.5-s3 (#$($ms3.number)) OK" -ForegroundColor Green
 }
 & gh issue edit 112 --repo $repo `
     --add-label "phase/v0.5-s3" `
     --add-label "sprint/s3" `
     --add-label "lane/docs" `
-    --add-label "type/docs" 2>&1 | Out-Null
+    --add-label "type/docs" *>$null
 Write-Host "  labels : phase/v0.5-s3, sprint/s3, lane/docs, type/docs OK" -ForegroundColor Green
-& gh pr edit 112 --repo $repo --add-reviewer $prReviewer 2>&1 | Out-Null
+& gh pr edit 112 --repo $repo --add-reviewer $prReviewer *>$null
 Write-Host "  reviewer : $prReviewer" -ForegroundColor DarkGray
 Write-Host ""
 
@@ -187,7 +196,7 @@ if ($doMerge) {
             foreach ($n in 101..110) {
                 $i = & gh api "repos/$repo/issues/$n" 2>$null | ConvertFrom-Json
                 if ($i.state -eq "open") {
-                    & gh issue close $n --repo $repo --reason "completed" 2>&1 | Out-Null
+                    & gh issue close $n --repo $repo --reason "completed" *>$null
                     Write-Host "    #$n : closed (completed)" -ForegroundColor Green
                 }
             }
@@ -206,12 +215,4 @@ if (Test-Path $dumpScript) {
     Write-Host "  Dump regenere -> ../github-state.json" -ForegroundColor Green
 } else {
     Write-Host "  consistence-dump.ps1 introuvable a $dumpScript" -ForegroundColor Yellow
-    Write-Host "  Lancer manuellement : pwsh -File 04_docs/_audit-2026-04-25/consistence-dump.ps1" -ForegroundColor Cyan
-}
-
-Write-Host "`n=== TERMINE ===" -ForegroundColor Cyan
-Write-Host "Verifier :"
-Write-Host "  - https://github.com/$repo/issues?q=is%3Aissue+state%3Aclosed (S2 #101-110 + S3 doublons #124-134)"
-Write-Host "  - https://github.com/$repo/milestones?state=closed (sprint-externe-v0.5 + v0.5-s1)"
-Write-Host "  - https://github.com/$repo/pull/112 (meta : milestone+labels+reviewer)"
-Write-Host "  - github-state.json regenere"
+    Write-Host "  Lancer manuellement : pwsh 
