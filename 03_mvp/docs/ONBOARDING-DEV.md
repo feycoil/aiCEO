@@ -42,11 +42,11 @@ cp .env.example .env
 
 # 4. Démarrer le serveur
 node server.js
-# → aiCEO MVP démarré sur http://localhost:4747
+# → aiCEO MVP démarré sur http://localhost:3001
 
 # 5. Ouvrir dans le navigateur
-# http://localhost:4747             → arbitrage matinal
-# http://localhost:4747/evening     → boucle du soir
+# http://localhost:3001             → arbitrage matinal
+# http://localhost:3001/evening     → boucle du soir
 ```
 
 **Si le serveur ne démarre pas** → voir `./RUNBOOK-OPS.md` §"Serveur qui refuse de démarrer".
@@ -64,7 +64,7 @@ node server.js
 │   ├── ONBOARDING-DEV.md         ← tu es ici
 │   ├── RUNBOOK-OPS.md            modes de panne + remèdes
 │   └── openapi.yaml              spec formelle API REST (produit S2 plan audit)
-├── server.js                     Express · port 4747 · point d'entrée
+├── server.js                     Express · port 3001 · point d'entrée
 ├── src/                          8 modules métier (voir §4)
 ├── scripts/                      fetch-outlook.ps1, normalize-emails.js, seed
 ├── public/                       UI statique (index.html, evening.html, assets)

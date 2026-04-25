@@ -4,11 +4,13 @@ Trois flux qui tournent en local sur votre poste :
 
 | Flux | URL | Rôle |
 |---|---|---|
-| **Arbitrage matinal** | `http://localhost:4747/` | Chaque matin, Claude propose Faire / Déléguer / Reporter à partir de vos tâches |
+| **Arbitrage matinal** | `http://localhost:3001/` | Chaque matin, Claude propose Faire / Déléguer / Reporter à partir de vos tâches |
 | **Brouillon de délégation** | bouton "✉ Voir brouillon" | Génère un mail prêt-à-envoyer (destinataire + objet + corps) |
-| **Boucle du soir** | `http://localhost:4747/evening` | 2 min pour dire ce qui a été fait — alimente l'apprentissage |
+| **Boucle du soir** | `http://localhost:3001/evening` | 2 min pour dire ce qui a été fait — alimente l'apprentissage |
 
 Les données restent sur votre poste sauf le texte envoyé à Claude pour raisonner.
+
+> 📚 **Référence API REST complète** : voir [`docs/API.md`](docs/API.md) — tous les endpoints (cockpit, tasks, decisions, contacts, projects, groups, events, arbitrage, evening) avec exemples curl, codes HTTP et variables d'environnement.
 
 ---
 
@@ -17,7 +19,7 @@ Les données restent sur votre poste sauf le texte envoyé à Claude pour raison
 ```bash
 cd aiCEO_Agent/mvp
 npm install            # première fois uniquement
-node server.js         # démarre → http://localhost:4747
+node server.js         # démarre → http://localhost:3001
 ```
 
 Sous Windows : double-clic sur `start.bat` (voir `DEMARRER-WINDOWS.md`).
@@ -57,7 +59,7 @@ Le wrapper `src/anthropic-client.js` détecte `HTTPS_PROXY` et route le SDK Anth
 ## Flux d'usage quotidien
 
 **Matin (2 min)**
-1. Ouvrez `http://localhost:4747`
+1. Ouvrez `http://localhost:3001`
 2. Cliquez **Lancer l'arbitrage** → Claude classe **toutes** vos tâches ouvertes : 3 FAIRE max, 2 DÉLÉGUER max, **REPORTER absorbe tout le reste** (pas de limite haute — 0 tâche perdue)
 3. Reshuffle par drag & drop si besoin
 4. **Valider l'arbitrage** → figé dans `data/decisions.json`
@@ -68,7 +70,7 @@ Le wrapper `src/anthropic-client.js` détecte `HTTPS_PROXY` et route le SDK Anth
 - Vous éditez le destinataire / objet / corps à la volée
 - **Copier** (presse-papier), **Enregistrer** (log local) ou **Envoyer via Outlook** (mailto: qui ouvre votre client mail avec tout pré-rempli)
 
-**Soir (2 min)** — `http://localhost:4747/evening`
+**Soir (2 min)** — `http://localhost:3001/evening`
 - Reprend l'arbitrage validé du matin
 - Pour chaque item : **Fait / Partiel / Pas fait** + note facultative
 - Énergie (1-5) + humeur en un mot
@@ -127,7 +129,7 @@ npm run seed           # ou bouton "↻ Recharger données" dans l'UI
 ## Architecture
 
 ```
-server.js                     Express · port 4747
+server.js                     Express · port 3001
 ├── GET  /api/health          mode démo ou réel, modèle actif
 ├── GET  /api/tasks           tâches + projets + events + contacts
 ├── POST /api/arbitrage       appelle Claude → 3/2/3
@@ -203,4 +205,4 @@ Utile pour :
 
 ---
 
-*Copilote aiCEO · v0.4 · 24/04/2026 — déploiement réel validé*
+*Copilote aiCEO · v0.5 · 2026-04-25 — Sprint S2 livré (cockpit + arbitrage + evening + tâches Eisenhower + migration vérifiée + doc API)*
