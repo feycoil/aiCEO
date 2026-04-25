@@ -525,7 +525,7 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
         <span class="bar" aria-hidden="true"><i id="progress-bar" style="width:0%"></i></span>
         <span id="progress-text">— jalons faits</span>
       </div>
-      <div class="version">v0.5-s1 · 25/04/2026</div>
+      <div class="version">v0.5-s2 · 25/04/2026</div>
     </div>
   </header>
 
@@ -541,7 +541,7 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
 
   <nav class="tabs" role="tablist" aria-label="Vues de la roadmap">
     <button class="tab" data-tab="convergence" role="tab" aria-selected="true" aria-controls="tab-convergence" id="tab-btn-convergence">Carte de convergence</button>
-    <button class="tab" data-tab="fusion-v05" role="tab" aria-selected="false" aria-controls="tab-fusion-v05" id="tab-btn-fusion-v05">Plan v0.5 fusion <span class="badge">prochain sprint</span></button>
+    <button class="tab" data-tab="fusion-v05" role="tab" aria-selected="false" aria-controls="tab-fusion-v05" id="tab-btn-fusion-v05">Plan v0.5 fusion <span class="badge">S2 EN COURS</span></button>
     <button class="tab" data-tab="release-notes" role="tab" aria-selected="false" aria-controls="tab-release-notes" id="tab-btn-release-notes">Release notes</button>
     <button class="tab" data-tab="journal" role="tab" aria-selected="false" aria-controls="tab-journal" id="tab-btn-journal">Journal &amp; écarts <span class="badge" id="journal-badge">live</span></button>
   </nav>
@@ -601,11 +601,11 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
     <div class="youarehere" role="status">
       <span class="pulse" aria-hidden="true"></span>
       <div>
-        <div class="label">Vous êtes ici · 25/04/2026</div>
-        <h2>GO ExCom v0.5 internalisé · Sprint S1 livré côté code · tag <code>v0.5-s1</code> posé</h2>
-        <p>GO ExCom inconditionnel pris le 25/04, exécution <strong>internalisée en binôme CEO + Claude</strong> (pas de dev externe, 105 k€ de provision dev neutralisés). <strong>Sprint S1 livré côté code</strong> : 14 tables SQLite + 18 indexes via 1 migration idempotente, 41 routes REST sur 6 modules, 23/23 tests verts en sandbox, migration data.js → SQLite OK (3/14/28/10/25/25). Hotfix S1.13 : pivot <code>better-sqlite3</code> → <code>node:sqlite</code> (Node 22.5+, zéro binaire natif). Tag <code>v0.5-s1</code> posé sur 141ca0f. Reste : recette manuelle CEO sur poste Windows avant ouverture S2.</p>
+        <div class="label">Vous êtes ici · 25/04/2026 · Sprint S2 kickoff préparé</div>
+        <h2>S1 livré ✓ · <strong>Sprint S2 ouvert</strong> · cockpit unifié + flux matin/soir + tâches · démarrage 19/05/2026</h2>
+        <p>Phase 1 archivée (tag <code>v0.5-s1</code> sur 141ca0f, 14 tables / 41 routes / 23 tests verts). <strong>Sprint S2 préparé en parallèle</strong> : périmètre élargi à <code>taches.html</code> (absorbé depuis S3 grâce au gain dogfood S1), 4 pages migrées vers API SQLite (<code>index.html</code> · <code>arbitrage.html</code> · <code>evening.html</code> · <code>taches.html</code>), 10 issues GitHub prêtes (S2.01 → S2.10), 22,1 k€ budget alloué (20 % de 110 k€). <strong>Démarrage lundi 19/05 09:00</strong> · démo finale vendredi 30/05 16:00 · tag <code>v0.5-s2</code> cible lundi 02/06.</p>
       </div>
-      <div class="stamp">6 sprints · ≈4,6 k€ infra · binôme CEO+Claude</div>
+      <div class="stamp">S2 · 10 j-ouvrés · 22,1 k€ · 4 pages · binôme CEO+Claude</div>
     </div>
 
     <!-- Timeline 10 semaines -->
@@ -629,8 +629,15 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
           <text x="80" y="100" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#1f4738" letter-spacing="0.5">GO EXCOM ✓</text>
           <text x="80" y="112" text-anchor="middle" font-family="Fira Sans" font-size="9" fill="#3d7363">25/04 · internalisé</text>
 
-          <!-- Vous êtes ici marker (Phase 1 en cours) -->
+          <!-- Phase 1 livrée — checkmark statique -->
           <g transform="translate(270,68)">
+            <circle r="9" fill="#3d7363"/>
+            <path d="M -4,0 L -1,3 L 4,-3" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <text x="270" y="48" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#1f4738">Phase 1 ✓</text>
+
+          <!-- Vous êtes ici marker (Phase 2 — Sprint S2 ouvert) -->
+          <g transform="translate(490,68)">
             <circle r="8" fill="#d96d3e">
               <animate attributeName="r" values="8;14;8" dur="1.8s" repeatCount="indefinite"/>
               <animate attributeName="opacity" values="1;0.3;1" dur="1.8s" repeatCount="indefinite"/>
@@ -638,7 +645,7 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
             <circle r="6" fill="#f5f3ef"/>
             <circle r="3" fill="#d96d3e"/>
           </g>
-          <text x="270" y="48" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#8a3b1b">Vous êtes ici</text>
+          <text x="490" y="48" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#8a3b1b">Vous êtes ici</text>
 
           <!-- Main timeline bar -->
           <rect x="160" y="84" width="1100" height="32" rx="16" fill="url(#phaseGrad)"/>
@@ -690,8 +697,8 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
         <article class="phase done-code">
           <div class="phase-num">Phase 1 / Sprint S1</div>
           <div class="phase-name">Fondation — backend stable SQLite</div>
-          <div class="phase-weeks">25 avril → 9 mai 2026 · livré côté code</div>
-          <p class="phase-lead">Socle technique posé sans casser le MVP. Sprint S1 livré côté code, recette CEO en cours.</p>
+          <div class="phase-weeks">25 avril 2026 · livré · tag <code>v0.5-s1</code></div>
+          <p class="phase-lead">Socle technique posé sans casser le MVP. Sprint S1 livré côté code, dogfood CEO en cours, marge ~2 j réinjectée en S2.</p>
           <ul>
             <li>Driver <strong><code>node:sqlite</code></strong> (Node 22.5+, zéro binaire natif) — pivot S1.13</li>
             <li><strong>14 tables</strong> + <strong>18 indexes</strong> via 1 migration idempotente</li>
@@ -699,20 +706,23 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
             <li>Migration data.js → SQLite OK (3/14/28/10/25/25)</li>
             <li>Tag <code>v0.5-s1</code> posé sur 141ca0f · branche <code>feat/v0.5/sprint-s1</code></li>
           </ul>
-          <div class="deliv"><strong>Livrable visible CEO</strong>Recette manuelle Windows : <code>npm install</code> · <code>npm run db:reset</code> · <code>db:migrate-*</code> · <code>npm test</code> · <code>npm start</code>. Voir <code>03_mvp/docs/SPRINT-S1-RECETTE.md</code>.</div>
+          <div class="deliv"><strong>Livré 25/04 — Release notes</strong><code>04_docs/RELEASE-NOTES-v0.5-s1.md</code> · 6 commits ahead of origin/main · recette manuelle CEO en dogfood depuis le 22/04, 0 incident bloquant sur 4 jours.</div>
         </article>
-        <article class="phase next">
+        <article class="phase doing">
           <div class="phase-num">Phase 2 / Sprint S2</div>
-          <div class="phase-name">API consolidée + Outlook robustifié</div>
-          <div class="phase-weeks">Sem 3-4 · prochain sprint</div>
-          <p class="phase-lead">Une API REST validée Zod, OpenAPI auto-généré, Outlook stable.</p>
+          <div class="phase-name">Cockpit unifié + flux matin/soir + tâches</div>
+          <div class="phase-weeks">19/05 → 01/06/2026 · 10 j-ouvrés · 22,1 k€</div>
+          <p class="phase-lead">Migration de 4 pages vers API SQLite + stabilisation flux matin/soir. <strong>Périmètre élargi</strong> : <code>taches.html</code> absorbé depuis S3 grâce au gain S1 dogfood.</p>
           <ul>
-            <li>Migration endpoints vers couche <strong>Zod</strong></li>
-            <li><strong>OpenAPI 3.0</strong> auto via zod-to-openapi (Issue #10)</li>
-            <li>Service Outlook unifié (3 comptes, retry, fallback)</li>
-            <li>Test Vitest pour bug « 0 mails sent folders » (#105)</li>
+            <li><strong>4 pages migrées</strong> : <code>index.html</code> · <code>arbitrage.html</code> · <code>evening.html</code> · <code>taches.html</code></li>
+            <li><strong>Zéro localStorage applicatif</strong> · API <code>/api/cockpit/today</code>, <code>/api/arbitrage/*</code>, <code>/api/evening/*</code>, <code>/api/tasks</code></li>
+            <li>Flux matin/soir <strong>stables 3 jours consécutifs</strong> · streak engine en backend</li>
+            <li>Matrice Eisenhower 2×2 + drag &amp; drop natif (fallback SortableJS)</li>
+            <li>Tests Playwright e2e (3 specs) · ≥ 30 tests unitaires verts</li>
+            <li>10 issues GitHub <strong>S2.01 → S2.10</strong> · 19,5 j-dev sur 20 j capacité</li>
+            <li>Spike WebSocket time-boxé 3 j (préparation S4 chat live)</li>
           </ul>
-          <div class="deliv"><strong>Livrable visible CEO</strong><code>openapi.yaml</code> à jour, arbitrage matinal identique à v0.4 mais sur SQLite + Zod.</div>
+          <div class="deliv"><strong>Livrables Sprint S2 préparés</strong><code>04_docs/DOSSIER-SPRINT-S2.md</code> · <code>POA-SPRINT-S2.xlsx</code> · <code>KICKOFF-S2.pptx</code> · démarrage lundi 19/05 09:00 · démo finale vendredi 30/05 16:00 · tag cible <code>v0.5-s2</code> lundi 02/06.</div>
         </article>
         <article class="phase">
           <div class="phase-num">Phase 3</div>
@@ -963,12 +973,13 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
 
     <!-- Décision GO ExCom prise + S1 en recette -->
     <div class="decision" style="background:linear-gradient(135deg,#dff0e6 0%,#f3faf6 100%);border-color:#3d7363;">
-      <div class="label" style="color:#1f4738;">Décision GO ExCom · prise le 25/04/2026</div>
-      <h2>GO inconditionnel · v0.5 internalisée · sprint S1 livré côté code</h2>
-      <p>L'ExCom a tranché : v0.5 produite en binôme CEO + Claude (pas de dev externe). Cadence préservée : <strong>6 sprints / 10 sem · kickoff 5 mai · tag v0.5 → 14 juillet 2026</strong>. Sprint S1 livré côté code (14 tables / 41 routes / 23 tests verts / hotfix S1.13 node:sqlite). <strong>Reste : recette manuelle CEO sur poste Windows</strong> avant ouverture S2 (API consolidée + Outlook).</p>
+      <div class="label" style="color:#1f4738;">Décision GO ExCom · prise le 25/04/2026 · S2 kickoff préparé</div>
+      <h2>GO inconditionnel · S1 livré ✓ · Sprint S2 ouvert (cockpit unifié, périmètre élargi)</h2>
+      <p>L'ExCom a tranché : v0.5 produite en binôme CEO + Claude (pas de dev externe). Cadence préservée : <strong>6 sprints / 10 sem · kickoff 5 mai · tag v0.5 → 14 juillet 2026</strong>. <strong>Sprint S1 livré</strong> en avance (14 tables / 41 routes / 23 tests verts / hotfix S1.13 node:sqlite, dogfood CEO depuis 22/04). <strong>Sprint S2 préparé</strong> avec périmètre élargi : <code>taches.html</code> absorbé depuis S3 grâce au gain dogfood. 4 pages, 10 issues, 22,1 k€, démarrage 19/05.</p>
       <div class="gate">
-        <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4738;"><strong>S1 ✓</strong>livré côté code · tag v0.5-s1 sur 141ca0f</div>
-        <div class="gate-pill" style="background:#fff;border-color:#b88237;color:#6d4816;"><strong>NEXT</strong>recette CEO Windows + S2 API+Outlook</div>
+        <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4738;"><strong>S1 ✓</strong>livré · tag v0.5-s1 sur 141ca0f · 0 incident dogfood</div>
+        <div class="gate-pill" style="background:#fff;border-color:#d96d3e;color:#8a3b1b;"><strong>S2 EN COURS</strong>kickoff prêt · démarrage 19/05 · cockpit + matin/soir + tâches</div>
+        <div class="gate-pill" style="background:#fff;border-color:#b88237;color:#6d4816;"><strong>NEXT</strong>tag v0.5-s2 cible 02/06 · puis S3 agenda + revues</div>
       </div>
     </div>
 
@@ -1069,7 +1080,7 @@ flowchart LR
 
       <div class="j-mermaid">
         <h3>Dépendances jalons critiques v0.5 — post-internalisation</h3>
-        <p class="hint">Cadence 6 sprints / 10 sem / 5 mai → 14 juillet 2026. GO ExCom pris (25/04) + S1 livré côté code. Reste : recette CEO + S2..S6.</p>
+        <p class="hint">Cadence 6 sprints / 10 sem / 5 mai → 14 juillet 2026. GO ExCom pris (25/04) + S1 livré (dogfood CEO) + S2 kickoff prêt. Démarrage S2 le 19/05.</p>
         <div class="mermaid" id="mermaid-dependencies">
 flowchart TD
   GO["GO ExCom internalise<br/>25 avril 2026 - pris"]
@@ -1166,8 +1177,9 @@ const PERIODS = [
   { id:"avril-s1",    label:"Avril 2026",       sub:"S14-S15 · sprint cockpit + MVP scaffolds" },
   { id:"avril-s2",    label:"Avril 2026",       sub:"S16 · pages app + arbitrage 3/2/N" },
   { id:"avril-s3",    label:"Avril 2026",       sub:"S17 · Outlook + cockpit serenity" },
-  { id:"avril-s4",    label:"Avril 2026",       sub:"S18 · GO ExCom v0.5 internalisée + Sprint S1 backend SQLite", now:true },
-  { id:"mai-juin",    label:"Mai-juin 2026",    sub:"Sprints S2 → S6 · binôme CEO+Claude · livraison incrémentale" },
+  { id:"avril-s4",    label:"Avril 2026",       sub:"S18 · GO ExCom v0.5 internalisée + Sprint S1 livré (tag v0.5-s1)" },
+  { id:"mai-s3",      label:"Mai 2026",         sub:"S20-S21 · Sprint S2 — cockpit unifié + flux matin/soir + taches.html (élargi)", now:true },
+  { id:"mai-juin",    label:"Mai-juin 2026",    sub:"Sprints S3 → S6 · agenda + revues · service Windows + E2E · polish + handoff" },
   { id:"juillet",     label:"Juillet 2026",     sub:"Tag v0.5 · cutover", banner:true },
   { id:"annee-2027",  label:"2027",             sub:"V1 cloud-ready · 290 k€" },
   { id:"annee-2028",  label:"2028",             sub:"V2 multi-tenant · 693 k€" },
@@ -1268,9 +1280,14 @@ const MILESTONES = [
   { id:"v05-go", lane:"mvp", period:"avril-s4", status:"done", title:"GO ExCom v0.5 (internalisée)", date:"25 avril 2026", planned:"2026-04-25", actual:"2026-04-25",
     desc:"GO ExCom inconditionnel + pivot exécution : v0.5 produite en binôme CEO + Claude (pas de dev externe). Cadence 6 sprints / 10 sem / 5 mai → 14 juillet conservée. Budget effectif ~4,6 k€ infra + provision (105 k€ dev externe neutralisés).",
     artefacts:["04_docs/DOSSIER-GO-NOGO-V05.md","04_docs/POA-V05.xlsx","04_docs/KICKOFF-V05.pptx","00_BOUSSOLE/DECISIONS.md (ADR GO + ADR internalisation 25/04)"] },
-  { id:"v05-s1", lane:"mvp", period:"avril-s4", status:"doing", title:"Sprint S1 — Backend stable SQLite", date:"25 avril → 9 mai 2026", planned:"2026-05-09", actual:null,
-    desc:"Sprint 1 livré côté code (binôme CEO + Claude) : 14 tables SQLite + 18 indexes, 41 routes REST sur 6 modules, 23/23 tests verts en sandbox, migration data.js → SQLite OK (3/14/28/10/25/25). Hotfix S1.13 : pivot better-sqlite3 → node:sqlite (zéro binaire natif, Node 22.5+). Tag v0.5-s1 posé sur 141ca0f. Reste : recette manuelle CEO sur poste Windows (npm install / db:reset / db:migrate-* / npm test / npm start).",
-    artefacts:["03_mvp/docs/SPRINT-S1-RECETTE.md","03_mvp/src/db-driver.js (node:sqlite)","tag v0.5-s1 → 141ca0f","04_docs/DOSSIER-GO-NOGO-V05.md §Plan d'exécution S1"] },
+  { id:"v05-s1", lane:"mvp", period:"avril-s4", status:"done", title:"Sprint S1 — Backend stable SQLite", date:"25 avril 2026 · livré", planned:"2026-05-09", actual:"2026-04-25",
+    desc:"Sprint 1 LIVRÉ en avance par binôme CEO + Claude (vs cible 9 mai) : 14 tables SQLite + 18 indexes, 41 routes REST sur 6 modules, 23/23 tests verts en sandbox, migration data.js → SQLite OK (3/14/28/10/25/25). Hotfix S1.13 : pivot better-sqlite3 → node:sqlite (zéro binaire natif, Node 22.5+). Tag v0.5-s1 posé sur 141ca0f. Recette CEO en dogfood depuis 22/04, 0 incident bloquant. Marge ~2 j réinjectée en S2.",
+    artefacts:["03_mvp/docs/SPRINT-S1-RECETTE.md","03_mvp/src/db-driver.js (node:sqlite)","tag v0.5-s1 → 141ca0f","04_docs/RELEASE-NOTES-v0.5-s1.md","04_docs/DOSSIER-GO-NOGO-V05.md §Plan d'exécution S1"] },
+
+  // ── Sprint S2 — Cockpit unifié + flux matin/soir + taches (périmètre élargi) ──
+  { id:"v05-s2", lane:"mvp", period:"mai-s3", status:"doing", title:"Sprint S2 — Cockpit unifié + flux matin/soir + taches", date:"19 mai → 1er juin 2026", planned:"2026-06-01", actual:null,
+    desc:"Migration de 4 pages cockpit vers les endpoints API SQLite + stabilisation des flux matin/soir. PÉRIMÈTRE ÉLARGI : taches.html absorbé depuis S3 grâce au gain S1 dogfood (~2 j réinjectés). 4 pages : index.html (cockpit), arbitrage.html (matin), evening.html (soir), taches.html (CRUD + Eisenhower). Zéro localStorage applicatif. 10 issues S2.01 → S2.10 (19,5 j-dev / 20 capacité). Spike WebSocket time-boxé 3 j pour préparer S4. Plan B : si dérive ≥ 1 j vendredi 23/05, taches.html re-décalé en S3.",
+    artefacts:["04_docs/DOSSIER-SPRINT-S2.md","04_docs/POA-SPRINT-S2.xlsx","04_docs/KICKOFF-S2.pptx","branche release/v0.5-s2","tag cible v0.5-s2 sur 02/06"] },
 
   // ═════════════════════════════════════════════════════════════
   // Hub fusion — Specs + Pipeline GitHub + Pré-requis dev
@@ -1341,9 +1358,12 @@ const BASELINE = {
 // ──────────────────────────────────────────────────────────────
 
 const JOURNAL = [
+  { ts:"2026-04-25", type:"décision", component:"mvp", title:"Sprint S2 — kickoff préparé · périmètre élargi à taches.html",
+    detail:"Kickoff S2 prêt : DOSSIER-SPRINT-S2.md (8 sections), POA-SPRINT-S2.xlsx (6 feuilles, 30 formules, 0 erreur), KICKOFF-S2.pptx (12 slides QA passé). PÉRIMÈTRE ÉLARGI : taches.html absorbé depuis S3 (4 pages au lieu de 3) grâce au gain ~2 j de la livraison S1 anticipée + dogfood CEO. Plan B explicite : si dérive ≥ 1 j cumulée vendredi 23/05, taches.html re-décalé en S3 (S3 alors allégé : agenda + revues seulement). 10 issues GitHub S2.01 → S2.10 prêtes (19,5 j-dev / 20 capacité). Démarrage lundi 19/05 09:00 · démo finale vendredi 30/05 16:00 · tag v0.5-s2 cible 02/06. Budget S2 = 22,1 k€ (20 % de 110 k€). Marge S1 dogfood (0 €) réinvestissable en provision risque.",
+    delta:0, source:"04_docs/DOSSIER-SPRINT-S2.md" },
   { ts:"2026-04-25", type:"livraison", component:"mvp", title:"Sprint S1 livré (tag v0.5-s1) — Backend stable SQLite",
-    detail:"14 tables SQLite + 18 indexes via 1 migration idempotente. 41 routes REST sur 6 modules (tasks/decisions/contacts/projects/groups/events). Migration data.js → SQLite OK (3 groupes / 14 projets / 28 tâches / 10 décisions / 25 contacts / 25 events). 23/23 tests verts en sandbox (base isolée AICEO_DB_OVERRIDE). Recette Windows en attente côté CEO.",
-    delta:0, source:"03_mvp/docs/SPRINT-S1-RECETTE.md" },
+    detail:"14 tables SQLite + 18 indexes via 1 migration idempotente. 41 routes REST sur 6 modules (tasks/decisions/contacts/projects/groups/events). Migration data.js → SQLite OK (3 groupes / 14 projets / 28 tâches / 10 décisions / 25 contacts / 25 events). 23/23 tests verts en sandbox (base isolée AICEO_DB_OVERRIDE). Recette Windows en dogfood CEO depuis 22/04, 0 incident bloquant.",
+    delta:-14, source:"04_docs/RELEASE-NOTES-v0.5-s1.md" },
   { ts:"2026-04-25", type:"écart", component:"mvp", title:"Hotfix S1.13 — pivot better-sqlite3 → node:sqlite",
     detail:"better-sqlite3@11 n'a pas de prebuilds Node 24, et node-gyp échoue sans VS Build Tools : install bloqué côté poste CEO. Pivot vers node:sqlite (intégré Node 22.5+, stable Node 24) via adaptateur drop-in src/db-driver.js. Zéro dépendance native. Refactor du test isolation (AICEO_DB_OVERRIDE) au passage : la base de prod n'est plus jamais touchée. Tag v0.5-s1 redéplacé sur 141ca0f.",
     delta:0, source:"03_mvp/src/db-driver.js" },
@@ -2422,7 +2442,7 @@ function updateHeaderDate() {
   const yyyy = today.getFullYear();
   // Conserve la version en cours (lue depuis le markup) et met à jour la date
   const match = versionEl.textContent.match(/^(v[\d.]+(?:-[a-z0-9]+)?)/i);
-  const version = match ? match[1] : "v0.5-s1";
+  const version = match ? match[1] : "v0.5-s2";
   versionEl.textContent = `${version} · ${dd}/${mm}/${yyyy}`;
 }
 

@@ -2,6 +2,26 @@
 
 ---
 
+## 2026-04-25 · Sprint S2 — périmètre élargi à `taches.html` (4 pages au lieu de 3)
+
+**Contexte** : Sprint S1 livré ce 25/04 (tag `v0.5-s1`, 14 tables SQLite, 41 routes REST, 23/23 tests verts) avec **~2 jours d'avance** sur la planche initiale (cible 9 mai), grâce au pivot `node:sqlite` qui a supprimé la friction `better-sqlite3` + au dogfood CEO démarré dès le 22/04 (4 jours, 0 incident bloquant). En préparation du kickoff S2 (DOSSIER-SPRINT-S2.md, POA-SPRINT-S2.xlsx, KICKOFF-S2.pptx), la question du périmètre se pose : tenir le scope d'origine (3 pages : `index.html` · `arbitrage.html` · `evening.html`) en 2 semaines confortables, ou absorber en S2 la page `taches.html` initialement prévue en S3.
+
+**Décision** : **élargir le Sprint S2 à 4 pages** — `index.html` (cockpit unifié) + `arbitrage.html` (matin) + `evening.html` (soir) + **`taches.html` (inbox CRUD)**. La capacité S2 reste 20 j-dev (binôme CEO + Claude × 2 semaines), la charge cible passe à **19,5 j-dev** (10 issues `S2.01` → `S2.10`), soit 97,5 % d'occupation — la marge de 0,5 j sert de coussin pour les revues. Démarrage **lundi 19/05/2026 09:00** · démo finale **vendredi 30/05 16:00** · tag cible **`v0.5-s2`** lundi 02/06.
+
+**Conséquences** :
+
+- **S3 allégé** : ne reste plus en S3 que `agenda.html` (vue hebdo Outlook) + `revues/` (W17 widget). S3 redevient une fenêtre confortable (12 j-dev cible / 20 capacité), ce qui crée une **provision pour absorber un éventuel retard S2**.
+- **Plan B explicite** : si dérive ≥ 1 j cumulée constatée **vendredi 23/05 (mid-sprint S2)**, la page `taches.html` est **re-décalée en S3** sans drama. Backlog S2 retombe à 16 j-dev (les 7 issues sur 3 pages historiques). S3 redevient 16 j-dev (taches + agenda + revues). Pas de perte calendaire — uniquement une re-séquentialisation.
+- **Budget S2** : **22,1 k€** (20 % de l'enveloppe 110 k€) **inchangé** — l'élargissement de périmètre ne consomme pas plus de ressources, il consomme la marge de productivité dégagée par S1.
+- **Marge S1 dogfood (0 €)** : les 4 jours de dogfood CEO 22/04 → 25/04 n'ont rien coûté en dev externe (binôme CEO + Claude, internalisation actée). Cette « marge invisible » est ré-investie en absorption de scope, pas en cash.
+- **Critères de scellement v0.5** : les 9 critères 3×3 (produit / boucles / dette) restent **inchangés** — `taches.html` était déjà dans le périmètre v0.5 final, on n'ajoute rien, on avance le séquencement.
+- **Issues GitHub** : 10 issues `S2.01` → `S2.10` ouvertes au démarrage S2 (ventilation : 2 issues plomberie API SQLite, 3 issues `index.html`, 2 issues `arbitrage.html`, 1 issue `evening.html`, 2 issues `taches.html`).
+- **Roadmap interactive** (`04_docs/11-roadmap-map.html`) : Phase 1 marquée *Livrée* (badge S1 LIVRÉ ✓), Phase 2 marquée *En cours* (badge S2 EN COURS), bandeau « Vous êtes ici » réécrit, jalon `v05-s2` ajouté avec `status:"doing"`, période `mai-s3` activée (`now:true`), entrée JOURNAL « décision · Sprint S2 — kickoff préparé · périmètre élargi à `taches.html` ».
+
+**Sources** : `04_docs/DOSSIER-SPRINT-S2.md`, `04_docs/POA-SPRINT-S2.xlsx`, `04_docs/RELEASE-NOTES-v0.5-s1.md`, `04_docs/11-roadmap-map.html` (jalon `v05-s2`, JOURNAL 25/04).
+
+---
+
 ## 2026-04-25 · v0.5 internalisée — exécution CEO + Claude, pas de dev externe
 
 **Contexte** : juste après le GO ExCom inconditionnel (ADR ci-dessous), le CEO décide de pivoter le mode d'exécution. Plus de sourcing externe ni de freelances : **la v0.5 sera produite intégralement en binôme CEO (PO) + Claude (équipe dev)**, dans la même dynamique que le MVP Node, l'app web Twisty et l'ensemble du dossier GO/NO-GO.
