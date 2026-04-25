@@ -1480,6 +1480,10 @@ const BASELINE = {
 // ──────────────────────────────────────────────────────────────
 
 const JOURNAL = [
+  { ts:"2026-04-25", type:"livraison", component:"mvp", title:"Sprint S3 livré (docs/sprint-s3-kickoff) — agenda + revues + SSE live + last-sync",
+    detail:"Sprint S3 LIVRÉ EN AVANCE (~3 h dogfood) : 11/11 issues closes (S3.00 → S3.10), 5 commits sur docs/sprint-s3-kickoff (ce22641 → 990be37), 75/75 tests verts (62 hérités + 11 nouveaux S3.05-S3.08). 4 piliers livrés : agenda.html migré API (drag-drop natif HTML5 + A11y clavier), revues/index.html migré API (Big Rocks max 3 + auto-draft Claude rubric 6 critères + archives), SSE câblé front (cockpit + tâches + agenda avec reconnexion exponentielle), Outlook autosync côté serveur (GET /api/system/last-sync + alerte cockpit outlook_stale). Auto-draft Claude src/llm-draft.js (Anthropic + fallback offline). POC node-windows S3.10 livré en code, test install reste à faire en dogfood admin CEO. Smoke live valide sur poste CEO Windows : 6/6 pages 200, contrainte max 3 confirmée HTTP 400.",
+    gh:{ milestone:"v0.5-s3", branch:"docs/sprint-s3-kickoff", pr:112 },
+    delta:-49, source:"00_BOUSSOLE/DECISIONS.md (2026-04-25 Sprint S3 livré)" },
   { ts:"2026-04-25", type:"décision", component:"mvp", title:"Sprint S3 — kickoff préparé (agenda + revues + SSE live + Outlook autosync)",
     detail:"Kickoff S3 prêt : DOSSIER-SPRINT-S3.md (7 sections, 11 issues détaillées), POA-SPRINT-S3.xlsx (6 feuilles, 25 formules, 0 erreur, palette Coral Energy), KICKOFF-S3.pptx (12 slides QA passé). 11 issues S3.00 → S3.10 (11,1 j-dev / 20 capacité = 45 % marge). 2 pages migrées (agenda.html drag-drop hebdo + revues/index.html avec auto-draft Claude rubric ≥ 5/6) + 2 chantiers transverses (câblage SSE front du bus prototypé S2.10 + Outlook autosync 2 h via schtasks /sc HOURLY /mo 2 + endpoint /api/system/last-sync) + spike Service Windows (POC node-windows time-box 1,5 j strict). Démarrage lundi 02/06 09:00 · demo intermédiaire 06/06 · démo finale 13/06 16:00 · tag v0.5-s3 cible 16/06. Budget S3 = 22,1 k€ (cumul v0.5 fin S3 = 66,3 k€ / 110 k€ = 60 %).",
     gh:{ milestone:"v0.5-s3", branch:"docs/sprint-s3-kickoff", pr:112 },
@@ -1955,6 +1959,37 @@ document.querySelectorAll(".filter[data-lane]").forEach(btn => {
 // ──────────────────────────────────────────────────────────────
 
 const RELEASES = [
+  // ── 25/04/2026 — Sprint S3 livré (branche docs/sprint-s3-kickoff, tag v0.5-s3 cible) ──
+  {
+    id: "rn-mvp-0-5-s3",
+    gh: { milestone:"v0.5-s3", branch:"docs/sprint-s3-kickoff", pr:112, issues:[113,114,115,116,117,118,119,120,121,122,123] },
+    component: "mvp",
+    version: "v0.5-s3",
+    date: "25 avr. 2026",
+    title: "Agenda hebdo + revues + SSE live + last-sync — sprint S3 livré",
+    summary: "Sprint S3 du plan v0.5 livré en ~3 h chrono dogfood par binôme CEO + Claude (vélocité bien supérieure aux 11,1 j-dev planifiés). 11/11 issues closes (S3.00 → S3.10), 5 commits de <code>ce22641</code> à <code>990be37</code>, <strong>75/75 tests verts</strong>. 4 piliers : agenda + revues + SSE câblé front + Outlook autosync côté serveur. Smoke live validé sur poste CEO Windows.",
+    changes: [
+      { cat:"feat", items:[
+        "<strong>agenda.html migré API</strong> : grille hebdo lun-dim, <code>GET /api/events/week?week=YYYY-Www&amp;with_tasks=true</code>, drag-drop natif HTML5 (pattern S2.03) → <code>PATCH /api/tasks/:id { due_at }</code> + refetch optimiste 200 ms, A11y clavier complète (aria-grabbed, aria-dropeffect, flèches + Espace), drawer detail event",
+        "<strong>revues/index.html migré API</strong> : Big Rocks éditables CRUD inline avec contrainte applicative <strong>max 3/sem (HTTP 400)</strong>, bouton « Demander brouillon Claude » → <code>POST /api/weekly-reviews/:week/draft</code>, archives 12 dernières revues, deep link <code>?week=YYYY-Www</code>",
+        "<strong>SSE câblé front</strong> : <code>EventSource('/api/cockpit/stream')</code> sur cockpit + tâches + agenda avec reconnexion exponentielle 1 s → 30 s plafond. Bus émet sur <code>task.created/.updated/.deleted</code> depuis routes mutatrices",
+        "<strong>Outlook autosync (côté serveur)</strong> : <code>GET /api/system/last-sync</code> (mtime emails-summary.json, level ok/warn>4h/critical>24h) + injection automatique alerte cockpit <code>outlook_stale</code>",
+        "<strong>Auto-draft Claude</strong> : <code>src/llm-draft.js</code> agrège tâches done + sessions arbitrage/soir + big rocks → prompt système rubric 6 critères (focus / ton / 200-400 mots / 3+ sources / top 3 demain / écarts) → markdown structuré 4 sections. Fallback offline si pas de clé API",
+        "<strong>POC service Windows S3.10</strong> : <code>scripts/service-windows/install-service.js</code> (node-windows wrapper install/start/stop) + README + ADR template — test install à faire en dogfood admin CEO"
+      ]},
+      { cat:"improve", items:[
+        "<strong>Doc API</strong> <code>docs/API.md</code> +182 lignes (6 sections S3 : events/week, big-rocks, weekly-reviews, auto-draft, system, SSE) avec exemples curl complets",
+        "ADR S3.00 (méthode + zéro localStorage rappelé) + ADR S3 livré dans <code>00_BOUSSOLE/DECISIONS.md</code>",
+        "Restauration de 4 ADRs perdues par truncature historique (Timing &amp; budget v0.5, Livrables externes : cadrage, 2 templates)"
+      ]},
+      { cat:"perf", items:[
+        "<strong>75/75 tests verts</strong> : 62 hérités + 11 nouveaux (3 weekly-reviews, 3 big-rocks, 1 events with_tasks, 2 weekly-reviews-draft, 3 system, 2 realtime-emit, 6 e2e-hebdo). Durée 28 s, isolation <code>AICEO_DB_OVERRIDE</code> systématique"
+      ]},
+      { cat:"breaking", items:[
+        "Schedule variance vs BASELINE : <strong>-49 j</strong> (livré 25/04 vs planifié 13/06). Sprint S4 peut démarrer dès que le CEO décide"
+      ]}
+    ]
+  },
   // ── 25/04/2026 — Sprint S2 livré (branche release/v0.5-s2) ──
   {
     id: "rn-mvp-0-5-s2",

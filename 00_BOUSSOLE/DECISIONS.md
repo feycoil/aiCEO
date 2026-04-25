@@ -2,6 +2,31 @@
 
 ---
 
+## 2026-04-25 · Sprint S3 livré (release/v0.5-s3) — agenda + revues + SSE live + last-sync
+
+**Contexte** : Sprint S3 cadré en avance le 25/04 (cf. ADR « Sprint S3 — cadrage 4 piliers »), démarrage planifié 02/06/2026 mais **livré complet le 25/04** par binôme CEO + Claude (~3 h chrono dogfood, vélocité bien supérieure aux hypothèses). Les 11 issues ont été traitées dans l'ordre du POA, sans Plan B activé. Smoke complet validé sur poste CEO Windows : 6/6 pages frontend HTTP 200, 4/4 endpoints API S3 200, contrainte max 3 big rocks confirmée HTTP 400, alerte cockpit `outlook_stale` active (level=critical, lastSyncAt 41 h).
+
+**Décision** : **acter la livraison de Sprint S3** avec scellement formel — **11/11 issues closes** (`S3.00` → `S3.10`), **5 commits** sur la branche `docs/sprint-s3-kickoff` (`ce22641` → `990be37`), **75/75 tests verts** (62 hérités S3.01-S3.03 + 11 nouveaux S3.05-S3.08). Tag cible **`v0.5-s3`** posable post-merge. Le POC service Windows (S3.10) est livré en code mais le test d'install reste à effectuer en dogfood admin CEO — pas d'ADR si POC vert silencieux, ADR séparée si question structurelle.
+
+**Conséquences** :
+
+- **Cumul v0.5 fin S3 = 60 % budget** consommé (66,3 k€ / 110 k€). Reste 33,7 k€ pour S4-S5-S6 + amorçage V1. Marge confortable.
+- **4 piliers livrés** :
+  - **agenda.html migré API** (`GET /api/events/week?week=YYYY-Www&with_tasks=true`) : grille hebdo lun-dim, drag-drop natif HTML5 (pattern S2.03 réutilisé), refetch optimiste 200 ms, A11y clavier complète (aria-grabbed/aria-dropeffect, flèches + Espace).
+  - **revues/index.html migré API** : Big Rocks éditables CRUD inline avec contrainte applicative max 3/sem (HTTP 400 au 4ᵉ POST, vérifié smoke), bouton « Demander brouillon Claude » → `POST /api/weekly-reviews/:week/draft`, archives 12 dernières revues, deep link `?week=YYYY-Www`.
+  - **SSE câblé front** : `EventSource('/api/cockpit/stream')` sur cockpit + tâches + agenda avec reconnexion exponentielle 1 s → 30 s plafond. Bus émet sur `task.created/.updated/.deleted` depuis routes mutatrices. Smoke E2E validé sandbox + heartbeat 25 s Zscaler-safe.
+  - **Outlook autosync (côté serveur)** : `GET /api/system/last-sync` lit `mtime(emails-summary.json)`, retourne `level ∈ {ok, warn>4h, critical>24h}`, alerte cockpit `outlook_stale` injectée automatiquement. Le `schtasks /sc HOURLY /mo 2` reste à poser côté CEO (admin). Endpoint `/api/system/health` complet (uptime, mem, node version).
+- **Auto-draft Claude (S3.03)** : `src/llm-draft.js` agrège tâches done + sessions arbitrage/soir + big rocks → prompt système rubric 6 critères (focus / ton / 200-400 mots / sources / top 3 demain / écarts) → markdown structuré 4 sections. Fallback offline (template figé) si pas de clé API ou `?fallback=true`. Mode mock client testé.
+- **Tests** : 55 (S2) → 62 (S3.01) → 64 (S3.03) → **75 (S3.10)**, durée 28 s. 14 fichiers de tests, isolation `AICEO_DB_OVERRIDE` systématique (un fichier SQLite dédié par suite, supprimé en `after`). Aucune régression sur le périmètre v0.5-s2.
+- **Doc API** : `docs/API.md` enrichi de 6 sections S3 (events/week, big-rocks, weekly-reviews, auto-draft, system, SSE) avec exemples curl complets. Total 669 lignes, 38+ exemples curl actualisés.
+- **POC service Windows S3.10** : `scripts/service-windows/install-service.js` (node-windows wrapper install/start/stop/uninstall) + `README.md` (critères acceptance + 6 limites identifiées) + `ADR-S3-10-template.md` à remplir si dépassement. **Test install reste à faire** en terminal admin CEO Windows (commandes documentées dans le README).
+- **Schedule variance vs BASELINE** : -49 j (livré 25/04 vs planifié 13/06). Gain réinjecté en avance calendaire pure cette fois (S2 avait absorbé en densification, S3 ne pouvait pas absorber davantage). Le sprint S4 peut désormais démarrer dès que le CEO décide.
+- **Tag** : `v0.5-s3` posable post-merge sur `main` via `git tag -a v0.5-s3 -m "Sprint S3 — agenda + revues + SSE live + last-sync"`.
+
+**Sources** : branche `docs/sprint-s3-kickoff` (commits `ce22641`, `a21585c`, `bf379fb`, `013cdef`, `990be37`), `04_docs/DOSSIER-SPRINT-S3.md`, `03_mvp/docs/API.md` §S3 Extensions, `03_mvp/scripts/service-windows/`, smoke live PowerShell CEO 25/04 17:30.
+
+---
+
 ## 2026-06-02 · S3.00 — Méthode Sprint S3 + zéro localStorage applicatif rappelé
 
 **Contexte** : Ouverture formelle du Sprint S3 (J1 02/06/2026). Le sprint S2 a livré l'ADR fondatrice `2026-05-19 · S2.00 — Zéro localStorage applicatif` qui établit SQLite serveur comme **source de vérité unique** : le front lit/écrit toujours via REST, jamais via `localStorage` (sauf préférences UI volatiles dans la clé réservée `aiCEO.uiPrefs`). Les 2 pages introduites en S3 (`agenda.html`, `revues/index.html`) doivent appliquer la même règle dès leur première ligne, sans dérive. En parallèle, la méthode S3 doit être actée formellement avant que le code parte : 4 piliers, démos hebdo, time-box spike strict.
