@@ -1955,6 +1955,35 @@ document.querySelectorAll(".filter[data-lane]").forEach(btn => {
 // ──────────────────────────────────────────────────────────────
 
 const RELEASES = [
+  // ── 25/04/2026 — Sprint S2 livré (branche release/v0.5-s2) ──
+  {
+    id: "rn-mvp-0-5-s2",
+    gh: { milestone:"v0.5-s2", branch:"release/v0.5-s2", pr:111, issues:[101,102,103,104,105,106,107,108,109,110] },
+    component: "mvp",
+    version: "v0.5-s2",
+    date: "25 avr. 2026",
+    title: "Cockpit unifié + rituels matin/soir — sprint S2 livré",
+    summary: "Sprint S2 du plan v0.5 livré en avance par binôme CEO + Claude (gain 1,5 j du time-box spike SSE réinvesti en e2e). 10/10 issues fermées, PR #111 mergée, 11 commits de <code>accea60</code> à <code>6f4e6e8</code>, <strong>55/55 tests verts</strong>. Cockpit live + rituels matin/soir + spike SSE.",
+    changes: [
+      { cat:"feat", items:[
+        "<strong>4 pages migrées</strong> sur l'API : <code>index.html</code> · <code>arbitrage.html</code> · <code>evening.html</code> · <code>taches.html</code> — <strong>zéro localStorage applicatif</strong>",
+        "<strong>Cockpit live</strong> : <code>GET /api/cockpit/today</code> (counters SQL + alertes overdue / stale / big rocks manquants)",
+        "<strong>Rituels matin/soir</strong> : arbitrage top 3 / délégation / report + bilan humeur·énergie + <strong>streak persistant</strong>",
+        "<strong>Vue Eisenhower 2×2</strong> dans <code>taches.html</code> + drag &amp; drop natif sur <code>arbitrage.html</code> (3 colonnes faire / déléguer / différer)",
+        "<strong>IA décisions</strong> : <code>POST /api/decisions/:id/recommend</code> (Anthropic + fallback offline)",
+        "<strong>Spike SSE livré</strong> : bus EventEmitter + <code>GET /api/cockpit/stream</code> + heartbeat 25 s — non câblé front (différé S3.05)"
+      ]},
+      { cat:"improve", items:[
+        "<strong>Doc API complète</strong> <code>docs/API.md</code> · <strong>38 exemples curl</strong> + smoke-test 1 commande",
+        "Migration <code>data/appweb.json</code> → SQL via <code>scripts/migrate-from-appweb.js</code> + <code>check-migration</code>",
+        "ADR SSE retenu vs WebSocket : <code>docs/SPIKE-WEBSOCKET.md</code> (latence inférieure, simpler stack, pas de proxy reverse à configurer)"
+      ]},
+      { cat:"perf", items:[
+        "<strong>55/55 tests verts</strong> : 49 unitaires + 6 intégration HTTP-boundary (Playwright sandboxé reporté S3+)",
+        "Time-box spike SSE respecté : 1,5 j sur 3 j alloués · gain réinvesti en doc API + e2e"
+      ]}
+    ]
+  },
   // ── 25/04/2026 — Sprint S1 livré (tag v0.5-s1) ──
   {
     id: "rn-mvp-0-5-s1",
