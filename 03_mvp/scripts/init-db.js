@@ -11,7 +11,7 @@
  */
 const fs = require('node:fs');
 const path = require('node:path');
-const Database = require('better-sqlite3');
+const Database = require('../src/db-driver');
 
 const ROOT = path.resolve(__dirname, '..');
 const DB_PATH = path.join(ROOT, 'data', 'aiceo.db');

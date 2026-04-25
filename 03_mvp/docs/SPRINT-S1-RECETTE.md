@@ -20,8 +20,9 @@ Le sprint est livré quand :
 ### Schéma SQLite (1 migration)
 - `data/migrations/2026-04-25-init-schema.sql` — 14 tables + 2 utilitaires.
 
-### Couche d'accès (1 fichier)
-- `src/db.js` — singleton `getDb()`, `uuid7()`, `now()`, helpers JSON, `crud(table, opts)` factory.
+### Couche d'accès (2 fichiers)
+- `src/db-driver.js` — adaptateur **node:sqlite** (intégré Node 22.5+) avec API compatible better-sqlite3 (prepare/exec/pragma/transaction/close). **Zéro dépendance native, zéro build tools.** Story S1.13.
+- `src/db.js` — singleton `getDb()`, `uuid7()`, `now()`, helpers JSON, `crud(table, opts)` factory. Lit `process.env.AICEO_DB_OVERRIDE` pour les tests.
 
 ### Routes REST (6 modules)
 - `src/routes/tasks.js`     — CRUD + `toggle` + `defer` + event sourcing (`task_events`).
@@ -37,7 +38,7 @@ Le sprint est livré quand :
 - `scripts/migrate-json-to-sqlite.js` — import `data/*.json` → tables historiques.
 
 ### Tests (1 suite)
-- `tests/api.test.js` — 22 cas d'intégration sur base de test isolée (`aiceo-test.db`).
+- `tests/api.test.js` — 23 cas d'intégration sur base de test **vraiment isolée** via `AICEO_DB_OVERRIDE=data/aiceo-test.db` (la base de prod n'est jamais touchée).
 
 ### Wiring
 - `server.js` — montage de 6 routers REST + conservation `/api/seed` legacy.
@@ -87,14 +88,17 @@ Le sprint est livré quand :
 ```bash
 cd 03_mvp
 
+# Pré-requis : Node 22.5+ (testé sur Node 22.22 et Node 24.15).
+# AUCUN binaire natif requis — on tape sur node:sqlite, pas better-sqlite3.
+
 # 1. Préparation
-npm install                          # → installe better-sqlite3 + deps
+npm install                          # → 5 deps pures JS (express, dotenv, undici, ...)
 npm run db:reset                     # → drop + apply migration
 npm run db:migrate-from-appweb       # → 3 grp / 14 proj / 28 tasks / ...
 npm run db:migrate-json              # → arbitrage_sessions / evening_sessions / delegations
 
-# 2. Tests automatisés
-npm test                             # → ≥ 22 cas, tous verts
+# 2. Tests automatisés (base isolée aiceo-test.db, prod intacte)
+npm test                             # → 23 cas, tous verts
 
 # 3. Smoke test serveur
 npm start                            # → http://localhost:4747
