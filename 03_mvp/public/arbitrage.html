@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>aiCEO · Arbitrage matinal</title>
+<style>
+  :root {
+    --cream: #FAF6EF;
+    --cream-deep: #F2EBDD;
+    --ink: #1C1A22;
+    --ink-2: #3A3542;
+    --ink-3: #6A6277;
+    --line: #D9CFBC;
+    --lilac: #A895DB;
+    --lilac-soft: #EEE7FA;
+    --coral: #EC7A6A;
+    --coral-soft: #FBE1DC;
+    --sage: #A8C8A4;
+    --sage-soft: #E3EEE0;
+    --sage-ac: #3E6F3A;
+    --amber: #E0B25C;
+    --amber-soft: #F6E6C7;
+    --sky: #7FB5D9;
+    --sky-soft: #DCEBF4;
+    --shadow: 0 2px 12px rgba(28,26,34,0.06);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Fira Sans", Calibri, -apple-system, system-ui, sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  header {
+    padding: 28px 40px 16px;
+    border-bottom: 1px solid var(--line);
+    background: var(--cream);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 11px;
+    color: var(--ink-3);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  h1 {
+    font-family: "Fira Sans", Cambria, Georgia, serif;
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    letter-spacing: -0.02em;
+  }
+  .subtitle { color: var(--ink-3); font-size: 14px; }
+  .badge {
+    display: inline-block; margin-left: 10px;
+    padding: 2px 8px; border-radius: 6px;
+    font-size: 11px; font-weight: 700;
+    background: var(--lilac-soft); color: #5f4a94;
+  }
+  .badge.demo { background: var(--amber-soft); color: #7a5a10; }
+  .top-links {
+    position: absolute; top: 30px; right: 40px;
+    display: flex; gap: 8px;
+  }
+  .top-links a {
+    padding: 6px 12px;
+    font-size: 12.5px;
+    color: var(--ink-2);
+    text-decoration: none;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: white;
+  }
+  .top-links a:hover { border-color: var(--ink-3); }
+  main { padding: 24px 40px 60px; }
+
+  .coach-strip {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 18px; border-radius: 14px;
+    background: var(--lilac-soft);
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+  .coach-strip.alert { background: var(--coral-soft); }
+  .coach-strip .dot {
+    flex: 0 0 auto;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--lilac); color: white;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .coach-strip.alert .dot { background: var(--coral); }
+
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 1100px) {
+    .columns { grid-template-columns: 1fr; }
+  }
+  .col {
+    background: white;
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+    min-height: 200px;
+  }
+  .col h2 {
+    font-family: "Fira Sans", Cambria, Georgia, serif;
+    font-size: 18px;
+    margin: 0 0 4px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .col h2 .pill {
+    font-family: "Fira Sans", Calibri, sans-serif;
+    font-size: 12px;
+    padding: 2px 10px;
+    border-radius: 10px;
+    background: var(--cream-deep); color: var(--ink-2);
+  }
+  .col.faire { background: var(--sage-soft); }
+  .col.faire h2 { color: var(--sage-ac); }
+  .col.faire h2 .pill { background: var(--sage); color: white; }
+  .col.deleguer { background: var(--lilac-soft); }
+  .col.deleguer h2 { color: #5f4a94; }
+  .col.deleguer h2 .pill { background: var(--lilac); color: white; }
+  .col.reporter { background: var(--amber-soft); }
+  .col.reporter h2 { color: #7a5a10; }
+  .col.reporter h2 .pill { background: var(--amber); color: white; }
+  .veille {
+    margin-top: 24px; padding: 16px 18px;
+    background: var(--cream); border: 1px dashed var(--line);
+    border-radius: 10px;
+  }
+  .veille h3 {
+    font-family: "Fira Sans", Cambria, Georgia, serif;
+    font-size: 16px; font-weight: 700; margin: 0 0 4px;
+    color: var(--ink-2); display: flex; align-items: center; gap: 8px;
+  }
+  .veille h3 .pill {
+    font-size: 11px; padding: 2px 8px; border-radius: 10px;
+    background: var(--ink-3); color: white;
+  }
+  .veille .sub { color: var(--ink-3); font-size: 12px; margin-bottom: 10px; }
+  .veille .list.compact .item {
+    padding: 8px 10px; margin: 0 0 6px; font-size: 13px;
+    background: white; border: 1px solid var(--line); border-radius: 6px;
+  }
+  .veille .list.compact .meta { font-size: 11px; }
+  button.link {
+    background: none; border: none; color: var(--lilac);
+    cursor: pointer; font-size: 12px; text-decoration: underline;
+    padding: 0;
+  }
+  .col .sub { font-size: 12px; color: var(--ink-3); margin-bottom: 14px; }
+
+  .item {
+    background: white;
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(217,207,188,0.5);
+    cursor: grab;
+  }
+  .item:last-child { margin-bottom: 0; }
+  .item.dragging { opacity: 0.4; }
+  .item .title { font-weight: 600; margin-bottom: 4px; line-height: 1.35; }
+  .item .meta {
+    font-size: 11.5px; color: var(--ink-3);
+    display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 6px;
+  }
+  .item .meta span { display: inline-flex; align-items: center; gap: 4px; }
+  .item .reason {
+    font-size: 12.5px; color: var(--ink-2);
+    font-style: italic;
+    padding: 6px 10px;
+    background: var(--cream);
+    border-radius: 8px;
+    margin-top: 6px;
+  }
+  .item .extras {
+    font-size: 11.5px;
+    margin-top: 6px; color: var(--ink-3);
+  }
+  .item .extras b { color: var(--ink-2); }
+  .item .email-signal {
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-top: 8px; padding: 4px 10px;
+    font-size: 11.5px; font-weight: 600;
+    background: var(--coral-soft); color: #a63b2b;
+    border-radius: 10px;
+  }
+  .item .email-signal.calm { background: var(--sky-soft); color: #2a5c82; }
+  .item .email-signal-title { font-size: 11px; color: var(--ink-3); margin-top: 4px; }
+  .item .item-actions {
+    display: flex; gap: 6px; margin-top: 8px;
+  }
+  .item .item-actions button {
+    font-size: 11.5px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--lilac);
+    background: white;
+    color: #5f4a94;
+    cursor: pointer;
+  }
+  .item .item-actions button:hover {
+    background: var(--lilac); color: white;
+  }
+
+  .tag {
+    display: inline-block; padding: 1px 7px;
+    border-radius: 6px; font-size: 10.5px; font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .tag.prio-critical { background: var(--coral-soft); color: #a63b2b; }
+  .tag.prio-high     { background: var(--amber-soft); color: #7a5a10; }
+  .tag.prio-medium   { background: var(--sky-soft);   color: #2a5c82; }
+  .tag.prio-low      { background: var(--cream-deep); color: var(--ink-3); }
+
+  .actions {
+    display: flex; gap: 10px; align-items: center;
+    margin: 20px 0 8px;
+  }
+  button {
+    font-family: inherit; font-size: 14px;
+    padding: 10px 18px; border-radius: 10px;
+    border: 1px solid var(--line); background: white;
+    color: var(--ink); cursor: pointer;
+    transition: all .15s;
+  }
+  button:hover { border-color: var(--ink-3); }
+  button.primary {
+    background: var(--ink); color: var(--cream);
+    border-color: var(--ink);
+  }
+  button.primary:hover { background: var(--ink-2); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .skeleton {
+    height: 70px; background: rgba(217,207,188,0.3);
+    border-radius: 12px; margin-bottom: 10px;
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:.8} }
+
+  .empty {
+    text-align: center; padding: 24px 16px;
+    font-size: 13px; color: var(--ink-3);
+    font-style: italic;
+  }
+  #summary {
+    font-family: "Fira Sans", Cambria, Georgia, serif;
+    font-size: 20px; line-height: 1.4;
+    margin: 10px 0 18px;
+    color: var(--ink);
+  }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink); color: var(--cream);
+    padding: 12px 20px; border-radius: 24px;
+    font-size: 13.5px; font-weight: 500;
+    opacity: 0; pointer-events: none;
+    transition: opacity .2s;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  }
+  .toast.show { opacity: 1; }
+
+  /* --- Modal brouillon de délégation --- */
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(28,26,34,0.42);
+    display: none; align-items: center; justify-content: center;
+    z-index: 100;
+  }
+  .modal-backdrop.show { display: flex; }
+  .modal {
+    background: white;
+    width: min(640px, 92vw);
+    max-height: 88vh;
+    overflow-y: auto;
+    border-radius: 18px;
+    padding: 24px 28px 22px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  }
+  .modal h3 {
+    font-family: "Fira Sans", Cambria, Georgia, serif;
+    font-size: 20px; margin: 0 0 6px;
+  }
+  .modal .modal-sub {
+    color: var(--ink-3); font-size: 13px; margin-bottom: 18px;
+  }
+  .modal .field {
+    display: flex; flex-direction: column; gap: 4px;
+    margin-bottom: 12px;
+  }
+  .modal .field label {
+    font-size: 11.5px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .modal .field input, .modal .field textarea, .modal .field select {
+    font-family: "Fira Sans", Calibri, sans-serif; font-size: 14px;
+    padding: 9px 12px; border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--cream);
+    color: var(--ink); width: 100%;
+  }
+  .modal .field textarea {
+    min-height: 170px; resize: vertical; line-height: 1.5;
+  }
+  .modal .field input:focus, .modal .field textarea:focus, .modal .field select:focus {
+    outline: 2px solid var(--lilac);
+    outline-offset: -1px;
+  }
+  .modal .two-col {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .modal .modal-actions {
+    display: flex; gap: 8px; justify-content: flex-end;
+    margin-top: 16px; flex-wrap: wrap;
+  }
+  .modal .modal-actions .spacer { flex: 1; }
+  .modal .reasoning {
+    font-size: 12px; color: var(--ink-3); font-style: italic;
+    padding: 8px 12px; background: var(--lilac-soft);
+    border-radius: 8px; margin-bottom: 12px;
+  }
+  .modal .hint {
+    font-size: 11.5px; color: var(--ink-3); font-style: italic;
+    margin-top: 4px; line-height: 1.4;
+  }
+  .modal .field select optgroup {
+    font-style: normal; font-weight: 700;
+    color: var(--ink-2); background: var(--cream);
+  }
+  .modal .loading {
+    padding: 40px 20px; text-align: center;
+    color: var(--ink-3); font-style: italic;
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">23 AVRIL 2026 · JEUDI</div>
+  <h1>Arbitrage matinal <span id="mode-badge" class="badge">...</span></h1>
+  <div class="subtitle" id="subtitle">Le copilote prépare votre plan du jour à partir de vos tâches ouvertes.</div>
+  <div class="top-links">
+    <a href="/evening">🌙 Boucle du soir</a>
+  </div>
+</header>
+
+<main>
+  <div id="coach" class="coach-strip" style="display:none"></div>
+  <div id="summary"></div>
+
+  <div class="actions">
+    <button class="primary" id="btn-arbitrate">✨ Lancer l'arbitrage</button>
+    <button id="btn-reload-data">↻ Recharger données</button>
+    <button id="btn-validate" disabled>Valider l'arbitrage</button>
+    <span id="meta" style="color:var(--ink-3);font-size:12px;margin-left:auto"></span>
+  </div>
+
+  <div class="columns">
+    <section class="col faire" data-bucket="faire">
+      <h2>Faire <span class="pill" id="count-faire">—</span></h2>
+      <div class="sub">Ce que vous traitez vous-même aujourd'hui.</div>
+      <div class="list" id="list-faire"></div>
+    </section>
+    <section class="col deleguer" data-bucket="deleguer">
+      <h2>Déléguer <span class="pill" id="count-deleguer">—</span></h2>
+      <div class="sub">Ce qui part aujourd'hui à quelqu'un d'autre.</div>
+      <div class="list" id="list-deleguer"></div>
+    </section>
+    <section class="col reporter" data-bucket="reporter">
+      <h2>Reporter <span class="pill" id="count-reporter">—</span></h2>
+      <div class="sub">Ce qui peut glisser sans casser.</div>
+      <div class="list" id="list-reporter"></div>
+    </section>
+  </div>
+
+  <section class="veille" id="veille-section" style="display:none">
+    <h3>En veille <span class="pill" id="count-veille">—</span> <button type="button" class="link" id="btn-toggle-veille">afficher</button></h3>
+    <div class="sub">Tâches hors du plan du jour — pour que rien ne disparaisse.</div>
+    <div class="list compact" id="list-veille" style="display:none"></div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div id="modal-body">
+      <div class="loading">Génération du brouillon…</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  let current = null;
+
+  const $ = (s) => document.querySelector(s);
+  const toast = (msg) => {
+    const t = $("#toast");
+    t.textContent = msg; t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2200);
+  };
+  const escapeHtml = (s) => String(s || "").replace(/[&<>"']/g, c =>
+    ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+
+  async function fetchHealth() {
+    try {
+      const h = await fetch("/api/health").then(r => r.json());
+      const badge = $("#mode-badge");
+      if (h.demo) {
+        badge.textContent = "DÉMO"; badge.className = "badge demo";
+      } else {
+        badge.textContent = h.model?.replace("claude-", "") || "API";
+        badge.className = "badge";
+      }
+    } catch (e) {
+      $("#mode-badge").textContent = "hors ligne";
+    }
+  }
+
+  function renderSkeletons() {
+    ["faire","deleguer","reporter"].forEach(k => {
+      $("#list-" + k).innerHTML = '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
+      $("#count-" + k).textContent = "…";
+    });
+  }
+
+  function renderEmailSignal(it) {
+    const c = it.email_context;
+    if (!c || !c.count) return "";
+    const hot = c.relances >= 2 || c.unread >= 3;
+    const parts = [];
+    parts.push(`📧 ${c.count} mail${c.count>1?'s':''}`);
+    if (c.unread) parts.push(`${c.unread} non lu${c.unread>1?'s':''}`);
+    if (c.relances >= 2) parts.push(`${c.relances} relances`);
+    const last = c.top && c.top[0] ? `<div class="email-signal-title">Dernier : "${escapeHtml(c.top[0].subject)}" — ${escapeHtml(c.top[0].from)}</div>` : "";
+    return `<div class="email-signal ${hot?'':'calm'}">${parts.join(' · ')}</div>${last}`;
+  }
+
+  function renderItem(it, bucket) {
+    const t = it.task;
+    if (!t) return `<div class="item">⚠ tâche introuvable (${it.task_id})</div>`;
+    const prio = `<span class="tag prio-${t.priority}">${t.priority}</span>`;
+    const extras = [];
+    if (it.slot) extras.push(`<b>Créneau :</b> ${it.slot}`);
+    if (it.to) extras.push(`<b>Destinataire :</b> ${escapeHtml(it.to)}`);
+    if (it.new_due) extras.push(`<b>Nouvelle échéance :</b> ${it.new_due}`);
+    if (it.estimated_min) extras.push(`<b>Estimé :</b> ${it.estimated_min} min`);
+
+    const actionsHtml = bucket === "deleguer"
+      ? `<div class="item-actions"><button type="button" data-action="draft" data-task-id="${t.id}">✉ Voir brouillon</button></div>`
+      : "";
+
+    return `
+      <div class="item" draggable="true" data-task-id="${t.id}">
+        <div class="title">${escapeHtml(t.title)}</div>
+        <div class="meta">
+          ${prio}
+          <span>📅 ${t.due || "—"}</span>
+          <span>⏱ ${t.estimatedMin || "?"} min</span>
+          <span>⚡ ${t.energy || "—"}</span>
+        </div>
+        <div class="reason">${escapeHtml(it.reason || "—")}</div>
+        ${extras.length ? `<div class="extras">${extras.join(" · ")}</div>` : ""}
+        ${renderEmailSignal(it)}
+        ${actionsHtml}
+      </div>
+    `;
+  }
+
+  function renderAll(data) {
+    current = data;
+    $("#summary").textContent = data.summary || "";
+    if (data.alert) {
+      const c = $("#coach");
+      c.style.display = "flex";
+      c.className = "coach-strip alert";
+      c.innerHTML = `<span class="dot">!</span><span><b>Alerte ${data.alert} —</b> ${escapeHtml(data.alert_message || "")}</span>`;
+    } else {
+      $("#coach").style.display = "none";
+    }
+    ["faire","deleguer","reporter"].forEach(k => {
+      const items = data[k] || [];
+      $("#list-" + k).innerHTML = items.length
+        ? items.map(it => renderItem(it, k)).join("")
+        : `<div class="empty">(aucun)</div>`;
+      $("#count-" + k).textContent = items.length;
+    });
+
+    // Tâches en veille (ignored_task_ids hydratées en objets tâche)
+    const veille = (data.ignored || []).filter(Boolean);
+    const vs = $("#veille-section");
+    if (veille.length) {
+      vs.style.display = "";
+      $("#count-veille").textContent = veille.length;
+      $("#list-veille").innerHTML = veille.map(t =>
+        `<div class="item" data-task-id="${t.id}">
+          <div class="title">${escapeHtml(t.title)}</div>
+          <div class="meta">
+            <span class="tag prio-${t.priority}">${t.priority}</span>
+            <span>📅 ${t.due || "—"}</span>
+            <span>⏱ ${t.estimatedMin || "?"} min</span>
+          </div>
+        </div>`
+      ).join("");
+    } else {
+      vs.style.display = "none";
+    }
+    const m = data.meta || {};
+    const base = m.source === "claude"
+      ? `${m.model} · ${m.usage?.input_tokens || 0} in / ${m.usage?.output_tokens || 0} out`
+      : `${m.source || "—"}${m.reason ? " · " + m.reason : ""}`;
+    const em = m.emails;
+    const emailPart = em?.available ? ` · 📧 ${em.kept} mails 30j (${em.unread} non lus)` : " · pas d'emails importés";
+    $("#meta").textContent = base + emailPart;
+    $("#btn-validate").disabled = false;
+    setupDnD();
+    setupDelegateButtons();
+    setupVeilleToggle();
+  }
+
+  function setupVeilleToggle() {
+    const btn = $("#btn-toggle-veille");
+    const list = $("#list-veille");
+    if (!btn || !list) return;
+    // Reset state on each render
+    btn.textContent = "afficher";
+    list.style.display = "none";
+    btn.onclick = () => {
+      const show = list.style.display === "none";
+      list.style.display = show ? "" : "none";
+      btn.textContent = show ? "masquer" : "afficher";
+    };
+  }
+
+  async function runArbitrate() {
+    renderSkeletons();
+    $("#btn-arbitrate").disabled = true;
+    try {
+      const r = await fetch("/api/arbitrage", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({})
+      });
+      const data = await r.json();
+      if (data.error) throw new Error(data.error);
+      renderAll(data);
+      toast("Arbitrage prêt ✓");
+    } catch (e) {
+      toast("Erreur : " + e.message);
+    } finally {
+      $("#btn-arbitrate").disabled = false;
+    }
+  }
+
+  async function validateDecision() {
+    if (!current) return;
+    const r = await fetch("/api/decide", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify(current)
+    }).then(r => r.json());
+    toast(`Arbitrage validé (#${r.total_decisions} enregistré).`);
+  }
+
+  async function reloadData() {
+    await fetch("/api/reseed", { method: "POST" });
+    toast("Données rechargées.");
+  }
+
+  function setupDnD() {
+    document.querySelectorAll(".item").forEach(el => {
+      el.addEventListener("dragstart", e => {
+        el.classList.add("dragging");
+        e.dataTransfer.setData("text/plain", el.dataset.taskId);
+      });
+      el.addEventListener("dragend", () => el.classList.remove("dragging"));
+    });
+    document.querySelectorAll(".col").forEach(col => {
+      col.addEventListener("dragover", e => e.preventDefault());
+      col.addEventListener("drop", e => {
+        e.preventDefault();
+        const id = e.dataTransfer.getData("text/plain");
+        const target = col.dataset.bucket;
+        ["faire","deleguer","reporter"].forEach(k => {
+          const idx = current[k].findIndex(x => x.task_id === id);
+          if (idx >= 0 && k !== target) {
+            const [item] = current[k].splice(idx, 1);
+            current[target].push(item);
+          }
+        });
+        renderAll(current);
+      });
+    });
+  }
+
+  // --- Délégation (modal brouillon) ---
+  function setupDelegateButtons() {
+    document.querySelectorAll('button[data-action="draft"]').forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.taskId;
+        openDraftModal(id);
+      });
+    });
+  }
+
+  async function openDraftModal(taskId) {
+    const backdrop = $("#modal-backdrop");
+    const body = $("#modal-body");
+    body.innerHTML = '<div class="loading">Génération du brouillon…</div>';
+    backdrop.classList.add("show");
+
+    // On retrouve le reason depuis l'arbitrage courant
+    const item = (current?.deleguer || []).find(x => x.task_id === taskId);
+    const reason = item?.reason || null;
+
+    try {
+      const r = await fetch("/api/delegate", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ task_id: taskId, reason })
+      });
+      const data = await r.json();
+      if (data.error) throw new Error(data.error);
+      renderDraftForm(data);
+    } catch (e) {
+      body.innerHTML = `<h3>Erreur</h3><p>${escapeHtml(e.message)}</p>
+        <div class="modal-actions"><button onclick="document.getElementById('modal-backdrop').classList.remove('show')">Fermer</button></div>`;
+    }
+  }
+
+  function renderDraftForm({ task_id, project, candidates, team_suggestions, draft }) {
+    const body = $("#modal-body");
+    const teamOptions = (team_suggestions || []).map(m =>
+      `<option value="${m.email || ''}" data-name="${escapeHtml(m.name)}">${escapeHtml(m.name)} — ${escapeHtml(m.role || '')} ${m.email ? '('+m.email+')' : ''}</option>`
+    ).join("");
+    const candidateOptions = (candidates || []).map(c =>
+      `<option value="${c.email || ''}" data-name="${escapeHtml(c.name)}">${escapeHtml(c.name)} — ${escapeHtml(c.role || '')} ${c.email ? '('+c.email+')' : ''}</option>`
+    ).join("");
+    const hasTeam = (team_suggestions || []).length > 0;
+    const hasCandidates = (candidates || []).length > 0;
+    const showSelect = hasTeam || (candidates || []).length > 1;
+
+    body.innerHTML = `
+      <h3 id="modal-title">Brouillon de délégation</h3>
+      <div class="modal-sub">Tâche <b>${escapeHtml(task_id)}</b> · ${escapeHtml(project?.name || '—')}</div>
+      ${draft.reasoning ? `<div class="reasoning">💡 ${escapeHtml(draft.reasoning)}</div>` : ""}
+
+      ${showSelect ? `
+        <div class="field">
+          <label>Réassigner le brouillon à…</label>
+          <select id="draft-candidate-select">
+            <option value="">— Garder le destinataire proposé —</option>
+            ${hasTeam ? `<optgroup label="Équipe interne (destinataire du mail)">${teamOptions}</optgroup>` : ""}
+            ${hasCandidates ? `<optgroup label="Contacts projet (à citer dans le corps)">${candidateOptions}</optgroup>` : ""}
+          </select>
+          <div class="hint">Le destinataire du mail doit être un membre d'équipe interne. Les contacts projet sont listés pour référence.</div>
+        </div>` : ""}
+
+      <div class="two-col">
+        <div class="field">
+          <label>Destinataire (nom)</label>
+          <input id="draft-recipient-name" value="${escapeHtml(draft.recipient_name || '')}" />
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input id="draft-recipient-email" type="email" value="${escapeHtml(draft.recipient_email || '')}" placeholder="email@exemple.fr" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Objet</label>
+        <input id="draft-subject" value="${escapeHtml(draft.subject || '')}" />
+      </div>
+
+      <div class="field">
+        <label>Corps du mail</label>
+        <textarea id="draft-body">${escapeHtml(draft.body || '')}</textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button id="btn-modal-close">Annuler</button>
+        <div class="spacer"></div>
+        <button id="btn-draft-copy">📋 Copier</button>
+        <button id="btn-draft-save">💾 Enregistrer</button>
+        <button class="primary" id="btn-draft-send">✉ Envoyer via Outlook</button>
+      </div>
+    `;
+
+    $("#btn-modal-close").addEventListener("click", () => $("#modal-backdrop").classList.remove("show"));
+
+    const sel = $("#draft-candidate-select");
+    if (sel) {
+      sel.addEventListener("change", () => {
+        const opt = sel.options[sel.selectedIndex];
+        if (opt.value) $("#draft-recipient-email").value = opt.value;
+        if (opt.dataset.name) $("#draft-recipient-name").value = opt.dataset.name;
+      });
+    }
+
+    $("#btn-draft-copy").addEventListener("click", () => {
+      const txt = `À : ${$("#draft-recipient-name").value} <${$("#draft-recipient-email").value}>\nObjet : ${$("#draft-subject").value}\n\n${$("#draft-body").value}`;
+      navigator.clipboard.writeText(txt).then(() => toast("Brouillon copié."));
+    });
+
+    $("#btn-draft-save").addEventListener("click", async () => {
+      const payload = {
+        task_id,
+        project_id: project?.id,
+        recipient_name: $("#draft-recipient-name").value,
+        recipient_email: $("#draft-recipient-email").value,
+        subject: $("#draft-subject").value,
+        body: $("#draft-body").value
+      };
+      await fetch("/api/delegate/save", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(payload)
+      });
+      toast("Brouillon enregistré.");
+    });
+
+    $("#btn-draft-send").addEventListener("click", () => {
+      const to = $("#draft-recipient-email").value.trim();
+      const subj = encodeURIComponent($("#draft-subject").value);
+      const body = encodeURIComponent($("#draft-body").value);
+      if (!to) {
+        toast("Email destinataire manquant.");
+        return;
+      }
+      window.location.href = `mailto:${to}?subject=${subj}&body=${body}`;
+    });
+  }
+
+  // Click outside modal closes it
+  $("#modal-backdrop").addEventListener("click", (e) => {
+    if (e.target.id === "modal-backdrop") $("#modal-backdrop").classList.remove("show");
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") $("#modal-backdrop").classList.remove("show");
+  });
+
+  $("#btn-arbitrate").addEventListener("click", runArbitrate);
+  $("#btn-validate").addEventListener("click", validateDecision);
+  $("#btn-reload-data").addEventListener("click", reloadData);
+  fetchHealth();
+})();
+</script>
+</body>
+</html>

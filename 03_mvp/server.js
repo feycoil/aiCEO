@@ -28,9 +28,18 @@ const PORT = Number(process.env.PORT) || 3001;
 app.use(express.json({ limit: "2mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// --- Route /evening pour URL propre ---
+// --- Routes pages cockpit (S2) — URLs propres ---
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 app.get("/evening", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "evening.html"));
+});
+app.get("/arbitrage", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "arbitrage.html"));
+});
+app.get("/taches", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "taches.html"));
 });
 
 // --- API ---
