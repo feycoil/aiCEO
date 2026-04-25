@@ -20,6 +20,7 @@ const contactsRouter  = require("./src/routes/contacts");
 const projectsRouter  = require("./src/routes/projects");
 const groupsRouter    = require("./src/routes/groups");
 const eventsRouter    = require("./src/routes/events");
+const cockpitRouter   = require("./src/routes/cockpit");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3001;
@@ -50,6 +51,7 @@ app.use("/api/contacts",  contactsRouter);
 app.use("/api/projects",  projectsRouter);
 app.use("/api/groups",    groupsRouter);
 app.use("/api/events",    eventsRouter);
+app.use("/api/cockpit",   cockpitRouter);
 
 // --- Legacy seed (compat arbitrage UI tant que la migration n'est pas finalisee) ---
 app.get("/api/seed", (req, res) => {
