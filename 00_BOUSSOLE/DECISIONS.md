@@ -1,11 +1,100 @@
 # DECISIONS — Architecture Decision Records (ADR léger)
 
+---
+
+## 2026-04-25 · v0.5 internalisée — exécution CEO + Claude, pas de dev externe
+
+**Contexte** : juste après le GO ExCom inconditionnel (ADR ci-dessous), le CEO décide de pivoter le mode d'exécution. Plus de sourcing externe ni de freelances : **la v0.5 sera produite intégralement en binôme CEO (PO) + Claude (équipe dev)**, dans la même dynamique que le MVP Node, l'app web Twisty et l'ensemble du dossier GO/NO-GO.
+
+**Décision** : **internalisation totale de l'exécution v0.5**. L'enveloppe 110 k€ (105,3 k€ dev + 0,9 k€ infra + 3,7 k€ provision) est *neutralisée* pour la masse salariale dev externe. Reste mobilisable sur fonds propres ETIC : ~4,6 k€ pour infra + provision (Anthropic API, hébergement éventuel, outillage). Le ramp-up dev est porté en interne, à coût marginal Anthropic API uniquement.
+
+**Conséquences** :
+
+- **Budget effectif v0.5** : ~4,6 k€ (infra + provision) au lieu de 110 k€. Économie de fonds propres ~105 k€ disponible pour V1/V2 ou autre poste ETIC.
+- **Calendrier** : structure 6 sprints / 10 semaines / fenêtre 5 mai → 14 juillet **conservée** comme cadence de pilotage produit (pas de raison de la modifier — elle reflète la complexité fonctionnelle, pas la masse salariale).
+- **Gouvernance** : revues ExCom mid-sprint maintenues sur **livrables et qualité** (pas sur décaissement). Trigger ExCom « décaissement > 80 k€ » devient sans objet.
+- **Critères GO** : #2 « équipe sourcée » devient sans objet ; les 4 autres restent (trésorerie infra confirmée, périmètre verrouillé, plan contingence, calendrier). Critère #2 est *remplacé* par : **disponibilité CEO confirmée sur la fenêtre 5 mai → 14 juillet** (capacité à dégager les créneaux PO/test).
+- **Critères NO-GO** : « sourcing impossible » devient sans objet. Les 3 autres restent.
+- **Critères de scellement v0.5** : 9 critères 3×3 (produit / boucles / dette) **inchangés** — c'est le produit qui est jugé, pas l'organisation.
+- **Tâches caduques** : #189 (DAF débloque 110 k€), #190 (sourcing 2 dev), #191 (contrats freelance) — annulées.
+- **Tâche maintenue** : #192 (kickoff S1) — recadrée en kickoff binôme CEO + Claude.
+- **Roadmap** : `v05-go` reste *Done* (la décision est prise) ; description mise à jour pour refléter l'internalisation.
+
+**Sources** : ADR « GO ExCom v0.5 » et « Gouvernance GO/NO-GO v0.5 » ci-dessous.
+
+**Cadrage opérationnel acté** :
+- **Démarrage Sprint S1 : maintenant (25 avril 2026)**, S1 court 25/04 → 9 mai. Pas d'attente — pas de contractualisation à faire. La cadence 10 sem v0.5 se rejoue, livraison cible **début juillet 2026** (au lieu du 14 juillet).
+- **Cible de code : `03_mvp/` évolue en place** — on capitalise sur le MVP Node existant (Express + Claude arbitrage + Outlook COM + boucle du soir + drafts). L'app web statique `aiCEO_Agent/` (5 journey maps + 13 pages cockpit) devient *référence UX à absorber* dans le MVP qui se transforme en app unifiée Twisty. Pas de dossier `03_app-unifiee/` séparé.
+
+---
+
+## 2026-04-25 · GO ExCom v0.5 — 110 k€ engagés, kickoff 5 mai
+
+**Contexte** : dossier GO/NO-GO v0.5 (cf. ADR « Gouvernance GO/NO-GO v0.5 » ci-dessous) soumis à ExCom le 25/04/2026. Décision attendue avant le 5 mai pour démarrer sprint S1.
+
+**Décision** : **GO. ExCom valide l'engagement de 110 k€ fonds propres ETIC sur la fenêtre 5 mai → 14 juillet 2026** (10 semaines, 6 sprints, 2,6 ETP). Ventilation 110 k€ = 105,3 k€ dev (2,6 ETP × 10 sem × 4,5 j × 900 €) + 0,9 k€ infra + 3,7 k€ provision. Sprint S1 (cadrage périmètre + scaffold app unifiée + SQLite 13 tables + Service Windows + adaptateur Outlook COM) démarre le 5 mai 2026.
+
+**Conditions actées** : à compléter par CEO si ExCom a posé des conditions (sourcing dev validé, périmètre amendé, points d'étape supplémentaires, etc.). Par défaut : conditions du dossier (5 critères GO cumulatifs, 4 NO-GO suffisants, plans contingence A/B/C, 9 critères de scellement v0.5, trigger ExCom mid-sprint si décaissement > 80 k€) restent en vigueur.
+
+**Conséquences** :
+- **Trésorerie** : DAF débloque la ligne 110 k€ fonds propres ETIC.
+- **Sourcing** : lancement immédiat recherche 2 dev fullstack senior 900 €/j (Node/SQLite/Windows + Twisty DS).
+- **Contrats** : préparation contrats freelance pour signature avant 5 mai.
+- **Gouvernance** : revue ExCom mid-sprint (sprint S3, ~mi-juin) systématique ; trigger anticipé si décaissement > 80 k€ atteint.
+- **Roadmap** : jalon `v05-go` passé en *Done* sur la roadmap interactive (`04_docs/11-roadmap-map.html`), `v05-s1` ouvert pour 5 → 19 mai.
+
+**Sources** : `04_docs/DOSSIER-GO-NOGO-V05.md`, `04_docs/POA-V05.xlsx`, `04_docs/KICKOFF-V05.pptx`, ADR « Gouvernance GO/NO-GO v0.5 » ci-dessous.
+
 Une entrée par décision débattue ≥ 30 minutes. Les micro-arbitrages vont dans les messages de commit.
 
 Format :
 - **Date · Titre court**
 - Contexte, options, décision, conséquences
 - Pas de retour en arrière sans un nouvel ADR qui annule
+
+---
+
+## 2026-04-25 · Gouvernance GO/NO-GO v0.5 (110 k€, 5 mai → 14 juillet)
+
+**Contexte** : la fusion app-web ↔ MVP a été décidée le 24/04 (ADR ci-dessous), mais sans cadre formel d'engagement budgétaire. La trajectoire 18 mois (1,69 M€) part en mai avec v0.5 (110 k€, 10 semaines, 2,6 ETP, 6 sprints). ETIC Services a besoin d'une décision ExCom formelle avant le 5 mai pour : (a) débloquer la trésorerie en fonds propres, (b) sourcer 2 dev fullstack senior 900 €/j, (c) signer les contrats freelance. Risques connus : pont jetable v0.5→V1 (~30 % de code à réécrire en PowerShell COM), dépendance Anthropic mono-LLM, modèle économique encore externe au produit. Audience interne ExCom uniquement, pas d'investisseur externe à ce stade.
+
+**Options étudiées** (par dimension) :
+
+- **Forme de la décision** : email simple CEO → ExCom, présentation orale en réunion, ou **dossier formel + annexes financières + slide kickoff**.
+- **Niveau d'engagement** : engager v0.5 + V1 + V2 d'un bloc (1,1 M€, irréversible), engager v0.5 seule + revue à mi-parcours + GO/NO-GO V1 conditionnel, ou **engager v0.5 + critères de scellement formels en sortie de v0.5 qui conditionnent l'ouverture de V1**.
+- **Critères GO** : informels au jugement CEO, formels mais évaluables a posteriori, ou **5 critères formels cumulatifs évaluables avant le 4 mai** (équipe sourcée, trésorerie confirmée par DAF, périmètre verrouillé, plan contingence rédigé, calendrier rebasé).
+- **Critères NO-GO** : aucun explicite, ou **4 critères suffisants déclencheurs** (tout en cause sourcing, trésorerie, scope creep, gouvernance).
+- **Plan contingence** : "on avise" si NO-GO, ou **3 plans A/B/C documentés** (A : différer 4 sem, B : périmètre réduit 70 k€ sur 8 sem, C : abandon).
+- **Critères de scellement v0.5** : informels, ou **9 critères 3×3** (produit unifié 13 pages / boucle matin-soir + agenda + revues / 0 dette critique) tagués v0.5.0 qui conditionnent l'ouverture du sprint V1.
+- **Trigger ExCom mid-sprint** : aucun, ou **alerte si décaissement cumulé > 80 k€ avant fin Sprint 3** (≈ trajectoire worst-case).
+
+**Décision** : bundle cohérent sur 7 dimensions, formalisé en 3 livrables.
+1. **Forme = dossier formel + 2 annexes** — `04_docs/DOSSIER-GO-NOGO-V05.md` (pièce maîtresse, 9 sections, audience ExCom) + `04_docs/POA-V05.xlsx` (ventilation 110 k€ + trésorerie 12 mois + sensibilité 3 scénarios) + `04_docs/KICKOFF-V05.pptx` (14 slides, présentation ExCom 04/05).
+2. **Engagement v0.5 seule + revue mi-parcours** — engagement 110 k€ ferme sur v0.5 (mai-juillet 2026). V1 (290 k€) reste conditionnel à GO formel fin juillet selon critères de scellement v0.5.
+3. **5 critères GO formels cumulatifs** (les 5 doivent être verts avant le 4 mai pour engagement) :
+   1. Trésorerie ETIC ≥ 110 k€ confirmée DAF avant 30/04.
+   2. 2 dev fullstack senior sourcés et contrats freelance signés avant 02/05.
+   3. Périmètre 13 pages cibles verrouillé (pas de scope creep ajouté en kickoff).
+   4. Plan contingence A/B/C rédigé et acté en ExCom.
+   5. Calendrier réel rebasé (dates précises 05/05 → 14/07/2026).
+4. **4 critères NO-GO suffisants** (un seul déclenche NO-GO) :
+   1. Sourcing dev impossible au 02/05 (aucun candidat ou glissement à 19/05 inacceptable).
+   2. Trésorerie < 110 k€ ou décision DAF reportée au-delà du 30/04.
+   3. Scope creep > 15 % en kickoff (ajout de pages V1 dans v0.5).
+   4. Gouvernance bloquante (désaccord ExCom non résolu).
+5. **Plan contingence A/B/C documenté** — A : différer 4 sem (kickoff 02/06, livraison 11/08), B : périmètre réduit 70 k€ sur 8 sem (8 pages au lieu de 13, sans pages projet/groupes), C : abandon v0.5 + retour app-web statique + MVP CLI uniquement.
+6. **9 critères de scellement v0.5** (tag `v0.5.0` conditionnel à 9/9) — Produit unifié : 13 pages servies / 1 stack Node+SQLite / 1 service Windows opérationnel. Boucles : matin Claude / soir bilan / agenda hebdo / revue hebdo / délégation IA. Dette : 0 erreur P0 ouverte / 0 page Twisty restante / migration localStorage→SQLite finalisée.
+7. **Trigger ExCom mid-sprint 3** — alerte automatique si décaissement cumulé > 80 k€ avant fin Sprint 3 (mi-juin), réunion ExCom convoquée sous 5 jours pour décider continuité ou bascule plan B.
+
+**Conséquences** :
+- 3 livrables produits : `04_docs/DOSSIER-GO-NOGO-V05.md` (≈ 5-8 pages, 9 sections), `04_docs/POA-V05.xlsx` (3 onglets : Ventilation + Trésorerie 12 mois + Sensibilité Best/Base/Worst), `04_docs/KICKOFF-V05.pptx` (14 slides, palette Twisty, audience ExCom interne).
+- 3 chiffres consolidés alignés sur les 3 livrables : **110 k€ total** (95,7 % dev / 0,8 % infra / 3,4 % provision risque) · **fonds propres ETIC 100 %** (pas de tour externe à ce stade) · **sensibilité ±15 % à +22 %** (best 95 k€ / base 110 k€ / worst 134 k€).
+- Calendrier décision : DAF 28/04, sourcing confirmé 30/04, contrats signés 02/05, **ExCom décision 04/05**, kickoff Sprint 1 le 05/05 à 09:00.
+- ADR rédigé et versionné dans `00_BOUSSOLE/DECISIONS.md` (cette entrée) + journal roadmap mis à jour dans `04_docs/11-roadmap-map.html`.
+- Sprint 1 ready-to-fire : 8 prérequis listés dans le dossier §7 (trésorerie, sourcing, contrats, branche `release/v0.5`, schéma SQLite figé, périmètre verrouillé, agenda kickoff, accès Anthropic API).
+- Parqués explicitement : tour externe BA/VC (V2+ post-scellement v0.5 + V1), engagement V1 ferme (conditionnel à GO scellement fin juillet 2026), pricing externe (V2+ post-validation pair CEO), localisation EN (V3+).
+- **Interdit** : modifier rétroactivement les 5 critères GO ou les 9 critères de scellement sans ADR explicite annulant celui-ci. Tout dépassement worst-case (134 k€) doit déclencher trigger ExCom même si décaissement cumulé n'a pas encore franchi 80 k€.
+- Suite : si GO le 04/05 → exécution Sprint 1 dès 05/05, revue de scellement formelle fin juillet 2026 avec 9 critères évalués pour décider GO V1.
 
 ---
 
