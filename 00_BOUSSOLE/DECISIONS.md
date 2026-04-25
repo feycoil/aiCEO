@@ -500,4 +500,81 @@ Tableau de référence unique (à citer dans tout nouveau document qui porte un 
 - Tout nouveau draft doit inclure une date ISO dans son en-tête (`**Créé** : YYYY-MM-DD`) pour faciliter l'audit.
 - Un audit trimestriel de `_drafts/` est prévu dans `GOUVERNANCE.md` (à patcher en S7 ou immédiatement).
 
-**Conditions de revisite** : si le volume de drafts devient ingérable (> 10
+**Conditions de revisite** : si le volume de drafts devient ingérable (> 10 simultanés) ou si la durée de 4 semaines s'avère trop courte pour certains types (ex. spec longue en incubation), affiner par type dans un nouvel ADR.
+
+---
+
+## 2026-04-24 · Timing & budget v0.5 réconciliés
+
+**Contexte** : l'audit de cohérence (dissonances C1 et C5) a relevé que le dossier produit avance **quatre durées différentes** pour la fusion v0.5 (6 sem dans le chemin critique, 7 sem dans la synthèse, 9 sem dans SPEC-TECHNIQUE-FUSION, 10 sem dans la table des sprints) et **deux budgets incompatibles** (95 k€ dans la synthèse roadmap sans dérivation, 132 kEUR dans SPEC-TECHNIQUE-FUSION qui est en fait le budget v0.4 MVP). L'équipe v0.5 n'est par ailleurs documentée nulle part. Conséquence : le CEO ne peut pas citer un chiffre de v0.5 à un interlocuteur externe sans être contredit par un autre passage du dossier. Atelier de cohérence, Session 4.
+
+**Options étudiées** :
+- (A) Accepter le bundle reco — 6 sprints / 10 sem / 110 k€ / équipe 2,6 ETP documentée, V1 = 16 sem canonique avec §8 clarifié
+- (B) Compresser à 5 sprints / 9 sem comme le propose SPEC-TECHNIQUE-FUSION
+- (C) Viser 78 k€ avec une équipe serrée à 1,8 ETP (1 lead dev + 0,5 designer + 0,3 PMO)
+
+**Décision** : **A — bundle reco**.
+
+1. **6 sprints, 10 semaines** pour la fusion v0.5. S6 dédié au scellement (tag `v0.5`, release interne, rétro, communication) est conservé distinct du S5 (durcissement technique + Service Windows + tests e2e + CI).
+2. **Équipe v0.5 = 2,6 ETP** : 2 fullstack dev + 0,3 product designer + 0,3 PMO. Feycoil reste dogfood user quotidien, non budgété.
+3. **Budget v0.5 = ~110 k€** (10 sem × 2,6 ETP × 900 €/j × 4,5 j/sem ≈ 105 k€ dev + 5 k€ infra/LLM).
+4. **V1 = 16 semaines canonique** (périmètre complet, budget 290 k€). Le chiffre "14 sem" du chemin critique §8 désigne le chemin vers "V1 cœur" (migration Postgres + Graph API + Inngest + sub-agents), les 8 sem restantes couvrent les enrichissements F15 SharePoint RAG, F19 viz riches, F12 rituels auto-draftés.
+
+**Conséquences** :
+- Patch `04_docs/08-roadmap.md` : §3.2 (retirer "~1,5 mois dev temps plein"), §3.2bis "Équipe v0.5" créée, §3.2ter "Budget v0.5" créée (dérivation explicite), §8 chemin critique (6→10 sem fusion + clarification V1 cœur vs V1 complet), §13 synthèse (7 sem → 10 sem, 95 k€ → 110 k€).
+- Patch `04_docs/SPEC-TECHNIQUE-FUSION.md` §13 : ajout du Sprint 6 (scellement, 1 sem) ; remplacement de "132 kEUR conforme roadmap" par "110 kEUR (dérivation dans `08-roadmap.md` §3.2ter)".
+- À partir de cet ADR, **tout chiffre v0.5** cité dans le dossier doit être aligné sur 10 sem / 110 k€ / 2,6 ETP ou amender cet ADR.
+- Budget total 18 mois ajusté : MVP v0.4 dogfood (bien sous 132 k€) + v0.5 110 k€ + V1 290 k€ + V2 693 k€ + V3 598 k€ ≈ 1,69 M€ (ligne §13 `Budget 18 mois total ≈ 1,68 M€` reste valide).
+
+**Conditions de revisite** : si la fusion v0.5 dépasse 12 semaines ou 130 k€, ouvrir un nouvel ADR avec analyse de la dérive (dette technique sous-estimée, équipe insuffisante, périmètre sous-estimé).
+
+---
+
+## 2026-04-24 · Livrables externes : cadrage
+
+**Contexte** : l'audit de cohérence (dissonance C4) a relevé que le dossier produit est *« prêt à être utilisé, pas à être présenté »* — score complétude **0 % CEO pair**, **0 % client**, **40 % investisseur**. L'audit §5.3 insiste : *« le premier vrai test externe (CEO pair ETIC) est l'événement le plus important de la trajectoire post-v0.5 »*. Parallèlement, la dissonance C7 (positionnement obsolète — benchmark Lattice/Motion/Superhuman incompatible avec la réalité local-first post-fusion) bloque tout pitch crédible. Atelier de cohérence, Session 5.
+
+**Options étudiées** :
+- (A) CEO pair uniquement — scope minimal, 2-3 j
+- (B) **CEO pair + Investisseur** — couvre P1-4 de l'audit intégralement, 4-5 j
+- (C) Tout (+ client + partenaire tech) — 10+ j, livrables périmés avant V1
+
+**Décision** : **B — CEO pair + Investisseur traités maintenant**, client et partenaire tech parqués (reco révisable post-V1 pour le client, post-V2 pour le partenaire tech).
+
+**Cadrage S5** :
+1. **5 livrables à produire** (sprint dédié 4-5 j, fenêtre S2 du plan audit 05/05 → 11/05) :
+   - `04_docs/PITCH-ONEPAGE.md` — problème/solution/preuve/trajectoire/CTA, 1 page PDF
+   - `04_docs/BUSINESS-CASE.md` — hypothèses revenue, coûts 18 mois (1,69 M€), point mort, ROI CEO utilisateur
+   - `04_docs/ONBOARDING-CEO-PAIR.md` — prérequis, install Service Windows, import Outlook, premier arbitrage, FAQ
+   - `04_docs/LETTRE-INTRO-CEO-PAIR.md` — template 1 page signée Feycoil, pair-à-pair
+   - `04_docs/PITCH-DECK-INVESTISSEUR.pptx` — adaptation de `10-exec-deck.pptx` (redactions + traction + positionnement à jour + slides "pas encore construit")
+2. **Dépendance bloquante P0** : patch `04_docs/02-benchmark.md` (refonte §3 : Copilot for Business / Rewind / Motion-desktop / plugin Outlook ; §0 ajouté "Deux marchés de référence selon phase produit"). Sans ce patch, le pitch investisseur ne tient pas.
+3. **Stockage** : tous les livrables dans `04_docs/` avec préfixes MAJUSCULES (cohérent avec `SPEC-FONCTIONNELLE-FUSION.md` et `SPEC-TECHNIQUE-FUSION.md`). Nouvelle section "Livrables externes" ajoutée dans `04_docs/00-README.md`.
+4. **Confidentialité** : un seul fichier par audience, pas de double version. En-tête de filtrage explicite obligatoire sur chaque livrable externe : `Audience : <CEO pair | Investisseur>. Éléments redactés : <liste>. Version interne de référence : <fichier>.`
+5. **Cadence** : maintien continu, pas de fichiers versionnés (`-v0.5.md`). Chaque livrable porte `**Version produit visée** : <v0.5 | V1 | ...> · **Dernière mise à jour** : YYYY-MM-DD`. Revue systématique à chaque jalon produit scellé (v0.5, V1, V2).
+
+**Conséquences** :
+- **6 issues GitHub à ouvrir manuellement** (contenu préparé dans `04_docs/_atelier-2026-04-coherence/sessions/S5-livrables-externes.md` §9) : `doc/02-benchmark-v2-positionnement-a-jour` (P0), puis les 5 issues `doc/PITCH-ONEPAGE`, `doc/BUSINESS-CASE`, `doc/ONBOARDING-CEO-PAIR`, `doc/LETTRE-INTRO-CEO-PAIR`, `doc/PITCH-DECK-INVESTISSEUR`. Labels : `lane/docs` + `priority/P1` (sauf benchmark = P0) + `scope/externe` + milestone `V1`.
+- Section "Livrables externes" ajoutée dans `04_docs/00-README.md`, en creux aujourd'hui, à alimenter au fil de la production.
+- Le `10-exec-deck.pptx` actuel reste **interne uniquement** (ExCom ADABU 30/04). Toute adaptation pour l'externe passe par un nouveau fichier (pas de variante confuse du même nom).
+- Client et partenaire tech : créer 2 issues GitHub parqueurs avec milestone `V2` et label `status/parked` pour garder la trace de la décision (rouvrir post-V1 et post-V2 respectivement).
+
+**Conditions de revisite** : si une opportunité externe se présente avant T1 2027 (intérêt concret d'un client-test, approche d'un VC qualifié, sollicitation d'un partenaire tech), rouvrir cet ADR pour ajouter le livrable pertinent. Ne pas produire préventivement ce qui peut être obsolète.
+
+---
+
+## Template pour la prochaine décision
+
+```markdown
+## YYYY-MM-DD · Titre court
+
+**Contexte** : (en 2-3 lignes)
+
+**Options étudiées** :
+- (A) …
+- (B) …
+
+**Décision** : …
+
+**Conséquences** : …
+```
