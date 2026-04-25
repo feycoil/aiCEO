@@ -2,6 +2,33 @@
 
 ---
 
+## 2026-06-02 · S3.00 — Méthode Sprint S3 + zéro localStorage applicatif rappelé
+
+**Contexte** : Ouverture formelle du Sprint S3 (J1 02/06/2026). Le sprint S2 a livré l'ADR fondatrice `2026-05-19 · S2.00 — Zéro localStorage applicatif` qui établit SQLite serveur comme **source de vérité unique** : le front lit/écrit toujours via REST, jamais via `localStorage` (sauf préférences UI volatiles dans la clé réservée `aiCEO.uiPrefs`). Les 2 pages introduites en S3 (`agenda.html`, `revues/index.html`) doivent appliquer la même règle dès leur première ligne, sans dérive. En parallèle, la méthode S3 doit être actée formellement avant que le code parte : 4 piliers, démos hebdo, time-box spike strict.
+
+**Décision** : **acter 4 points de méthode pour le sprint S3** :
+
+1. **Rappel S2.00 sur les 2 nouvelles pages** — `agenda.html` et `revues/index.html` n'utilisent **aucune** clé `localStorage` applicative (events, big-rocks, weekly-review state, drag-drop position : tout transite par les nouvelles routes REST `/api/events/week`, `/api/weekly-reviews`, `/api/big-rocks`). Seule exception tolérée : `aiCEO.uiPrefs` (zoom calendrier, semaine courante affichée par défaut). Vérifié par `grep -nE "localStorage\.(get|set|remove)Item" 03_mvp/public/{agenda.html,revues/index.html}` → 0 (sauf `aiCEO.uiPrefs`).
+
+2. **Drag-drop natif HTML5** — réutilise le pattern validé en S2.03 (`arbitrage.html`) : `draggable=true` + `dragstart` / `dragover` / `drop` natifs, sans dépendance externe (pas de SortableJS ni `react-dnd`). Sur `agenda.html` : drag d'une `task-pill` depuis la rail latérale vers une cellule jour → `PATCH /api/tasks/:id { due_at }` immédiat, refetch optimiste après 200 ms.
+
+3. **Démos hebdo (J5 06/06 et J10 13/06)** — démo intermédiaire vendredi 06/06 16:00 (S3.01 + S3.02 livrées + S3.05 SSE câblé front), démo finale vendredi 13/06 16:00 (10/10 issues closes). Format identique S2 : screen-share 30 min CEO, 0 slide, démo live sur poste CEO Windows.
+
+4. **Tag `v0.5-s3` cible lundi 16/06** — posé après merge `release/v0.5-s3` → `main`, avec note de release auto-générée depuis `RELEASES` array de `04_docs/11-roadmap-map.html` (cf. process recetté lors de l'audit du 25/04).
+
+**Conséquences** :
+
+- **Cumul v0.5 fin S3 = 60 % budget** consommé (66,3 k€ / 110 k€). Marge 50 % sur le sprintage S3 (11,1 j-dev / 20 j capacité), confortable mais réinvestissable en e2e si la trame agenda+revues stabilise vite.
+- **Dépendances héritées par S4** purgées : 4 piliers achevés en S3 = `assistant.html` (chat), `contacts/decisions`, `projets/groupes` peuvent démarrer S4 sans reprise de dette technique.
+- **Zéro localStorage : règle systématique** pour tous les sprints à venir. Toute nouvelle page MVP applique S2.00 par défaut. La PR S3 ajoute un test unitaire dédié `tests/no-app-localstorage.test.js` (grep régression sur le bundle `public/`).
+- **Spike Service Windows S3.10** : ADR séparée si POC dépasse les 1,5 j ou ouvre une question structurelle (cf. cadrage S3 du 2026-04-25 ci-dessous).
+
+**Vérif d'acceptance ADR** : intégrée au critère #2 du DOSSIER-SPRINT-S3 §2 (10 critères de fin de sprint).
+
+**Sources** : `04_docs/DOSSIER-SPRINT-S3.md` §1, §2, §3 (S3.00) · ADR fondatrice `2026-05-19 · S2.00 — Zéro localStorage applicatif` (à insérer en S2.00 logiquement, ou implicitement portée par les commits cockpit S2.01-S2.05) · pattern drag-drop S2.03 (`03_mvp/public/arbitrage.html`).
+
+---
+
 ## 2026-04-25 · Sprint S3 — cadrage 4 piliers + spike Service Windows time-boxé
 
 **Contexte** : Sprint S2 livré complet le 25/04 (cf. ADR « Sprint S2 livré » ci-dessous) avec 1,5 j de gain time-box (spike SSE bouclé en 1,5 j vs 3 j prévus). La question du périmètre S3 se pose : tenir le scope d'origine (`agenda.html` + `revues/index.html`) sur 2 semaines confortables, ou densifier S3 pour anticiper deux dettes opérationnelles connues — (a) le bus SSE prototypé en S2.10 reste **non câblé front**, (b) l'import Outlook reste **lancé manuellement par le CEO** depuis PowerShell. À cela s'ajoute une décision à prendre pour S5 : packaging Service Windows. Sans POC, le risque est de découvrir trop tard une incompatibilité COM/registry/permissions au moment du cutover.
