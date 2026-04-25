@@ -16,6 +16,7 @@
  */
 const express = require('express');
 const { getDb, crud, uuid7, now } = require('../db');
+const { draftWeeklyReview } = require('../llm-draft');
 
 const reviews = crud('weekly_reviews', { jsonFields: ['big_rocks_done'] });
 const router = express.Router();
@@ -105,6 +106,20 @@ router.post('/', (req, res) => {
     data.updated_at = now();
     const created = reviews.insert(data);
     res.status(201).json({ review: created, upserted: 'insert' });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// S3.03 — Auto-draft IA d'une revue hebdomadaire
+router.post('/:week/draft', async (req, res) => {
+  try {
+    const week = req.params.week;
+    if (!/^\d{4}-W\d{2}$/.test(week)) {
+      return res.status(400).json({ error: 'parametre week invalide (attendu: YYYY-Www)' });
+    }
+    const draft = await draftWeeklyReview(week, { forceFallback: req.query.fallback === 'true' });
+    res.json(draft);
   } catch (e) {
     res.status(500).json({ error: e.message });
   }

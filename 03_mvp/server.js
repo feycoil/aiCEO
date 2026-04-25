@@ -45,6 +45,9 @@ app.get("/arbitrage", (req, res) => {
 app.get("/taches", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "taches.html"));
 });
+app.get("/agenda", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "agenda.html"));
+});
 
 // --- API ---
 
