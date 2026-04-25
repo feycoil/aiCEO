@@ -4,349 +4,2432 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>aiCEO — Roadmap interactive</title>
+<!-- Branchement direct sur le Design System Twisty (source canonique) -->
+<link rel="stylesheet" href="../02_design-system/colors_and_type.css">
 <style>
-:root {
-  --plum:#241B3A; --plumD:#16102A; --plumL:#3A2E57;
-  --coral:#E8604C; --coralD:#C44A37;
-  --lilac:#6A4F91; --lilacL:#B89BD9;
-  --gold:#E8B54C; --cream:#F8F1E7;
-  --ink:#1A1628; --mute:#6E6780; --line:#E3D9CC;
-  --done:#4A9B6E; --doing:#E8B54C; --todo:#B6ADC4;
-}
+/* ──────────────────────────────────────────────────────────────
+   Page-specific layer — uses DS Twisty tokens (rose, amber,
+   emerald, sky, violet, surface, text…) loaded above.
+   No hardcoded colors. No Georgia/Calibri.
+   ────────────────────────────────────────────────────────────── */
+
 * { box-sizing: border-box; }
-html, body { margin:0; padding:0; background:var(--cream); color:var(--ink); font-family:-apple-system,"Segoe UI",Calibri,sans-serif; }
-.wrap { max-width:1480px; margin:0 auto; padding:32px 40px 80px; }
+html { scroll-behavior: smooth; }
+body { background: var(--surface); color: var(--text); margin: 0; padding: 0; min-height: 100vh; }
 
-header { display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid var(--plum); padding-bottom:18px; margin-bottom:28px; }
-.title { font-family:Georgia,serif; }
-.title h1 { margin:0 0 6px; font-size:34px; letter-spacing:-0.5px; color:var(--plum); font-weight:700; }
-.title .subtitle { font-size:13px; color:var(--mute); letter-spacing:0.5px; text-transform:uppercase; }
-.version { font-size:11px; color:var(--mute); font-family:Consolas,monospace; background:#fff; padding:6px 10px; border:1px solid var(--line); border-radius:3px; }
+.wrap { max-width: 1480px; margin: 0 auto; padding: var(--space-8) var(--space-10) calc(var(--space-10) * 2); }
 
-.controls { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; align-items:center; }
-.controls .label { font-size:11px; color:var(--mute); letter-spacing:1.5px; text-transform:uppercase; margin-right:6px; }
-.filter { border:1px solid var(--line); background:#fff; color:var(--ink); padding:6px 14px; border-radius:18px; font-size:12px; cursor:pointer; font-family:inherit; transition:all 0.15s; letter-spacing:0.3px; }
-.filter:hover { border-color:var(--plum); }
-.filter.active { background:var(--plum); color:var(--cream); border-color:var(--plum); }
-.filter.done.active { background:var(--done); border-color:var(--done); }
-.filter.doing.active { background:var(--doing); color:var(--plum); border-color:var(--doing); }
-.filter.todo.active { background:var(--lilacL); border-color:var(--lilacL); color:var(--plum); }
+/* === Header === */
+.page-header { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--space-6); border-bottom: 1px solid var(--border); padding-bottom: var(--space-5); margin-bottom: var(--space-5); flex-wrap: wrap; }
+.page-header .title h1 { margin: 0 0 4px; font-family: var(--font-sans); font-size: var(--fs-display); font-weight: var(--fw-extrabold); letter-spacing: var(--tracking-display); color: var(--text); line-height: var(--lh-tight); }
+.page-header .title .subtitle { font-size: var(--fs-sm); color: var(--text-2); display: flex; align-items: baseline; gap: 6px; }
+.page-header .title .subtitle .accent { font-family: var(--font-script); font-style: normal; font-size: 22px; color: var(--rose); line-height: 1; }
+.page-header .meta { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.page-header .version { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--text-2); background: var(--surface-2); padding: 6px 12px; border: 1px solid var(--border); border-radius: var(--radius-xs); letter-spacing: 0.02em; }
+.progress-strip { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-xs); padding: 8px 14px; display: flex; gap: 14px; align-items: center; font-size: var(--fs-tiny); color: var(--text-2); letter-spacing: 0.05em; }
+.progress-strip .pct { font-family: var(--font-thin); font-size: 28px; color: var(--emerald); font-weight: var(--fw-thin); line-height: 1; }
+.progress-strip .bar { width: 120px; height: 6px; background: var(--surface-3); border-radius: 99px; overflow: hidden; }
+.progress-strip .bar > i { display: block; height: 100%; background: var(--emerald); border-radius: 99px; }
 
-.map-card { background:#fff; border:1px solid var(--line); border-radius:10px; padding:28px 20px 24px; box-shadow:0 1px 3px rgba(36,27,58,0.04); position:relative; overflow-x:auto; }
-.map-card::before { content:""; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,var(--lilacL) 0%,var(--lilac) 33%,var(--gold) 50%,var(--coral) 67%,var(--coralD) 100%); border-radius:10px 10px 0 0; }
+/* === Tabs === */
+.tabs { display: flex; gap: 2px; margin-bottom: var(--space-6); border-bottom: 1px solid var(--border); padding: 0 4px; flex-wrap: wrap; }
+.tab { background: transparent; border: 1px solid transparent; border-bottom: none; color: var(--text-2); padding: 12px 22px; cursor: pointer; font-family: var(--font-sans); font-size: var(--fs-h3); font-weight: var(--fw-semi); letter-spacing: -0.005em; border-radius: var(--radius-xs) var(--radius-xs) 0 0; margin-bottom: -1px; transition: color 0.15s, background 0.15s, border-color 0.15s; }
+.tab:hover { color: var(--text); background: var(--surface-3); }
+.tab:focus-visible { outline: none; box-shadow: var(--ring); }
+.tab[aria-selected="true"] { background: var(--surface-2); color: var(--text); border-color: var(--border); border-bottom-color: var(--surface-2); }
+.tab .badge { display: inline-block; margin-left: 8px; font-family: var(--font-mono); font-size: var(--fs-tiny); padding: 2px 7px; border-radius: 99px; background: var(--rose-50); color: var(--rose-800); }
+.tab[aria-selected="true"] .badge { background: var(--emerald-50); color: var(--emerald-800); }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
 
-.lanes-legend { display:flex; gap:32px; margin-bottom:22px; padding:0 10px; font-size:12px; flex-wrap:wrap; }
-.lane-tag { display:flex; align-items:center; gap:8px; color:var(--mute); }
-.lane-tag .dot { width:10px; height:10px; border-radius:2px; }
+/* === Filters === */
+.controls { display: flex; gap: 8px; margin-bottom: var(--space-6); flex-wrap: wrap; align-items: center; }
+.controls .label { font-size: var(--fs-tiny); color: var(--text-2); letter-spacing: 0.12em; text-transform: uppercase; margin-right: 4px; }
+.filter { border: 1px solid var(--border); background: var(--surface-2); color: var(--text); padding: 6px 14px; border-radius: 99px; font-size: var(--fs-xs); cursor: pointer; font-family: var(--font-sans); font-weight: var(--fw-medium); transition: all 0.15s; }
+.filter:hover { border-color: var(--text-2); }
+.filter:focus-visible { outline: none; box-shadow: var(--ring); }
+.filter[aria-pressed="true"] { background: var(--text); color: var(--surface-2); border-color: var(--text); }
+.filter.f-done[aria-pressed="true"] { background: var(--emerald); border-color: var(--emerald); }
+.filter.f-doing[aria-pressed="true"] { background: var(--amber); color: var(--surface-2); border-color: var(--amber); }
+.filter.f-todo[aria-pressed="true"] { background: var(--violet); color: var(--surface-2); border-color: var(--violet); }
+.search { display: inline-flex; align-items: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: 99px; padding: 4px 14px; font-size: var(--fs-xs); margin-left: auto; }
+.search:focus-within { border-color: var(--text-2); box-shadow: var(--ring); }
+.search input { border: none; background: transparent; outline: none; font-family: var(--font-sans); font-size: var(--fs-xs); color: var(--text); padding: 4px 0; min-width: 200px; }
+.search .icn { color: var(--text-3); margin-right: 6px; font-family: var(--font-sans); }
 
-.map-viewport { position:relative; min-width:1280px; height:540px; }
-svg.timeline { display:block; position:absolute; inset:0; width:100%; height:100%; }
-.nodes { position:absolute; inset:0; }
+/* === Convergence map — TIMELINE GRID v2 === */
+.tl-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; }
+.tl-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--violet) 0%, var(--violet) 30%, var(--amber) 50%, var(--rose) 70%, var(--rose-800) 100%); z-index: 2; }
 
-.node { position:absolute; transform:translate(-50%,-50%); cursor:pointer; text-align:center; width:140px; transition:transform 0.15s; }
-.node:hover { transform:translate(-50%,-50%) scale(1.05); z-index:10; }
-.node.selected { z-index:20; }
-.node .dot { width:18px; height:18px; border-radius:50%; margin:0 auto 6px; border:3px solid #fff; box-shadow:0 0 0 2px currentColor; }
-.node .m-title { font-family:Georgia,serif; font-size:12px; font-weight:700; line-height:1.2; color:var(--plum); margin-bottom:2px; }
-.node .m-date { font-size:10px; color:var(--mute); font-family:Consolas,monospace; letter-spacing:0.3px; }
-.node.selected .dot { transform:scale(1.25); }
-.node.selected .m-title { text-decoration:underline; text-underline-offset:3px; }
-.node.done { color:var(--done); }
-.node.doing { color:var(--doing); }
-.node.todo { color:var(--todo); }
-.node.hidden { opacity:0.18; pointer-events:none; }
+.lanes-legend { display: flex; gap: var(--space-6); padding: var(--space-5) var(--space-5) 0; font-size: var(--fs-xs); flex-wrap: wrap; }
+.lane-tag { display: flex; align-items: center; gap: 8px; color: var(--text-2); }
+.lane-tag .swatch { width: 10px; height: 10px; border-radius: 3px; }
 
-.hub { position:absolute; transform:translate(-50%,-50%); text-align:center; width:170px; z-index:5; cursor:pointer; }
-.hub .star { width:64px; height:64px; margin:0 auto 8px; display:flex; align-items:center; justify-content:center; background:var(--gold); color:var(--plum); border-radius:50%; font-family:Georgia,serif; font-size:22px; font-weight:700; box-shadow:0 4px 14px rgba(232,181,76,0.35),0 0 0 6px rgba(232,181,76,0.14); transition:transform 0.15s; }
-.hub:hover .star { transform:scale(1.08); }
-.hub .h-title { font-family:Georgia,serif; font-size:15px; font-weight:700; color:var(--plum); margin-bottom:2px; }
-.hub .h-sub { font-size:11px; color:var(--mute); letter-spacing:0.3px; }
+.tl-grid {
+  display: grid;
+  grid-template-columns: [time] 160px [web] 1fr [mvp] 1fr [hub] 1fr [v2] 1fr;
+  margin-top: var(--space-5);
+  border-top: 1px solid var(--border);
+  position: relative;
+}
+.tl-headers { display: contents; }
+.tl-headers > div {
+  position: sticky; top: 0; z-index: 3;
+  background: var(--surface-2);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 2px solid var(--border);
+  border-right: 1px solid var(--border);
+  font-family: var(--font-sans);
+  font-size: var(--fs-tiny);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tl-headers > div:last-child { border-right: none; }
+.tl-headers .h-time { color: var(--text-2); }
+.tl-headers .h-web { color: var(--violet-800); }
+.tl-headers .h-web::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--violet); }
+.tl-headers .h-mvp { color: var(--rose-800); }
+.tl-headers .h-mvp::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--rose); }
+.tl-headers .h-hub { color: var(--amber-800); }
+.tl-headers .h-hub::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--amber); }
+.tl-headers .h-v2 { color: var(--text); }
+.tl-headers .h-v2::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--text); }
 
-.lane-label { position:absolute; font-family:Georgia,serif; font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; background:#fff; padding:5px 12px; border-radius:14px; white-space:nowrap; }
-.lane-label.web { color:var(--lilac); border:1px solid var(--lilacL); top:12px; left:16px; }
-.lane-label.mvp { color:var(--coralD); border:1px solid var(--coral); bottom:12px; left:16px; }
-.lane-label.v2 { color:var(--plum); border:1px solid var(--plum); top:50%; right:16px; transform:translateY(-50%); }
+.tl-row { display: contents; }
+.tl-row > * { border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); padding: var(--space-3) var(--space-3); min-height: 92px; }
+.tl-row > *:last-child { border-right: none; }
+.tl-row.now > .tl-period,
+.tl-row.now > .tl-cell { background: var(--rose-50); }
+.tl-row.now { position: relative; }
+.tl-row.now > .tl-period::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: var(--rose);
+}
 
-.detail { margin-top:28px; background:#fff; border:1px solid var(--line); border-radius:10px; padding:24px 28px; display:grid; grid-template-columns:220px 1fr; gap:24px; min-height:200px; }
-.detail .meta { border-right:1px solid var(--line); padding-right:20px; }
-.detail .meta .pill { display:inline-block; padding:4px 10px; border-radius:12px; font-size:10px; letter-spacing:1px; text-transform:uppercase; font-weight:700; margin-bottom:10px; }
-.detail .meta .pill.done { background:rgba(74,155,110,0.12); color:var(--done); }
-.detail .meta .pill.doing { background:rgba(232,181,76,0.16); color:#A07A10; }
-.detail .meta .pill.todo { background:rgba(182,173,196,0.25); color:var(--lilac); }
-.detail .meta .lane-badge { display:inline-block; padding:3px 8px; border-radius:3px; font-size:10px; font-weight:700; letter-spacing:0.5px; margin-bottom:10px; }
-.detail .meta .lane-badge.web { background:var(--lilacL); color:var(--plum); }
-.detail .meta .lane-badge.mvp { background:var(--coral); color:#fff; }
-.detail .meta .lane-badge.v1 { background:var(--gold); color:var(--plum); }
-.detail .meta .lane-badge.v2 { background:var(--plum); color:var(--cream); }
-.detail .meta .d-date { font-family:Consolas,monospace; font-size:12px; color:var(--mute); margin-top:6px; }
-.detail .body h3 { margin:0 0 8px; font-family:Georgia,serif; font-size:22px; color:var(--plum); font-weight:700; }
-.detail .body p { margin:0 0 12px; font-size:14px; line-height:1.55; color:var(--ink); }
-.detail .body .artefacts { font-size:12px; color:var(--mute); border-top:1px dashed var(--line); padding-top:10px; margin-top:12px; }
-.detail .body .artefacts strong { color:var(--plum); font-weight:700; letter-spacing:0.5px; text-transform:uppercase; font-size:10px; }
-.detail .body code { background:var(--cream); padding:1px 6px; border-radius:3px; font-family:Consolas,monospace; font-size:12px; color:var(--coralD); }
-.detail .empty { color:var(--mute); font-style:italic; grid-column:1/-1; text-align:center; padding:40px 0; font-size:14px; }
+.tl-period {
+  background: var(--surface);
+  display: flex; flex-direction: column; gap: 4px;
+  font-family: var(--font-sans);
+  position: relative;
+}
+.tl-period .month { font-weight: var(--fw-extrabold); color: var(--text); font-size: var(--fs-h3); letter-spacing: -0.01em; line-height: 1.15; }
+.tl-period .sub { font-size: var(--fs-tiny); color: var(--text-2); letter-spacing: 0.04em; line-height: 1.3; }
+.tl-period .now-pill { display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; margin-top: 6px; padding: 3px 10px; background: var(--rose); color: var(--surface-2); border-radius: 99px; font-size: 10px; font-weight: var(--fw-bold); letter-spacing: 0.08em; text-transform: uppercase; }
+.tl-period .now-pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--surface-2); animation: pulse-dot 1.6s infinite; }
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-.counters { margin-top:24px; display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
-.counter { background:#fff; border:1px solid var(--line); border-radius:8px; padding:16px 18px; border-left:4px solid var(--plum); }
-.counter.done { border-left-color:var(--done); }
-.counter.doing { border-left-color:var(--doing); }
-.counter.todo { border-left-color:var(--lilacL); }
-.counter .n { font-family:Georgia,serif; font-size:34px; font-weight:700; color:var(--plum); line-height:1; }
-.counter .l { font-size:11px; color:var(--mute); letter-spacing:1.5px; text-transform:uppercase; margin-top:4px; }
+.tl-cell {
+  display: flex; flex-direction: column; gap: 8px;
+  background: var(--surface-2);
+}
 
-footer { margin-top:40px; text-align:center; font-size:11px; color:var(--mute); letter-spacing:0.5px; }
-footer code { font-family:Consolas,monospace; color:var(--plum); }
+.tl-event {
+  display: block;
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--text-3);
+  border-radius: var(--radius-xs);
+  padding: 8px 10px 9px;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s;
+  position: relative;
+}
+.tl-event:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.tl-event:focus-visible { outline: none; box-shadow: var(--ring); }
+.tl-event.web { border-left-color: var(--violet); }
+.tl-event.mvp { border-left-color: var(--rose); }
+.tl-event.hub { border-left-color: var(--amber); }
+.tl-event.v2 { border-left-color: var(--text); }
+.tl-event.s-doing { border-left-style: dashed; }
+.tl-event.s-todo { border-left-style: dotted; }
+.tl-event.s-todo { background: var(--surface); }
+.tl-event .tle-title { font-size: var(--fs-xs); font-weight: var(--fw-bold); color: var(--text); margin: 0 0 3px; line-height: 1.3; }
+.tl-event .tle-date { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); letter-spacing: 0.02em; display: block; }
+.tl-event .tle-status { display: inline-flex; align-items: center; gap: 4px; padding: 1px 7px; border-radius: 99px; font-size: 9px; font-weight: var(--fw-bold); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 5px; }
+.tl-event.s-done .tle-status { background: var(--emerald-50); color: var(--emerald-800); }
+.tl-event.s-doing .tle-status { background: var(--amber-50); color: var(--amber-800); }
+.tl-event.s-todo .tle-status { background: var(--violet-50); color: var(--violet-800); }
+.tl-event.s-done .tle-status::before { content: "✓"; font-weight: var(--fw-extrabold); }
+.tl-event.s-doing .tle-status::before { content: "◐"; }
+.tl-event.s-todo .tle-status::before { content: "○"; }
+.tl-event.selected { box-shadow: var(--shadow-md); border-color: var(--text); }
+.tl-event.hidden { display: none; }
+.tl-cell-empty { font-size: 10px; color: var(--text-3); font-style: italic; align-self: center; opacity: 0.55; }
+
+/* Hub banner row spans 4 lane columns */
+.tl-hub-row { display: contents; }
+.tl-hub-row > .tl-period { background: var(--surface); }
+.tl-hub-row > .tl-hub-banner {
+  grid-column: web / -1;
+  background: linear-gradient(135deg, var(--amber-50) 0%, var(--rose-50) 100%);
+  border-bottom: 1px solid var(--border);
+  border-left: 4px solid var(--amber);
+  padding: var(--space-5) var(--space-6);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-5);
+  align-items: center;
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.12s;
+  text-align: left;
+  font-family: var(--font-sans);
+}
+.tl-hub-row > .tl-hub-banner:hover { box-shadow: var(--shadow-md); }
+.tl-hub-row > .tl-hub-banner:focus-visible { outline: none; box-shadow: var(--ring); }
+.tl-hub-row > .tl-hub-banner.selected { box-shadow: var(--shadow-app); border-color: var(--rose); }
+.tl-hub-banner .star { width: 64px; height: 64px; border-radius: 50%; background: var(--amber); color: var(--surface-2); display: flex; align-items: center; justify-content: center; font-family: var(--font-sans); font-size: 20px; font-weight: var(--fw-extrabold); letter-spacing: -0.02em; box-shadow: 0 4px 14px rgba(184,130,55,0.35), 0 0 0 6px rgba(184,130,55,0.12); }
+.tl-hub-banner h3 { margin: 0 0 4px; font-family: var(--font-sans); font-size: var(--fs-h2); font-weight: var(--fw-extrabold); color: var(--text); letter-spacing: -0.01em; }
+.tl-hub-banner p { margin: 0; font-size: var(--fs-xs); color: var(--text); line-height: var(--lh-relaxed); }
+.tl-hub-banner .stamp { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--amber-800); padding: 6px 12px; background: var(--surface-2); border: 1px solid var(--amber); border-radius: var(--radius-xs); white-space: nowrap; font-weight: var(--fw-bold); }
+
+/* Detail panel */
+.detail { margin-top: var(--space-6); background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-6); display: grid; grid-template-columns: 220px 1fr; gap: var(--space-6); min-height: 180px; box-shadow: var(--shadow-xs); }
+.detail .meta { border-right: 1px solid var(--border); padding-right: var(--space-5); }
+.detail .meta .pill { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: var(--fs-tiny); letter-spacing: 0.08em; text-transform: uppercase; font-weight: var(--fw-bold); margin-bottom: 8px; }
+.detail .meta .pill.s-done { background: var(--emerald-50); color: var(--emerald-800); }
+.detail .meta .pill.s-doing { background: var(--amber-50); color: var(--amber-800); }
+.detail .meta .pill.s-todo { background: var(--violet-50); color: var(--violet-800); }
+.detail .meta .lane-badge { display: inline-block; padding: 3px 10px; border-radius: var(--radius-xs); font-size: var(--fs-tiny); font-weight: var(--fw-bold); letter-spacing: 0.06em; margin-bottom: 8px; text-transform: uppercase; }
+.detail .meta .lane-badge.web { background: var(--violet-50); color: var(--violet-800); }
+.detail .meta .lane-badge.mvp { background: var(--rose-50); color: var(--rose-800); }
+.detail .meta .lane-badge.hub { background: var(--amber-50); color: var(--amber-800); }
+.detail .meta .lane-badge.v2 { background: var(--surface-3); color: var(--text); }
+.detail .meta .d-date { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--text-2); margin-top: 6px; }
+.detail .body h3 { margin: 0 0 8px; font-family: var(--font-sans); font-size: var(--fs-h1); color: var(--text); font-weight: var(--fw-extrabold); letter-spacing: var(--tracking-h1); }
+.detail .body p { margin: 0 0 12px; font-size: var(--fs-body); line-height: var(--lh-relaxed); color: var(--text); }
+.detail .body .artefacts { font-size: var(--fs-xs); color: var(--text-2); border-top: 1px dashed var(--border); padding-top: 10px; margin-top: 12px; }
+.detail .body .artefacts strong { color: var(--text); font-weight: var(--fw-bold); letter-spacing: 0.08em; text-transform: uppercase; font-size: var(--fs-tiny); display: block; margin-bottom: 4px; }
+.detail .body code { background: var(--surface-3); padding: 1px 6px; border-radius: var(--radius-xs); font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--rose-800); }
+.detail .empty { color: var(--text-2); font-style: italic; grid-column: 1/-1; text-align: center; padding: var(--space-10) 0; font-size: var(--fs-sm); }
+
+/* Counters */
+.counters { margin-top: var(--space-6); display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); }
+.counter { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-4) var(--space-5); border-left: 4px solid var(--text-3); box-shadow: var(--shadow-xs); }
+.counter.c-done { border-left-color: var(--emerald); }
+.counter.c-doing { border-left-color: var(--amber); }
+.counter.c-todo { border-left-color: var(--violet); }
+.counter .n { font-family: var(--font-thin); font-size: 40px; font-weight: var(--fw-thin); color: var(--text); line-height: 1; letter-spacing: -0.04em; }
+.counter .l { font-size: var(--fs-tiny); color: var(--text-2); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 6px; font-weight: var(--fw-medium); }
+
+/* === TAB 2 === */
+.youarehere { background: linear-gradient(135deg, var(--rose-50) 0%, var(--amber-50) 100%); border: 1px solid var(--rose); border-left: 4px solid var(--rose); border-radius: var(--radius-sm); padding: var(--space-5) var(--space-6); margin-bottom: var(--space-8); display: grid; grid-template-columns: auto 1fr auto; gap: var(--space-5); align-items: center; box-shadow: var(--shadow-sm); }
+.youarehere .pulse { width: 12px; height: 12px; border-radius: 50%; background: var(--rose); position: relative; box-shadow: 0 0 0 0 rgba(217,109,62,0.55); animation: pulse 2s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(217,109,62,0.55); } 70% { box-shadow: 0 0 0 14px rgba(217,109,62,0); } 100% { box-shadow: 0 0 0 0 rgba(217,109,62,0); } }
+.youarehere .label { font-family: var(--font-sans); font-size: var(--fs-tiny); font-weight: var(--fw-bold); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rose-800); margin-bottom: 4px; }
+.youarehere h2 { margin: 0 0 4px; font-family: var(--font-sans); font-size: var(--fs-h1); font-weight: var(--fw-extrabold); color: var(--text); letter-spacing: var(--tracking-h1); }
+.youarehere p { margin: 0; font-size: var(--fs-sm); color: var(--text); line-height: var(--lh-relaxed); }
+.youarehere code { background: var(--surface-2); padding: 1px 6px; border-radius: var(--radius-xs); font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--rose-800); }
+.youarehere .stamp { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--text-2); padding: 6px 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-xs); white-space: nowrap; }
+
+.section { margin-bottom: var(--space-10); }
+.section-title { font-family: var(--font-sans); font-size: var(--fs-h1); color: var(--text); margin: 0 0 4px; font-weight: var(--fw-extrabold); letter-spacing: var(--tracking-h1); }
+.section-sub { font-size: var(--fs-tiny); color: var(--text-2); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: var(--space-4); }
+
+.diagram { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-6); box-shadow: var(--shadow-sm); }
+.diagram svg { display: block; width: 100%; height: auto; }
+
+/* Phase cards */
+.phases { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-3); margin-top: var(--space-4); }
+.phase { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-4) var(--space-4) var(--space-3); border-top: 4px solid var(--violet); box-shadow: var(--shadow-xs); }
+.phase.next { border-top-color: var(--rose); box-shadow: 0 4px 18px rgba(217,109,62,0.15); }
+.phase .phase-num { font-family: var(--font-mono); font-size: var(--fs-tiny); letter-spacing: 0.16em; color: var(--text-3); text-transform: uppercase; }
+.phase .phase-name { font-family: var(--font-sans); font-size: var(--fs-h3); color: var(--text); font-weight: var(--fw-extrabold); margin: 4px 0 8px; line-height: 1.25; letter-spacing: -0.01em; }
+.phase .phase-weeks { display: inline-block; font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--rose-800); background: var(--rose-50); padding: 2px 8px; border-radius: 99px; margin-bottom: 10px; }
+.phase .phase-lead { font-size: var(--fs-xs); line-height: var(--lh-relaxed); color: var(--text); margin: 0 0 8px; }
+.phase ul { margin: 6px 0 0; padding-left: 16px; font-size: var(--fs-xs); line-height: var(--lh-relaxed); color: var(--text); }
+.phase ul li { margin-bottom: 3px; }
+.phase ul li::marker { color: var(--text-3); }
+.phase code { font-family: var(--font-mono); font-size: 11px; color: var(--rose-800); }
+.phase .deliv { margin-top: var(--space-3); padding-top: 10px; border-top: 1px dashed var(--border); font-size: var(--fs-xs); color: var(--text-2); line-height: var(--lh-relaxed); }
+.phase .deliv strong { color: var(--rose-800); display: block; letter-spacing: 0.08em; text-transform: uppercase; font-size: 9px; margin-bottom: 4px; font-weight: var(--fw-bold); }
+
+/* Pre-req cards */
+.prereqs { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); }
+.prereq { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-4) var(--space-5); border-left: 4px solid var(--amber); box-shadow: var(--shadow-xs); }
+.prereq .n { font-family: var(--font-thin); font-size: 32px; color: var(--amber); font-weight: var(--fw-thin); line-height: 1; letter-spacing: -0.03em; }
+.prereq h4 { margin: 8px 0 4px; font-family: var(--font-sans); font-size: var(--fs-h3); color: var(--text); font-weight: var(--fw-extrabold); }
+.prereq p { margin: 0; font-size: var(--fs-xs); color: var(--text); line-height: var(--lh-relaxed); }
+.prereq code { font-family: var(--font-mono); font-size: 11px; color: var(--rose-800); }
+
+/* Risks */
+.risks { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
+.risk { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-4) var(--space-5); display: grid; grid-template-columns: auto 1fr; gap: var(--space-4); align-items: flex-start; box-shadow: var(--shadow-xs); }
+.risk .risk-icon { width: 36px; height: 36px; border-radius: 50%; background: var(--rose-50); color: var(--rose-800); display: flex; align-items: center; justify-content: center; font-family: var(--font-sans); font-weight: var(--fw-extrabold); font-size: 16px; flex-shrink: 0; }
+.risk h4 { margin: 0 0 4px; font-family: var(--font-sans); font-size: var(--fs-h3); color: var(--text); font-weight: var(--fw-extrabold); }
+.risk p { margin: 0 0 6px; font-size: var(--fs-xs); color: var(--text); line-height: var(--lh-relaxed); }
+.risk .mitig { font-size: var(--fs-tiny); color: var(--emerald-800); padding-top: 6px; border-top: 1px dashed var(--border); margin-top: 6px; line-height: var(--lh-relaxed); }
+.risk .mitig strong { color: var(--emerald-800); letter-spacing: 0.08em; text-transform: uppercase; font-size: 9px; display: block; margin-bottom: 3px; font-weight: var(--fw-bold); }
+.risk code { font-family: var(--font-mono); font-size: 11px; color: var(--rose-800); }
+
+/* Decision banner */
+.decision { background: var(--text); color: var(--surface-2); border-radius: var(--radius-sm); padding: var(--space-8) var(--space-8); margin-top: var(--space-8); text-align: center; box-shadow: var(--shadow-app); position: relative; overflow: hidden; }
+.decision::before { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, transparent 30%, rgba(184,130,55,0.08) 100%); pointer-events: none; }
+.decision .label { font-family: var(--font-sans); font-size: var(--fs-tiny); letter-spacing: 0.24em; text-transform: uppercase; color: var(--amber); margin-bottom: 8px; font-weight: var(--fw-bold); position: relative; }
+.decision h2 { margin: 0 0 12px; font-family: var(--font-sans); font-size: var(--fs-h1); font-weight: var(--fw-extrabold); color: var(--surface-2); letter-spacing: var(--tracking-h1); position: relative; }
+.decision h2 .accent { font-family: var(--font-script); font-style: normal; color: var(--amber); font-size: 28px; font-weight: var(--fw-regular); margin: 0 4px; }
+.decision p { margin: 0 auto; font-size: var(--fs-sm); line-height: var(--lh-relaxed); opacity: 0.85; max-width: 860px; position: relative; }
+.decision .gate { display: inline-flex; gap: var(--space-3); margin-top: var(--space-5); flex-wrap: wrap; justify-content: center; position: relative; }
+.decision .gate-pill { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); padding: 8px 18px; border-radius: 99px; font-size: var(--fs-xs); }
+.decision .gate-pill strong { color: var(--amber); font-weight: var(--fw-bold); margin-right: 4px; letter-spacing: 0.04em; }
+
+/* === TAB 3 — Release Notes === */
+.rn-layout { display: grid; grid-template-columns: 1fr 240px; gap: var(--space-8); align-items: flex-start; }
+.rn-feed { display: flex; flex-direction: column; gap: var(--space-6); }
+.rn-aside { position: sticky; top: var(--space-4); display: flex; flex-direction: column; gap: var(--space-4); }
+.rn-aside h4 { font-family: var(--font-sans); font-size: var(--fs-tiny); letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-2); margin: 0 0 8px; font-weight: var(--fw-bold); }
+.rn-aside .toc { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-4); box-shadow: var(--shadow-xs); }
+.rn-aside .toc ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; counter-reset: tocnum; }
+.rn-aside .toc li { font-size: var(--fs-xs); }
+.rn-aside .toc a { color: var(--text-2); text-decoration: none; padding: 4px 8px; display: block; border-radius: var(--radius-xs); transition: background 0.12s, color 0.12s; }
+.rn-aside .toc a:hover { background: var(--surface-3); color: var(--text); }
+.rn-aside .toc a.current { background: var(--rose-50); color: var(--rose-800); font-weight: var(--fw-bold); }
+.rn-aside .toc .tag { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); margin-left: 4px; }
+
+.rn-intro { background: var(--surface-2); border: 1px solid var(--border); border-left: 4px solid var(--rose); border-radius: var(--radius-sm); padding: var(--space-5) var(--space-6); margin-bottom: var(--space-6); }
+.rn-intro h2 { margin: 0 0 6px; font-family: var(--font-sans); font-size: var(--fs-h1); font-weight: var(--fw-extrabold); color: var(--text); letter-spacing: var(--tracking-h1); }
+.rn-intro p { margin: 0; font-size: var(--fs-sm); color: var(--text); line-height: var(--lh-relaxed); }
+.rn-intro code { background: var(--surface); padding: 1px 6px; border-radius: var(--radius-xs); font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--rose-800); }
+
+.rn-version { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-5) var(--space-6); box-shadow: var(--shadow-xs); scroll-margin-top: 80px; }
+.rn-version.hidden { display: none; }
+.rn-version-head { display: grid; grid-template-columns: 1fr auto; gap: var(--space-4); align-items: baseline; padding-bottom: var(--space-3); border-bottom: 1px solid var(--border); margin-bottom: var(--space-4); flex-wrap: wrap; }
+.rn-version-head .date { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--text-2); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 4px; display: block; }
+.rn-version-head h3 { margin: 0; font-family: var(--font-sans); font-size: var(--fs-h2); font-weight: var(--fw-extrabold); color: var(--text); letter-spacing: -0.01em; }
+.rn-version-head .v-tag { font-family: var(--font-mono); font-size: var(--fs-xs); padding: 4px 12px; border-radius: var(--radius-xs); white-space: nowrap; font-weight: var(--fw-bold); letter-spacing: 0.04em; }
+.rn-version-head .v-tag.cockpit { background: var(--violet-50); color: var(--violet-800); border: 1px solid var(--violet); }
+.rn-version-head .v-tag.mvp { background: var(--rose-50); color: var(--rose-800); border: 1px solid var(--rose); }
+.rn-version-head .v-tag.ds { background: var(--amber-50); color: var(--amber-800); border: 1px solid var(--amber); }
+.rn-version-head .v-tag.docs { background: var(--emerald-50); color: var(--emerald-800); border: 1px solid var(--emerald); }
+.rn-version-head .v-tag.roadmap { background: var(--sky-50); color: var(--sky-800); border: 1px solid var(--sky); }
+.rn-version-head .v-tag.github { background: var(--surface-3); color: var(--text); border: 1px solid var(--text-3); }
+
+.rn-summary { font-size: var(--fs-sm); color: var(--text); line-height: var(--lh-relaxed); margin-bottom: var(--space-4); }
+.rn-summary strong { font-weight: var(--fw-bold); color: var(--text); }
+.rn-summary code { background: var(--surface); padding: 1px 6px; border-radius: var(--radius-xs); font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--rose-800); }
+
+.rn-changes { display: flex; flex-direction: column; gap: var(--space-3); }
+.rn-cat { padding-top: var(--space-3); border-top: 1px dashed var(--border); }
+.rn-cat:first-child { border-top: none; padding-top: 0; }
+.rn-cat-title { font-family: var(--font-sans); font-size: var(--fs-tiny); letter-spacing: 0.12em; text-transform: uppercase; font-weight: var(--fw-bold); margin: 0 0 8px; display: inline-flex; align-items: center; gap: 6px; }
+.rn-cat-title::before { content: ""; width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+.rn-cat.feat .rn-cat-title { color: var(--emerald-800); }
+.rn-cat.feat .rn-cat-title::before { background: var(--emerald); }
+.rn-cat.improve .rn-cat-title { color: var(--sky-800); }
+.rn-cat.improve .rn-cat-title::before { background: var(--sky); }
+.rn-cat.fix .rn-cat-title { color: var(--rose-800); }
+.rn-cat.fix .rn-cat-title::before { background: var(--rose); }
+.rn-cat.perf .rn-cat-title { color: var(--violet-800); }
+.rn-cat.perf .rn-cat-title::before { background: var(--violet); }
+.rn-cat.breaking .rn-cat-title { color: var(--text); }
+.rn-cat.breaking .rn-cat-title::before { background: var(--text); }
+.rn-cat ul { margin: 0; padding-left: 20px; font-size: var(--fs-sm); line-height: var(--lh-relaxed); color: var(--text); }
+.rn-cat ul li { margin-bottom: 4px; }
+.rn-cat ul li::marker { color: var(--text-3); }
+.rn-cat ul li code { background: var(--surface); padding: 1px 6px; border-radius: var(--radius-xs); font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--rose-800); }
+.rn-cat ul li strong { color: var(--text); font-weight: var(--fw-bold); }
+
+.rn-no-results { text-align: center; padding: var(--space-10); color: var(--text-2); font-style: italic; font-size: var(--fs-sm); background: var(--surface-2); border: 1px dashed var(--border); border-radius: var(--radius-sm); }
+
+/* Footer */
+footer { margin-top: var(--space-10); padding-top: var(--space-5); border-top: 1px solid var(--border); text-align: center; font-size: var(--fs-tiny); color: var(--text-3); letter-spacing: 0.08em; }
+footer code { font-family: var(--font-mono); color: var(--text-2); }
+footer strong { color: var(--text); font-weight: var(--fw-bold); }
+
+/* Sr-only */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+/* Responsive */
+@media (max-width: 1180px) {
+  .tl-grid { grid-template-columns: [time] 130px [web] 1fr [mvp] 1fr [hub] 1fr [v2] 1fr; }
+  .rn-layout { grid-template-columns: 1fr; }
+  .rn-aside { position: static; order: -1; }
+  .rn-aside .toc { max-height: 240px; overflow-y: auto; }
+}
+@media (max-width: 1100px) {
+  .phases, .prereqs { grid-template-columns: repeat(2, 1fr); }
+  .risks { grid-template-columns: 1fr; }
+  .counters { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+  .tl-card { overflow-x: auto; }
+  .tl-grid { min-width: 760px; }
+}
+@media (max-width: 720px) {
+  .wrap { padding: var(--space-5) var(--space-4) var(--space-8); }
+  .page-header { gap: var(--space-3); }
+  .page-header .meta { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
+  .phases, .prereqs { grid-template-columns: 1fr; }
+  .detail { grid-template-columns: 1fr; }
+  .detail .meta { border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: var(--space-4); }
+  .youarehere { grid-template-columns: 1fr; }
+  .youarehere .stamp { justify-self: start; }
+  .rn-version-head { grid-template-columns: 1fr; }
+  .tl-hub-row > .tl-hub-banner { grid-template-columns: 1fr; gap: var(--space-3); }
+}
+
+/* ==================================================================
+   TAB 4 — Journal & écarts
+   ================================================================== */
+
+/* Delta pills (used in detail panel + journal feed) */
+.delta-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 99px; font-family: var(--font-mono); font-size: var(--fs-tiny); font-weight: var(--fw-bold); letter-spacing: 0.04em; margin-top: 6px; }
+.delta-pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; }
+.delta-pill.delta-ontime   { background: var(--emerald-50); color: var(--emerald-800); }
+.delta-pill.delta-ontime::before   { background: var(--emerald-800); }
+.delta-pill.delta-early    { background: var(--sky-50); color: var(--sky-800); }
+.delta-pill.delta-early::before    { background: var(--sky-800); }
+.delta-pill.delta-late     { background: var(--rose-50); color: var(--rose-800); }
+.delta-pill.delta-late::before     { background: var(--rose-800); }
+.delta-pill.delta-unknown  { background: var(--surface-3); color: var(--text-3); }
+.delta-pill.delta-unknown::before  { background: var(--text-3); }
+
+/* Sessions list inside detail panel (web-07) */
+.sessions-list { margin-top: var(--space-3); padding-top: var(--space-3); border-top: 1px dashed var(--border); }
+.sessions-list strong { display: block; font-size: var(--fs-small); color: var(--text-2); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; font-weight: var(--fw-bold); }
+.sessions-list ol { margin: 0; padding-left: 1.2em; color: var(--text-2); font-size: var(--fs-small); line-height: 1.55; }
+.sessions-list ol li { margin: 2px 0; }
+
+/* Planned vs actual block */
+.d-plan { margin-top: var(--space-2); font-size: var(--fs-tiny); color: var(--text-3); font-family: var(--font-mono); }
+.d-plan strong { display: inline-block; min-width: 70px; color: var(--text-2); margin-right: 6px; }
+
+/* Artefact list — clickable file paths vs plain labels */
+.artefacts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.art-link, .art-item { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: var(--radius-xs); font-family: var(--font-mono); font-size: var(--fs-tiny); border: 1px solid var(--border); background: var(--surface-2); color: var(--text-2); text-decoration: none; }
+.art-link { color: var(--sky-800); border-color: var(--sky-50); }
+.art-link:hover { background: var(--sky-50); color: var(--sky-800); border-color: var(--sky-800); }
+.art-item { color: var(--text-3); font-style: italic; }
+
+/* Global alert banner (visible above tabs when drift detected) */
+.alert-banner { margin: 0 0 var(--space-5); border-radius: var(--radius-md); padding: var(--space-4) var(--space-5); display: grid; grid-template-columns: 44px 1fr auto; gap: var(--space-4); align-items: center; box-shadow: var(--shadow-sm); border: 1px solid; }
+.alert-banner.lvl-ok    { background: var(--emerald-50); border-color: var(--emerald-800); color: var(--emerald-800); }
+.alert-banner.lvl-watch { background: var(--amber-50); border-color: var(--amber-800); color: var(--amber-800); }
+.alert-banner.lvl-warn  { background: var(--rose-50); border-color: var(--rose-800); color: var(--rose-800); }
+.alert-banner .icon { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-mono); font-size: 22px; font-weight: var(--fw-bold); background: rgba(255,255,255,0.5); }
+.alert-banner .body h3 { margin: 0 0 4px; font-size: var(--fs-h3); font-weight: var(--fw-bold); letter-spacing: -0.01em; }
+.alert-banner .body p { margin: 0; font-size: var(--fs-body); line-height: 1.5; opacity: 0.92; }
+.alert-banner .body p strong { font-weight: var(--fw-bold); }
+.alert-banner .cta { background: rgba(255,255,255,0.7); border: 1px solid currentColor; color: inherit; padding: 8px 14px; border-radius: var(--radius-xs); font-family: var(--font-sans); font-weight: var(--fw-semi); font-size: var(--fs-small); cursor: pointer; transition: background 0.15s; }
+.alert-banner .cta:hover { background: rgba(255,255,255,1); }
+
+/* Tab 4 — Journal layout */
+.j-intro { margin-bottom: var(--space-6); }
+.j-intro h2 { font-family: var(--font-sans); font-weight: var(--fw-bold); font-size: var(--fs-h2); margin: 0 0 var(--space-2); letter-spacing: -0.015em; }
+.j-intro p { margin: 0; color: var(--text-2); font-size: var(--fs-body); line-height: 1.55; }
+
+/* KPI strip — quick health snapshot */
+.j-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); margin-bottom: var(--space-6); }
+.j-kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4); display: flex; flex-direction: column; gap: 4px; box-shadow: var(--shadow-xs); }
+.j-kpi .label { font-size: var(--fs-tiny); color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; font-weight: var(--fw-semi); }
+.j-kpi .value { font-family: var(--font-thin); font-size: 36px; line-height: 1; font-weight: var(--fw-bold); letter-spacing: -0.025em; }
+.j-kpi.k-ok    .value { color: var(--emerald-800); }
+.j-kpi.k-watch .value { color: var(--amber-800); }
+.j-kpi.k-warn  .value { color: var(--rose-800); }
+.j-kpi .sub { font-size: var(--fs-tiny); color: var(--text-3); }
+
+/* Variance chart (jalons critiques avec dérive en jours) */
+.j-chart { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-5); margin-bottom: var(--space-6); box-shadow: var(--shadow-xs); }
+.j-chart h3 { margin: 0 0 var(--space-2); font-size: var(--fs-h3); font-weight: var(--fw-bold); letter-spacing: -0.005em; }
+.j-chart .hint { margin: 0 0 var(--space-4); font-size: var(--fs-small); color: var(--text-3); }
+.variance-bars { display: flex; flex-direction: column; gap: 10px; }
+.vbar-row { display: grid; grid-template-columns: 220px 1fr 90px; gap: var(--space-3); align-items: center; }
+.vbar-label { font-size: var(--fs-small); color: var(--text-2); font-weight: var(--fw-semi); }
+.vbar-label small { display: block; font-size: var(--fs-tiny); color: var(--text-3); font-weight: var(--fw-regular); margin-top: 2px; }
+.vbar-track { position: relative; height: 22px; background: var(--surface-2); border-radius: var(--radius-xs); overflow: hidden; border: 1px solid var(--border); }
+.vbar-track::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--text-3); opacity: 0.4; }
+.vbar-fill { position: absolute; top: 2px; bottom: 2px; border-radius: 2px; }
+.vbar-fill.early { background: var(--sky-800); }
+.vbar-fill.ontime { background: var(--emerald-800); }
+.vbar-fill.late { background: var(--rose-800); }
+.vbar-fill.unknown { background: var(--text-3); opacity: 0.5; }
+.vbar-value { font-family: var(--font-mono); font-size: var(--fs-small); font-weight: var(--fw-bold); text-align: right; }
+.vbar-value.early { color: var(--sky-800); }
+.vbar-value.ontime { color: var(--emerald-800); }
+.vbar-value.late { color: var(--rose-800); }
+.vbar-value.unknown { color: var(--text-3); }
+
+/* Journal feed — chronological */
+.j-feed { display: flex; flex-direction: column; gap: var(--space-3); }
+.j-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4) var(--space-5); display: grid; grid-template-columns: 110px 1fr; gap: var(--space-4); box-shadow: var(--shadow-xs); }
+.j-card .when { font-family: var(--font-mono); font-size: var(--fs-small); color: var(--text-3); font-weight: var(--fw-semi); padding-top: 2px; }
+.j-card .body h4 { margin: 0 0 4px; font-size: var(--fs-body); font-weight: var(--fw-bold); letter-spacing: -0.005em; }
+.j-card .body p { margin: 0; font-size: var(--fs-small); color: var(--text-2); line-height: 1.55; }
+.j-card .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.j-card .tag { display: inline-block; padding: 2px 9px; border-radius: 99px; font-family: var(--font-mono); font-size: var(--fs-tiny); font-weight: var(--fw-semi); letter-spacing: 0.04em; }
+.j-card .tag.t-emerald { background: var(--emerald-50); color: var(--emerald-800); }
+.j-card .tag.t-sky     { background: var(--sky-50);     color: var(--sky-800); }
+.j-card .tag.t-amber   { background: var(--amber-50);   color: var(--amber-800); }
+.j-card .tag.t-rose    { background: var(--rose-50);    color: var(--rose-800); }
+.j-card .tag.t-violet  { background: var(--violet-50);  color: var(--violet-800); }
+.j-card.s-livraison    { border-left: 4px solid var(--emerald-800); }
+.j-card.s-décision     { border-left: 4px solid var(--sky-800); }
+.j-card.s-écart        { border-left: 4px solid var(--amber-800); }
+.j-card.s-dérive       { border-left: 4px solid var(--rose-800); }
+.j-card.s-ajout-hors-plan { border-left: 4px solid var(--violet-800); }
+.j-card .src { display: inline-block; margin-top: 8px; font-family: var(--font-mono); font-size: var(--fs-tiny); color: var(--sky-800); text-decoration: none; padding: 3px 8px; border-radius: var(--radius-xs); border: 1px solid var(--sky-50); background: var(--surface-2); }
+.j-card .src:hover { background: var(--sky-50); }
+
+/* Filters for journal */
+.j-filters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: var(--space-5); padding: var(--space-3) var(--space-4); background: var(--surface-2); border-radius: var(--radius-md); border: 1px solid var(--border); }
+.j-filters .label { font-size: var(--fs-tiny); color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; font-weight: var(--fw-semi); margin-right: 4px; }
+
+/* Mermaid blocs */
+.j-mermaid-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-5); margin-bottom: var(--space-6); }
+.j-mermaid { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-5); box-shadow: var(--shadow-xs); }
+.j-mermaid h3 { margin: 0 0 var(--space-2); font-size: var(--fs-h3); font-weight: var(--fw-bold); letter-spacing: -0.005em; }
+.j-mermaid .hint { margin: 0 0 var(--space-4); font-size: var(--fs-small); color: var(--text-3); }
+.j-mermaid .mermaid { font-family: var(--font-sans); display: flex; justify-content: center; }
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .j-kpis { grid-template-columns: repeat(2, 1fr); }
+  .vbar-row { grid-template-columns: 160px 1fr 70px; }
+}
+@media (max-width: 720px) {
+  .alert-banner { grid-template-columns: 36px 1fr; }
+  .alert-banner .cta { grid-column: 1 / -1; }
+  .j-card { grid-template-columns: 1fr; }
+  .j-card .when { padding-top: 0; }
+  .vbar-row { grid-template-columns: 1fr; gap: 6px; }
+  .vbar-track { height: 18px; }
+  .vbar-value { text-align: left; }
+}
 </style>
+<!-- Mermaid pour les 3 blocs ciblés (architecture / dépendances / ADR) -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 </head>
 <body>
 <div class="wrap">
 
-  <header>
+  <header class="page-header">
     <div class="title">
       <h1>Roadmap produit aiCEO</h1>
-      <div class="subtitle">Carte de convergence · App Web + MVP → V1 → V2+</div>
+      <div class="subtitle"><span class="accent">Carte</span>de convergence · App Web + MVP → v0.5 fusion → V1 → V2 → V3</div>
     </div>
-    <div class="version">v0.1 · 24/04/2026</div>
+    <div class="meta">
+      <div class="progress-strip" aria-label="Progression globale des jalons">
+        <span>Avancement</span>
+        <span class="pct" id="progress-pct">—</span>
+        <span class="bar" aria-hidden="true"><i id="progress-bar" style="width:0%"></i></span>
+        <span id="progress-text">— jalons faits</span>
+      </div>
+      <div class="version">v0.4 · 25/04/2026</div>
+    </div>
   </header>
 
-  <div class="controls">
-    <span class="label">Statut</span>
-    <button class="filter active" data-filter="all">Tout</button>
-    <button class="filter done" data-filter="done">Fait</button>
-    <button class="filter doing" data-filter="doing">En cours</button>
-    <button class="filter todo" data-filter="todo">À faire</button>
-    <span class="label" style="margin-left:24px;">Branche</span>
-    <button class="filter active" data-lane="all">Toutes</button>
-    <button class="filter" data-lane="web">App Web</button>
-    <button class="filter" data-lane="mvp">MVP Node</button>
-    <button class="filter" data-lane="v2">V2+</button>
+  <!-- Bandeau global d'alerte écart — calculé dynamiquement vs BASELINE -->
+  <div id="alert-banner" class="alert-banner" hidden>
+    <div class="icon" aria-hidden="true">!</div>
+    <div class="body">
+      <h3 id="alert-title">Tout est aligné</h3>
+      <p id="alert-detail">Aucun écart significatif détecté.</p>
+    </div>
+    <button class="cta" id="alert-cta" type="button">Voir le détail</button>
   </div>
 
-  <div class="map-card">
-    <div class="lanes-legend">
-      <span class="lane-tag"><span class="dot" style="background:var(--lilacL);"></span>App Web Twisty — HTML/CSS/JS statique</span>
-      <span class="lane-tag"><span class="dot" style="background:var(--coral);"></span>MVP Node — Express + Claude API</span>
-      <span class="lane-tag"><span class="dot" style="background:var(--gold);"></span>V1 — produit unifié</span>
-      <span class="lane-tag"><span class="dot" style="background:var(--plum);"></span>V2+ — extensions</span>
+  <nav class="tabs" role="tablist" aria-label="Vues de la roadmap">
+    <button class="tab" data-tab="convergence" role="tab" aria-selected="true" aria-controls="tab-convergence" id="tab-btn-convergence">Carte de convergence</button>
+    <button class="tab" data-tab="fusion-v05" role="tab" aria-selected="false" aria-controls="tab-fusion-v05" id="tab-btn-fusion-v05">Plan v0.5 fusion <span class="badge">prochain sprint</span></button>
+    <button class="tab" data-tab="release-notes" role="tab" aria-selected="false" aria-controls="tab-release-notes" id="tab-btn-release-notes">Release notes</button>
+    <button class="tab" data-tab="journal" role="tab" aria-selected="false" aria-controls="tab-journal" id="tab-btn-journal">Journal &amp; écarts <span class="badge" id="journal-badge">live</span></button>
+  </nav>
+
+  <!-- ============================================================ -->
+  <!-- TAB 1 — Carte de convergence (timeline grid)                  -->
+  <!-- ============================================================ -->
+  <div class="tab-pane active" id="tab-convergence" role="tabpanel" aria-labelledby="tab-btn-convergence">
+
+    <div class="controls" role="toolbar" aria-label="Filtres">
+      <span class="label">Statut</span>
+      <button class="filter" data-filter="all" aria-pressed="true">Tout</button>
+      <button class="filter f-done" data-filter="done" aria-pressed="false">Fait</button>
+      <button class="filter f-doing" data-filter="doing" aria-pressed="false">En cours</button>
+      <button class="filter f-todo" data-filter="todo" aria-pressed="false">À faire</button>
+      <span class="label" style="margin-left:24px;">Branche</span>
+      <button class="filter" data-lane="all" aria-pressed="true">Toutes</button>
+      <button class="filter" data-lane="web" aria-pressed="false">App Web</button>
+      <button class="filter" data-lane="mvp" aria-pressed="false">MVP Node</button>
+      <button class="filter" data-lane="hub" aria-pressed="false">Hub fusion</button>
+      <button class="filter" data-lane="v2" aria-pressed="false">V1 → V3</button>
     </div>
 
-    <div class="map-viewport">
-      <svg class="timeline" viewBox="0 0 1280 540" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="grad-web" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0" stop-color="#B89BD9"/><stop offset="1" stop-color="#6A4F91"/>
-          </linearGradient>
-          <linearGradient id="grad-mvp" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0" stop-color="#E8604C"/><stop offset="1" stop-color="#C44A37"/>
-          </linearGradient>
-          <linearGradient id="grad-v2" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0" stop-color="#E8B54C"/><stop offset="1" stop-color="#241B3A"/>
-          </linearGradient>
-        </defs>
-        <line x1="60" y1="130" x2="820" y2="130" stroke="url(#grad-web)" stroke-width="6" stroke-linecap="round"/>
-        <line x1="60" y1="410" x2="820" y2="410" stroke="url(#grad-mvp)" stroke-width="6" stroke-linecap="round"/>
-        <path d="M 820 130 Q 870 130 890 200 T 905 268" fill="none" stroke="url(#grad-web)" stroke-width="6" stroke-linecap="round"/>
-        <path d="M 820 410 Q 870 410 890 340 T 905 272" fill="none" stroke="url(#grad-mvp)" stroke-width="6" stroke-linecap="round"/>
-        <line x1="955" y1="270" x2="1230" y2="270" stroke="url(#grad-v2)" stroke-width="6" stroke-linecap="round" stroke-dasharray="10 6"/>
-      </svg>
+    <div class="tl-card">
+      <div class="lanes-legend" role="legend">
+        <span class="lane-tag"><span class="swatch" style="background:var(--violet);"></span>App Web Twisty — UI / DS / cockpit</span>
+        <span class="lane-tag"><span class="swatch" style="background:var(--rose);"></span>MVP Node — Express + Claude + Outlook</span>
+        <span class="lane-tag"><span class="swatch" style="background:var(--amber);"></span>Hub v0.5 fusion — produit unifié</span>
+        <span class="lane-tag"><span class="swatch" style="background:var(--text);"></span>V1 → V2 → V3 — trajectoire 2027 → 2030</span>
+      </div>
 
-      <div class="nodes" id="nodes-container">
-        <div class="lane-label web">App Web Twisty</div>
-        <div class="lane-label mvp">MVP Node · Copilote local</div>
-        <div class="lane-label v2">V2+</div>
+      <div class="tl-grid" id="tl-grid" role="grid" aria-label="Convergence des deux branches vers le hub v0.5 puis trajectoire V1 V2 V3">
+        <div class="tl-headers" role="row">
+          <div class="h-time" role="columnheader">Période</div>
+          <div class="h-web" role="columnheader">App Web Twisty</div>
+          <div class="h-mvp" role="columnheader">MVP Node</div>
+          <div class="h-hub" role="columnheader">Hub fusion</div>
+          <div class="h-v2" role="columnheader">Trajectoire 2027-2030</div>
+        </div>
+        <!-- Lignes générées en JS dans #tl-grid -->
+      </div>
+    </div>
 
-        <div class="hub" id="v1-hub" style="left:70.7%; top:50%;">
-          <div class="star">V1</div>
-          <div class="h-title">Produit unifié</div>
-          <div class="h-sub">App Web + Copilote</div>
+    <div class="detail" id="detail-panel" aria-live="polite">
+      <div class="empty">Cliquez ou tabulez sur un jalon pour voir le détail</div>
+    </div>
+
+    <div class="counters" id="counters" aria-label="Compteurs"></div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 2 — Plan v0.5 fusion                                       -->
+  <!-- ============================================================ -->
+  <div class="tab-pane" id="tab-fusion-v05" role="tabpanel" aria-labelledby="tab-btn-fusion-v05">
+
+    <div class="youarehere" role="status">
+      <span class="pulse" aria-hidden="true"></span>
+      <div>
+        <div class="label">Vous êtes ici · 25/04/2026</div>
+        <h2>Sprint externe v0.5 clos · pré-requis fusion en attente</h2>
+        <p>Les 6 livrables externes (benchmark, pitch onepage, business case, onboarding CEO pair, lettre intro, pitch deck) sont commités sur 6 branches <code>docs/&lt;sujet&gt;</code>. Les 11 issues GitHub sont ouvertes. Le sprint 1 de la fusion v0.5 démarre <strong>dès la décision CEO sur le financement 110 k€ et l'allocation 2,6 ETP</strong>. MVP v0.4 reste en dogfood quotidien jusqu'au cutover sprint 8.</p>
+      </div>
+      <div class="stamp">10 sem · 110 k€ · 2,6 ETP</div>
+    </div>
+
+    <!-- Timeline 10 semaines -->
+    <div class="section">
+      <h2 class="section-title">Timeline · 10 semaines en 5 phases</h2>
+      <div class="section-sub">Découpage sprint 1 → tag v0.5 (cible juillet 2026)</div>
+      <div class="diagram">
+        <svg viewBox="0 0 1280 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Timeline 10 semaines en 5 phases">
+          <defs>
+            <linearGradient id="phaseGrad" x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0" stop-color="#3d7363"/>
+              <stop offset="0.25" stop-color="#7790ae"/>
+              <stop offset="0.5" stop-color="#7a6a8a"/>
+              <stop offset="0.75" stop-color="#b88237"/>
+              <stop offset="1" stop-color="#d96d3e"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Pré-requis zone -->
+          <rect x="20" y="84" width="120" height="32" rx="6" fill="#fdecdf" stroke="#d96d3e" stroke-dasharray="4 4"/>
+          <text x="80" y="100" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#8a3b1b" letter-spacing="0.5">PRÉ-REQUIS</text>
+          <text x="80" y="112" text-anchor="middle" font-family="Fira Sans" font-size="9" fill="#5b5e68">Décision CEO</text>
+
+          <!-- Vous êtes ici marker -->
+          <g transform="translate(80,68)">
+            <circle r="8" fill="#d96d3e">
+              <animate attributeName="r" values="8;14;8" dur="1.8s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="1;0.3;1" dur="1.8s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="6" fill="#f5f3ef"/>
+            <circle r="3" fill="#d96d3e"/>
+          </g>
+          <text x="80" y="48" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#8a3b1b">Vous êtes ici</text>
+
+          <!-- Main timeline bar -->
+          <rect x="160" y="84" width="1100" height="32" rx="16" fill="url(#phaseGrad)"/>
+
+          <!-- Phase dividers -->
+          <line x1="380" y1="80" x2="380" y2="120" stroke="#f5f3ef" stroke-width="2"/>
+          <line x1="600" y1="80" x2="600" y2="120" stroke="#f5f3ef" stroke-width="2"/>
+          <line x1="820" y1="80" x2="820" y2="120" stroke="#f5f3ef" stroke-width="2"/>
+          <line x1="1040" y1="80" x2="1040" y2="120" stroke="#f5f3ef" stroke-width="2"/>
+
+          <!-- Phase labels -->
+          <text x="270" y="74" text-anchor="middle" font-family="Fira Sans" font-size="11" font-weight="800" fill="#111418">Phase 1 — Fondation</text>
+          <text x="270" y="102" text-anchor="middle" font-family="Fira Sans" font-size="11" fill="#f5f3ef" font-weight="600">Sem 1-2</text>
+          <text x="270" y="138" text-anchor="middle" font-family="Fira Sans" font-size="9" fill="#5b5e68">SQLite · monorepo · Pino</text>
+
+          <text x="490" y="74" text-anchor="middle" font-family="Fira Sans" font-size="11" font-weight="800" fill="#111418">Phase 2 — API + Outlook</text>
+          <text x="490" y="102" text-anchor="middle" font-family="Fira Sans" font-size="11" fill="#f5f3ef" font-weight="600">Sem 3-4</text>
+          <text x="490" y="138" text-anchor="middle" font-family="Fira Sans" font-size="9" fill="#5b5e68">Zod · OpenAPI · multi-comptes</text>
+
+          <text x="710" y="74" text-anchor="middle" font-family="Fira Sans" font-size="11" font-weight="800" fill="#111418">Phase 3 — Fusion UI</text>
+          <text x="710" y="102" text-anchor="middle" font-family="Fira Sans" font-size="11" fill="#f5f3ef" font-weight="600">Sem 5-6</text>
+          <text x="710" y="138" text-anchor="middle" font-family="Fira Sans" font-size="9" fill="#5b5e68">21 → 13 pages · DS Twisty</text>
+
+          <text x="930" y="74" text-anchor="middle" font-family="Fira Sans" font-size="11" font-weight="800" fill="#111418">Phase 4 — Service + E2E</text>
+          <text x="930" y="102" text-anchor="middle" font-family="Fira Sans" font-size="11" fill="#f5f3ef" font-weight="600">Sem 7-8</text>
+          <text x="930" y="138" text-anchor="middle" font-family="Fira Sans" font-size="9" fill="#5b5e68">Service Windows · Playwright</text>
+
+          <text x="1150" y="74" text-anchor="middle" font-family="Fira Sans" font-size="11" font-weight="800" fill="#111418">Phase 5 — Polish + Handoff</text>
+          <text x="1150" y="102" text-anchor="middle" font-family="Fira Sans" font-size="11" fill="#f5f3ef" font-weight="600">Sem 9-10</text>
+          <text x="1150" y="138" text-anchor="middle" font-family="Fira Sans" font-size="9" fill="#5b5e68">Bug bash · CEO pairs · tag v0.5</text>
+
+          <!-- End marker: tag v0.5 -->
+          <g transform="translate(1260,100)">
+            <polygon points="-8,-12 8,0 -8,12" fill="#b88237" stroke="#111418" stroke-width="1.5"/>
+            <text x="0" y="32" text-anchor="middle" font-family="Fira Sans" font-size="11" font-weight="800" fill="#111418">Tag v0.5</text>
+            <text x="0" y="46" text-anchor="middle" font-family="Fira Sans" font-size="9" fill="#5b5e68">Juillet 2026</text>
+          </g>
+
+          <text x="640" y="180" text-anchor="middle" font-family="Fira Sans" font-size="11" fill="#5b5e68" font-style="italic">10 semaines · 110 k€ budget · 2,6 ETP · cutover dogfood CEO sprint 8</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Phases cards -->
+    <div class="section">
+      <h2 class="section-title">Détail des 5 phases</h2>
+      <div class="section-sub">Objectif · livrables clés · livrable visible CEO</div>
+      <div class="phases">
+        <article class="phase next">
+          <div class="phase-num">Phase 1</div>
+          <div class="phase-name">Fondation</div>
+          <div class="phase-weeks">Sem 1-2 · prochaine</div>
+          <p class="phase-lead">Poser le socle technique sans casser le MVP.</p>
+          <ul>
+            <li>Monorepo unifié (app-web absorbe <code>03_mvp/</code>)</li>
+            <li>Setup <strong>better-sqlite3</strong> + schéma complet</li>
+            <li>Script migration <strong>one-shot</strong> JSON+localStorage → SQLite</li>
+            <li>Pino (logs), Vitest (unit), Husky pre-commit (Issue #11)</li>
+          </ul>
+          <div class="deliv"><strong>Livrable visible CEO</strong>Commande <code>npm run db:migrate</code> qui transforme tes JSON actuels en <code>aiceo.db</code> lisible avec DB Browser.</div>
+        </article>
+        <article class="phase">
+          <div class="phase-num">Phase 2</div>
+          <div class="phase-name">API consolidée + Outlook robustifié</div>
+          <div class="phase-weeks">Sem 3-4</div>
+          <p class="phase-lead">Une API REST validée Zod, OpenAPI auto-généré, Outlook stable.</p>
+          <ul>
+            <li>Migration endpoints vers couche <strong>Zod</strong></li>
+            <li><strong>OpenAPI 3.0</strong> auto via zod-to-openapi (Issue #10)</li>
+            <li>Service Outlook unifié (3 comptes, retry, fallback)</li>
+            <li>Test Vitest pour bug « 0 mails sent folders » (#105)</li>
+          </ul>
+          <div class="deliv"><strong>Livrable visible CEO</strong><code>openapi.yaml</code> à jour, arbitrage matinal identique à v0.4 mais sur SQLite + Zod.</div>
+        </article>
+        <article class="phase">
+          <div class="phase-num">Phase 3</div>
+          <div class="phase-name">Fusion UI 21 → 13 pages</div>
+          <div class="phase-weeks">Sem 5-6 · risque dérive</div>
+          <p class="phase-lead">Une seule app-web, plus de séparation MVP / app statique.</p>
+          <ul>
+            <li>Consolidation <strong>21 → 13 pages</strong> (cf. SPEC-FONCTIONNELLE-FUSION)</li>
+            <li><code>index.html</code> + <code>evening.html</code> = 2 modes du cockpit</li>
+            <li>DS Twisty appliqué app-wide</li>
+            <li>Composants partagés (drawer, ⌘K, toasts, gamif)</li>
+          </ul>
+          <div class="deliv"><strong>Livrable visible CEO</strong>Une seule app cohérente, plus de duplication entre <code>aiCEO_Agent</code> et <code>03_mvp</code>.</div>
+        </article>
+        <article class="phase">
+          <div class="phase-num">Phase 4</div>
+          <div class="phase-name">Service Windows + E2E</div>
+          <div class="phase-weeks">Sem 7-8</div>
+          <p class="phase-lead">aiCEO démarre seul avec Windows, survit aux redémarrages.</p>
+          <ul>
+            <li>Packaging <strong>Service Windows</strong> + installeur MSI</li>
+            <li>Test Win 10 / 11 / Server 2019 (Comex ETIC)</li>
+            <li>Playwright : 3 parcours (matin, soir, revue hebdo)</li>
+            <li>Tuning perfo SQLite &gt; 10k tâches · scénario panne</li>
+          </ul>
+          <div class="deliv"><strong>Livrable visible CEO</strong>Tu installes l'<code>.msi</code> sur une VM vierge, l'app tourne en arrière-plan, tray icon ouvre le cockpit.</div>
+        </article>
+        <article class="phase">
+          <div class="phase-num">Phase 5</div>
+          <div class="phase-name">Polish + handoff CEO pairs</div>
+          <div class="phase-weeks">Sem 9-10 · livraison</div>
+          <p class="phase-lead">Tag v0.5, livraison 2-3 CEO pairs en test silencieux 30 j.</p>
+          <ul>
+            <li>Bug bash dédié (1 sem)</li>
+            <li><code>ONBOARDING-CEO-PAIR.md</code> validé sur machine réelle</li>
+            <li><code>RUNBOOK-OPS.md</code> finalisé · FAQ enrichie</li>
+            <li>Envoi lettres intro · tag <code>v0.5</code> · CHANGELOG</li>
+          </ul>
+          <div class="deliv"><strong>Livrable visible CEO</strong>2-3 CEO pairs utilisent aiCEO en silencieux 30 j → premier feedback externe non-Feycoil.</div>
+        </article>
+      </div>
+    </div>
+
+    <!-- Architecture before/after -->
+    <div class="section">
+      <h2 class="section-title">Architecture · avant / après</h2>
+      <div class="section-sub">Ce que la migration transforme techniquement</div>
+      <div class="diagram">
+        <svg viewBox="0 0 1280 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Architecture avant fusion versus après fusion v0.5">
+
+          <rect x="40" y="40" width="440" height="300" rx="14" fill="#f5f3ef" stroke="#d96d3e" stroke-width="2"/>
+          <rect x="40" y="40" width="440" height="46" rx="14" fill="#d96d3e"/>
+          <rect x="40" y="72" width="440" height="14" fill="#d96d3e"/>
+          <text x="260" y="62" text-anchor="middle" font-family="Fira Sans" font-size="14" font-weight="800" fill="#f5f3ef">MVP v0.4 — actuel</text>
+          <text x="260" y="78" text-anchor="middle" font-family="Fira Sans" font-size="10" fill="#fdecdf" opacity="0.95">dogfood CEO depuis 22/04/2026</text>
+
+          <g transform="translate(60,108)">
+            <rect width="400" height="34" rx="8" fill="#ffffff" stroke="#e4e1d9"/>
+            <text x="14" y="22" font-family="Fira Sans" font-size="12" font-weight="700" fill="#111418">Backend</text>
+            <text x="120" y="22" font-family="Fira Sans" font-size="11" fill="#5b5e68">Express · vanilla JS · port 4747</text>
+
+            <rect y="42" width="400" height="34" rx="8" fill="#ffffff" stroke="#e4e1d9"/>
+            <text x="14" y="64" font-family="Fira Sans" font-size="12" font-weight="700" fill="#111418">Données</text>
+            <text x="120" y="64" font-family="Fira Sans" font-size="11" fill="#5b5e68">JSON files · localStorage</text>
+
+            <rect y="84" width="400" height="34" rx="8" fill="#ffffff" stroke="#e4e1d9"/>
+            <text x="14" y="106" font-family="Fira Sans" font-size="12" font-weight="700" fill="#111418">Outlook</text>
+            <text x="120" y="106" font-family="Fira Sans" font-size="11" fill="#5b5e68">PowerShell COM (manuel)</text>
+
+            <rect y="126" width="400" height="34" rx="8" fill="#ffffff" stroke="#e4e1d9"/>
+            <text x="14" y="148" font-family="Fira Sans" font-size="12" font-weight="700" fill="#111418">UI</text>
+            <text x="120" y="148" font-family="Fira Sans" font-size="11" fill="#5b5e68">21 pages · 2 silos</text>
+
+            <rect y="168" width="400" height="34" rx="8" fill="#ffffff" stroke="#e4e1d9"/>
+            <text x="14" y="190" font-family="Fira Sans" font-size="12" font-weight="700" fill="#111418">Tests</text>
+            <text x="120" y="190" font-family="Fira Sans" font-size="11" fill="#5b5e68">Aucun (manuel)</text>
+
+            <rect y="210" width="400" height="34" rx="8" fill="#ffffff" stroke="#e4e1d9"/>
+            <text x="14" y="232" font-family="Fira Sans" font-size="12" font-weight="700" fill="#111418">Démarrage</text>
+            <text x="120" y="232" font-family="Fira Sans" font-size="11" fill="#5b5e68">PowerShell + start.bat manuel</text>
+          </g>
+
+          <g transform="translate(560,200)">
+            <line x1="-30" y1="0" x2="30" y2="0" stroke="#111418" stroke-width="3"/>
+            <polygon points="20,-10 40,0 20,10" fill="#111418"/>
+            <rect x="-90" y="-50" width="180" height="34" rx="17" fill="#111418"/>
+            <text x="0" y="-36" text-anchor="middle" font-family="Fira Sans" font-size="11" font-weight="800" fill="#f5f3ef">Migration one-shot</text>
+            <text x="0" y="-22" text-anchor="middle" font-family="Fira Sans" font-size="9" fill="#b88237" font-weight="600">npm run db:migrate</text>
+          </g>
+
+          <rect x="640" y="40" width="600" height="300" rx="14" fill="#f5f3ef" stroke="#3d7363" stroke-width="2"/>
+          <rect x="640" y="40" width="600" height="46" rx="14" fill="#3d7363"/>
+          <rect x="640" y="72" width="600" height="14" fill="#3d7363"/>
+          <text x="940" y="62" text-anchor="middle" font-family="Fira Sans" font-size="14" font-weight="800" fill="#f5f3ef">v0.5 fusion — cible juillet 2026</text>
+          <text x="940" y="78" text-anchor="middle" font-family="Fira Sans" font-size="10" fill="#e2ece8" opacity="0.95">app-web absorbe MVP · 1 produit unifié</text>
+
+          <g transform="translate(660,108)">
+            <rect width="560" height="34" rx="8" fill="#ffffff" stroke="#e4e1d9"/>
+            <text x="14" y="22" font-family="Fira Sans" font-size="12" font-weight="700" fill="#111418">Backend</text>
+            <text x="120" y="22" font-family="Fira Sans" font-size="11" fill="#234236">Express + Zod (validation entrée/sortie)</text>
+
+            <rect y="42" width="560" height="34" rx="8" fill="#ffffff" stroke="#e4e1d9"/>
+            <text x="14" y="64" font-family="Fira Sans" font-size="12" font-weight="700" fill="#111418">Données</text>
+            <text x="120" y="64" font-family="Fira Sans" font-size="11" fill="#234236">SQLite (better-sqlite3) + Pino logs</text>
+
+            <rect y="84" width="560" height="34" rx="8" fill="#ffffff" stroke="#e4e1d9"/>
+            <text x="14" y="106" font-family="Fira Sans" font-size="12" font-weight="700" fill="#111418">Outlook</text>
+            <text x="120" y="106" font-family="Fira Sans" font-size="11" fill="#234236">Service unifié 3 comptes · auto-sync 2h</text>
+
+            <rect y="126" width="560" height="34" rx="8" fill="#ffffff" stroke="#e4e1d9"/>
+            <text x="14" y="148" font-family="Fira Sans" font-size="12" font-weight="700" fill="#111418">UI</text>
+            <text x="120" y="148" font-family="Fira Sans" font-size="11" fill="#234236">13 pages · DS Twisty unique · OpenAPI</text>
+
+            <rect y="168" width="560" height="34" rx="8" fill="#ffffff" stroke="#e4e1d9"/>
+            <text x="14" y="190" font-family="Fira Sans" font-size="12" font-weight="700" fill="#111418">Tests</text>
+            <text x="120" y="190" font-family="Fira Sans" font-size="11" fill="#234236">Vitest (unit) + Playwright (E2E)</text>
+
+            <rect y="210" width="560" height="34" rx="8" fill="#ffffff" stroke="#e4e1d9"/>
+            <text x="14" y="232" font-family="Fira Sans" font-size="12" font-weight="700" fill="#111418">Démarrage</text>
+            <text x="120" y="232" font-family="Fira Sans" font-size="11" fill="#234236">Service Windows · MSI · auto au boot</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Team allocation -->
+    <div class="section">
+      <h2 class="section-title">Équipe · 2,6 ETP sur 10 semaines</h2>
+      <div class="section-sub">Allocation cible · interne ETIC ou freelance ou mixte</div>
+      <div class="diagram">
+        <svg viewBox="0 0 1280 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Allocation équipe 2,6 ETP">
+          <g transform="translate(80,40)">
+            <rect width="360" height="160" rx="12" fill="#f5f3ef" stroke="#3d7363" stroke-width="2"/>
+            <rect width="360" height="40" rx="12" fill="#3d7363"/>
+            <rect y="28" width="360" height="12" fill="#3d7363"/>
+            <text x="180" y="26" text-anchor="middle" font-family="Fira Sans" font-size="14" font-weight="800" fill="#f5f3ef">Tech Lead · 1 ETP</text>
+            <circle cx="40" cy="86" r="22" fill="#f5f3ef" stroke="#3d7363" stroke-width="2"/>
+            <text x="40" y="92" text-anchor="middle" font-family="Fira Sans" font-size="13" font-weight="800" fill="#3d7363">TL</text>
+            <text x="80" y="78" font-family="Fira Sans" font-size="12" font-weight="700" fill="#111418">Architecture fusion</text>
+            <text x="80" y="96" font-family="Fira Sans" font-size="11" fill="#5b5e68">Migration SQLite · Service</text>
+            <text x="80" y="110" font-family="Fira Sans" font-size="11" fill="#5b5e68">Windows · API Zod · OpenAPI</text>
+            <text x="20" y="146" font-family="Fira Sans" font-size="10" fill="#234236" font-weight="600">Phases 1-2-4 (lead)</text>
+          </g>
+
+          <g transform="translate(460,40)">
+            <rect width="360" height="160" rx="12" fill="#f5f3ef" stroke="#7a6a8a" stroke-width="2"/>
+            <rect width="360" height="40" rx="12" fill="#7a6a8a"/>
+            <rect y="28" width="360" height="12" fill="#7a6a8a"/>
+            <text x="180" y="26" text-anchor="middle" font-family="Fira Sans" font-size="14" font-weight="800" fill="#f5f3ef">Frontend Dev · 1 ETP</text>
+            <circle cx="40" cy="86" r="22" fill="#f5f3ef" stroke="#7a6a8a" stroke-width="2"/>
+            <text x="40" y="92" text-anchor="middle" font-family="Fira Sans" font-size="13" font-weight="800" fill="#7a6a8a">FE</text>
+            <text x="80" y="78" font-family="Fira Sans" font-size="12" font-weight="700" fill="#111418">Fusion UI 21 → 13 pages</text>
+            <text x="80" y="96" font-family="Fira Sans" font-size="11" fill="#5b5e68">DS Twisty · drawer · ⌘K</text>
+            <text x="80" y="110" font-family="Fira Sans" font-size="11" fill="#5b5e68">cockpit unifié matin/soir</text>
+            <text x="20" y="146" font-family="Fira Sans" font-size="10" fill="#463a54" font-weight="600">Phase 3 (lead) · 5 (polish)</text>
+          </g>
+
+          <g transform="translate(840,40)">
+            <rect width="360" height="160" rx="12" fill="#f5f3ef" stroke="#b88237" stroke-width="2"/>
+            <rect width="360" height="40" rx="12" fill="#b88237"/>
+            <rect y="28" width="360" height="12" fill="#b88237"/>
+            <text x="180" y="26" text-anchor="middle" font-family="Fira Sans" font-size="14" font-weight="800" fill="#f5f3ef">QA / Ops · 0,6 ETP</text>
+            <circle cx="40" cy="86" r="22" fill="#f5f3ef" stroke="#b88237" stroke-width="2"/>
+            <text x="40" y="92" text-anchor="middle" font-family="Fira Sans" font-size="13" font-weight="800" fill="#b88237">QA</text>
+            <text x="80" y="78" font-family="Fira Sans" font-size="12" font-weight="700" fill="#111418">Playwright · Husky</text>
+            <text x="80" y="96" font-family="Fira Sans" font-size="11" fill="#5b5e68">OpenAPI · runbook · MSI</text>
+            <text x="80" y="110" font-family="Fira Sans" font-size="11" fill="#5b5e68">bug bash · onboarding pair</text>
+            <text x="20" y="146" font-family="Fira Sans" font-size="10" fill="#6d4816" font-weight="600">Phases 4-5 (lead)</text>
+          </g>
+
+          <g transform="translate(1230,116)">
+            <text x="0" y="0" text-anchor="middle" font-family="Sol, Fira Sans" font-size="44" font-weight="100" fill="#111418" letter-spacing="-2">2,6</text>
+            <text x="0" y="20" text-anchor="middle" font-family="Fira Sans" font-size="10" fill="#5b5e68" letter-spacing="1.5" font-weight="600">ETP TOTAL</text>
+          </g>
+
+          <text x="640" y="228" text-anchor="middle" font-family="Fira Sans" font-size="11" fill="#5b5e68" font-style="italic">Total ≈ 26 personne-semaines · budget ≈ 110 k€ tout-compris (salaire chargé + frais)</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Pré-requis -->
+    <div class="section">
+      <h2 class="section-title">Pré-requis CEO · à clore avant kick-off</h2>
+      <div class="section-sub">~1 semaine · sans ces 4 points le sprint 1 ne démarre pas</div>
+      <div class="prereqs">
+        <article class="prereq">
+          <div class="n">01</div>
+          <h4>Financer 110 k€</h4>
+          <p>Cash ETIC (CAPEX interne) ou premier ticket investisseur. Pas de v0.5 sans ce go.</p>
+        </article>
+        <article class="prereq">
+          <div class="n">02</div>
+          <h4>Allouer 2,6 ETP</h4>
+          <p>1 Tech Lead + 1 Frontend Dev + 0,6 QA/Ops. Interne, freelance ou mixte.</p>
+        </article>
+        <article class="prereq">
+          <div class="n">03</div>
+          <h4>Push 7 branches</h4>
+          <p>Les 6 <code>docs/&lt;sujet&gt;</code> du sprint externe + <code>chore/changelog-sprint-externe</code>, puis 6 PRs auto-fermantes.</p>
+        </article>
+        <article class="prereq">
+          <div class="n">04</div>
+          <h4>Geler le MVP v0.4</h4>
+          <p>Plus de feature dessus. Toute évolution part en branche <code>feat/v0.5/&lt;sujet&gt;</code>. Dogfood CEO continue jusqu'au cutover sprint 8.</p>
+        </article>
+      </div>
+    </div>
+
+    <!-- Risques -->
+    <div class="section">
+      <h2 class="section-title">Risques saillants à suivre</h2>
+      <div class="section-sub">4 risques identifiés · à monitorer semaine après semaine</div>
+      <div class="risks">
+        <article class="risk">
+          <div class="risk-icon">!</div>
+          <div>
+            <h4>Risque 1 — Migration one-shot rate</h4>
+            <p>Si le script SQLite plante sur tes vraies données, blocage net. Pas de scénario rollback.</p>
+            <div class="mitig"><strong>Mitigation</strong>Tester la migration dès le sprint 1 sur ton dataset réel (pas un fixture), pas attendre le sprint 9.</div>
+          </div>
+        </article>
+        <article class="risk">
+          <div class="risk-icon">!</div>
+          <div>
+            <h4>Risque 2 — Dérive UI sprint 5-6</h4>
+            <p>La fusion 21 → 13 pages tend à déborder en discussion design plutôt qu'exécution.</p>
+            <div class="mitig"><strong>Mitigation</strong>Geler la liste des 13 pages le 1er jour du sprint 5, pas de réouverture. Spec verrouillée = exécution.</div>
+          </div>
+        </article>
+        <article class="risk">
+          <div class="risk-icon">!</div>
+          <div>
+            <h4>Risque 3 — Service Windows surprises</h4>
+            <p>Le packaging Windows (MSI, signing, antivirus, UAC) est un nid à bugs souvent sous-estimé.</p>
+            <div class="mitig"><strong>Mitigation</strong>Prototype <code>nssm</code> ou <code>node-windows</code> dès le sprint 1 sur ton poste, ne pas attendre le sprint 7.</div>
+          </div>
+        </article>
+        <article class="risk">
+          <div class="risk-icon">!</div>
+          <div>
+            <h4>Risque 4 — CEO pairs introuvables</h4>
+            <p>Si les 2-3 cibles ne sont pas identifiées sprint 6, la v0.5 termine sans validation externe non-Feycoil.</p>
+            <div class="mitig"><strong>Mitigation</strong>Envoyer les <code>LETTRE-INTRO-CEO-PAIR.md</code> dès maintenant en pré-recrutement (mention « disponible juillet 2026 »).</div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <!-- Décision unique -->
+    <div class="decision">
+      <div class="label">Décision unique cette semaine</div>
+      <h2>Finance-t-on les <span class="accent">110 k€</span> et staffe-t-on les 2,6 ETP ?</h2>
+      <p>Tant que cette décision n'est pas prise, on reste en mode « MVP v0.4 dogfood + sprint externe ouvre le financement ». Dès qu'elle est prise, le sprint 1 démarre et v0.5 est tagué fin juin / début juillet 2026. Tout le reste (specs, équipe, branches docs) est prêt.</p>
+      <div class="gate">
+        <div class="gate-pill"><strong>GO</strong>sprint 1 démarre lundi suivant</div>
+        <div class="gate-pill"><strong>NO-GO</strong>MVP v0.4 reste en place + 1 sprint pitch investisseurs</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 3 — Release Notes                                          -->
+  <!-- ============================================================ -->
+  <div class="tab-pane" id="tab-release-notes" role="tabpanel" aria-labelledby="tab-btn-release-notes">
+
+    <div class="rn-intro">
+      <h2>Release notes — historique des versions</h2>
+      <p>Cette page recense toutes les versions livrées des composants aiCEO : <strong>cockpit Twisty</strong> (App Web), <strong>MVP Node</strong> (Express + Claude + Outlook), <strong>Design System</strong> Twisty, <strong>documentation produit</strong>, <strong>roadmap interactive</strong> et <strong>pipeline GitHub</strong>. Filtre par composant ou type de changement, ou recherche libre. Les versions majeures du parcours sont aussi visibles dans la <a href="#" data-jump-tab="convergence">carte de convergence</a>.</p>
+    </div>
+
+    <div class="controls" role="toolbar" aria-label="Filtres release notes">
+      <span class="label">Composant</span>
+      <button class="filter rn-flt-comp" data-comp="all" aria-pressed="true">Tous</button>
+      <button class="filter rn-flt-comp" data-comp="cockpit" aria-pressed="false">Cockpit</button>
+      <button class="filter rn-flt-comp" data-comp="mvp" aria-pressed="false">MVP Node</button>
+      <button class="filter rn-flt-comp" data-comp="ds" aria-pressed="false">Design System</button>
+      <button class="filter rn-flt-comp" data-comp="docs" aria-pressed="false">Docs</button>
+      <button class="filter rn-flt-comp" data-comp="roadmap" aria-pressed="false">Roadmap</button>
+      <button class="filter rn-flt-comp" data-comp="github" aria-pressed="false">GitHub</button>
+      <span class="label" style="margin-left:24px;">Type</span>
+      <button class="filter rn-flt-cat" data-cat="all" aria-pressed="true">Tout</button>
+      <button class="filter rn-flt-cat" data-cat="feat" aria-pressed="false">Nouveautés</button>
+      <button class="filter rn-flt-cat" data-cat="improve" aria-pressed="false">Améliorations</button>
+      <button class="filter rn-flt-cat" data-cat="fix" aria-pressed="false">Correctifs</button>
+      <button class="filter rn-flt-cat" data-cat="perf" aria-pressed="false">Performance</button>
+      <button class="filter rn-flt-cat" data-cat="breaking" aria-pressed="false">Breaking</button>
+      <label class="search" aria-label="Rechercher dans les versions">
+        <span class="icn" aria-hidden="true">⌕</span>
+        <input type="search" id="rn-search" placeholder="Rechercher…" autocomplete="off">
+      </label>
+    </div>
+
+    <div class="rn-layout">
+      <div class="rn-feed" id="rn-feed">
+        <!-- Versions générées en JS -->
+      </div>
+      <aside class="rn-aside" aria-label="Index des versions">
+        <h4>Index des versions</h4>
+        <nav class="toc" id="rn-toc"></nav>
+      </aside>
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 4 — Journal & écarts                                       -->
+  <!-- ============================================================ -->
+  <div class="tab-pane" id="tab-journal" role="tabpanel" aria-labelledby="tab-btn-journal">
+
+    <div class="j-intro">
+      <h2>Journal &amp; écarts vs BASELINE atelier S4</h2>
+      <p>Suivi en temps réel de l'avancement projet. La <strong>BASELINE</strong> a été figée le 24 avril 2026 (atelier S4 — timing &amp; budget v0.5 réconciliés) et sert de référence pour mesurer toute dérive. Les écarts &gt; 3 jours ou &gt; 5 % budget déclenchent une alerte. Le journal trace 5 types d'événements : livraison, décision (ADR), écart accepté, dérive subie, ajout hors plan.</p>
+    </div>
+
+    <!-- KPIs santé projet -->
+    <div class="j-kpis" id="j-kpis"></div>
+
+    <!-- Mermaid : 3 blocs ciblés -->
+    <div class="j-mermaid-grid">
+      <div class="j-mermaid">
+        <h3>Architecture cible — avant / après v0.5 fusion</h3>
+        <p class="hint">Aujourd'hui : 2 produits autonomes branchés sur le même DS. Après fusion : 1 hub unifié avec backend Express + UI cockpit Twisty + couche IA partagée.</p>
+        <div class="mermaid" id="mermaid-architecture">
+flowchart LR
+  subgraph AVANT["État au 25 avril 2026"]
+    direction TB
+    DS1["Design System Twisty<br/>(02_design-system/)"]
+    AW1["App Web cockpit<br/>(aiCEO_Agent/)<br/>HTML statique"]
+    MV1["MVP Node<br/>(03_mvp/)<br/>Express + Claude"]
+    DS1 --> AW1
+    DS1 --> MV1
+  end
+  subgraph APRES["Après v0.5 fusion · juillet 2026"]
+    direction TB
+    DS2["Design System Twisty"]
+    HUB["Hub aiCEO v0.5<br/>UI cockpit + Express + SQLite<br/>+ Service Windows"]
+    DS2 --> HUB
+  end
+  AVANT -. fusion .-> APRES
+  classDef done fill:#3d7363,stroke:#2c5247,color:#fff
+  classDef todo fill:#fff,stroke:#7790ae,color:#324054,stroke-dasharray:5 3
+  class DS1,AW1,MV1 done
+  class DS2,HUB todo
+        </div>
+      </div>
+
+      <div class="j-mermaid">
+        <h3>Dépendances jalons critiques v0.5</h3>
+        <p class="hint">Ordre des pré-requis dev avant le tag v0.5. Un retard amont décale tout l'aval — c'est ce que la BASELINE surveille.</p>
+        <div class="mermaid" id="mermaid-dependencies">
+flowchart TD
+  GO{{"Décision GO/NO-GO<br/>financement 110k€"}}
+  ONB["Onboarding dev<br/>15 mai 2026"]
+  API["OpenAPI v1<br/>29 mai 2026"]
+  RUN["Runbook prod<br/>20 juin 2026"]
+  V05["v0.5 tag fusion<br/>15 juillet 2026"]
+  GO --> ONB
+  ONB --> API
+  API --> RUN
+  ONB --> RUN
+  RUN --> V05
+  classDef gate fill:#b88237,stroke:#8a6429,color:#fff
+  classDef plan fill:#fff,stroke:#7790ae,color:#324054
+  classDef tag fill:#d96d3e,stroke:#a4522e,color:#fff
+  class GO gate
+  class ONB,API,RUN plan
+  class V05 tag
+        </div>
+      </div>
+
+      <div class="j-mermaid">
+        <h3>État des ADRs — décisions structurantes</h3>
+        <p class="hint">Architecture Decision Records signés &amp; archivés. Toute nouvelle ADR signée déclenche automatiquement une entrée journal.</p>
+        <div class="mermaid" id="mermaid-adr">
+stateDiagram-v2
+  [*] --> Brouillon
+  Brouillon --> EnRevue: atelier équipe
+  EnRevue --> Signée: validation Major Fey
+  EnRevue --> Brouillon: revoir
+  Signée --> Archivée: changelog mis à jour
+  Archivée --> [*]
+  note right of Signée
+    ADR récentes (avril 2026) :
+    • Trajectoire local→cloud
+    • Timing &amp; budget v0.5
+    • OpenAPI parqué Phase 2
+    • Cohabitation 2 produits jusqu'à v0.5
+  end note
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="detail" id="detail-panel">
-    <div class="empty">Cliquez un jalon pour voir le détail</div>
-  </div>
+    <!-- Variance chart -->
+    <div class="j-chart">
+      <h3>Écarts vs BASELINE — jalons critiques</h3>
+      <p class="hint">Barre verte : à l'heure (±0 j). Bleue : avance. Rouge : retard. Grise : non encore livré, planifié inchangé. Le centre du graphe = date BASELINE figée le 24 avril.</p>
+      <div class="variance-bars" id="variance-bars"></div>
+    </div>
 
-  <div class="counters" id="counters"></div>
+    <!-- Filtres journal -->
+    <div class="j-filters" role="toolbar" aria-label="Filtres journal">
+      <span class="label">Type</span>
+      <button class="filter j-flt" data-jtype="all" aria-pressed="true">Tout</button>
+      <button class="filter j-flt" data-jtype="livraison" aria-pressed="false">Livraisons</button>
+      <button class="filter j-flt" data-jtype="décision" aria-pressed="false">Décisions</button>
+      <button class="filter j-flt" data-jtype="écart" aria-pressed="false">Écarts</button>
+      <button class="filter j-flt" data-jtype="dérive" aria-pressed="false">Dérives</button>
+      <button class="filter j-flt" data-jtype="ajout-hors-plan" aria-pressed="false">Ajouts hors plan</button>
+    </div>
+
+    <!-- Feed chronologique -->
+    <div class="j-feed" id="j-feed"></div>
+
+  </div>
 
   <footer>
-    <code>aiCEO_Agent/docs/11-roadmap-map.html</code> · éditez la constante <code>MILESTONES</code> en tête de script pour mettre à jour la carte
+    <code>04_docs/11-roadmap-map.html</code> · <strong>Carte de convergence</strong> = état historique · <strong>Plan v0.5 fusion</strong> = ce qu'il reste à faire · <strong>Release notes</strong> = historique versions · <strong>Journal &amp; écarts</strong> = pilotage live · DS Twisty branché via <code>../02_design-system/colors_and_type.css</code>
   </footer>
 
 </div>
 
 <script>
-const MILESTONES = [
-  { id:"web-01", lane:"web", x:6,  status:"done",  title:"Cockpit v1", date:"Mars 2026",
-    desc:"Première version du cockpit Twisty : index.html + pages projet coquilles. Esquisse de l'expérience utilisateur.",
-    artefacts:"aiCEO_Agent/index.html, projets.html, taches.html" },
-  { id:"web-02", lane:"web", x:14, status:"done",  title:"5 journey maps", date:"Avril 2026",
-    desc:"Scénarios UX clés documentés : arbitrage, délégation, debrief, revue hebdo, apprentissage.",
-    artefacts:"aiCEO_Agent/journeys/*.md" },
-  { id:"web-03", lane:"web", x:22, status:"done",  title:"Design System v1", date:"Avril 2026",
-    desc:"Tokens Twisty (couleurs, typo, espacements). Actuellement dans dossier séparé aiCEO_Design_System.",
-    artefacts:"aiCEO_Design_System/tokens/*.json" },
-  { id:"web-04", lane:"web", x:31, status:"done",  title:"Pages complètes", date:"Avril 2026",
-    desc:"Agenda, contacts, décisions, groupes, assistant. 7 pages projet structurelles.",
-    artefacts:"agenda.html, contacts.html, decisions.html, …" },
-  { id:"web-05", lane:"web", x:40, status:"done",  title:"App Web v4 abouti", date:"Avril 2026",
-    desc:"Refonte SPEC_v31 livrée. Cockpit cohérent et consultable. Sert de vitrine UX.",
-    artefacts:"SPEC_v31.md, REFONTE_v3.md" },
-  { id:"web-06", lane:"web", x:50, status:"todo",  title:"Alignement design tokens", date:"Mai 2026",
-    desc:"Fusionner aiCEO_Design_System dans aiCEO_Agent et réutiliser les mêmes tokens dans le MVP (palette hardcodée côté MVP aujourd'hui).",
-    artefacts:"design-system/tokens.css partagé" },
-  { id:"web-07", lane:"web", x:60, status:"todo",  title:"Branchement données MVP", date:"Mai 2026",
-    desc:"Les pages app web consomment les endpoints du serveur MVP (GET /api/tasks, /api/decisions, /api/emails/summary).",
-    artefacts:"fetch vers localhost:4747" },
+"use strict";
 
-  { id:"mvp-01", lane:"mvp", x:6,  status:"done",  title:"Scaffold Express + SDK", date:"Début avril 2026",
-    desc:"Serveur Node/Express sur port 4747. SDK Anthropic intégré, mode démo en fallback (aucune clé requise).",
-    artefacts:"mvp/server.js, src/llm.js" },
-  { id:"mvp-02", lane:"mvp", x:14, status:"done",  title:"Arbitrage 3/2/N", date:"11 avril 2026",
-    desc:"Claude classe toutes les tâches : 3 FAIRE max, 2 DÉLÉGUER max, REPORTER absorbe tout le reste (0 tâche perdue).",
-    artefacts:"src/prompt.js, src/arbitrage.js" },
-  { id:"mvp-03", lane:"mvp", x:22, status:"done",  title:"Drag & drop + validation", date:"15 avril 2026",
-    desc:"Reshuffle manuel depuis les 3 colonnes avant figeage dans data/decisions.json.",
-    artefacts:"public/index.html" },
-  { id:"mvp-04", lane:"mvp", x:31, status:"done",  title:"Flux délégation", date:"18 avril 2026",
-    desc:"Brouillon mail généré par Claude, destinataire pré-rempli depuis le contact projet, mailto: vers Outlook.",
-    artefacts:"src/drafts.js, POST /api/delegate" },
-  { id:"mvp-05", lane:"mvp", x:40, status:"done",  title:"Boucle du soir", date:"20 avril 2026",
-    desc:"Debrief 2 min : Fait / Partiel / Pas fait + énergie + humeur. Résumé calculé localement (pas de LLM).",
-    artefacts:"src/evening.js, public/evening.html" },
-  { id:"mvp-06", lane:"mvp", x:50, status:"done",  title:"Import Outlook 30j", date:"22 avril 2026",
-    desc:"PowerShell COM extrait inbox + envoyés sur 30 jours. 926 mails utiles sur 3 comptes après normalisation + filtrage bruit.",
-    artefacts:"scripts/fetch-outlook.ps1, normalize-emails.js" },
-  { id:"mvp-07", lane:"mvp", x:58, status:"done",  title:"Contexte email dans prompt", date:"23 avril 2026",
-    desc:"Digest global + signaux par tâche (relances contact ≥ 2, non lus ≥ 3). Chip coral sur cartes sous pression.",
-    artefacts:"src/emails-context.js" },
-  { id:"mvp-08", lane:"mvp", x:60, status:"done",  title:"Proxy corp + SSL MITM", date:"24 avril 2026",
-    desc:"Factory Anthropic route via HTTPS_PROXY + NODE_EXTRA_CA_CERTS. Passe Zscaler / proxy d'entreprise.",
-    artefacts:"src/anthropic-client.js" },
-  { id:"mvp-09", lane:"mvp", x:62, status:"done",  title:"Run réel 24/04 validé", date:"24 avril 2026",
-    desc:"28/28 tâches classées en 41 s · 5,2 k tokens in / 2,5 k out · ≈ 1 ct d'arbitrage, budget quotidien ≈ 1,5 ct.",
-    artefacts:"mvp/docs/aiCEO-MVP-description-v2.pptx" },
+// ──────────────────────────────────────────────────────────────
+// Milestones — état au 25/04/2026
+// Champ "period" = clé de la rangée temporelle dans le tableau
+// PERIODS ci-dessous. Pas de chevauchement par construction :
+// chaque cellule (period × lane) empile ses cards en flexbox.
+// ──────────────────────────────────────────────────────────────
 
-  { id:"v2-01", lane:"v2", x:79, status:"todo", title:"Démarrage auto Windows", date:"Mai 2026",
-    desc:"Scheduled task qui lance node server.js au login. Plus besoin de PowerShell manuel.",
-    artefacts:"skill schedule / start.bat" },
-  { id:"v2-02", lane:"v2", x:86, status:"todo", title:"Auto-sync Outlook 2h", date:"Mai 2026",
-    desc:"Fin des PS1 à la main. Rafraîchissement transparent du contexte email toutes les 2 heures.",
-    artefacts:"node cron ou scheduled task" },
-  { id:"v2-03", lane:"v2", x:91, status:"todo", title:"Envoi natif Graph", date:"Juin 2026",
-    desc:"Enregistrement Azure AD + Microsoft Graph. Remplace mailto: par envoi authentifié.",
-    artefacts:"src/graph-client.js (à créer)" },
-  { id:"v2-04", lane:"v2", x:96, status:"todo", title:"Mémoire patterns", date:"Été 2026",
-    desc:"Claude apprend des patterns récurrents : reports chroniques, perfectionnisme, surcharge. Personnalisation.",
-    artefacts:"src/memory.js (à créer)" }
+const PERIODS = [
+  { id:"mars-2026",   label:"Mars 2026",        sub:"Démarrage Twisty" },
+  { id:"avril-s1",    label:"Avril 2026",       sub:"S14-S15 · sprint cockpit + MVP scaffolds" },
+  { id:"avril-s2",    label:"Avril 2026",       sub:"S16 · pages app + arbitrage 3/2/N" },
+  { id:"avril-s3",    label:"Avril 2026",       sub:"S17 · Outlook + cockpit serenity", now:true },
+  { id:"mai-juin",    label:"Mai-juin 2026",    sub:"Sprint fusion · sem 1-8 · code livré incrémentalement" },
+  { id:"juillet",     label:"Juillet 2026",     sub:"Tag v0.5 · cutover", banner:true },
+  { id:"annee-2027",  label:"2027",             sub:"V1 cloud-ready · 290 k€" },
+  { id:"annee-2028",  label:"2028",             sub:"V2 multi-tenant · 693 k€" },
+  { id:"annee-2029",  label:"2029-2030",        sub:"V3 coach · 598 k€" }
 ];
 
-const V1_HUB = {
-  id:"v1-hub", lane:"v1", status:"todo",
-  title:"V1 — Produit unifié", date:"Juin 2026 (cible)",
-  desc:"Fusion App Web + MVP : une seule UI Twisty branchée sur le serveur Node. Design system partagé. Livrable candidat pour déploiement interne ETIC.",
-  artefacts:"unification UI Twisty · intégration server Node dans app · tokens CSS partagés"
+const MILESTONES = [
+  // ═════════════════════════════════════════════════════════════
+  // App Web Twisty — UI / DS / cockpit + Atelier strategique
+  // ═════════════════════════════════════════════════════════════
+  { id:"web-01", lane:"web", period:"mars-2026", status:"done", title:"Cockpit v1", date:"15 mars 2026", planned:"2026-03-15", actual:"2026-03-15",
+    desc:"Première version du cockpit Twisty : index.html + pages projet coquilles. Esquisse de l'expérience utilisateur.",
+    artefacts:["aiCEO_Agent/index.html","projets.html","taches.html"] },
+  { id:"web-02", lane:"web", period:"avril-s1", status:"done", title:"5 journey maps", date:"5 avril 2026", planned:"2026-04-05", actual:"2026-04-05",
+    desc:"Scénarios UX clés documentés : arbitrage, délégation, debrief, revue hebdo, apprentissage.",
+    artefacts:["aiCEO_Agent/journeys/*.md"] },
+  { id:"web-03", lane:"web", period:"avril-s1", status:"done", title:"Design System v1", date:"10 avril 2026", planned:"2026-04-10", actual:"2026-04-10",
+    desc:"Tokens Twisty (couleurs, typo, espacements). Fira Sans + Aubrielle + Sol Thin self-hosted.",
+    artefacts:["02_design-system/tokens.json","02_design-system/colors_and_type.css"] },
+  { id:"web-04", lane:"web", period:"avril-s2", status:"done", title:"Pages complètes v3", date:"15 avril 2026", planned:"2026-04-15", actual:"2026-04-15",
+    desc:"Agenda, contacts, décisions, groupes, assistant. 7 pages projet structurelles. Refonte SPEC_v31.",
+    artefacts:["agenda.html","contacts.html","decisions.html","groupes.html","assistant.html"] },
+  { id:"web-05", lane:"web", period:"avril-s2", status:"done", title:"Cockpit serenity v4", date:"20 avril 2026", planned:"2026-04-20", actual:"2026-04-20",
+    desc:"5-card layout intention+progression, drawer source-inspector, gamif (streak/badges), end-of-day ritual.",
+    artefacts:["aiCEO_Agent/index.html (v4)","drawer.css","gamif.js"] },
+  { id:"web-06", lane:"web", period:"avril-s3", status:"done", title:"DS aligné MVP (Issue #1)", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
+    desc:"Issue #1 close : 12 polices Fira Sans + Aubrielle déployées dans 03_mvp/public/assets/fonts/, link CSS injecté, 6 variables inline migrées vers tokens DS Twisty. Branche ds/wire-mvp-to-ds poussée sur origin.",
+    artefacts:["03_mvp/public/assets/fonts/","02_design-system/colors_and_type.css"] },
+  { id:"web-07", lane:"web", period:"avril-s3", status:"done", title:"Atelier de cohérence S1-S8", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
+    desc:"8 sessions de travail qui résolvent les 7 dissonances critiques. Couvre trajectoire produit, typo canonique, sources de vérité, timing/budget, livrables externes, livrables dev, pipeline DS, validation globale.",
+    sessions:[
+      "S1 — Trajectoire produit (local→cloud + continuité v0.4→v0.5)",
+      "S2 — Typographie canonique (Fira Sans + Aubrielle + Sol Thin self-hosted)",
+      "S3 — Sources de vérité doc (orphelins archivés, structure unifiée)",
+      "S4 — Timing & budget v0.5 (10 sem · 110 k€ · 2,6 ETP réconciliés)",
+      "S5 — Livrables externes (CEO pair, investisseur, client)",
+      "S6 — Livrables dev (onboarding, OpenAPI, runbook parqués sprint v0.5)",
+      "S7 — Pipeline DS → CSS + process 3 silos formalisé",
+      "S8 — Validation globale + archivage atelier"
+    ],
+    artefacts:["04_docs/_atelier-2026-04-coherence/JOURNAL.md","04_docs/_atelier-2026-04-coherence/POST-ATELIER-ACTIONS.md","00_BOUSSOLE/DECISIONS.md (12 ADRs)"] },
+  { id:"web-08", lane:"web", period:"avril-s3", status:"done", title:"Doc stratégique BOUSSOLE", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
+    desc:"Refonte des 4 piliers de la doc stratégique : ROADMAP.md (4 milestones GitHub), DECISIONS.md (12 ADRs), GOUVERNANCE.md (3 silos Claude Design ↔ Cowork ↔ GitHub), CHANGELOG.md (purge + sprint externe).",
+    artefacts:["00_BOUSSOLE/ROADMAP.md","00_BOUSSOLE/DECISIONS.md","00_BOUSSOLE/GOUVERNANCE.md","00_BOUSSOLE/CHANGELOG.md"] },
+
+  // ═════════════════════════════════════════════════════════════
+  // MVP Node — Express + Claude + Outlook
+  // ═════════════════════════════════════════════════════════════
+  { id:"mvp-01", lane:"mvp", period:"avril-s1", status:"done", title:"Scaffold Express + SDK", date:"3 avril 2026", planned:"2026-04-03", actual:"2026-04-03",
+    desc:"Serveur Node/Express sur port 4747. SDK Anthropic intégré, mode démo en fallback (aucune clé requise).",
+    artefacts:["03_mvp/server.js","03_mvp/src/llm.js"] },
+  { id:"mvp-02", lane:"mvp", period:"avril-s1", status:"done", title:"Arbitrage 3/2/N", date:"11 avril 2026", planned:"2026-04-11", actual:"2026-04-11",
+    desc:"Claude classe toutes les tâches : 3 FAIRE max, 2 DÉLÉGUER max, REPORTER absorbe tout le reste (0 tâche perdue).",
+    artefacts:["03_mvp/src/prompt.js","03_mvp/src/arbitrage.js"] },
+  { id:"mvp-03", lane:"mvp", period:"avril-s2", status:"done", title:"Drag & drop + validation", date:"15 avril 2026", planned:"2026-04-15", actual:"2026-04-15",
+    desc:"Reshuffle manuel depuis les 3 colonnes avant figeage dans data/decisions.json.",
+    artefacts:["03_mvp/public/index.html"] },
+  { id:"mvp-04", lane:"mvp", period:"avril-s2", status:"done", title:"Flux délégation", date:"18 avril 2026", planned:"2026-04-18", actual:"2026-04-18",
+    desc:"Brouillon mail généré par Claude, destinataire pré-rempli depuis le contact projet, mailto: vers Outlook.",
+    artefacts:["03_mvp/src/drafts.js","POST /api/delegate"] },
+  { id:"mvp-05", lane:"mvp", period:"avril-s2", status:"done", title:"Boucle du soir", date:"20 avril 2026", planned:"2026-04-20", actual:"2026-04-20",
+    desc:"Debrief 2 min : Fait / Partiel / Pas fait + énergie + humeur. Résumé calculé localement (pas de LLM).",
+    artefacts:["03_mvp/src/evening.js","03_mvp/public/evening.html"] },
+  { id:"mvp-06", lane:"mvp", period:"avril-s3", status:"done", title:"Import Outlook 30j", date:"22 avril 2026", planned:"2026-04-22", actual:"2026-04-22",
+    desc:"PowerShell COM extrait inbox + envoyés sur 30 jours. 926 mails utiles sur 3 comptes après normalisation + filtrage bruit.",
+    artefacts:["03_mvp/scripts/fetch-outlook.ps1","03_mvp/src/normalize-emails.js"] },
+  { id:"mvp-07", lane:"mvp", period:"avril-s3", status:"done", title:"Contexte email dans prompt", date:"23 avril 2026", planned:"2026-04-23", actual:"2026-04-23",
+    desc:"Digest global + signaux par tâche (relances contact ≥ 2, non lus ≥ 3). Chip rose sur cartes sous pression.",
+    artefacts:["03_mvp/src/emails-context.js"] },
+  { id:"mvp-08", lane:"mvp", period:"avril-s3", status:"done", title:"Proxy corp + SSL MITM", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
+    desc:"Factory Anthropic route via HTTPS_PROXY + NODE_EXTRA_CA_CERTS. Passe Zscaler / proxy d'entreprise.",
+    artefacts:["03_mvp/src/anthropic-client.js"] },
+  { id:"mvp-09", lane:"mvp", period:"avril-s3", status:"done", title:"Run réel 24/04 validé", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
+    desc:"28/28 tâches classées en 41 s · 5,2 k tokens in / 2,5 k out · ≈ 1 ct d'arbitrage, budget quotidien ≈ 1,5 ct.",
+    artefacts:["03_mvp/docs/aiCEO-MVP-description-v2.pptx"] },
+
+  // ── Sprint externe — éclaté en 6 livrables (anciennement mvp-10) ──
+  { id:"mvp-10a", lane:"mvp", period:"avril-s3", status:"done", title:"Benchmark v2 (Issue #2)", date:"22 avril 2026", planned:"2026-04-22", actual:"2026-04-22",
+    desc:"Étude approfondie 10-12 produits concurrents. P0 bloquant pour le pitch investisseur. Couvre Motion, Reclaim, Sunsama, Akiflow, Rize, Sweepy, Magical, Reflect, Mem, Adaptive AI Coach.",
+    artefacts:["04_docs/02-benchmark.md (v2)"] },
+  { id:"mvp-10b", lane:"mvp", period:"avril-s3", status:"done", title:"Pitch onepage (Issue #3)", date:"23 avril 2026", planned:"2026-04-23", actual:"2026-04-23",
+    desc:"1 page A4 PDF stylé DS Twisty pour ouvrir des conversations. Tagline + 3 piliers + ROI + appel à l'action.",
+    artefacts:["docs/PITCH-ONEPAGE.md","docs/PITCH-ONEPAGE.html"] },
+  { id:"mvp-10c", lane:"mvp", period:"avril-s3", status:"done", title:"Business case (Issue #4)", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
+    desc:"BUSINESS-CASE.md détaillé + synthèse PDF stylée. Hypothèses revenu, coûts 18 mois, ROI, point mort 250-350 CEO clients, trajectoire 1,69 M€.",
+    artefacts:["docs/BUSINESS-CASE.md","docs/BUSINESS-CASE-SYNTHESE.html","docs/BUSINESS-CASE-SYNTHESE.pdf"] },
+  { id:"mvp-10d", lane:"mvp", period:"avril-s3", status:"done", title:"Onboarding CEO pair (Issue #5)", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
+    desc:"Guide d'installation pour CEO pair externe : pré-requis (Node, Outlook, clé API), import Outlook 30j, premier arbitrage, FAQ, troubleshooting.",
+    artefacts:["docs/ONBOARDING-CEO-PAIR.md"] },
+  { id:"mvp-10e", lane:"mvp", period:"avril-s3", status:"done", title:"Lettre intro pair (Issue #6)", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
+    desc:"1 page pair-à-pair signée, ton CEO-CEO sans jargon. Mention « disponible juillet 2026 » pour pré-recrutement des 2-3 cibles.",
+    artefacts:["docs/LETTRE-INTRO-CEO-PAIR.md"] },
+  { id:"mvp-10f", lane:"mvp", period:"avril-s3", status:"done", title:"Pitch deck investisseur (Issue #7)", date:"25 avril 2026", planned:"2026-04-25", actual:"2026-04-25",
+    desc:"16 slides .pptx adapté du deck exec Feycoil. Couvre problème, solution, marché, traction MVP, team, roadmap, ask 110k€ → 290k€ → 693k€.",
+    artefacts:["docs/PITCH-DECK-INVESTISSEUR.pptx"] },
+
+  // ── GO ExCom v0.5 + Sprint S1 (binôme CEO + Claude, internalisation) ──
+  { id:"v05-go", lane:"mvp", period:"avril-s4", status:"done", title:"GO ExCom v0.5 (internalisée)", date:"25 avril 2026", planned:"2026-04-25", actual:"2026-04-25",
+    desc:"GO ExCom inconditionnel + pivot exécution : v0.5 produite en binôme CEO + Claude (pas de dev externe). Cadence 6 sprints / 10 sem / 5 mai → 14 juillet conservée. Budget effectif ~4,6 k€ infra + provision (105 k€ dev externe neutralisés).",
+    artefacts:["04_docs/DOSSIER-GO-NOGO-V05.md","04_docs/POA-V05.xlsx","04_docs/KICKOFF-V05.pptx","00_BOUSSOLE/DECISIONS.md (ADR GO + ADR internalisation 25/04)"] },
+  { id:"v05-s1", lane:"mvp", period:"avril-s4", status:"doing", title:"Sprint S1 — Backend stable SQLite", date:"25 avril → 9 mai 2026", planned:"2026-05-09", actual:null,
+    desc:"Sprint 1 (2 sem, binôme CEO + Claude) en cours : 14 tables SQLite + 41 routes REST, migration data.js → SQLite (3/14/28/10/25/25), 23/23 tests verts, driver node:sqlite (zéro binaire natif). Démarrage anticipé suite internalisation.",
+    artefacts:["04_docs/DOSSIER-GO-NOGO-V05.md §Plan d'exécution S1","03_mvp/docs/SPRINT-S1-RECETTE.md","03_mvp/ (tag v0.5-s1)"] },
+
+  // ═════════════════════════════════════════════════════════════
+  // Hub fusion — Specs + Pipeline GitHub + Pré-requis dev
+  // ═════════════════════════════════════════════════════════════
+  { id:"hub-01", lane:"hub", period:"avril-s3", status:"done", title:"SPEC-FONCTIONNELLE-FUSION", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
+    desc:"Spec fonctionnelle complète de la fusion v0.5 : 13 pages cibles (vs 21 actuelles), parcours utilisateur unifié matin/soir, modes copilote, 8 user stories prioritaires, critères d'acceptance.",
+    artefacts:["04_docs/SPEC-FONCTIONNELLE-FUSION.md"] },
+  { id:"hub-02", lane:"hub", period:"avril-s3", status:"done", title:"SPEC-TECHNIQUE-FUSION", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
+    desc:"Architecture cible v0.5 : schéma SQLite 13 tables, API REST 40+ endpoints validés Zod, intégration Outlook (COM MVP → Graph V1), Service Windows + MSI, migration one-shot, Vitest + Playwright.",
+    artefacts:["04_docs/SPEC-TECHNIQUE-FUSION.md"] },
+  { id:"hub-03", lane:"hub", period:"avril-s3", status:"done", title:"Pipeline GitHub initialisé", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
+    desc:"Repo GitHub privé créé, 11 issues ouvertes via gh-create-issues.ps1, 6 branches docs/<sujet> commitées avec pattern Closes #N. Backlog 09-backlog.xlsx archivé.",
+    artefacts:["repo aiCEO (GitHub)","11 issues (#1 → #11)","6 PR docs/<sujet>"] },
+  { id:"hub-prereq-onboarding-dev", lane:"hub", period:"mai-juin", status:"todo", title:"ONBOARDING-DEV.md", date:"sprint v0.5 · sem 1-2", planned:"2026-05-15", actual:null,
+    desc:"Doc onboarding dev fullstack : pré-requis (Node 20+, pnpm, SQLite Browser, ext VS Code), commandes (db:migrate, dev, test, build:msi), conventions code, structure monorepo. Parqué sprint Phase 1.",
+    artefacts:["03_mvp/docs/ONBOARDING-DEV.md (parqué)"] },
+  { id:"hub-prereq-runbook", lane:"hub", period:"mai-juin", status:"todo", title:"RUNBOOK-OPS.md", date:"sprint v0.5 · sem 7-8", planned:"2026-06-20", actual:null,
+    desc:"Modes de panne & remèdes : SQLite verrouillée, Outlook COM timeout, proxy SSL MITM, Service Windows ne démarre pas. Parqué sprint Phase 4 (Service+E2E).",
+    artefacts:["03_mvp/docs/RUNBOOK-OPS.md (parqué)"] },
+  { id:"hub-prereq-openapi", lane:"hub", period:"mai-juin", status:"todo", title:"OpenAPI 3.0 hand-written", date:"sprint v0.5 · sem 3-4", planned:"2026-05-29", actual:null,
+    desc:"Spec OpenAPI 3.0 auto-générée via zod-to-openapi pour les 40+ endpoints. Audit S6 atelier l'a parqué Phase 2 (API+Outlook). Issue #10 GitHub.",
+    artefacts:["03_mvp/docs/openapi.yaml (parqué)"] },
+
+  // ═════════════════════════════════════════════════════════════
+  // Trajectoire post-fusion
+  // ═════════════════════════════════════════════════════════════
+  { id:"v2-01", lane:"v2", period:"annee-2027", status:"todo", title:"V1 cloud-ready", date:"2027 · 290 k€", planned:"2027-06-30", actual:null,
+    desc:"Bascule cloud-ready : multi-postes, sync entre machines, premier déploiement hors poste CEO. Pré-requis pour passer en mode SaaS interne ETIC. Inclut envoi natif Microsoft Graph (mail authentifié, plus de mailto:).",
+    artefacts:["V1 cloud-ready · 290 k€ · post-v0.5"] },
+  { id:"v2-02", lane:"v2", period:"annee-2028", status:"todo", title:"V2 multi-tenant", date:"2028 · 693 k€", planned:"2028-06-30", actual:null,
+    desc:"Multi-organisations, isolation des données, SSO entreprise, premier déploiement chez CEO clients hors ETIC. Marge produit positive sur 250-350 utilisateurs.",
+    artefacts:["V2 multi-tenant · 693 k€"] },
+  { id:"v2-03", lane:"v2", period:"annee-2029", status:"todo", title:"V3 coach", date:"2029-2030 · 598 k€", planned:"2029-12-31", actual:null,
+    desc:"Mémoire longue terme : Claude apprend les patterns récurrents (reports chroniques, perfectionnisme, surcharge). Personnalisation, recommandations proactives, feedback loop hebdo. Trajectoire totale : ≈ 1,69 M€.",
+    artefacts:["V3 coach · 598 k€ · point mort 250-350 CEO clients"] }
+];
+
+const V05_HUB = {
+  id:"v05-hub", lane:"hub", period:"juillet", status:"todo",
+  title:"v0.5 fusion — produit unifié", date:"juillet 2026 · 110 k€ · 2,6 ETP", planned:"2026-07-15", actual:null,
+  desc:"Fusion App Web + MVP : une seule UI Twisty branchée sur SQLite + Zod + Service Windows. 10 semaines en 5 phases (Fondation → API+Outlook → Fusion UI → Service+E2E → Polish+Handoff). Voir l'onglet « Plan v0.5 fusion » pour le détail. Évolue ensuite vers V1 cloud-ready (290 k€), V2 multi-tenant (693 k€), V3 coach (598 k€).",
+  artefacts:["unification UI Twisty","SQLite","Zod","Service Windows","OpenAPI","Playwright","MSI installeur"]
 };
 
-function renderNodes() {
-  const container = document.getElementById("nodes-container");
-  // Viewport is 1280×540. Lanes drawn at y=130 (top) and y=410 (bottom). Convert to %.
-  const Y_WEB = (130/540)*100;  // ≈ 24%
-  const Y_MVP = (410/540)*100;  // ≈ 76%
-  const Y_V2  = 50;
-  // Horizontal % corresponds to x=60..820 for web/mvp (60 → 820/1280), v2 x=955..1230
-  MILESTONES.forEach(m => {
-    const el = document.createElement("div");
-    el.className = `node ${m.status}`;
-    el.dataset.id = m.id;
-    el.dataset.lane = m.lane;
-    el.dataset.status = m.status;
-    let leftPct;
-    if (m.lane === "v2") {
-      // map m.x (79..96) across v2 lane in % (955..1230 on 1280 viewport = 74.6%..96%)
-      leftPct = m.x;
-    } else {
-      // web/mvp lane spans x=60..820 in viewBox = 4.7%..64% in px of 1280
-      // but we want to use m.x (0..70) mapped to 5%..64%
-      leftPct = 5 + (m.x * 0.85);
+// ──────────────────────────────────────────────────────────────
+// BASELINE — plan de référence figé pour calcul d'écart
+// On fige ici la version "plan original" au moment de l'atelier
+// 24/04/2026. Toute modification de planned dans MILESTONES
+// au-dessus se traduit en delta vs cette baseline.
+// ──────────────────────────────────────────────────────────────
+
+const BASELINE = {
+  // Capté lors de l'atelier de cohérence S4 (24/04/2026)
+  "v05-hub":              { planned:"2026-07-15", budget_kEUR:110, scope:"Fusion v0.5 unifiée" },
+  "hub-prereq-openapi":   { planned:"2026-05-29", scope:"OpenAPI Phase 2" },
+  "hub-prereq-onboarding-dev": { planned:"2026-05-15", scope:"Onboarding Phase 1" },
+  "hub-prereq-runbook":   { planned:"2026-06-20", scope:"Runbook Phase 4" },
+  "v2-01":                { planned:"2027-06-30", budget_kEUR:290, scope:"V1 cloud-ready" },
+  "v2-02":                { planned:"2028-06-30", budget_kEUR:693, scope:"V2 multi-tenant" },
+  "v2-03":                { planned:"2029-12-31", budget_kEUR:598, scope:"V3 coach" }
+};
+
+// ──────────────────────────────────────────────────────────────
+// JOURNAL — historique des étapes notables et des écarts
+// Type: livraison · décision · écart · dérive · ajout-hors-plan
+// Composant: cockpit · mvp · ds · docs · roadmap · github · hub
+// Source: chemin vers l'artefact ou URL
+// ──────────────────────────────────────────────────────────────
+
+const JOURNAL = [
+  { ts:"2026-04-25", type:"livraison", component:"roadmap", title:"Roadmap v0.4 — onglet Journal & écarts ajouté",
+    detail:"Onglet de tracking d'avancement avec bandeau alerte global, schedule variance chart et feed chronologique. Données BASELINE figées sur l'atelier S4.",
+    delta:0, source:"04_docs/11-roadmap-map.html" },
+  { ts:"2026-04-25", type:"livraison", component:"mvp", title:"Pitch deck investisseur livré (Issue #7)",
+    detail:"16 slides .pptx adapté du deck exec. Closes #7. Sprint externe v0.5 entièrement clos : 6/6 livrables externes.",
+    delta:0, source:"docs/PITCH-DECK-INVESTISSEUR.pptx" },
+  { ts:"2026-04-24", type:"livraison", component:"docs", title:"Atelier de cohérence S1-S8 closé",
+    detail:"8 sessions menées en 1 journée. 7 dissonances critiques résolues. 8 ADRs supplémentaires versées dans DECISIONS.md (total 12 ADRs).",
+    delta:0, source:"04_docs/_atelier-2026-04-coherence/JOURNAL.md" },
+  { ts:"2026-04-24", type:"décision", component:"hub", title:"ADR — Trajectoire produit : local-first → cloud-ready",
+    detail:"Décision S1 : continuité v0.4 → v0.5 verrouillée. Pas de fork. MVP reste en dogfood pendant le sprint v0.5. Migration one-shot SQLite Phase 1.",
+    delta:0, source:"00_BOUSSOLE/DECISIONS.md" },
+  { ts:"2026-04-24", type:"décision", component:"hub", title:"ADR — Timing & budget v0.5 réconciliés",
+    detail:"Décision S4 : 10 semaines · 110 k€ · 2,6 ETP. Tag v0.5 cible juillet 2026. Pré-requis : décision financement + staffing.",
+    delta:0, source:"00_BOUSSOLE/DECISIONS.md" },
+  { ts:"2026-04-24", type:"écart", component:"hub", title:"OpenAPI parqué Phase 2 sprint v0.5",
+    detail:"Atelier S6 : OpenAPI 3.0 hand-written décalé en Phase 2 (sem 3-4 sprint v0.5) au lieu de pré-fusion. Décision pragmatique pour ne pas bloquer le tag v0.5.",
+    delta:0, source:"04_docs/_atelier-2026-04-coherence/sessions/S6-livrables-dev.md" },
+  { ts:"2026-04-24", type:"livraison", component:"docs", title:"Specs fusion rédigées",
+    detail:"SPEC-FONCTIONNELLE-FUSION.md (13 pages cibles, 8 user stories) + SPEC-TECHNIQUE-FUSION.md (schéma SQLite 13 tables, API 40+ endpoints).",
+    delta:0, source:"04_docs/SPEC-FONCTIONNELLE-FUSION.md" },
+  { ts:"2026-04-24", type:"livraison", component:"github", title:"Pipeline GitHub initialisé",
+    detail:"Repo aiCEO créé, 11 issues ouvertes via gh-create-issues.ps1, 6 branches docs/<sujet> commitées (pattern Closes #N).",
+    delta:0, source:"https://github.com/etic-services/aiCEO" },
+  { ts:"2026-04-24", type:"livraison", component:"cockpit", title:"DS aligné MVP (Issue #1)",
+    detail:"12 polices Fira Sans + Aubrielle déployées dans MVP, 6 variables CSS inline migrées vers tokens DS Twisty. Branche ds/wire-mvp-to-ds poussée.",
+    delta:0, source:"03_mvp/public/assets/fonts/" },
+  { ts:"2026-04-24", type:"livraison", component:"mvp", title:"Run réel 24/04 validé",
+    detail:"28/28 tâches classées en 41s · 5,2k tokens in / 2,5k out · ≈1ct/arbitrage. Budget quotidien stable ≈1,5ct.",
+    delta:0, source:"03_mvp/docs/aiCEO-MVP-description-v2.pptx" },
+  { ts:"2026-04-22", type:"livraison", component:"mvp", title:"Import Outlook 30j",
+    detail:"PowerShell COM extrait inbox + envoyés sur 30j. 926 mails utiles sur 3 comptes après normalisation + filtrage bruit.",
+    delta:0, source:"03_mvp/scripts/fetch-outlook.ps1" },
+  { ts:"2026-04-20", type:"livraison", component:"mvp", title:"Boucle du soir + délégation",
+    detail:"Arbitrage matin + débrief soir = boucle complète. Délégation par mailto: vers Outlook.",
+    delta:0, source:"03_mvp/src/evening.js" },
+  { ts:"2026-04-20", type:"livraison", component:"cockpit", title:"Cockpit serenity v4",
+    detail:"5-card layout intention+progression, drawer source-inspector, gamif (streak/badges), end-of-day ritual.",
+    delta:0, source:"aiCEO_Agent/index.html" },
+  { ts:"2026-04-15", type:"livraison", component:"cockpit", title:"Pages complètes v3 + DA Twisty",
+    detail:"Application web cohérente avec DA Twisty (crème + lilas + coral). 7 pages projet structurelles.",
+    delta:0, source:"aiCEO_Agent/" },
+  { ts:"2026-04-11", type:"livraison", component:"mvp", title:"Arbitrage 3/2/N opérationnel",
+    detail:"Premier arbitrage Claude qui classe toutes les tâches : 3 FAIRE max, 2 DÉLÉGUER max, REPORTER absorbe le reste.",
+    delta:0, source:"03_mvp/src/arbitrage.js" },
+  { ts:"2026-04-10", type:"livraison", component:"ds", title:"Design System Twisty v1.0",
+    detail:"Tokens canoniques : palette muted (rose, amber, emerald, sky, violet) + Fira Sans / Aubrielle / Sol Thin self-hosted.",
+    delta:0, source:"02_design-system/tokens.json" },
+  { ts:"2026-04-10", type:"livraison", component:"docs", title:"Doc stratégique BOUSSOLE v1",
+    detail:"Mise en place 00_BOUSSOLE/ : ROADMAP.md, DECISIONS.md, GOUVERNANCE.md, CHANGELOG.md.",
+    delta:0, source:"00_BOUSSOLE/" },
+  { ts:"2026-04-03", type:"livraison", component:"mvp", title:"Scaffold MVP Express + SDK",
+    detail:"Serveur Node/Express port 4747 + SDK Anthropic intégré + mode démo fallback.",
+    delta:0, source:"03_mvp/server.js" },
+  { ts:"2026-03-15", type:"livraison", component:"cockpit", title:"Cockpit Twisty v1 — premier proto",
+    detail:"Squelette pages (index, projets, tâches) en HTML statique pour valider la métaphore UX.",
+    delta:0, source:"aiCEO_Agent/index.html" }
+];
+
+const TYPE_LABEL = { livraison:"Livraison", "décision":"Décision", "écart":"Écart", dérive:"Dérive", "ajout-hors-plan":"Ajout hors plan" };
+const TYPE_COLOR = { livraison:"emerald", "décision":"sky", "écart":"amber", dérive:"rose", "ajout-hors-plan":"violet" };
+
+// ──────────────────────────────────────────────────────────────
+// Helpers
+// ──────────────────────────────────────────────────────────────
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+}
+
+const STATUS_LABEL = { done:"Fait", doing:"En cours", todo:"À faire" };
+const LANE_LABEL = { web:"App Web", mvp:"MVP Node", hub:"Hub v0.5", v2:"V1 → V2 → V3" };
+
+// ──────────────────────────────────────────────────────────────
+// TAB 1 — Render timeline grid
+// ──────────────────────────────────────────────────────────────
+
+function renderTimeline() {
+  const grid = document.getElementById("tl-grid");
+  PERIODS.forEach(p => {
+    if (p.banner) {
+      const row = document.createElement("div");
+      row.className = "tl-hub-row";
+      row.setAttribute("role", "row");
+
+      const period = document.createElement("div");
+      period.className = "tl-period" + (p.now ? " now" : "");
+      period.innerHTML = `<div class="month">${escapeHtml(p.label)}</div><div class="sub">${escapeHtml(p.sub)}</div>`;
+
+      const banner = document.createElement("button");
+      banner.type = "button";
+      banner.className = "tl-hub-banner";
+      banner.dataset.id = V05_HUB.id;
+      banner.dataset.lane = V05_HUB.lane;
+      banner.dataset.status = V05_HUB.status;
+      banner.setAttribute("aria-label", `${V05_HUB.title} — ${V05_HUB.date}`);
+      banner.innerHTML = `
+        <div class="star" aria-hidden="true">v0.5</div>
+        <div>
+          <h3>Hub fusion · produit unifié</h3>
+          <p>App Web + MVP fusionnés en une seule UI branchée sur SQLite + Zod + Service Windows. Cible <strong>juillet 2026</strong>. 10 semaines · 5 phases. Cliquer pour le détail.</p>
+        </div>
+        <div class="stamp">110 k€ · 2,6 ETP</div>
+      `;
+      banner.addEventListener("click", () => selectMilestone(V05_HUB));
+      banner.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectMilestone(V05_HUB); }
+      });
+
+      row.appendChild(period);
+      row.appendChild(banner);
+      grid.appendChild(row);
+      return;
     }
-    const y = m.lane === "web" ? Y_WEB : (m.lane === "mvp" ? Y_MVP : Y_V2);
-    el.style.left = leftPct + "%";
-    el.style.top  = y + "%";
-    el.innerHTML = `
-      <div class="dot" style="background: currentColor;"></div>
-      <div class="m-title">${m.title}</div>
-      <div class="m-date">${m.date}</div>
-    `;
-    el.addEventListener("click", () => selectMilestone(m));
-    container.appendChild(el);
+
+    const row = document.createElement("div");
+    row.className = "tl-row" + (p.now ? " now" : "");
+    row.setAttribute("role", "row");
+
+    const period = document.createElement("div");
+    period.className = "tl-period";
+    period.innerHTML = `<div class="month">${escapeHtml(p.label)}</div><div class="sub">${escapeHtml(p.sub)}</div>${p.now ? '<span class="now-pill">Aujourd\'hui · 25 avr.</span>' : ''}`;
+    row.appendChild(period);
+
+    ["web","mvp","hub","v2"].forEach(lane => {
+      const cell = document.createElement("div");
+      cell.className = "tl-cell";
+      cell.dataset.lane = lane;
+      const events = MILESTONES.filter(m => m.period === p.id && m.lane === lane);
+      if (events.length === 0) {
+        const empty = document.createElement("span");
+        empty.className = "tl-cell-empty";
+        empty.textContent = "—";
+        cell.appendChild(empty);
+      } else {
+        events.forEach(m => {
+          const ev = document.createElement("button");
+          ev.type = "button";
+          ev.className = `tl-event ${m.lane} s-${m.status}`;
+          ev.dataset.id = m.id;
+          ev.dataset.lane = m.lane;
+          ev.dataset.status = m.status;
+          ev.setAttribute("aria-label", `${m.title} — ${m.date} — ${STATUS_LABEL[m.status]}`);
+          ev.innerHTML = `
+            <span class="tle-title">${escapeHtml(m.title)}</span>
+            <span class="tle-date">${escapeHtml(m.date)}</span>
+            <span class="tle-status">${escapeHtml(STATUS_LABEL[m.status])}</span>
+          `;
+          ev.addEventListener("click", () => selectMilestone(m));
+          ev.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectMilestone(m); }
+          });
+          cell.appendChild(ev);
+        });
+      }
+      row.appendChild(cell);
+    });
+
+    grid.appendChild(row);
   });
-  document.getElementById("v1-hub").addEventListener("click", () => selectMilestone(V1_HUB));
+}
+
+function renderArtefacts(arr) {
+  if (!Array.isArray(arr)) arr = [String(arr || "")];
+  return arr.map(a => {
+    const safe = escapeHtml(a);
+    // Heuristique : si ça ressemble à un chemin de fichier/dossier projet
+    const looksLikePath = /^[a-zA-Z0-9_]+[\/\\][^\s]+/.test(a) && !/\s—\s/.test(a);
+    if (looksLikePath) {
+      // Construit un computer:// vers C:\_workarea_local\aiCEO\<path>
+      const cleaned = a.replace(/\s\(.+?\)$/, "").replace(/\\/g, "/");
+      const winPath = "C:\\_workarea_local\\aiCEO\\" + cleaned.replace(/\//g, "\\");
+      return `<a href="computer://${winPath}" class="art-link">${safe}</a>`;
+    }
+    return `<span class="art-item">${safe}</span>`;
+  }).join("");
+}
+
+function computeDelta(m) {
+  // Renvoie {days: number|null, label: string, severity: "ontime"|"early"|"late"|"unknown"}
+  if (!m.planned) return { days:null, label:"—", severity:"unknown" };
+  const baseline = BASELINE[m.id]?.planned || m.planned;
+  if (!m.actual) {
+    // jalon non encore livré → comparer planned au plan baseline si différent (drift de planning)
+    if (baseline === m.planned) return { days:null, label:"planifié", severity:"unknown" };
+    const d = Math.round((new Date(m.planned) - new Date(baseline)) / 86400000);
+    return { days:d, label:(d>0?`+${d}j replanifié`:`${d}j avancé`), severity:(d>0?"late":"early") };
+  }
+  const d = Math.round((new Date(m.actual) - new Date(baseline)) / 86400000);
+  if (d === 0) return { days:0, label:"à l'heure", severity:"ontime" };
+  if (d < 0) return { days:d, label:`avance ${Math.abs(d)}j`, severity:"early" };
+  return { days:d, label:`retard ${d}j`, severity:"late" };
 }
 
 function selectMilestone(m) {
-  document.querySelectorAll(".node.selected").forEach(n => n.classList.remove("selected"));
+  document.querySelectorAll(".tl-event.selected, .tl-hub-banner.selected").forEach(n => n.classList.remove("selected"));
   const el = document.querySelector(`[data-id="${m.id}"]`);
   if (el) el.classList.add("selected");
   const panel = document.getElementById("detail-panel");
-  const laneLabel = { web:"App Web", mvp:"MVP Node", v1:"V1 (hub)", v2:"V2+" }[m.lane];
-  const statusLabel = { done:"Fait", doing:"En cours", todo:"À faire" }[m.status];
+  const delta = computeDelta(m);
+  const sessionsHtml = (m.sessions && m.sessions.length)
+    ? `<div class="sessions-list"><strong>Sessions</strong><ol>${m.sessions.map(s => `<li>${escapeHtml(s)}</li>`).join("")}</ol></div>`
+    : "";
+  const plannedHtml = m.planned
+    ? `<div class="d-plan"><strong>Planifié</strong>${escapeHtml(m.planned)}${m.actual ? ` · livré ${escapeHtml(m.actual)}` : " · non livré"}</div>`
+    : "";
+  const deltaHtml = (delta.severity !== "unknown")
+    ? `<div class="delta-pill delta-${delta.severity}">${escapeHtml(delta.label)}</div>`
+    : "";
   panel.innerHTML = `
     <div class="meta">
-      <span class="lane-badge ${m.lane}">${laneLabel}</span><br>
-      <span class="pill ${m.status}">${statusLabel}</span>
-      <div class="d-date">${m.date}</div>
+      <span class="lane-badge ${m.lane}">${escapeHtml(LANE_LABEL[m.lane])}</span><br>
+      <span class="pill s-${m.status}">${escapeHtml(STATUS_LABEL[m.status])}</span>
+      <div class="d-date">${escapeHtml(m.date)}</div>
+      ${plannedHtml}
+      ${deltaHtml}
     </div>
     <div class="body">
-      <h3>${m.title}</h3>
-      <p>${m.desc}</p>
-      <div class="artefacts"><strong>Artéfacts</strong> · ${m.artefacts}</div>
+      <h3>${escapeHtml(m.title)}</h3>
+      <p>${escapeHtml(m.desc)}</p>
+      ${sessionsHtml}
+      <div class="artefacts"><strong>Artéfacts</strong>${renderArtefacts(m.artefacts)}</div>
+      ${m.id === "v05-hub" ? `<button type="button" class="d-jump-cta" data-jump-tab="fusion-v05" style="margin-top:var(--space-4); padding:10px 18px; border:1px solid var(--rose); background:var(--rose-50); color:var(--rose-800); border-radius:var(--radius-xs); font-family:var(--font-sans); font-weight:var(--fw-semi); font-size:var(--fs-small); cursor:pointer;">Voir le plan détaillé v0.5 →</button>` : ""}
     </div>
   `;
+  // Re-attache le handler jump-tab pour la CTA dynamique
+  panel.querySelectorAll("[data-jump-tab]").forEach(b => {
+    b.addEventListener("click", (e) => {
+      e.preventDefault();
+      activateTab(b.dataset.jumpTab);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
 }
 
 function renderCounters() {
-  const all = MILESTONES.concat([V1_HUB]);
+  const all = MILESTONES.concat([V05_HUB]);
   const stats = { total: all.length, done:0, doing:0, todo:0 };
   all.forEach(m => stats[m.status]++);
   const pct = Math.round((stats.done / stats.total) * 100);
   document.getElementById("counters").innerHTML = `
     <div class="counter"><div class="n">${stats.total}</div><div class="l">Jalons totaux</div></div>
-    <div class="counter done"><div class="n">${stats.done}</div><div class="l">Fait · ${pct}%</div></div>
-    <div class="counter doing"><div class="n">${stats.doing}</div><div class="l">En cours</div></div>
-    <div class="counter todo"><div class="n">${stats.todo}</div><div class="l">À faire</div></div>
+    <div class="counter c-done"><div class="n">${stats.done}</div><div class="l">Fait · ${pct}%</div></div>
+    <div class="counter c-doing"><div class="n">${stats.doing}</div><div class="l">En cours</div></div>
+    <div class="counter c-todo"><div class="n">${stats.todo}</div><div class="l">À faire</div></div>
   `;
+  document.getElementById("progress-pct").textContent = pct + "%";
+  document.getElementById("progress-text").textContent = `${stats.done} / ${stats.total} jalons faits`;
+  document.getElementById("progress-bar").style.width = pct + "%";
 }
+
+// ──────────────────────────────────────────────────────────────
+// Filters (timeline grid)
+// ──────────────────────────────────────────────────────────────
 
 let statusFilter = "all", laneFilter = "all";
 function applyFilters() {
-  document.querySelectorAll(".node").forEach(n => {
+  document.querySelectorAll(".tl-event").forEach(n => {
     const okS = statusFilter === "all" || n.dataset.status === statusFilter;
     const okL = laneFilter === "all" || n.dataset.lane === laneFilter;
     n.classList.toggle("hidden", !(okS && okL));
   });
+  // hub banner
+  const hub = document.querySelector(".tl-hub-banner");
+  if (hub) {
+    const okS = statusFilter === "all" || statusFilter === "todo";
+    const okL = laneFilter === "all" || laneFilter === "hub";
+    hub.style.display = (okS && okL) ? "" : "none";
+  }
 }
 document.querySelectorAll(".filter[data-filter]").forEach(btn => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll(".filter[data-filter]").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
+    document.querySelectorAll(".filter[data-filter]").forEach(b => b.setAttribute("aria-pressed", "false"));
+    btn.setAttribute("aria-pressed", "true");
     statusFilter = btn.dataset.filter;
     applyFilters();
   });
 });
 document.querySelectorAll(".filter[data-lane]").forEach(btn => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll(".filter[data-lane]").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
+    document.querySelectorAll(".filter[data-lane]").forEach(b => b.setAttribute("aria-pressed", "false"));
+    btn.setAttribute("aria-pressed", "true");
     laneFilter = btn.dataset.lane;
     applyFilters();
   });
 });
 
-renderNodes();
+// ──────────────────────────────────────────────────────────────
+// TAB 3 — Release notes data + render
+// ──────────────────────────────────────────────────────────────
+
+const RELEASES = [
+  // ── 25/04/2026 — clôture sprint externe ──
+  {
+    id: "rn-mvp-0-4-final",
+    component: "mvp",
+    version: "v0.4",
+    date: "25 avr. 2026",
+    title: "MVP v0.4 — sprint externe clos · dogfood quotidien",
+    summary: "Clôture du sprint externe : 6 livrables produits commités, 11 issues GitHub ouvertes. MVP v0.4 figé pour dogfood CEO en attendant le go financement v0.5.",
+    changes: [
+      { cat:"feat", items:[
+        "Pattern de production sprint externe validé : 6 branches <code>docs/&lt;sujet&gt;</code> avec <code>Closes #N</code> auto-fermant",
+        "Génération automatisée des 11 issues via <code>gh-create-issues.ps1</code> (fix <code>--jq</code> → <code>ConvertFrom-Json</code>)",
+        "<strong>CHANGELOG.md</strong> clôt avec section sprint externe v0.5 dédiée"
+      ]},
+      { cat:"improve", items:[
+        "Description MVP enrichie : nouveau PPT v2 avec slides perfo + comparatif app statique vs MVP",
+        "Documentation 04_docs alignée avec liens GitHub Issues + SPEC-FUSION"
+      ]}
+    ]
+  },
+  {
+    id: "rn-cockpit-v4-2",
+    component: "cockpit",
+    version: "v4.2",
+    date: "24 avr. 2026",
+    title: "Cockpit Twisty v4.2 — DS aligné sur le MVP",
+    summary: "Issue #1 close. Le MVP partage maintenant les polices et tokens Twisty avec l'app web. Plus aucune divergence visuelle entre <code>aiCEO_Agent/</code> et <code>03_mvp/</code>.",
+    changes: [
+      { cat:"feat", items:[
+        "12 polices Fira Sans (100→900) + Aubrielle Script + Sol Thin déployées dans <code>03_mvp/public/assets/fonts/</code>",
+        "Branche <code>ds/wire-mvp-to-ds</code> poussée sur <code>origin</code> avec injection <code>&lt;link&gt;</code> vers <code>colors_and_type.css</code> dans <code>index.html</code> et <code>evening.html</code>"
+      ]},
+      { cat:"improve", items:[
+        "6 variables CSS inline migrées vers les tokens DS Twisty canoniques (<code>--rose</code>, <code>--amber</code>, <code>--emerald</code>, <code>--violet</code>, <code>--surface</code>, <code>--text</code>)",
+        "Suppression des dégradés résiduels et filets intérieurs sur les pages cockpit"
+      ]}
+    ]
+  },
+  {
+    id: "rn-docs-atelier",
+    component: "docs",
+    version: "Atelier 2026-04",
+    date: "24 avr. 2026",
+    title: "Atelier de cohérence — 7 dissonances résolues",
+    summary: "8 sessions de travail, 7 dissonances critiques résolues, 8 ADRs produites. La documentation produit est désormais cohérente bout en bout.",
+    changes: [
+      { cat:"feat", items:[
+        "<strong>S1</strong> Trajectoire produit local→cloud + continuité v0.4→v0.5 verrouillée",
+        "<strong>S2</strong> Typographie canonique : Fira Sans + Aubrielle + Sol Thin self-hosted",
+        "<strong>S3</strong> Sources de vérité doc identifiées · dossiers orphelins archivés",
+        "<strong>S4</strong> Timing & budget v0.5 réconciliés (10 sem · 110 k€ · 2,6 ETP)",
+        "<strong>S5</strong> Livrables externes (CEO pair, investisseur, client) standardisés",
+        "<strong>S6</strong> Livrables dev (onboarding, OpenAPI, runbook) cadrés",
+        "<strong>S7</strong> Pipeline DS → CSS + process 3 silos formalisé",
+        "<strong>S8</strong> Validation globale + archivage atelier"
+      ]},
+      { cat:"improve", items:[
+        "Refonte <code>00_BOUSSOLE/ROADMAP.md</code>, <code>04_docs/08-roadmap.md</code> et <code>04_docs/06-architecture.md</code>",
+        "12 ADRs au total dans <code>00_BOUSSOLE/DECISIONS.md</code>",
+        "<code>GOUVERNANCE.md</code> patché : statut DS + URL GitHub + projet Claude Design"
+      ]}
+    ]
+  },
+  {
+    id: "rn-mvp-v0-3-9",
+    component: "mvp",
+    version: "v0.3.9",
+    date: "24 avr. 2026",
+    title: "MVP — proxy entreprise + run réel validé",
+    summary: "Le MVP passe Zscaler / proxy d'entreprise et tourne sur les 28 vraies tâches CEO en 41 secondes pour ≈ 1 ct.",
+    changes: [
+      { cat:"feat", items:[
+        "Factory Anthropic avec routing <code>HTTPS_PROXY</code> + <code>NODE_EXTRA_CA_CERTS</code> pour SSL MITM",
+        "Run réel 24/04 sur 28 tâches : 5,2 k tokens in / 2,5 k out · ≈ 1 ct par arbitrage"
+      ]},
+      { cat:"perf", items:[
+        "Latence arbitrage matinal : 41 s sur 28 tâches en mode production",
+        "Budget quotidien stabilisé à ≈ 1,5 ct (matin + soir + ad-hoc)"
+      ]},
+      { cat:"fix", items:[
+        "Patch <code>llm.js</code> pour supporter le <code>HTTPS_PROXY</code> derrière proxy d'entreprise sans MITM échouer"
+      ]}
+    ]
+  },
+  {
+    id: "rn-mvp-v0-3-7",
+    component: "mvp",
+    version: "v0.3.7",
+    date: "23 avr. 2026",
+    title: "MVP — contexte email enrichi dans l'arbitrage",
+    summary: "L'arbitrage matinal voit désormais les signaux email par tâche (relances contact, mails non lus) et adapte ses recommandations.",
+    changes: [
+      { cat:"feat", items:[
+        "Digest global emails injecté dans le prompt système",
+        "Signaux par tâche : <code>relances_contact ≥ 2</code> et <code>non_lus ≥ 3</code> remontent en chip rose dans le cockpit",
+        "Enrichissement du contexte email dans les brouillons de délégation"
+      ]},
+      { cat:"improve", items:[
+        "Inférence projet améliorée : 73 % → cible 30 % d'erreurs",
+        "Prompt brouillon : ton, longueur, placeholders polis"
+      ]},
+      { cat:"fix", items:[
+        "Corrige auto-référence <code>(t2)</code> dans l'arbitrage",
+        "Fix cyberattaque ALEFPA différée trop tard (rebalancement priorités sécurité)",
+        "Volume DIFFÉRER recalibré : 12/20 → cible plus stricte"
+      ]}
+    ]
+  },
+  {
+    id: "rn-mvp-v0-3-5",
+    component: "mvp",
+    version: "v0.3.5",
+    date: "22 avr. 2026",
+    title: "MVP — import Outlook 30 jours",
+    summary: "Récupération de 926 mails utiles sur 3 comptes Outlook après normalisation et filtrage du bruit.",
+    changes: [
+      { cat:"feat", items:[
+        "Script PowerShell COM <code>fetch-outlook.ps1</code> : extraction inbox + envoyés sur 30 jours, 3 comptes",
+        "<code>normalize-emails.js</code> : déduplication, filtrage bruit, normalisation timestamps"
+      ]},
+      { cat:"fix", items:[
+        "Fix corruption JSON OneDrive : lecteur/écrivain robuste au padding NUL (bug récurrent identifié)",
+        "Fix sent folders : 0 mails extraits sur 3 comptes Outlook → cause OAuth + cache COM identifiée"
+      ]}
+    ]
+  },
+  {
+    id: "rn-mvp-v0-3-0",
+    component: "mvp",
+    version: "v0.3.0",
+    date: "20 avr. 2026",
+    title: "MVP — boucle du soir + delegation flow",
+    summary: "Arbitrage matin + débrief soir = boucle complète. Délégation par mailto: jusqu'à Outlook.",
+    changes: [
+      { cat:"feat", items:[
+        "<strong>Boucle du soir</strong> : Fait / Partiel / Pas fait + énergie + humeur, résumé local sans LLM",
+        "<strong>Flux délégation</strong> : brouillon mail Claude + destinataire pré-rempli depuis contact projet, <code>mailto:</code> vers Outlook",
+        "<code>POST /api/delegate</code> + UI modale délégation avec style <code>.hint</code>"
+      ]},
+      { cat:"improve", items:[
+        "Style cockpit aligné avec drag&drop validation 3/2/N"
+      ]}
+    ]
+  },
+  {
+    id: "rn-cockpit-v4",
+    component: "cockpit",
+    version: "v4",
+    date: "20 avr. 2026",
+    title: "Cockpit serenity v4 — layout 5-card + gamif",
+    summary: "Refonte complète du cockpit : intention + progression en 5 cartes, drawer source-inspector, moteur de gamification (streak/badges/encouragements).",
+    changes: [
+      { cat:"feat", items:[
+        "<strong>5-card layout</strong> : Intention du jour, Progression, FAIRE, DÉLÉGUER, REPORTER",
+        "<strong>Drawer source-inspector</strong> côté droit : pour chaque item, un lien <code>↗</code> vers la source (mail, agenda, projet)",
+        "<strong>Moteur gamification</strong> : toast feedback, streak, badges, ritual de fin de journée",
+        "Bibliothèque de messages d'encouragement non infantilisants"
+      ]},
+      { cat:"improve", items:[
+        "Propagation de la simplification aux pages tâches, décisions, groupes, projets, agenda, contacts, assistant, revues",
+        "Refonte agenda hebdo lun-dim · style portlet Twisty propagé app-wide",
+        "Suppression de tous les dégradés et filets intérieurs (aplats pastels)"
+      ]},
+      { cat:"fix", items:[
+        "Fix blob vert géant page revues (week-gauge sans wrapper)",
+        "Fix widget link target=_blank dans <code>revues/index.html</code>"
+      ]}
+    ]
+  },
+  {
+    id: "rn-cockpit-v3",
+    component: "cockpit",
+    version: "v3",
+    date: "15 avr. 2026",
+    title: "Cockpit v3 — pages complètes + DA Twisty",
+    summary: "L'application web devient cohérente avec le DA Twisty (crème + lilas + coral) et 7 pages projet structurelles.",
+    changes: [
+      { cat:"feat", items:[
+        "Application de la <strong>DA Twisty</strong> : thème crème + lilas + coral",
+        "Refactor <code>app.js</code> : CRUD complet + quick-add + groupes + IA",
+        "Pages cockpit : <code>index.html</code>, <code>taches.html</code>, <code>assistant.html</code>, <code>groupes.html</code>",
+        "Pages projet différenciées par groupe",
+        "Vue matrice Eisenhower 2×2 dans <code>taches.html</code>"
+      ]},
+      { cat:"improve", items:[
+        "CSS responsive + sidebar mobile collapsible",
+        "Command palette ⌘K global",
+        "Toast de feedback sur toggle tâche",
+        "Polish UX : a11y, typo, focus, empty states"
+      ]}
+    ]
+  },
+  {
+    id: "rn-mvp-v0-2",
+    component: "mvp",
+    version: "v0.2",
+    date: "15 avr. 2026",
+    title: "MVP v0.2 — drag & drop + validation",
+    summary: "Le CEO peut reshuffler les 3 colonnes (FAIRE/DÉLÉGUER/REPORTER) avant figeage. Première vraie boucle décisionnelle.",
+    changes: [
+      { cat:"feat", items:[
+        "Drag & drop entre les 3 colonnes d'arbitrage",
+        "Validation manuelle avant figeage dans <code>data/decisions.json</code>",
+        "Mode démo sans clé API pour onboarding"
+      ]}
+    ]
+  },
+  {
+    id: "rn-mvp-v0-1",
+    component: "mvp",
+    version: "v0.1",
+    date: "11 avr. 2026",
+    title: "MVP v0.1 — arbitrage 3/2/N opérationnel",
+    summary: "Premier arbitrage Claude qui classe toutes les tâches en 3 FAIRE max + 2 DÉLÉGUER max + REPORTER (jamais de tâche perdue).",
+    changes: [
+      { cat:"feat", items:[
+        "Scaffold Express sur port 4747 + SDK Anthropic intégré",
+        "Prompt système d'arbitrage 3/2/N · wrapper Claude API",
+        "Endpoints <code>POST /api/arbitrage</code> et <code>POST /api/decide</code>",
+        "UI arbitrage matinal · 3 colonnes · drag & drop · validation",
+        "Test end-to-end + mode démo sans clé API"
+      ]},
+      { cat:"breaking", items:[
+        "Première version opérationnelle du MVP — pas de version antérieure"
+      ]}
+    ]
+  },
+  {
+    id: "rn-cockpit-v2",
+    component: "cockpit",
+    version: "v2",
+    date: "10 avr. 2026",
+    title: "Cockpit v2 — Design System v1",
+    summary: "Tokens Twisty stabilisés (couleurs, typo, espacements) avec Fira Sans + Aubrielle + Sol Thin self-hosted.",
+    changes: [
+      { cat:"feat", items:[
+        "Tokens Twisty v1 : palette rose/amber/emerald/sky/violet + neutrals canoniques",
+        "Fira Sans (100→900) + Aubrielle Script + Sol Thin self-hosted",
+        "<code>02_design-system/colors_and_type.css</code> exporté comme source canonique",
+        "5 journey maps documentées : arbitrage, délégation, debrief, revue hebdo, apprentissage"
+      ]}
+    ]
+  },
+  {
+    id: "rn-ds-v1",
+    component: "ds",
+    version: "v1.0",
+    date: "10 avr. 2026",
+    title: "Design System Twisty v1.0 — canonique",
+    summary: "Première version canonique du DS : tokens, typographie, espacements, ombres, focus rings — tout ce qui pilote le visual de l'app web et bientôt du MVP.",
+    changes: [
+      { cat:"feat", items:[
+        "Palette canonique muted : <code>--rose #d96d3e</code>, <code>--amber #b88237</code>, <code>--emerald #3d7363</code>, <code>--sky #7790ae</code>, <code>--violet #7a6a8a</code> avec variantes -50 / -800",
+        "Neutrals : <code>--bg #a9adbe</code>, <code>--surface #f5f3ef</code>, <code>--text #111418</code>",
+        "Typographie : <code>--font-sans</code> (Fira Sans), <code>--font-script</code> (Aubrielle 36px+), <code>--font-thin</code> (Sol Thin 28px+), <code>--font-mono</code>",
+        "Tokens espacements <code>--space-1</code> (4px) → <code>--space-10</code> (40px), rayons <code>--radius-xs/sm/md</code>, ombres <code>--shadow-xs/sm/md/app</code>",
+        "Focus visible standard via <code>--ring</code>"
+      ]}
+    ]
+  },
+  {
+    id: "rn-cockpit-v1",
+    component: "cockpit",
+    version: "v1",
+    date: "15 mars 2026",
+    title: "Cockpit Twisty v1 — premier proto",
+    summary: "Première version du cockpit. Squelette des pages (index, projets, tâches) en HTML statique pour valider la métaphore UX.",
+    changes: [
+      { cat:"feat", items:[
+        "<code>aiCEO_Agent/index.html</code> : page d'accueil avec navigation latérale",
+        "<code>projets.html</code> et <code>taches.html</code> : coquilles initiales",
+        "Première itération de l'expérience utilisateur cockpit"
+      ]},
+      { cat:"breaking", items:[
+        "Première version — pas d'antériorité"
+      ]}
+    ]
+  },
+  {
+    id: "rn-roadmap-v0-4",
+    component: "roadmap",
+    version: "v0.4",
+    date: "25 avr. 2026",
+    title: "Roadmap interactive v0.4 — timeline grid + release notes",
+    summary: "Refonte complète du diagramme de convergence en grille temporelle (zéro chevauchement par construction) et ajout de l'onglet release notes.",
+    changes: [
+      { cat:"feat", items:[
+        "<strong>Timeline grid</strong> : axes périodes × lanes en CSS Grid · empilage en flexbox dans chaque cellule",
+        "<strong>Onglet Release notes</strong> inspiré de Passwork : versions horodatées, catégories (Nouveautés/Améliorations/Correctifs/Performance/Breaking), composants taggés, recherche libre",
+        "Index sticky des versions à droite · navigation au clavier"
+      ]},
+      { cat:"fix", items:[
+        "Plus aucun chevauchement de cards : la grille empêche structurellement la collision (chaque cellule empile en flexbox column)",
+        "Suppression du <code>min-width: 1280px</code> qui forçait scroll horizontal · responsive 1180/900/720 ajouté"
+      ]},
+      { cat:"improve", items:[
+        "Marqueur \"Aujourd'hui\" intégré dans la grille (rangée surlignée rose-50 + pill animé)",
+        "Trajectoire post-fusion clarifiée : V1 cloud-ready (2027 · 290 k€), V2 multi-tenant (2028 · 693 k€), V3 coach (2029-2030 · 598 k€)"
+      ]}
+    ]
+  },
+  {
+    id: "rn-roadmap-v0-3",
+    component: "roadmap",
+    version: "v0.3",
+    date: "24 avr. 2026",
+    title: "Roadmap v0.3 — alignement DS Twisty",
+    summary: "Branchement sur le CSS canonique, palette + typo + tokens de la DS. Refonte du HTML interactif avec onglets et accessibilité.",
+    changes: [
+      { cat:"feat", items:[
+        "Branchement direct sur <code>colors_and_type.css</code> via <code>&lt;link&gt;</code> — plus de palette en dur",
+        "Onglets Carte de convergence + Plan v0.5 fusion · ARIA <code>role=\"tab\"</code> + nav clavier ←/→",
+        "Marqueur \"Aujourd'hui\" sur la timeline · bandeau de progression dans le header"
+      ]},
+      { cat:"improve", items:[
+        "Toutes les couleurs migrées vers les variables DS (<code>var(--rose)</code>, <code>var(--emerald)</code>, etc.)",
+        "Typographie via <code>var(--font-sans)</code>, <code>var(--font-script)</code>, <code>var(--font-thin)</code>",
+        "Ajout du jalon manquant <code>web-07</code> (Atelier de cohérence)"
+      ]},
+      { cat:"breaking", items:[
+        "Suppression de l'ancienne palette inline (plum/coral/lilac/gold) — toutes les surcharges locales doivent passer par les tokens DS"
+      ]}
+    ]
+  },
+  {
+    id: "rn-roadmap-v0-2",
+    component: "roadmap",
+    version: "v0.2",
+    date: "20 avr. 2026",
+    title: "Roadmap v0.2 — version interactive HTML",
+    summary: "Premier passage en HTML interactif avec timeline SVG, nodes filtrables, panneau de détail.",
+    changes: [
+      { cat:"feat", items:[
+        "Timeline SVG avec deux voies (web + MVP) qui convergent vers le hub v1",
+        "Nodes cliquables avec panneau de détail latéral",
+        "Filtres statut (fait/en cours/à faire) et branche (web/mvp/v2)"
+      ]}
+    ]
+  },
+  {
+    id: "rn-github-init",
+    component: "github",
+    version: "init",
+    date: "24 avr. 2026",
+    title: "Pipeline GitHub — repo initialisé",
+    summary: "Repo GitHub privé créé, 11 issues ouvertes, 6 branches docs/<sujet> commitées avec pattern <code>Closes #N</code>.",
+    changes: [
+      { cat:"feat", items:[
+        "Repo GitHub privé créé avec README + SPEC-FONCTIONNELLE-FUSION + SPEC-TECHNIQUE-FUSION",
+        "11 issues ouvertes via script <code>gh-create-issues.ps1</code>",
+        "6 branches <code>docs/&lt;sujet&gt;</code> commitées (benchmark, pitch, business case, onboarding, lettre intro, pitch deck)",
+        "Branche <code>chore/changelog-sprint-externe</code> avec section sprint externe v0.5"
+      ]},
+      { cat:"fix", items:[
+        "Fix script PowerShell : <code>--jq</code> remplacé par <code>ConvertFrom-Json</code> (compat Windows)"
+      ]}
+    ]
+  },
+  {
+    id: "rn-docs-v0-1",
+    component: "docs",
+    version: "v0.1",
+    date: "10 avr. 2026",
+    title: "Documentation produit — Boussole + roadmap",
+    summary: "Mise en place de la structure documentaire <code>00_BOUSSOLE/</code> + <code>04_docs/</code> avec ROADMAP, DECISIONS, GOUVERNANCE, CHANGELOG.",
+    changes: [
+      { cat:"feat", items:[
+        "<code>00_BOUSSOLE/ROADMAP.md</code> · <code>DECISIONS.md</code> · <code>GOUVERNANCE.md</code> · <code>CHANGELOG.md</code>",
+        "<code>04_docs/00-README.md</code> + 8 docs de référence (architecture, design system, roadmap, journeys)",
+        "Structure de dossier unifiée aiCEO_Agent + aiCEO_Design_System"
+      ]}
+    ]
+  }
+];
+
+const CAT_LABEL = { feat:"Nouveautés", improve:"Améliorations", fix:"Correctifs", perf:"Performance", breaking:"Breaking changes" };
+
+function renderReleases() {
+  const feed = document.getElementById("rn-feed");
+  const toc = document.getElementById("rn-toc");
+  feed.innerHTML = "";
+  toc.innerHTML = "";
+
+  const tocList = document.createElement("ol");
+  toc.appendChild(tocList);
+
+  RELEASES.forEach(r => {
+    // Carte version
+    const art = document.createElement("article");
+    art.className = "rn-version";
+    art.id = r.id;
+    art.dataset.component = r.component;
+    art.dataset.cats = r.changes.map(c => c.cat).join(",");
+    const haystack = (r.title + " " + r.summary + " " + r.changes.flatMap(c => c.items).join(" ")).toLowerCase();
+    art.dataset.text = haystack;
+
+    const head = document.createElement("div");
+    head.className = "rn-version-head";
+    head.innerHTML = `
+      <div>
+        <span class="date">${escapeHtml(r.date)}</span>
+        <h3>${escapeHtml(r.title)}</h3>
+      </div>
+      <span class="v-tag ${r.component}">${escapeHtml(componentLabel(r.component))} ${escapeHtml(r.version)}</span>
+    `;
+    art.appendChild(head);
+
+    if (r.summary) {
+      const sum = document.createElement("p");
+      sum.className = "rn-summary";
+      sum.innerHTML = r.summary;
+      art.appendChild(sum);
+    }
+
+    const changes = document.createElement("div");
+    changes.className = "rn-changes";
+    r.changes.forEach(c => {
+      const cat = document.createElement("section");
+      cat.className = `rn-cat ${c.cat}`;
+      cat.dataset.cat = c.cat;
+      const ul = c.items.map(i => `<li>${i}</li>`).join("");
+      cat.innerHTML = `<h4 class="rn-cat-title">${escapeHtml(CAT_LABEL[c.cat] || c.cat)}</h4><ul>${ul}</ul>`;
+      changes.appendChild(cat);
+    });
+    art.appendChild(changes);
+
+    feed.appendChild(art);
+
+    // TOC entry
+    const li = document.createElement("li");
+    li.innerHTML = `<a href="#${r.id}" data-target="${r.id}">${escapeHtml(componentLabel(r.component))} ${escapeHtml(r.version)} <span class="tag">${escapeHtml(r.date)}</span></a>`;
+    tocList.appendChild(li);
+  });
+
+  // smooth scroll TOC
+  document.querySelectorAll(".rn-aside .toc a").forEach(a => {
+    a.addEventListener("click", (e) => {
+      e.preventDefault();
+      const target = document.getElementById(a.dataset.target);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        document.querySelectorAll(".rn-aside .toc a").forEach(x => x.classList.remove("current"));
+        a.classList.add("current");
+      }
+    });
+  });
+}
+
+function componentLabel(c) {
+  return ({ cockpit:"Cockpit", mvp:"MVP", ds:"DS Twisty", docs:"Docs", roadmap:"Roadmap", github:"GitHub" })[c] || c;
+}
+
+// Filtres release notes
+let rnComp = "all", rnCat = "all", rnQuery = "";
+
+function applyRnFilters() {
+  let visibleCount = 0;
+  document.querySelectorAll(".rn-version").forEach(v => {
+    const okC = rnComp === "all" || v.dataset.component === rnComp;
+    const cats = (v.dataset.cats || "").split(",");
+    const okCat = rnCat === "all" || cats.includes(rnCat);
+    const okQ = !rnQuery || (v.dataset.text || "").includes(rnQuery);
+    const show = okC && okCat && okQ;
+    v.classList.toggle("hidden", !show);
+
+    // Filter categories within version
+    v.querySelectorAll(".rn-cat").forEach(c => {
+      if (rnCat === "all") {
+        c.style.display = "";
+      } else {
+        c.style.display = c.dataset.cat === rnCat ? "" : "none";
+      }
+    });
+
+    if (show) visibleCount++;
+  });
+
+  // Sync TOC visibility
+  document.querySelectorAll(".rn-aside .toc li").forEach(li => {
+    const a = li.querySelector("a");
+    if (!a) return;
+    const v = document.getElementById(a.dataset.target);
+    li.style.display = (v && !v.classList.contains("hidden")) ? "" : "none";
+  });
+
+  // Empty state
+  const feed = document.getElementById("rn-feed");
+  let empty = feed.querySelector(".rn-no-results");
+  if (visibleCount === 0) {
+    if (!empty) {
+      empty = document.createElement("div");
+      empty.className = "rn-no-results";
+      empty.textContent = "Aucune version ne correspond à ces filtres.";
+      feed.appendChild(empty);
+    }
+  } else if (empty) {
+    empty.remove();
+  }
+}
+
+document.querySelectorAll(".rn-flt-comp").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".rn-flt-comp").forEach(b => b.setAttribute("aria-pressed", "false"));
+    btn.setAttribute("aria-pressed", "true");
+    rnComp = btn.dataset.comp;
+    applyRnFilters();
+  });
+});
+document.querySelectorAll(".rn-flt-cat").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".rn-flt-cat").forEach(b => b.setAttribute("aria-pressed", "false"));
+    btn.setAttribute("aria-pressed", "true");
+    rnCat = btn.dataset.cat;
+    applyRnFilters();
+  });
+});
+
+// ──────────────────────────────────────────────────────────────
+// Tab switching + jump links
+// ──────────────────────────────────────────────────────────────
+
+function activateTab(tabId) {
+  document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", "false"));
+  document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+  const btn = document.getElementById("tab-btn-" + tabId);
+  const pane = document.getElementById("tab-" + tabId);
+  if (btn && pane) {
+    btn.setAttribute("aria-selected", "true");
+    pane.classList.add("active");
+  }
+}
+
+document.querySelectorAll(".tab").forEach(btn => {
+  btn.addEventListener("click", () => activateTab(btn.dataset.tab));
+  btn.addEventListener("keydown", (e) => {
+    const tabs = Array.from(document.querySelectorAll(".tab"));
+    const idx = tabs.indexOf(btn);
+    if (e.key === "ArrowRight") { e.preventDefault(); tabs[(idx+1)%tabs.length].focus(); tabs[(idx+1)%tabs.length].click(); }
+    if (e.key === "ArrowLeft")  { e.preventDefault(); tabs[(idx-1+tabs.length)%tabs.length].focus(); tabs[(idx-1+tabs.length)%tabs.length].click(); }
+  });
+});
+
+document.querySelectorAll("[data-jump-tab]").forEach(a => {
+  a.addEventListener("click", (e) => {
+    e.preventDefault();
+    activateTab(a.dataset.jumpTab);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+});
+
+// Search input
+document.getElementById("rn-search").addEventListener("input", (e) => {
+  rnQuery = (e.target.value || "").toLowerCase().trim();
+  applyRnFilters();
+});
+
+// ──────────────────────────────────────────────────────────────
+// TAB 4 — Journal & écarts
+// ──────────────────────────────────────────────────────────────
+
+// Liste des jalons critiques surveillés (présents dans BASELINE)
+function trackedMilestones() {
+  // V05_HUB est piloté à part car il n'est pas dans MILESTONES
+  const baselineKeys = Object.keys(BASELINE);
+  const all = [V05_HUB, ...MILESTONES];
+  return all.filter(m => baselineKeys.includes(m.id));
+}
+
+function formatDateFR(iso) {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  if (isNaN(d)) return iso;
+  return d.toLocaleDateString("fr-FR", { day:"2-digit", month:"short", year:"numeric" });
+}
+
+function renderKPIs() {
+  const container = document.getElementById("j-kpis");
+  if (!container) return;
+
+  const tracked = trackedMilestones();
+  const drifts = tracked.map(m => ({ id:m.id, delta:computeDelta(m) }));
+  const ontime = drifts.filter(d => d.delta.severity === "ontime").length;
+  const early  = drifts.filter(d => d.delta.severity === "early").length;
+  const late   = drifts.filter(d => d.delta.severity === "late").length;
+  const critical = drifts.filter(d => d.delta.severity === "late" && d.delta.days > 3).length;
+  const totalDone = MILESTONES.filter(m => m.status === "done").length;
+  const totalAll  = MILESTONES.length;
+
+  const kpis = [
+    { label:"Jalons livrés",     value:`${totalDone}/${totalAll}`, sub:"périmètre carte de convergence", cls:"k-ok" },
+    { label:"À l'heure",          value:String(ontime),  sub:"vs baseline atelier S4",                 cls: ontime > 0 ? "k-ok" : "k-watch" },
+    { label:"En avance",          value:String(early),   sub:"jalons livrés avant date planifiée",     cls:"k-ok" },
+    { label:"En dérive > 3j",     value:String(critical),sub: critical === 0 ? "rien à signaler" : "alerte active", cls: critical > 0 ? "k-warn" : (late > 0 ? "k-watch" : "k-ok") }
+  ];
+
+  container.innerHTML = kpis.map(k =>
+    `<div class="j-kpi ${k.cls}">
+       <span class="label">${escapeHtml(k.label)}</span>
+       <span class="value">${escapeHtml(k.value)}</span>
+       <span class="sub">${escapeHtml(k.sub)}</span>
+     </div>`
+  ).join("");
+}
+
+function renderVarianceChart() {
+  const container = document.getElementById("variance-bars");
+  if (!container) return;
+
+  const tracked = trackedMilestones();
+  // Échelle : ±30 jours autour de la baseline
+  const SCALE = 30;
+  const html = tracked.map(m => {
+    const delta = computeDelta(m);
+    const days = delta.days;
+    const baseline = BASELINE[m.id];
+    const subLabel = `BASELINE ${formatDateFR(baseline.planned)}${baseline.budget_kEUR ? ` · ${baseline.budget_kEUR} k€` : ""}`;
+    const sev = delta.severity;
+    let leftPct = 50;
+    let widthPct = 1;
+    if (days != null && !isNaN(days)) {
+      const clamped = Math.max(-SCALE, Math.min(SCALE, days));
+      if (clamped >= 0) {
+        leftPct = 50;
+        widthPct = (clamped / SCALE) * 50 || 1;
+      } else {
+        widthPct = (Math.abs(clamped) / SCALE) * 50 || 1;
+        leftPct = 50 - widthPct;
+      }
+    }
+    return `
+      <div class="vbar-row" data-mid="${escapeHtml(m.id)}">
+        <div class="vbar-label">${escapeHtml(m.title)}<small>${escapeHtml(subLabel)}</small></div>
+        <div class="vbar-track" title="${escapeHtml(delta.label)}">
+          <span class="vbar-fill ${escapeHtml(sev)}" style="left:${leftPct.toFixed(1)}%; width:${widthPct.toFixed(1)}%;"></span>
+        </div>
+        <div class="vbar-value ${escapeHtml(sev)}">${escapeHtml(delta.label)}</div>
+      </div>`;
+  }).join("");
+
+  container.innerHTML = html || `<p style="color:var(--text-3); font-size:var(--fs-small);">Aucun jalon suivi dans la BASELINE.</p>`;
+}
+
+let jFilter = "all";
+function renderJournalFeed() {
+  const container = document.getElementById("j-feed");
+  if (!container) return;
+
+  // Tri chronologique décroissant
+  const filtered = JOURNAL
+    .filter(e => jFilter === "all" || e.type === jFilter)
+    .slice()
+    .sort((a, b) => (a.ts < b.ts ? 1 : -1));
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<p style="color:var(--text-3); font-size:var(--fs-small); padding: var(--space-4);">Aucun événement pour ce filtre.</p>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(e => {
+    const tagColor = TYPE_COLOR[e.type] || "sky";
+    const tagLabel = TYPE_LABEL[e.type] || e.type;
+    const compLabel = (typeof componentLabel === "function") ? componentLabel(e.component) : e.component;
+    const deltaTag = (e.delta && e.delta !== 0)
+      ? `<span class="tag t-${e.delta > 0 ? "rose" : "sky"}">${e.delta > 0 ? "+" : ""}${e.delta}j</span>`
+      : "";
+    const srcLink = e.source ? renderJournalSource(e.source) : "";
+
+    return `
+      <article class="j-card s-${escapeHtml(e.type)}">
+        <span class="when">${escapeHtml(formatDateFR(e.ts))}</span>
+        <div class="body">
+          <h4>${escapeHtml(e.title)}</h4>
+          <p>${escapeHtml(e.detail || "")}</p>
+          <div class="tags">
+            <span class="tag t-${escapeHtml(tagColor)}">${escapeHtml(tagLabel)}</span>
+            <span class="tag t-${escapeHtml(componentTagColor(e.component))}">${escapeHtml(compLabel)}</span>
+            ${deltaTag}
+          </div>
+          ${srcLink}
+        </div>
+      </article>`;
+  }).join("");
+}
+
+function componentTagColor(c) {
+  return ({ cockpit:"violet", mvp:"rose", ds:"amber", docs:"emerald", roadmap:"sky", github:"sky", hub:"amber" }[c]) || "sky";
+}
+
+function renderJournalSource(s) {
+  if (!s) return "";
+  const safe = escapeHtml(s);
+  const looksLikePath = /^[a-zA-Z0-9_]+[\/\\][^\s]+/.test(s) && !/\s—\s/.test(s);
+  if (looksLikePath) {
+    const cleaned = s.replace(/\s\(.+?\)$/, "").replace(/\\/g, "/");
+    const winPath = "C:\\_workarea_local\\aiCEO\\" + cleaned.replace(/\//g, "\\");
+    return `<a class="src" href="computer://${winPath}">↗ ${safe}</a>`;
+  }
+  return `<span class="src" style="color:var(--text-3);">${safe}</span>`;
+}
+
+function renderAlertBanner() {
+  const banner = document.getElementById("alert-banner");
+  if (!banner) return;
+
+  const tracked = trackedMilestones();
+  const drifts = tracked.map(m => ({ id:m.id, title:m.title, delta:computeDelta(m) }));
+  const critical = drifts.filter(d => d.delta.severity === "late" && d.delta.days > 3);
+  const watch    = drifts.filter(d => d.delta.severity === "late" && d.delta.days > 0 && d.delta.days <= 3);
+  const ontime   = drifts.filter(d => d.delta.severity === "ontime").length;
+
+  banner.classList.remove("lvl-ok", "lvl-watch", "lvl-warn");
+
+  let level, title, detail, icon;
+  if (critical.length > 0) {
+    level = "lvl-warn";
+    icon = "!";
+    title = `${critical.length} jalon${critical.length > 1 ? "s" : ""} en dérive critique`;
+    detail = critical.map(c => `<strong>${escapeHtml(c.title)}</strong> (${escapeHtml(c.delta.label)})`).join(" · ");
+  } else if (watch.length > 0) {
+    level = "lvl-watch";
+    icon = "~";
+    title = `${watch.length} jalon${watch.length > 1 ? "s" : ""} à surveiller`;
+    detail = watch.map(c => `<strong>${escapeHtml(c.title)}</strong> (${escapeHtml(c.delta.label)})`).join(" · ");
+  } else {
+    level = "lvl-ok";
+    icon = "✓";
+    title = "Tout est aligné sur la BASELINE";
+    detail = `${ontime} jalon${ontime > 1 ? "s" : ""} à l'heure · BASELINE figée le 24/04/2026 (atelier S4) · prochain jalon : <strong>onboarding dev — 15 mai 2026</strong>`;
+  }
+
+  banner.classList.add(level);
+  banner.querySelector(".icon").textContent = icon;
+  document.getElementById("alert-title").textContent = title;
+  document.getElementById("alert-detail").innerHTML = detail;
+  banner.hidden = false;
+
+  // Mise à jour du badge sur l'onglet Journal
+  const badge = document.getElementById("journal-badge");
+  if (badge) {
+    if (critical.length > 0) { badge.textContent = `⚠ ${critical.length}`; badge.style.background = "var(--rose-50)"; badge.style.color = "var(--rose-800)"; }
+    else if (watch.length > 0) { badge.textContent = `~ ${watch.length}`; badge.style.background = "var(--amber-50)"; badge.style.color = "var(--amber-800)"; }
+    else { badge.textContent = "OK"; badge.style.background = "var(--emerald-50)"; badge.style.color = "var(--emerald-800)"; }
+  }
+}
+
+function updateHeaderDate() {
+  const versionEl = document.querySelector(".page-header .version");
+  if (!versionEl) return;
+  const today = new Date();
+  const dd = String(today.getDate()).padStart(2, "0");
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const yyyy = today.getFullYear();
+  // Conserve la version en cours (lue depuis le markup) et met à jour la date
+  const match = versionEl.textContent.match(/^(v[\d.]+)/);
+  const version = match ? match[1] : "v0.4";
+  versionEl.textContent = `${version} · ${dd}/${mm}/${yyyy}`;
+}
+
+// Filtres journal
+document.querySelectorAll(".j-flt").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".j-flt").forEach(b => b.setAttribute("aria-pressed", "false"));
+    btn.setAttribute("aria-pressed", "true");
+    jFilter = btn.dataset.jtype;
+    renderJournalFeed();
+  });
+});
+
+// CTA bandeau alerte → bascule onglet journal
+document.getElementById("alert-cta").addEventListener("click", () => {
+  activateTab("journal");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+// Init Mermaid (3 blocs ciblés)
+function initMermaid() {
+  if (typeof mermaid === "undefined") return;
+  try {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: "base",
+      fontFamily: "Fira Sans, system-ui, sans-serif",
+      themeVariables: {
+        primaryColor: "#fff",
+        primaryTextColor: "#324054",
+        primaryBorderColor: "#7790ae",
+        lineColor: "#7790ae",
+        secondaryColor: "#f5e9d8",
+        tertiaryColor: "#fff"
+      }
+    });
+    mermaid.run({ querySelector: ".mermaid" });
+  } catch (e) {
+    console.warn("Mermaid init failed:", e);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
+// Init
+// ──────────────────────────────────────────────────────────────
+
+renderTimeline();
 renderCounters();
-selectMilestone(MILESTONES.find(m => m.id === "mvp-09"));
+renderReleases();
+// Sélection initiale : dernier jalon en date (mvp-10f = pitch deck investisseur)
+selectMilestone(MILESTONES.find(m => m.id === "mvp-10f") || MILESTONES[0]);
+
+// Tab 4 — Journal & écarts
+updateHeaderDate();
+renderKPIs();
+renderVarianceChart();
+renderJournalFeed();
+renderAlertBanner();
+
+// Mermaid : on laisse le DOM se peindre puis on initialise
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initMermaid);
+} else {
+  setTimeout(initMermaid, 50);
+}
 </script>
 </body>
 </html>
