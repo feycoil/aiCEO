@@ -1958,7 +1958,7 @@ const RELEASES = [
   // ── 25/04/2026 — Sprint S2 livré (branche release/v0.5-s2) ──
   {
     id: "rn-mvp-0-5-s2",
-    gh: { milestone:"v0.5-s2", branch:"release/v0.5-s2", pr:111, issues:[101,102,103,104,105,106,107,108,109,110] },
+    gh: { milestone:"v0.5-s2", tag:"v0.5-s2", branch:"release/v0.5-s2", pr:111, issues:[101,102,103,104,105,106,107,108,109,110] },
     component: "mvp",
     version: "v0.5-s2",
     date: "25 avr. 2026",
@@ -1981,6 +1981,34 @@ const RELEASES = [
       { cat:"perf", items:[
         "<strong>55/55 tests verts</strong> : 49 unitaires + 6 intégration HTTP-boundary (Playwright sandboxé reporté S3+)",
         "Time-box spike SSE respecté : 1,5 j sur 3 j alloués · gain réinvesti en doc API + e2e"
+      ]}
+    ]
+  },
+  // ── 25/04/2026 — Audit cohérence GitHub ↔ roadmap ──
+  {
+    id: "rn-audit-2026-04-25",
+    gh: { branch:"main" },
+    component: "github",
+    version: "audit-2026-04-25",
+    date: "25 avr. 2026",
+    title: "Audit cohérence GitHub ↔ roadmap — 5 divergences résolues",
+    summary: "Première passe de l'audit récurrent <code>check_consistence_versions()</code> : snapshot complet de l'état GitHub (132 issues, 8 milestones, 70 labels) et résolution des 5 divergences détectées entre le repo et la roadmap. Process désormais industrialisable et reproductible.",
+    changes: [
+      { cat:"feat", items:[
+        "Script <code>04_docs/_audit-2026-04-25/consistence-dump.ps1</code> — snapshot GitHub via <code>gh api</code> + <code>ConvertTo-Json -Depth 8</code>",
+        "Script <code>04_docs/_audit-2026-04-25/scripts/gh-cleanup-coherence-v1.ps1</code> — patch idempotent des 5 divergences (S3 dups close, milestones manquants, S2 issues auto-fermées, métadonnées PR)",
+        "Snapshot <code>github-state.json</code> committé pour exploitation par le widget roadmap (résolution issue/PR/milestone)"
+      ]},
+      { cat:"fix", items:[
+        "<strong>5 divergences résolues</strong> : duplications S3 fermées (raison <em>not_planned</em>), milestones <code>v0.5-s1</code>/<code>v0.5-s2</code> créés rétrospectivement, 10 issues S2 auto-fermées via <code>Closes #N</code> dans PR #111 mergée, métadonnées PR #112 complétées (labels, milestone, assignee)",
+        "Détection auto interpréteur PowerShell (PS5 vs PS7+) dans cleanup script — compatibilité poste CEO sans <code>pwsh</code>"
+      ]},
+      { cat:"improve", items:[
+        "<code>CONVENTIONS-SCRIPTS.md</code> enrichi : pièges #5 (BOM UTF-8 obligatoire pour PS5) et #6 (échappement heredoc)",
+        "Process <code>check_consistence_versions()</code> documenté et reproductible — relancer après chaque sprint"
+      ]},
+      { cat:"perf", items:[
+        "Dette technique identifiée : bug truncature <code>ConvertTo-Json -Depth 8</code> sur le dump GitHub (sortie tronquée mid-PR-#112) — non bloquant, à corriger avant prochain dump"
       ]}
     ]
   },
@@ -2017,7 +2045,7 @@ const RELEASES = [
   // ── 25/04/2026 — clôture sprint externe ──
   {
     id: "rn-mvp-0-4-final",
-    gh: { milestone:"sprint-externe-v0.5" },
+    gh: { milestone:"sprint-externe-v0.5", tag:"v0.4" },
     component: "mvp",
     version: "v0.4",
     date: "25 avr. 2026",
@@ -2291,6 +2319,25 @@ const RELEASES = [
       ]},
       { cat:"breaking", items:[
         "Première version — pas d'antériorité"
+      ]}
+    ]
+  },
+  {
+    id: "rn-mvp-v0",
+    component: "mvp",
+    version: "v0",
+    date: "3 avr. 2026",
+    title: "MVP scaffold — Express + SDK Anthropic",
+    summary: "Premier squelette technique du MVP : serveur Node/Express sur le port 4747, intégration SDK Anthropic, mode démo fallback sans clé API. Point de départ qui débloquera l'arbitrage 3/2/N (v0.1) une semaine plus tard.",
+    changes: [
+      { cat:"feat", items:[
+        "Serveur <code>03_mvp/server.js</code> Node/Express port 4747",
+        "Intégration <code>@anthropic-ai/sdk</code> + wrapper appel LLM",
+        "Mode démo fallback : pas de clé → fixtures locales pour développer offline",
+        "<code>package.json</code> + <code>README.md</code> + structure dossier MVP"
+      ]},
+      { cat:"breaking", items:[
+        "Première version du MVP — pas d'antériorité"
       ]}
     ]
   },
