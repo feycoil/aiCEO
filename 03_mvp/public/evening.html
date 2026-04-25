@@ -3,7 +3,12 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>aiCEO · Boucle du soir</title>
+<title>aiCEO - Boucle du soir</title>
+<!--
+  S2.04 - Frontend evening.html migre sur /api/evening/* (start / commit / today / streak).
+  Zero localStorage applicatif. Streak compteur visible en haut.
+  Palette Twisty (cream / lilac / coral / sage).
+-->
 <style>
   :root {
     --cream: #FAF6EF;
@@ -14,6 +19,7 @@
     --line: #D9CFBC;
     --lilac: #A895DB;
     --lilac-soft: #EEE7FA;
+    --lilac-deep: #6F58A8;
     --coral: #EC7A6A;
     --coral-soft: #FBE1DC;
     --sage: #A8C8A4;
@@ -21,8 +27,6 @@
     --sage-ac: #3E6F3A;
     --amber: #E0B25C;
     --amber-soft: #F6E6C7;
-    --sky: #7FB5D9;
-    --sky-soft: #DCEBF4;
     --shadow: 0 2px 12px rgba(28,26,34,0.06);
   }
   * { box-sizing: border-box; }
@@ -35,372 +39,460 @@
     line-height: 1.5;
   }
   header {
-    padding: 28px 40px 18px;
+    padding: 26px 40px 18px;
     border-bottom: 1px solid var(--line);
     background: var(--cream);
-    position: relative;
-  }
-  .eyebrow {
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    font-size: 11px;
-    color: var(--ink-3);
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-  h1 {
-    font-family: "Fira Sans", Cambria, Georgia, serif;
-    font-size: 30px;
-    font-weight: 700;
-    margin: 0 0 6px;
-    letter-spacing: -0.02em;
-  }
-  .subtitle { color: var(--ink-3); font-size: 14px; }
-  .top-links {
-    position: absolute; top: 30px; right: 40px;
-    display: flex; gap: 8px;
-  }
-  .top-links a {
-    padding: 6px 12px;
-    font-size: 12.5px;
-    color: var(--ink-2);
-    text-decoration: none;
-    border-radius: 8px;
-    border: 1px solid var(--line);
-    background: white;
-  }
-  .top-links a:hover { border-color: var(--ink-3); }
-  main { padding: 24px 40px 60px; max-width: 860px; }
-
-  .section {
-    background: white;
-    border-radius: 18px;
-    padding: 20px 22px;
-    box-shadow: var(--shadow);
-    margin-bottom: 20px;
-  }
-  .section h2 {
-    font-family: "Fira Sans", Cambria, Georgia, serif;
-    font-size: 18px;
-    margin: 0 0 12px;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .section .pill {
-    font-family: "Fira Sans", Calibri, sans-serif;
-    font-size: 12px;
-    padding: 2px 10px;
-    border-radius: 10px;
-    background: var(--cream-deep); color: var(--ink-2);
-  }
-  .section.faire { background: var(--sage-soft); }
-  .section.deleguer { background: var(--lilac-soft); }
-  .section.reporter { background: var(--amber-soft); }
-
-  .eve-item {
-    background: white;
-    border-radius: 14px;
-    padding: 12px 14px;
-    margin-bottom: 10px;
-    border: 1px solid rgba(217,207,188,0.5);
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 12px;
+    display: flex;
+    justify-content: space-between;
     align-items: flex-start;
-  }
-  .eve-item .title { font-weight: 600; line-height: 1.35; margin-bottom: 4px; }
-  .eve-item .meta { font-size: 11.5px; color: var(--ink-3); }
-  .eve-item .status-group {
-    display: flex; gap: 4px;
-  }
-  .eve-item .status-btn {
-    padding: 6px 10px;
-    font-size: 11.5px;
-    border-radius: 8px;
-    border: 1px solid var(--line);
-    background: var(--cream);
-    color: var(--ink-3);
-    cursor: pointer;
-    font-weight: 600;
-  }
-  .eve-item .status-btn.done.active {
-    background: var(--sage); color: white; border-color: var(--sage);
-  }
-  .eve-item .status-btn.partial.active {
-    background: var(--amber); color: white; border-color: var(--amber);
-  }
-  .eve-item .status-btn.skipped.active {
-    background: var(--coral); color: white; border-color: var(--coral);
-  }
-  .eve-item .note-input {
-    grid-column: 1 / -1;
-    display: none;
-    width: 100%;
-    margin-top: 6px;
-    padding: 6px 10px;
-    border-radius: 8px;
-    border: 1px solid var(--line);
-    background: var(--cream);
-    font-family: inherit; font-size: 13px;
-  }
-  .eve-item.has-status .note-input { display: block; }
-
-  .mood-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    margin-top: 8px;
-  }
-  .mood-row .field {
-    display: flex; flex-direction: column; gap: 4px;
-  }
-  .mood-row label {
-    font-size: 11.5px; font-weight: 700;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--ink-3);
-  }
-  .mood-row input, .mood-row select {
-    font-family: inherit; font-size: 14px;
-    padding: 9px 12px; border-radius: 8px;
-    border: 1px solid var(--line);
-    background: var(--cream);
-  }
-
-  .actions {
-    display: flex; gap: 10px; align-items: center;
-    margin: 20px 0 8px;
+    gap: 24px;
     flex-wrap: wrap;
   }
-  button {
-    font-family: inherit; font-size: 14px;
-    padding: 10px 18px; border-radius: 10px;
-    border: 1px solid var(--line); background: white;
-    color: var(--ink); cursor: pointer;
+  header .left h1 { margin: 0 0 6px; font-size: 28px; letter-spacing: -0.01em; }
+  header .left p { margin: 0; color: var(--ink-3); font-size: 14px; }
+  .nav { display: flex; gap: 14px; align-items: center; }
+  .nav a {
+    color: var(--ink-2);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid transparent;
   }
-  button:hover { border-color: var(--ink-3); }
-  button.primary { background: var(--ink); color: var(--cream); border-color: var(--ink); }
-  button.primary:hover { background: var(--ink-2); }
-  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .nav a:hover { background: var(--lilac-soft); color: var(--lilac-deep); }
+  .nav a.active { background: var(--lilac); color: white; }
 
-  .empty-state {
-    padding: 36px 24px; text-align: center;
-    color: var(--ink-3); font-style: italic;
-    background: white; border-radius: 18px; box-shadow: var(--shadow);
+  .streak-row {
+    padding: 18px 40px;
+    background: linear-gradient(90deg, var(--lilac-soft), var(--cream-deep));
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
   }
-  .summary-card {
-    background: var(--lilac-soft);
+  .streak-tile {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 22px;
+    box-shadow: var(--shadow);
+    min-width: 140px;
+  }
+  .streak-tile .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-3);
+    margin-bottom: 4px;
+  }
+  .streak-tile .value {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--lilac-deep);
+    line-height: 1;
+  }
+  .streak-tile.flame .value { color: var(--coral); }
+  .streak-tile small { font-size: 12px; color: var(--ink-3); margin-left: 6px; }
+
+  main { max-width: 980px; margin: 0 auto; padding: 32px 40px 80px; }
+  .section {
+    background: white;
+    border: 1px solid var(--line);
     border-radius: 16px;
-    padding: 20px 22px;
-    margin-top: 16px;
+    padding: 22px 26px;
+    margin-bottom: 22px;
+    box-shadow: var(--shadow);
   }
-  .summary-card .rate {
-    font-family: "Fira Sans", Cambria, Georgia, serif;
-    font-size: 42px; font-weight: 700;
-    color: #5f4a94;
-    display: inline-block; margin-right: 12px;
-    vertical-align: baseline;
+  .section h2 {
+    margin: 0 0 12px;
+    font-size: 17px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
-  .summary-card .tone { font-size: 15px; line-height: 1.5; }
-  .summary-card .alert {
-    margin-top: 10px; padding: 8px 12px;
-    background: var(--coral-soft); color: #a63b2b;
-    border-radius: 8px; font-size: 13px;
+  .section h2 .badge {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--lilac-soft);
+    color: var(--lilac-deep);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
+  .section .hint { font-size: 13px; color: var(--ink-3); margin: 0 0 14px; }
+
+  .bilan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 720px) { .bilan-grid { grid-template-columns: 1fr; } }
+  .bilan-col {
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .bilan-col h3 {
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .bilan-col.fait h3 { color: var(--sage-ac); }
+  .bilan-col.partiel h3 { color: var(--amber); }
+  .bilan-col.pasfait h3 { color: var(--coral); }
+  .bilan-col textarea {
+    width: 100%;
+    min-height: 110px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-family: inherit;
+    font-size: 13px;
+    resize: vertical;
+    background: white;
+  }
+  .bilan-col textarea:focus { outline: 2px solid var(--lilac); border-color: transparent; }
+
+  .mood-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .mood-btn {
+    flex: 1 1 120px;
+    border: 1px solid var(--line);
+    background: var(--cream);
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 13px;
+    color: var(--ink-2);
+    transition: all 0.15s ease;
+  }
+  .mood-btn:hover { border-color: var(--lilac); }
+  .mood-btn.active {
+    background: var(--lilac);
+    color: white;
+    border-color: var(--lilac);
+    box-shadow: 0 0 0 3px var(--lilac-soft);
+  }
+
+  .energy-row { display: flex; gap: 6px; align-items: center; }
+  .energy-cell {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--line);
+    background: var(--cream);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+  .energy-cell:hover { border-color: var(--coral); }
+  .energy-cell.active { background: var(--coral); color: white; border-color: var(--coral); }
+  .energy-row .legend { margin-left: 10px; font-size: 12px; color: var(--ink-3); }
+
+  .tomorrow-list { display: flex; flex-direction: column; gap: 8px; }
+  .tomorrow-list input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    background: white;
+  }
+  .tomorrow-list input:focus { outline: 2px solid var(--lilac); border-color: transparent; }
+  .tomorrow-list .num {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--lilac);
+    color: white;
+    text-align: center;
+    line-height: 22px;
+    font-size: 12px;
+    margin-right: 8px;
+  }
+  .tomorrow-list .row { display: flex; align-items: center; }
+  .tomorrow-list .row > input { flex: 1; }
+
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .actions .meta { font-size: 12px; color: var(--ink-3); }
+  button.primary {
+    background: var(--lilac);
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+  }
+  button.primary:hover { background: var(--lilac-deep); }
+  button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
   .toast {
-    position: fixed; bottom: 24px; left: 50%;
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
     transform: translateX(-50%);
-    background: var(--ink); color: var(--cream);
-    padding: 12px 20px; border-radius: 24px;
-    font-size: 13.5px; font-weight: 500;
-    opacity: 0; pointer-events: none;
-    transition: opacity .2s;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    background: var(--ink);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-size: 13px;
+    box-shadow: 0 4px 16px rgba(28,26,34,0.2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
   }
   .toast.show { opacity: 1; }
+  .toast.error { background: var(--coral); }
+
+  .committed-banner {
+    background: var(--sage-soft);
+    border: 1px solid var(--sage);
+    color: var(--sage-ac);
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
 </style>
 </head>
 <body>
-<header>
-  <div class="eyebrow" id="eyebrow">—</div>
-  <h1>🌙 Boucle du soir</h1>
-  <div class="subtitle">Dites en 2 minutes ce qui a été fait. On apprend de la journée.</div>
-  <div class="top-links">
-    <a href="/">← Matin</a>
+  <header>
+    <div class="left">
+      <h1>Boucle du soir</h1>
+      <p>Bilan, humeur, energie, top 3 demain. Sauvegarde dans SQLite.</p>
+    </div>
+    <nav class="nav">
+      <a href="/">Cockpit</a>
+      <a href="/arbitrage">Arbitrage</a>
+      <a href="/taches">Taches</a>
+      <a href="/evening" class="active">Soir</a>
+    </nav>
+  </header>
+
+  <div class="streak-row" id="streakRow">
+    <div class="streak-tile flame">
+      <div class="label">Streak actuel</div>
+      <div class="value"><span id="streakCurrent">-</span><small>j</small></div>
+    </div>
+    <div class="streak-tile">
+      <div class="label">Record</div>
+      <div class="value"><span id="streakLongest">-</span><small>j</small></div>
+    </div>
+    <div class="streak-tile">
+      <div class="label">Total sessions</div>
+      <div class="value"><span id="streakTotal">-</span></div>
+    </div>
   </div>
-</header>
 
-<main>
-  <div id="container"></div>
+  <main>
+    <div id="committedBanner" class="committed-banner" style="display:none;">
+      Bilan deja sauvegarde pour aujourd'hui - vous pouvez le mettre a jour.
+    </div>
 
-  <div id="finalize-zone" style="display:none">
-    <div class="section">
-      <h2>Votre journée</h2>
-      <div class="mood-row">
-        <div class="field">
-          <label>Énergie (1 à 5)</label>
-          <select id="energy">
-            <option value="">—</option>
-            <option value="1">1 — vidé</option>
-            <option value="2">2 — fatigué</option>
-            <option value="3" selected>3 — correct</option>
-            <option value="4">4 — bon</option>
-            <option value="5">5 — au taquet</option>
-          </select>
+    <section class="section">
+      <h2>Bilan de la journee <span class="badge">Fait / Partiel / Pas fait</span></h2>
+      <p class="hint">Une ligne par tache, separees par retour a la ligne.</p>
+      <div class="bilan-grid">
+        <div class="bilan-col fait">
+          <h3>Fait</h3>
+          <textarea id="bilanFait" placeholder="Validation budget Q3&#10;Call client Acme"></textarea>
         </div>
-        <div class="field">
-          <label>Humeur (un mot, libre)</label>
-          <input id="mood" type="text" placeholder="ex : calme, tendu, productif…" />
+        <div class="bilan-col partiel">
+          <h3>Partiel</h3>
+          <textarea id="bilanPartiel" placeholder="Brief equipe (a finir demain)"></textarea>
+        </div>
+        <div class="bilan-col pasfait">
+          <h3>Pas fait</h3>
+          <textarea id="bilanPasFait" placeholder="Lecture rapport mensuel"></textarea>
         </div>
       </div>
-    </div>
+    </section>
+
+    <section class="section">
+      <h2>Humeur</h2>
+      <div class="mood-row" id="moodRow">
+        <button type="button" class="mood-btn" data-mood="tres-bien">Tres bien</button>
+        <button type="button" class="mood-btn" data-mood="bien">Bien</button>
+        <button type="button" class="mood-btn" data-mood="neutre">Neutre</button>
+        <button type="button" class="mood-btn" data-mood="tendu">Tendu</button>
+        <button type="button" class="mood-btn" data-mood="difficile">Difficile</button>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Energie</h2>
+      <div class="energy-row" id="energyRow">
+        <button type="button" class="energy-cell" data-energy="1">1</button>
+        <button type="button" class="energy-cell" data-energy="2">2</button>
+        <button type="button" class="energy-cell" data-energy="3">3</button>
+        <button type="button" class="energy-cell" data-energy="4">4</button>
+        <button type="button" class="energy-cell" data-energy="5">5</button>
+        <span class="legend">1 = vide - 5 = en pleine forme</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Top 3 pour demain <span class="badge">Preparation</span></h2>
+      <p class="hint">Les 3 priorites a faire avant tout demain matin.</p>
+      <div class="tomorrow-list">
+        <div class="row"><span class="num">1</span><input id="tom0" type="text" placeholder="Priorite n.1"/></div>
+        <div class="row"><span class="num">2</span><input id="tom1" type="text" placeholder="Priorite n.2"/></div>
+        <div class="row"><span class="num">3</span><input id="tom2" type="text" placeholder="Priorite n.3"/></div>
+      </div>
+    </section>
 
     <div class="actions">
-      <button class="primary" id="btn-finalize">Clore la journée</button>
-      <span id="progress" style="color:var(--ink-3);font-size:12.5px"></span>
+      <div class="meta" id="metaInfo">-</div>
+      <button class="primary" id="commitBtn" type="button">Sauvegarder le bilan</button>
     </div>
+  </main>
 
-    <div id="result" style="display:none"></div>
-  </div>
-</main>
+  <div class="toast" id="toast"></div>
 
-<div class="toast" id="toast"></div>
+  <script>
+    // S2.04 - Aucune utilisation de localStorage. Toutes les donnees passent par /api/evening/*.
+    const $ = (id) => document.getElementById(id);
 
-<script>
-(() => {
-  const $ = (s) => document.querySelector(s);
-  const toast = (msg) => {
-    const t = $("#toast"); t.textContent = msg; t.classList.add("show");
-    setTimeout(() => t.classList.remove("show"), 2200);
-  };
-  const escapeHtml = (s) => String(s || "").replace(/[&<>"']/g, c =>
-    ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+    let session = null;
+    let mood = null;
+    let energy = null;
+    const startTs = Date.now();
 
-  const outcomes = new Map(); // task_id → { status, note }
+    function showToast(msg, isError) {
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.toggle("error", !!isError);
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 2400);
+    }
 
-  const BUCKET_META = {
-    faire:    { label: "Faire",    icon: "✅" },
-    deleguer: { label: "Déléguer", icon: "✉" },
-    reporter: { label: "Reporter", icon: "📅" }
-  };
-
-  function renderItem(it, bucket) {
-    const t = it.task;
-    if (!t) return "";
-    const cur = outcomes.get(t.id) || {};
-    const hasStatus = cur.status ? "has-status" : "";
-    return `
-      <div class="eve-item ${hasStatus}" data-task-id="${t.id}">
-        <div>
-          <div class="title">${escapeHtml(t.title)}</div>
-          <div class="meta">${escapeHtml(it.reason || '—')}</div>
-        </div>
-        <div class="status-group">
-          <button type="button" class="status-btn done ${cur.status==='done'?'active':''}" data-status="done">Fait</button>
-          <button type="button" class="status-btn partial ${cur.status==='partial'?'active':''}" data-status="partial">Partiel</button>
-          <button type="button" class="status-btn skipped ${cur.status==='skipped'?'active':''}" data-status="skipped">Pas fait</button>
-        </div>
-        <input type="text" class="note-input" placeholder="Note (optionnel)" value="${escapeHtml(cur.note||'')}" />
-      </div>
-    `;
-  }
-
-  function wireItem(el) {
-    const id = el.dataset.taskId;
-    el.querySelectorAll(".status-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const status = btn.dataset.status;
-        const existing = outcomes.get(id) || {};
-        outcomes.set(id, { status, note: existing.note || "" });
-        el.querySelectorAll(".status-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        el.classList.add("has-status");
-        updateProgress();
+    function setMood(value) {
+      mood = value;
+      document.querySelectorAll(".mood-btn").forEach((b) => {
+        b.classList.toggle("active", b.dataset.mood === value);
       });
-    });
-    const note = el.querySelector(".note-input");
-    note.addEventListener("input", () => {
-      const existing = outcomes.get(id) || {};
-      outcomes.set(id, { ...existing, note: note.value });
-    });
-  }
-
-  function updateProgress() {
-    const totalItems = document.querySelectorAll(".eve-item").length;
-    const done = [...outcomes.values()].filter(x => x.status).length;
-    $("#progress").textContent = `${done} / ${totalItems} items renseignés`;
-  }
-
-  async function loadContext() {
-    const data = await fetch("/api/evening/context").then(r => r.json());
-    const container = $("#container");
-    const ey = $("#eyebrow");
-    const today = new Date();
-    ey.textContent = today.toLocaleDateString("fr-FR", { weekday:"long", day:"numeric", month:"long", year:"numeric" }).toUpperCase();
-
-    if (!data.arbitrage) {
-      container.innerHTML = `<div class="empty-state">
-        <p>${escapeHtml(data.message || "Aucun arbitrage validé pour aujourd'hui.")}</p>
-        <p style="margin-top:12px"><a href="/">Lancer l'arbitrage du matin →</a></p>
-      </div>`;
-      return;
+    }
+    function setEnergy(value) {
+      energy = value;
+      document.querySelectorAll(".energy-cell").forEach((b) => {
+        b.classList.toggle("active", parseInt(b.dataset.energy, 10) === value);
+      });
     }
 
-    const a = data.arbitrage;
-    const sections = ["faire", "deleguer", "reporter"].map(k => {
-      const items = a[k] || [];
-      if (!items.length) return "";
-      const m = BUCKET_META[k];
-      return `
-        <div class="section ${k}">
-          <h2>${m.icon} ${m.label} <span class="pill">${items.length}</span></h2>
-          <div class="list">
-            ${items.map(it => renderItem(it, k)).join("")}
-          </div>
-        </div>
-      `;
-    }).join("");
-    container.innerHTML = sections;
-    document.querySelectorAll(".eve-item").forEach(wireItem);
-    $("#finalize-zone").style.display = "block";
-    updateProgress();
-  }
+    document.querySelectorAll(".mood-btn").forEach((b) => {
+      b.addEventListener("click", () => setMood(b.dataset.mood));
+    });
+    document.querySelectorAll(".energy-cell").forEach((b) => {
+      b.addEventListener("click", () => setEnergy(parseInt(b.dataset.energy, 10)));
+    });
 
-  async function finalize() {
-    const payload = {
-      date: new Date().toISOString().slice(0,10),
-      mood: $("#mood").value.trim() || null,
-      energy: $("#energy").value ? Number($("#energy").value) : null,
-      outcomes: [...outcomes.entries()].map(([task_id, v]) => ({ task_id, status: v.status, note: v.note || null }))
-        .filter(x => x.status)
-    };
-    if (!payload.outcomes.length) {
-      toast("Indiquez au moins un statut avant de clore.");
-      return;
+    function parseBilanField(textareaId) {
+      const v = $(textareaId).value.trim();
+      if (!v) return [];
+      return v.split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
     }
-    const r = await fetch("/api/evening", {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify(payload)
-    }).then(r => r.json());
 
-    if (r.error) { toast("Erreur : " + r.error); return; }
-    const s = r.summary;
-    $("#result").style.display = "block";
-    $("#result").innerHTML = `
-      <div class="summary-card">
-        <div><span class="rate">${s.rate}%</span> <span class="tone">${escapeHtml(s.tone)}</span></div>
-        <div style="margin-top:8px;font-size:12.5px;color:var(--ink-3)">
-          ✅ ${s.counts.done} fait · 🟡 ${s.counts.partial} partiel · 🔴 ${s.counts.skipped} pas fait
-        </div>
-        ${s.alert ? `<div class="alert">${escapeHtml(s.alert)}</div>` : ""}
-      </div>`;
-    $("#btn-finalize").disabled = true;
-    toast("Journée clôturée ✓");
-  }
+    function fillBilanField(textareaId, arr) {
+      if (!Array.isArray(arr)) return;
+      $(textareaId).value = arr.join("\n");
+    }
 
-  $("#btn-finalize").addEventListener("click", finalize);
-  loadContext();
-})();
-</script>
+    function refreshStreak(streak) {
+      if (!streak) return;
+      $("streakCurrent").textContent = streak.current ?? 0;
+      $("streakLongest").textContent = streak.longest ?? 0;
+      $("streakTotal").textContent = streak.total ?? 0;
+    }
+
+    function applySession(s) {
+      session = s;
+      if (!s) return;
+      $("metaInfo").textContent = s.committed
+        ? "Sauvegarde - session " + s.id.slice(0, 8) + " - " + new Date(s.created_at).toLocaleString("fr-FR")
+        : "Session ouverte - " + s.id.slice(0, 8);
+      $("committedBanner").style.display = s.committed ? "block" : "none";
+
+      if (s.bilan) {
+        fillBilanField("bilanFait", s.bilan.fait);
+        fillBilanField("bilanPartiel", s.bilan.partiel);
+        fillBilanField("bilanPasFait", s.bilan.pas_fait);
+      }
+      if (s.humeur) setMood(s.humeur);
+      if (s.energie) setEnergy(s.energie);
+      if (Array.isArray(s.tomorrow_prep)) {
+        s.tomorrow_prep.slice(0, 3).forEach((v, i) => { $("tom" + i).value = v || ""; });
+      }
+    }
+
+    async function start() {
+      try {
+        const r = await fetch("/api/evening/start", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: "{}",
+        });
+        if (!r.ok) throw new Error("start HTTP " + r.status);
+        const data = await r.json();
+        applySession(data.session);
+        refreshStreak(data.streak);
+      } catch (e) {
+        showToast("Erreur d'ouverture session : " + e.message, true);
+      }
+    }
+
+    async function commit() {
+      const btn = $("commitBtn");
+      btn.disabled = true;
+      try {
+        const payload = {
+          bilan: {
+            fait: parseBilanField("bilanFait"),
+            partiel: parseBilanField("bilanPartiel"),
+            pas_fait: parseBilanField("bilanPasFait"),
+          },
+          humeur: mood || undefined,
+          energie: energy || undefined,
+          tomorrow_prep: [
+            $("tom0").value.trim(),
+            $("tom1").value.trim(),
+            $("tom2").value.trim(),
+          ].filter(Boolean),
+          duration_sec: Math.max(1, Math.round((Date.now() - startTs) / 1000)),
+        };
+        const r = await fetch("/api/evening/commit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error || ("HTTP " + r.status));
+        applySession(data.session);
+        refreshStreak(data.streak);
+        showToast("Bilan sauvegarde (streak " + (data.streak?.current ?? "?") + " j)");
+      } catch (e) {
+        showToast("Erreur sauvegarde : " + e.message, true);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    $("commitBtn").addEventListener("click", commit);
+
+    // Initialisation
+    start();
+  </script>
 </body>
 </html>
