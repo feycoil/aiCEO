@@ -1,625 +1,626 @@
-<!doctype html>
-<html lang="fr">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>aiCEO - Taches</title>
-<!--
-  S2.05 - Frontend taches.html : matrice Eisenhower 2x2 + quick-add + drag&drop natif.
-  API : /api/tasks (GET/POST/PATCH/DELETE) + /api/tasks/:id/toggle.
-  Eisenhower : UI (urgent+important), U- (urgent), -I (important), -- (ni l'un ni l'autre).
-  Zero localStorage applicatif. Palette Twisty.
--->
-<style>
-  :root {
-    --cream: #FAF6EF;
-    --cream-deep: #F2EBDD;
-    --ink: #1C1A22;
-    --ink-2: #3A3542;
-    --ink-3: #6A6277;
-    --line: #D9CFBC;
-    --lilac: #A895DB;
-    --lilac-soft: #EEE7FA;
-    --lilac-deep: #6F58A8;
-    --coral: #EC7A6A;
-    --coral-soft: #FBE1DC;
-    --sage: #A8C8A4;
-    --sage-soft: #E3EEE0;
-    --sage-ac: #3E6F3A;
-    --amber: #E0B25C;
-    --amber-soft: #F6E6C7;
-    --sky: #7FB5D9;
-    --sky-soft: #DCEBF4;
-    --shadow: 0 2px 12px rgba(28,26,34,0.06);
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: "Fira Sans", Calibri, -apple-system, system-ui, sans-serif;
-    background: var(--cream);
-    color: var(--ink);
-    font-size: 15px;
-    line-height: 1.5;
-  }
-  header {
-    padding: 26px 40px 18px;
-    border-bottom: 1px solid var(--line);
-    background: var(--cream);
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-  header .left h1 { margin: 0 0 6px; font-size: 28px; letter-spacing: -0.01em; }
-  header .left p { margin: 0; color: var(--ink-3); font-size: 14px; }
-  .nav { display: flex; gap: 14px; align-items: center; }
-  .nav a {
-    color: var(--ink-2);
-    text-decoration: none;
-    font-size: 13px;
-    padding: 6px 12px;
-    border-radius: 999px;
-    border: 1px solid transparent;
-  }
-  .nav a:hover { background: var(--lilac-soft); color: var(--lilac-deep); }
-  .nav a.active { background: var(--lilac); color: white; }
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>aiCEO - Taches</title>
+<!--
+  S2.05 - Frontend taches.html : matrice Eisenhower 2x2 + quick-add + drag&drop natif.
+  API : /api/tasks (GET/POST/PATCH/DELETE) + /api/tasks/:id/toggle.
+  Eisenhower : UI (urgent+important), U- (urgent), -I (important), -- (ni l'un ni l'autre).
+  Zero localStorage applicatif. Palette Twisty.
+-->
+<style>
+  :root {
+    --cream: #FAF6EF;
+    --cream-deep: #F2EBDD;
+    --ink: #1C1A22;
+    --ink-2: #3A3542;
+    --ink-3: #6A6277;
+    --line: #D9CFBC;
+    --lilac: #A895DB;
+    --lilac-soft: #EEE7FA;
+    --lilac-deep: #6F58A8;
+    --coral: #EC7A6A;
+    --coral-soft: #FBE1DC;
+    --sage: #A8C8A4;
+    --sage-soft: #E3EEE0;
+    --sage-ac: #3E6F3A;
+    --amber: #E0B25C;
+    --amber-soft: #F6E6C7;
+    --sky: #7FB5D9;
+    --sky-soft: #DCEBF4;
+    --shadow: 0 2px 12px rgba(28,26,34,0.06);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Fira Sans", Calibri, -apple-system, system-ui, sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  header {
+    padding: 26px 40px 18px;
+    border-bottom: 1px solid var(--line);
+    background: var(--cream);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  header .left h1 { margin: 0 0 6px; font-size: 28px; letter-spacing: -0.01em; }
+  header .left p { margin: 0; color: var(--ink-3); font-size: 14px; }
+  .nav { display: flex; gap: 14px; align-items: center; }
+  .nav a {
+    color: var(--ink-2);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+  }
+  .nav a:hover { background: var(--lilac-soft); color: var(--lilac-deep); }
+  .nav a.active { background: var(--lilac); color: white; }
+
+  .toolbar {
+    padding: 16px 40px;
+    background: var(--cream);
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .toolbar .search-box {
+    flex: 1 1 280px;
+    min-width: 220px;
+    display: flex;
+    gap: 6px;
+  }
+  .toolbar input[type=text] {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    background: white;
+  }
+  .toolbar input[type=text]:focus { outline: 2px solid var(--lilac); border-color: transparent; }
+  .toolbar button.primary {
+    background: var(--lilac);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .toolbar button.primary:hover { background: var(--lilac-deep); }
+  .toolbar .filters {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .toolbar select {
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: white;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+  .toolbar .toggle-btn {
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    background: white;
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--ink-2);
+    cursor: pointer;
+  }
+  .toolbar .toggle-btn.active {
+    background: var(--lilac-soft);
+    color: var(--lilac-deep);
+    border-color: var(--lilac);
+  }
+
+  main { padding: 24px 40px 80px; }
+
+  .matrix {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 18px;
+    min-height: 60vh;
+  }
+  @media (max-width: 900px) { .matrix { grid-template-columns: 1fr; grid-template-rows: auto; } }
+
+  .quad {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    min-height: 220px;
+  }
+  .quad.drag-over { background: var(--lilac-soft); border-color: var(--lilac); }
+  .quad header.q-head {
+    padding: 0 0 12px;
+    border-bottom: 1px solid var(--line);
+    background: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+  .quad .q-title {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .quad .q-sub { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+  .quad .q-count {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--cream);
+    color: var(--ink-3);
+  }
+
+  .quad.UI .q-title { color: var(--coral); }
+  .quad.UI { border-top: 4px solid var(--coral); }
+  .quad.U- .q-title { color: var(--amber); }
+  .quad.U- { border-top: 4px solid var(--amber); }
+  .quad.--I .q-title { color: var(--sage-ac); }
+  .quad.--I { border-top: 4px solid var(--sage); }
+  .quad.--XX .q-title { color: var(--ink-3); }
+  .quad.--XX { border-top: 4px solid var(--line); }
+
+  .task-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 80px;
+  }
+  .task-list .empty { color: var(--ink-3); font-size: 12px; font-style: italic; padding: 8px 0; }
+
+  .task {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 12px;
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    cursor: grab;
+    user-select: none;
+  }
+  .task.dragging { opacity: 0.45; cursor: grabbing; }
+  .task input[type=checkbox] { margin-top: 3px; cursor: pointer; }
+  .task.done .title { text-decoration: line-through; color: var(--ink-3); }
+  .task .title {
+    flex: 1;
+    font-size: 14px;
+    word-break: break-word;
+  }
+  .task .meta {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+  }
+  .task .badge {
+    font-size: 10px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: white;
+    border: 1px solid var(--line);
+    color: var(--ink-3);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .task .badge.P0 { background: var(--coral-soft); color: var(--coral); border-color: var(--coral); }
+  .task .badge.P1 { background: var(--amber-soft); color: var(--amber); border-color: var(--amber); }
+  .task .badge.P2 { background: var(--sky-soft); color: var(--sky); border-color: var(--sky); }
+  .task .badge.P3 { background: var(--cream-deep); }
+  .task .badge.starred { background: var(--lilac-soft); color: var(--lilac-deep); border-color: var(--lilac); }
+  .task .actions { display: flex; gap: 4px; align-items: flex-start; }
+  .task .icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--ink-3);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 6px;
+    border-radius: 6px;
+  }
+  .task .icon-btn:hover { background: white; color: var(--coral); }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-size: 13px;
+    box-shadow: 0 4px 16px rgba(28,26,34,0.2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .toast.show { opacity: 1; }
+  .toast.error { background: var(--coral); }
+
+  .empty-state {
+    text-align: center;
+    color: var(--ink-3);
+    padding: 60px 20px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="left">
+      <h1>Taches</h1>
+      <p>Matrice Eisenhower : Urgent / Important. Glissez les taches entre les quadrants.</p>
+    </div>
+    <nav class="nav">
+      <a href="/">Cockpit</a>
+      <a href="/arbitrage">Arbitrage</a>
+      <a href="/taches" class="active">Taches</a>
+      <a href="/evening">Soir</a>
+    </nav>
+  </header>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <input id="quickAdd" type="text" placeholder="Ajouter une tache et appuyer sur Entree (P0..P3 dans le titre = priorite)"/>
+      <button class="primary" id="addBtn" type="button">+ Ajouter</button>
+    </div>
+    <div class="filters">
+      <button class="toggle-btn active" id="filterOpen" type="button">Ouvertes</button>
+      <button class="toggle-btn" id="filterAll" type="button">Toutes</button>
+      <select id="filterPriority">
+        <option value="">Toutes priorites</option>
+        <option value="P0">P0</option>
+        <option value="P1">P1</option>
+        <option value="P2">P2</option>
+        <option value="P3">P3</option>
+      </select>
+      <input id="searchBox" type="text" placeholder="Rechercher..." style="max-width: 200px;"/>
+    </div>
+  </div>
+
+  <main>
+    <div class="matrix" id="matrix">
+      <div class="quad UI" data-eisenhower="UI">
+        <header class="q-head">
+          <div>
+            <div class="q-title">Urgent + Important</div>
+            <div class="q-sub">Faire maintenant</div>
+          </div>
+          <span class="q-count" id="countUI">0</span>
+        </header>
+        <div class="task-list" data-eisenhower="UI"></div>
+      </div>
+      <div class="quad U-" data-eisenhower="U-">
+        <header class="q-head">
+          <div>
+            <div class="q-title">Urgent (pas important)</div>
+            <div class="q-sub">Deleguer</div>
+          </div>
+          <span class="q-count" id="countU-">0</span>
+        </header>
+        <div class="task-list" data-eisenhower="U-"></div>
+      </div>
+      <div class="quad --I" data-eisenhower="-I">
+        <header class="q-head">
+          <div>
+            <div class="q-title">Important (pas urgent)</div>
+            <div class="q-sub">Planifier</div>
+          </div>
+          <span class="q-count" id="count-I">0</span>
+        </header>
+        <div class="task-list" data-eisenhower="-I"></div>
+      </div>
+      <div class="quad --XX" data-eisenhower="--">
+        <header class="q-head">
+          <div>
+            <div class="q-title">Ni urgent ni important</div>
+            <div class="q-sub">Eliminer / reporter</div>
+          </div>
+          <span class="q-count" id="count--">0</span>
+        </header>
+        <div class="task-list" data-eisenhower="--"></div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // S2.05 - Aucun localStorage. Toutes les donnees passent par /api/tasks/*.
+    const $ = (id) => document.getElementById(id);
+    let allTasks = [];
+    let showOpenOnly = true;
+    let priorityFilter = "";
+    let searchQuery = "";
+
+    function showToast(msg, isError) {
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.toggle("error", !!isError);
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 2000);
+    }
+
+    async function loadTasks() {
+      try {
+        const r = await fetch("/api/tasks");
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        const data = await r.json();
+        allTasks = data.tasks || [];
+        render();
+      } catch (e) {
+        showToast("Erreur chargement : " + e.message, true);
+      }
+    }
+
+    function priorityFromTitle(title) {
+      const m = title.match(/\b(P[0-3])\b/);
+      return m ? m[1] : "P2";
+    }
+
+    function stripPriorityFromTitle(title) {
+      return title.replace(/\b(P[0-3])\b/g, "").replace(/\s+/g, " ").trim();
+    }
+
+    function filterTasks() {
+      return allTasks.filter((t) => {
+        if (showOpenOnly && t.done) return false;
+        if (priorityFilter && t.priority !== priorityFilter) return false;
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          const blob = ((t.title || "") + " " + (t.description || "")).toLowerCase();
+          if (!blob.includes(q)) return false;
+        }
+        return true;
+      });
+    }
+
+    function renderTaskCard(t) {
+      const div = document.createElement("div");
+      div.className = "task" + (t.done ? " done" : "");
+      div.draggable = true;
+      div.dataset.id = t.id;
+
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.checked = !!t.done;
+      cb.addEventListener("change", () => toggleTask(t.id));
+
+      const main = document.createElement("div");
+      main.style.flex = "1";
+      const title = document.createElement("div");
+      title.className = "title";
+      title.textContent = t.title;
+      main.appendChild(title);
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      const pBadge = document.createElement("span");
+      pBadge.className = "badge " + (t.priority || "P2");
+      pBadge.textContent = t.priority || "P2";
+      meta.appendChild(pBadge);
+      if (t.starred) {
+        const sBadge = document.createElement("span");
+        sBadge.className = "badge starred";
+        sBadge.textContent = "Etoile";
+        meta.appendChild(sBadge);
+      }
+      if (t.due_at) {
+        const dBadge = document.createElement("span");
+        dBadge.className = "badge";
+        dBadge.textContent = "Echeance " + t.due_at.slice(0, 10);
+        meta.appendChild(dBadge);
+      }
+      if (t.ai_capable) {
+        const aBadge = document.createElement("span");
+        aBadge.className = "badge";
+        aBadge.textContent = "IA-capable";
+        meta.appendChild(aBadge);
+      }
+      main.appendChild(meta);
+
+      const actions = document.createElement("div");
+      actions.className = "actions";
+      const delBtn = document.createElement("button");
+      delBtn.className = "icon-btn";
+      delBtn.textContent = "X";
+      delBtn.title = "Supprimer";
+      delBtn.addEventListener("click", () => deleteTask(t.id));
+      actions.appendChild(delBtn);
+
+      div.appendChild(cb);
+      div.appendChild(main);
+      div.appendChild(actions);
+
+      // Drag&drop natif
+      div.addEventListener("dragstart", (e) => {
+        div.classList.add("dragging");
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", t.id);
+      });
+      div.addEventListener("dragend", () => div.classList.remove("dragging"));
+
+      return div;
+    }
+
+    function render() {
+      const filtered = filterTasks();
+      const buckets = { "UI": [], "U-": [], "-I": [], "--": [] };
+      for (const t of filtered) {
+        const k = (t.eisenhower in buckets) ? t.eisenhower : "--";
+        buckets[k].push(t);
+      }
+      for (const [k, arr] of Object.entries(buckets)) {
+        const list = document.querySelector(`.task-list[data-eisenhower="${k}"]`);
+        list.innerHTML = "";
+        if (arr.length === 0) {
+          const empty = document.createElement("div");
+          empty.className = "empty";
+          empty.textContent = "Aucune tache";
+          list.appendChild(empty);
+        } else {
+          arr.forEach((t) => list.appendChild(renderTaskCard(t)));
+        }
+        const id = "count" + k;
+        const cnt = document.getElementById(id);
+        if (cnt) cnt.textContent = arr.length;
+      }
+    }
+
+    async function addTask(rawTitle) {
+      const title = rawTitle.trim();
+      if (!title) return;
+      const priority = priorityFromTitle(title);
+      const cleanTitle = stripPriorityFromTitle(title);
+      try {
+        const r = await fetch("/api/tasks", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: cleanTitle || title,
+            priority,
+            eisenhower: priority === "P0" ? "UI" : priority === "P1" ? "U-" : priority === "P2" ? "-I" : "--",
+          }),
+        });
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error || ("HTTP " + r.status));
+        showToast("Tache ajoutee");
+        $("quickAdd").value = "";
+        await loadTasks();
+      } catch (e) {
+        showToast("Erreur ajout : " + e.message, true);
+      }
+    }
+
+    async function toggleTask(id) {
+      try {
+        const r = await fetch(`/api/tasks/${id}/toggle`, { method: "POST" });
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        await loadTasks();
+      } catch (e) {
+        showToast("Erreur toggle : " + e.message, true);
+      }
+    }
+
+    async function deleteTask(id) {
+      if (!confirm("Supprimer cette tache ?")) return;
+      try {
+        const r = await fetch(`/api/tasks/${id}`, { method: "DELETE" });
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        showToast("Tache supprimee");
+        await loadTasks();
+      } catch (e) {
+        showToast("Erreur suppression : " + e.message, true);
+      }
+    }
+
+    async function moveToQuadrant(taskId, eisenhower) {
+      try {
+        const r = await fetch(`/api/tasks/${taskId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ eisenhower }),
+        });
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        await loadTasks();
+      } catch (e) {
+        showToast("Erreur deplacement : " + e.message, true);
+      }
+    }
+
+    // Drag&drop sur les quadrants
+    document.querySelectorAll(".quad").forEach((quad) => {
+      quad.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        quad.classList.add("drag-over");
+      });
+      quad.addEventListener("dragleave", () => quad.classList.remove("drag-over"));
+      quad.addEventListener("drop", (e) => {
+        e.preventDefault();
+        quad.classList.remove("drag-over");
+        const taskId = e.dataTransfer.getData("text/plain");
+        const target = quad.dataset.eisenhower;
+        if (taskId && target) moveToQuadrant(taskId, target);
+      });
+    });
+
+    // Toolbar
+    $("addBtn").addEventListener("click", () => addTask($("quickAdd").value));
+    $("quickAdd").addEventListener("keypress", (e) => {
+      if (e.key === "Enter") addTask($("quickAdd").value);
+    });
+    $("filterOpen").addEventListener("click", () => {
+      showOpenOnly = true;
+      $("filterOpen").classList.add("active");
+      $("filterAll").classList.remove("active");
+      render();
+    });
+    $("filterAll").addEventListener("click", () => {
+      showOpenOnly = false;
+      $("filterAll").classList.add("active");
+      $("filterOpen").classList.remove("active");
+      render();
+    });
+    $("filterPriority").addEventListener("change", (e) => {
+      priorityFilter = e.target.value;
+      render();
+    });
+    $("searchBox").addEventListener("input", (e) => {
+      searchQuery = e.target.value;
+      render();
+    });
+
+    loadTasks();
+
+    // S3.05 — Cablage SSE front : subscribe au bus realtime + refetch sur evenement
+    let sseSource = null;
+    let sseRetry = 1000;
+    function connectSSE() {
+      if (typeof EventSource === 'undefined') return;
+      try {
+        sseSource = new EventSource('/api/cockpit/stream');
+        sseSource.addEventListener('hello', () => { sseRetry = 1000; });
+        ['task.updated', 'task.created', 'task.deleted'].forEach((kind) => {
+          sseSource.addEventListener(kind, () => { loadTasks(); });
+        });
+        sseSource.onerror = () => {
+          sseSource && sseSource.close();
+          setTimeout(connectSSE, sseRetry);
+          sseRetry = Math.min(sseRetry * 2, 30000);
+        };
+      } catch (e) { /* non bloquant */ }
+    }
+    connectSSE();
+  </script>
+</body>
+</html>
 
-  .toolbar {
-    padding: 16px 40px;
-    background: var(--cream);
-    border-bottom: 1px solid var(--line);
-    display: flex;
-    gap: 14px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .toolbar .search-box {
-    flex: 1 1 280px;
-    min-width: 220px;
-    display: flex;
-    gap: 6px;
-  }
-  .toolbar input[type=text] {
-    flex: 1;
-    padding: 10px 12px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: 14px;
-    background: white;
-  }
-  .toolbar input[type=text]:focus { outline: 2px solid var(--lilac); border-color: transparent; }
-  .toolbar button.primary {
-    background: var(--lilac);
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-  }
-  .toolbar button.primary:hover { background: var(--lilac-deep); }
-  .toolbar .filters {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-  }
-  .toolbar select {
-    padding: 8px 10px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    background: white;
-    font-family: inherit;
-    font-size: 13px;
-    color: var(--ink-2);
-  }
-  .toolbar .toggle-btn {
-    padding: 8px 14px;
-    border: 1px solid var(--line);
-    background: white;
-    border-radius: 999px;
-    font-size: 13px;
-    color: var(--ink-2);
-    cursor: pointer;
-  }
-  .toolbar .toggle-btn.active {
-    background: var(--lilac-soft);
-    color: var(--lilac-deep);
-    border-color: var(--lilac);
-  }
-
-  main { padding: 24px 40px 80px; }
-
-  .matrix {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 18px;
-    min-height: 60vh;
-  }
-  @media (max-width: 900px) { .matrix { grid-template-columns: 1fr; grid-template-rows: auto; } }
-
-  .quad {
-    background: white;
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 18px;
-    box-shadow: var(--shadow);
-    display: flex;
-    flex-direction: column;
-    min-height: 220px;
-  }
-  .quad.drag-over { background: var(--lilac-soft); border-color: var(--lilac); }
-  .quad header.q-head {
-    padding: 0 0 12px;
-    border-bottom: 1px solid var(--line);
-    background: transparent;
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 12px;
-  }
-  .quad .q-title {
-    font-size: 14px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-  .quad .q-sub { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
-  .quad .q-count {
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 999px;
-    background: var(--cream);
-    color: var(--ink-3);
-  }
-
-  .quad.UI .q-title { color: var(--coral); }
-  .quad.UI { border-top: 4px solid var(--coral); }
-  .quad.U- .q-title { color: var(--amber); }
-  .quad.U- { border-top: 4px solid var(--amber); }
-  .quad.--I .q-title { color: var(--sage-ac); }
-  .quad.--I { border-top: 4px solid var(--sage); }
-  .quad.--XX .q-title { color: var(--ink-3); }
-  .quad.--XX { border-top: 4px solid var(--line); }
-
-  .task-list {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-height: 80px;
-  }
-  .task-list .empty { color: var(--ink-3); font-size: 12px; font-style: italic; padding: 8px 0; }
-
-  .task {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    padding: 10px 12px;
-    background: var(--cream);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    cursor: grab;
-    user-select: none;
-  }
-  .task.dragging { opacity: 0.45; cursor: grabbing; }
-  .task input[type=checkbox] { margin-top: 3px; cursor: pointer; }
-  .task.done .title { text-decoration: line-through; color: var(--ink-3); }
-  .task .title {
-    flex: 1;
-    font-size: 14px;
-    word-break: break-word;
-  }
-  .task .meta {
-    display: flex;
-    gap: 6px;
-    margin-top: 4px;
-    flex-wrap: wrap;
-  }
-  .task .badge {
-    font-size: 10px;
-    padding: 1px 7px;
-    border-radius: 999px;
-    background: white;
-    border: 1px solid var(--line);
-    color: var(--ink-3);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-  .task .badge.P0 { background: var(--coral-soft); color: var(--coral); border-color: var(--coral); }
-  .task .badge.P1 { background: var(--amber-soft); color: var(--amber); border-color: var(--amber); }
-  .task .badge.P2 { background: var(--sky-soft); color: var(--sky); border-color: var(--sky); }
-  .task .badge.P3 { background: var(--cream-deep); }
-  .task .badge.starred { background: var(--lilac-soft); color: var(--lilac-deep); border-color: var(--lilac); }
-  .task .actions { display: flex; gap: 4px; align-items: flex-start; }
-  .task .icon-btn {
-    background: transparent;
-    border: none;
-    color: var(--ink-3);
-    cursor: pointer;
-    font-size: 14px;
-    padding: 2px 6px;
-    border-radius: 6px;
-  }
-  .task .icon-btn:hover { background: white; color: var(--coral); }
-
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--ink);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 999px;
-    font-size: 13px;
-    box-shadow: 0 4px 16px rgba(28,26,34,0.2);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s ease;
-  }
-  .toast.show { opacity: 1; }
-  .toast.error { background: var(--coral); }
-
-  .empty-state {
-    text-align: center;
-    color: var(--ink-3);
-    padding: 60px 20px;
-    font-style: italic;
-  }
-</style>
-</head>
-<body>
-  <header>
-    <div class="left">
-      <h1>Taches</h1>
-      <p>Matrice Eisenhower : Urgent / Important. Glissez les taches entre les quadrants.</p>
-    </div>
-    <nav class="nav">
-      <a href="/">Cockpit</a>
-      <a href="/arbitrage">Arbitrage</a>
-      <a href="/taches" class="active">Taches</a>
-      <a href="/evening">Soir</a>
-    </nav>
-  </header>
-
-  <div class="toolbar">
-    <div class="search-box">
-      <input id="quickAdd" type="text" placeholder="Ajouter une tache et appuyer sur Entree (P0..P3 dans le titre = priorite)"/>
-      <button class="primary" id="addBtn" type="button">+ Ajouter</button>
-    </div>
-    <div class="filters">
-      <button class="toggle-btn active" id="filterOpen" type="button">Ouvertes</button>
-      <button class="toggle-btn" id="filterAll" type="button">Toutes</button>
-      <select id="filterPriority">
-        <option value="">Toutes priorites</option>
-        <option value="P0">P0</option>
-        <option value="P1">P1</option>
-        <option value="P2">P2</option>
-        <option value="P3">P3</option>
-      </select>
-      <input id="searchBox" type="text" placeholder="Rechercher..." style="max-width: 200px;"/>
-    </div>
-  </div>
-
-  <main>
-    <div class="matrix" id="matrix">
-      <div class="quad UI" data-eisenhower="UI">
-        <header class="q-head">
-          <div>
-            <div class="q-title">Urgent + Important</div>
-            <div class="q-sub">Faire maintenant</div>
-          </div>
-          <span class="q-count" id="countUI">0</span>
-        </header>
-        <div class="task-list" data-eisenhower="UI"></div>
-      </div>
-      <div class="quad U-" data-eisenhower="U-">
-        <header class="q-head">
-          <div>
-            <div class="q-title">Urgent (pas important)</div>
-            <div class="q-sub">Deleguer</div>
-          </div>
-          <span class="q-count" id="countU-">0</span>
-        </header>
-        <div class="task-list" data-eisenhower="U-"></div>
-      </div>
-      <div class="quad --I" data-eisenhower="-I">
-        <header class="q-head">
-          <div>
-            <div class="q-title">Important (pas urgent)</div>
-            <div class="q-sub">Planifier</div>
-          </div>
-          <span class="q-count" id="count-I">0</span>
-        </header>
-        <div class="task-list" data-eisenhower="-I"></div>
-      </div>
-      <div class="quad --XX" data-eisenhower="--">
-        <header class="q-head">
-          <div>
-            <div class="q-title">Ni urgent ni important</div>
-            <div class="q-sub">Eliminer / reporter</div>
-          </div>
-          <span class="q-count" id="count--">0</span>
-        </header>
-        <div class="task-list" data-eisenhower="--"></div>
-      </div>
-    </div>
-  </main>
-
-  <div class="toast" id="toast"></div>
-
-  <script>
-    // S2.05 - Aucun localStorage. Toutes les donnees passent par /api/tasks/*.
-    const $ = (id) => document.getElementById(id);
-    let allTasks = [];
-    let showOpenOnly = true;
-    let priorityFilter = "";
-    let searchQuery = "";
-
-    function showToast(msg, isError) {
-      const t = $("toast");
-      t.textContent = msg;
-      t.classList.toggle("error", !!isError);
-      t.classList.add("show");
-      setTimeout(() => t.classList.remove("show"), 2000);
-    }
-
-    async function loadTasks() {
-      try {
-        const r = await fetch("/api/tasks");
-        if (!r.ok) throw new Error("HTTP " + r.status);
-        const data = await r.json();
-        allTasks = data.tasks || [];
-        render();
-      } catch (e) {
-        showToast("Erreur chargement : " + e.message, true);
-      }
-    }
-
-    function priorityFromTitle(title) {
-      const m = title.match(/\b(P[0-3])\b/);
-      return m ? m[1] : "P2";
-    }
-
-    function stripPriorityFromTitle(title) {
-      return title.replace(/\b(P[0-3])\b/g, "").replace(/\s+/g, " ").trim();
-    }
-
-    function filterTasks() {
-      return allTasks.filter((t) => {
-        if (showOpenOnly && t.done) return false;
-        if (priorityFilter && t.priority !== priorityFilter) return false;
-        if (searchQuery) {
-          const q = searchQuery.toLowerCase();
-          const blob = ((t.title || "") + " " + (t.description || "")).toLowerCase();
-          if (!blob.includes(q)) return false;
-        }
-        return true;
-      });
-    }
-
-    function renderTaskCard(t) {
-      const div = document.createElement("div");
-      div.className = "task" + (t.done ? " done" : "");
-      div.draggable = true;
-      div.dataset.id = t.id;
-
-      const cb = document.createElement("input");
-      cb.type = "checkbox";
-      cb.checked = !!t.done;
-      cb.addEventListener("change", () => toggleTask(t.id));
-
-      const main = document.createElement("div");
-      main.style.flex = "1";
-      const title = document.createElement("div");
-      title.className = "title";
-      title.textContent = t.title;
-      main.appendChild(title);
-
-      const meta = document.createElement("div");
-      meta.className = "meta";
-      const pBadge = document.createElement("span");
-      pBadge.className = "badge " + (t.priority || "P2");
-      pBadge.textContent = t.priority || "P2";
-      meta.appendChild(pBadge);
-      if (t.starred) {
-        const sBadge = document.createElement("span");
-        sBadge.className = "badge starred";
-        sBadge.textContent = "Etoile";
-        meta.appendChild(sBadge);
-      }
-      if (t.due_at) {
-        const dBadge = document.createElement("span");
-        dBadge.className = "badge";
-        dBadge.textContent = "Echeance " + t.due_at.slice(0, 10);
-        meta.appendChild(dBadge);
-      }
-      if (t.ai_capable) {
-        const aBadge = document.createElement("span");
-        aBadge.className = "badge";
-        aBadge.textContent = "IA-capable";
-        meta.appendChild(aBadge);
-      }
-      main.appendChild(meta);
-
-      const actions = document.createElement("div");
-      actions.className = "actions";
-      const delBtn = document.createElement("button");
-      delBtn.className = "icon-btn";
-      delBtn.textContent = "X";
-      delBtn.title = "Supprimer";
-      delBtn.addEventListener("click", () => deleteTask(t.id));
-      actions.appendChild(delBtn);
-
-      div.appendChild(cb);
-      div.appendChild(main);
-      div.appendChild(actions);
-
-      // Drag&drop natif
-      div.addEventListener("dragstart", (e) => {
-        div.classList.add("dragging");
-        e.dataTransfer.effectAllowed = "move";
-        e.dataTransfer.setData("text/plain", t.id);
-      });
-      div.addEventListener("dragend", () => div.classList.remove("dragging"));
-
-      return div;
-    }
-
-    function render() {
-      const filtered = filterTasks();
-      const buckets = { "UI": [], "U-": [], "-I": [], "--": [] };
-      for (const t of filtered) {
-        const k = (t.eisenhower in buckets) ? t.eisenhower : "--";
-        buckets[k].push(t);
-      }
-      for (const [k, arr] of Object.entries(buckets)) {
-        const list = document.querySelector(`.task-list[data-eisenhower="${k}"]`);
-        list.innerHTML = "";
-        if (arr.length === 0) {
-          const empty = document.createElement("div");
-          empty.className = "empty";
-          empty.textContent = "Aucune tache";
-          list.appendChild(empty);
-        } else {
-          arr.forEach((t) => list.appendChild(renderTaskCard(t)));
-        }
-        const id = "count" + k;
-        const cnt = document.getElementById(id);
-        if (cnt) cnt.textContent = arr.length;
-      }
-    }
-
-    async function addTask(rawTitle) {
-      const title = rawTitle.trim();
-      if (!title) return;
-      const priority = priorityFromTitle(title);
-      const cleanTitle = stripPriorityFromTitle(title);
-      try {
-        const r = await fetch("/api/tasks", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title: cleanTitle || title,
-            priority,
-            eisenhower: priority === "P0" ? "UI" : priority === "P1" ? "U-" : priority === "P2" ? "-I" : "--",
-          }),
-        });
-        const data = await r.json();
-        if (!r.ok) throw new Error(data.error || ("HTTP " + r.status));
-        showToast("Tache ajoutee");
-        $("quickAdd").value = "";
-        await loadTasks();
-      } catch (e) {
-        showToast("Erreur ajout : " + e.message, true);
-      }
-    }
-
-    async function toggleTask(id) {
-      try {
-        const r = await fetch(`/api/tasks/${id}/toggle`, { method: "POST" });
-        if (!r.ok) throw new Error("HTTP " + r.status);
-        await loadTasks();
-      } catch (e) {
-        showToast("Erreur toggle : " + e.message, true);
-      }
-    }
-
-    async function deleteTask(id) {
-      if (!confirm("Supprimer cette tache ?")) return;
-      try {
-        const r = await fetch(`/api/tasks/${id}`, { method: "DELETE" });
-        if (!r.ok) throw new Error("HTTP " + r.status);
-        showToast("Tache supprimee");
-        await loadTasks();
-      } catch (e) {
-        showToast("Erreur suppression : " + e.message, true);
-      }
-    }
-
-    async function moveToQuadrant(taskId, eisenhower) {
-      try {
-        const r = await fetch(`/api/tasks/${taskId}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ eisenhower }),
-        });
-        if (!r.ok) throw new Error("HTTP " + r.status);
-        await loadTasks();
-      } catch (e) {
-        showToast("Erreur deplacement : " + e.message, true);
-      }
-    }
-
-    // Drag&drop sur les quadrants
-    document.querySelectorAll(".quad").forEach((quad) => {
-      quad.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = "move";
-        quad.classList.add("drag-over");
-      });
-      quad.addEventListener("dragleave", () => quad.classList.remove("drag-over"));
-      quad.addEventListener("drop", (e) => {
-        e.preventDefault();
-        quad.classList.remove("drag-over");
-        const taskId = e.dataTransfer.getData("text/plain");
-        const target = quad.dataset.eisenhower;
-        if (taskId && target) moveToQuadrant(taskId, target);
-      });
-    });
-
-    // Toolbar
-    $("addBtn").addEventListener("click", () => addTask($("quickAdd").value));
-    $("quickAdd").addEventListener("keypress", (e) => {
-      if (e.key === "Enter") addTask($("quickAdd").value);
-    });
-    $("filterOpen").addEventListener("click", () => {
-      showOpenOnly = true;
-      $("filterOpen").classList.add("active");
-      $("filterAll").classList.remove("active");
-      render();
-    });
-    $("filterAll").addEventListener("click", () => {
-      showOpenOnly = false;
-      $("filterAll").classList.add("active");
-      $("filterOpen").classList.remove("active");
-      render();
-    });
-    $("filterPriority").addEventListener("change", (e) => {
-      priorityFilter = e.target.value;
-      render();
-    });
-    $("searchBox").addEventListener("input", (e) => {
-      searchQuery = e.target.value;
-      render();
-    });
-
-    loadTasks();
-
-    // S3.05 — Cablage SSE front : subscribe au bus realtime + refetch sur evenement
-    let sseSource = null;
-    let sseRetry = 1000;
-    function connectSSE() {
-      if (typeof EventSource === 'undefined') return;
-      try {
-        sseSource = new EventSource('/api/cockpit/stream');
-        sseSource.addEventListener('hello', () => { sseRetry = 1000; });
-        ['task.updated', 'task.created', 'task.deleted'].forEach((kind) => {
-          sseSource.addEventListener(kind, () => { loadTasks(); });
-        });
-        sseSource.onerror = () => {
-          sseSource && sseSource.close();
-          setTimeout(connectSSE, sseRetry);
-          sseRetry = Math.min(sseRetry * 2, 30000);
-        };
-      } catch (e) { /* non bloquant */ }
-    }
-    connectSSE();
-  </script>
-</body>
-</html>
