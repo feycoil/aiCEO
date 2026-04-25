@@ -211,8 +211,20 @@ Write-Host ""
 Write-Host "[6/6] Dump final pour audit..." -ForegroundColor Yellow
 $dumpScript = Join-Path $PSScriptRoot "..\consistence-dump.ps1"
 if (Test-Path $dumpScript) {
-    & pwsh -File $dumpScript
-    Write-Host "  Dump regenere -> ../github-state.json" -ForegroundColor Green
+    # Detecter l'interpreteur dispo : pwsh (PS7+) en priorite, sinon powershell.exe (PS5)
+    $psExe = $null
+    if (Get-Command pwsh -ErrorAction SilentlyContinue) { $psExe = "pwsh" }
+    elseif (Get-Command powershell -ErrorAction SilentlyContinue) { $psExe = "powershell" }
+    if ($psExe) {
+        & $psExe -File $dumpScript
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "  Dump regenere via $psExe -> ../github-state.json" -ForegroundColor Green
+        } else {
+            Write-Host "  Dump ECHEC (exit=$LASTEXITCODE). Relancer manuellement." -ForegroundColor Red
+        }
+    } else {
+        Write-Host "  Aucun interpreteur PowerShell trouve dans le PATH." -ForegroundColor Red
+    }
 } else {
     Write-Host "  consistence-dump.ps1 introuvable a $dumpScript" -ForegroundColor Yellow
     Write-Host "  Lancer manuellement : pwsh -File 04_docs/_audit-2026-04-25/consistence-dump.ps1" -ForegroundColor Cyan
