@@ -1962,7 +1962,7 @@ const RELEASES = [
   // ── 25/04/2026 — Sprint S3 livré (branche docs/sprint-s3-kickoff, tag v0.5-s3 cible) ──
   {
     id: "rn-mvp-0-5-s3",
-    gh: { milestone:"v0.5-s3", branch:"docs/sprint-s3-kickoff", pr:112, issues:[113,114,115,116,117,118,119,120,121,122,123] },
+    gh: { milestone:"v0.5-s3", tag:"v0.5-s3", branch:"docs/sprint-s3-kickoff", pr:112, issues:[113,114,115,116,117,118,119,120,121,122,123] },
     component: "mvp",
     version: "v0.5-s3",
     date: "25 avr. 2026",
@@ -2044,6 +2044,27 @@ const RELEASES = [
       ]},
       { cat:"perf", items:[
         "Dette technique identifiée : bug truncature <code>ConvertTo-Json -Depth 8</code> sur le dump GitHub (sortie tronquée mid-PR-#112) — non bloquant, à corriger avant prochain dump"
+      ]}
+    ]
+  },
+  // ── 25/04/2026 — Recette CEO v0.5-s1 validée ──
+  {
+    id: "rn-recette-v0-5-s1",
+    gh: { tag:"v0.5-s1-recette" },
+    component: "mvp",
+    version: "v0.5-s1-recette",
+    date: "25 avr. 2026",
+    title: "Recette CEO v0.5-s1 validée — VERDICT GO",
+    summary: "Recette CEO automatisée bout-en-bout sur tag v0.5-s1 : 7/7 sections automatisables passées (pré-requis, boot, npm test 23/23 verts en 684 ms, 6 modules CRUD HTTP, intégrité migration, isolation tests vs prod via AICEO_DB_OVERRIDE, edge cases). Dogfood 5 j différé manuel CEO.",
+    changes: [
+      { cat:"feat", items:[
+        "Tag <code>v0.5-s1-recette</code> posé sur GitHub (commit <code>8d6aaa4</code>) acte la validation technique",
+        "<strong>Rapport recette</strong> <code>04_docs/RAPPORT-RECETTE-v0.5-s1.md</code> (287 lignes, 8 sections + smoke 1-liner)"
+      ]},
+      { cat:"perf", items:[
+        "<strong>23/23 tests verts en 684 ms</strong> (cible &lt; 5 s, soit 7,3× plus rapide)",
+        "Smoke 7 endpoints en <strong>97 ms</strong> (cible &lt; 30 s, soit 309× plus rapide)",
+        "Hash prod DB inchangé après <code>npm test</code> avec <code>AICEO_DB_OVERRIDE</code> — isolation confirmée"
       ]}
     ]
   },
