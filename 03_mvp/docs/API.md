@@ -26,6 +26,12 @@
 - [Smoke-test 1 commande](#smoke-test-1-commande)
 
 ---
+- [Events — extension /week (S3.01)](#events--extension-week)
+- [Big Rocks (S3.01)](#big-rocks-s301)
+- [Weekly Reviews (S3.01)](#weekly-reviews-s301)
+- [Auto-draft Claude (S3.03)](#auto-draft-claude-s303)
+- [System / observability (S3.06)](#system--observability-s306)
+- [SSE temps réel câblé front (S3.05)](#sse-temps-réel-câblé-front-s305)
 
 ## Variables d'environnement
 
@@ -444,6 +450,182 @@ Endpoints conservés tant que la migration vers SQLite n'est pas complète sur l
 > Les nouveaux endpoints `/api/evening/*` (S2.04) prennent **précédence** sur les legacy au routing (cf. `server.js` ligne 67).
 
 ---
+
+---
+
+## S3 Extensions (S3.01 → S3.06)
+
+> Sprint S3 livre l'agenda hebdo, les revues hebdomadaires éditables (Big Rocks max 3 + auto-draft Claude), le câblage SSE temps réel front et l'observabilité de la sync Outlook.
+
+### Events — extension `/week`
+
+`GET /api/events/week?week=YYYY-Www&with_tasks=true` (S3.01)
+
+Retourne les events + (optionnel) les tâches dont `due_at` tombe dans la fenêtre ISO de la semaine demandée. Lundi inclus, lundi suivant exclu.
+
+```bash
+curl http://localhost:3001/api/events/week?week=2026-W23
+curl http://localhost:3001/api/events/week?week=2026-W23&with_tasks=true
+# Sans week : 7 jours à partir d'aujourd'hui (legacy)
+curl http://localhost:3001/api/events/week
+```
+
+Réponse :
+
+```json
+{
+  "from": "2026-06-01T00:00:00.000Z",
+  "to": "2026-06-08T00:00:00.000Z",
+  "week": "2026-W23",
+  "events": [...],
+  "count": 5,
+  "tasks": [...],
+  "tasks_count": 3
+}
+```
+
+### Big Rocks (S3.01)
+
+Top 3 priorités hebdomadaires. Contrainte applicative : **maximum 3 par semaine**, le 4ᵉ POST renvoie `400`.
+
+```bash
+# Liste de la semaine
+curl http://localhost:3001/api/big-rocks?week=2026-W23
+
+# Création (status defini par defaut, ordre auto-attribué = MAX(ordre)+1)
+curl -X POST http://localhost:3001/api/big-rocks \
+  -H "Content-Type: application/json" \
+  -d '{"week":"2026-W23","title":"Cabler SSE front","status":"defini"}'
+
+# Mise à jour (PATCH)
+curl -X PATCH http://localhost:3001/api/big-rocks/<id> \
+  -H "Content-Type: application/json" \
+  -d '{"status":"accompli"}'
+
+# Suppression
+curl -X DELETE http://localhost:3001/api/big-rocks/<id>
+```
+
+Statuts valides (CHECK constraint) : `defini`, `en-cours`, `accompli`, `rate`.
+
+Erreur contrainte max 3 :
+
+```json
+{
+  "error": "contrainte max 3 big rocks par semaine atteinte",
+  "week": "2026-W23",
+  "current": 3,
+  "max": 3
+}
+```
+
+### Weekly Reviews (S3.01)
+
+Une revue par semaine (UNIQUE constraint sur `week_id`). Upsert idempotent.
+
+```bash
+# Lecture par semaine
+curl http://localhost:3001/api/weekly-reviews?week=2026-W23
+
+# Liste des 12 dernières
+curl http://localhost:3001/api/weekly-reviews
+
+# Upsert (insert si pas de row pour cette semaine, sinon update)
+curl -X POST http://localhost:3001/api/weekly-reviews \
+  -H "Content-Type: application/json" \
+  -d '{"week":"2026-W23","intention":"Livrer S3 propre","bilan":"## Focus...","mood":"bien"}'
+```
+
+Champs : `intention`, `big_rocks_done` (JSON), `bilan` (markdown), `cap_prochaine`, `mood`, `notes`, `draft_by_llm` (0/1).
+
+### Auto-draft Claude (S3.03)
+
+`POST /api/weekly-reviews/:week/draft` — agrège les données de la semaine (tâches done, sessions arbitrage/soir, big rocks) et appelle Claude pour produire un brouillon markdown structuré (`## Focus`, `## Faits saillants`, `## Écarts`, `## Top 3 demain`).
+
+```bash
+# Mode normal (Claude si ANTHROPIC_API_KEY définie)
+curl -X POST http://localhost:3001/api/weekly-reviews/2026-W23/draft
+
+# Mode fallback forcé (squelette markdown vide, sans appel API)
+curl -X POST "http://localhost:3001/api/weekly-reviews/2026-W23/draft?fallback=true"
+```
+
+Réponse (source claude) :
+
+```json
+{
+  "week": "2026-W23",
+  "markdown": "## Focus\n…",
+  "source": "claude",
+  "model": "claude-sonnet-4-6",
+  "usage": { "input_tokens": 850, "output_tokens": 320 },
+  "context_summary": { "tasks_done": 12, "tasks_open": 2, "big_rocks": 3 }
+}
+```
+
+Réponse (source fallback) si pas de clé API ou `?fallback=true` :
+
+```json
+{
+  "week": "2026-W23",
+  "markdown": "## Focus\n_(template offline …)_\n…",
+  "source": "fallback",
+  "reason": "no ANTHROPIC_API_KEY",
+  "context_summary": { "tasks_done": 12, "tasks_open": 2, "big_rocks": 3 }
+}
+```
+
+Rubric d'évaluation 6 critères (cf. ADR S3.00) : focus 1 ligne · ton factuel · 200-400 mots · ≥ 3 sources citées · top 3 demain · écarts surfacés.
+
+### System / observability (S3.06)
+
+`GET /api/system/last-sync` — fraîcheur de la dernière sync Outlook (mtime de `data/emails-summary.json`). Source de l'alerte cockpit `outlook_stale`.
+
+```bash
+curl http://localhost:3001/api/system/last-sync
+```
+
+Réponse :
+
+```json
+{
+  "ok": true,
+  "source": "emails-summary.json",
+  "summaryPath": "/.../data/emails-summary.json",
+  "lastSyncAt": "2026-04-25T14:30:00.000Z",
+  "lastSyncAgeMin": 32,
+  "level": "ok",
+  "threshold": { "warn_min": 240, "critical_min": 1440 }
+}
+```
+
+Niveau d'alerte : `ok` (< 4 h), `warn` (4-24 h), `critical` (> 24 h ou fichier absent). Le cockpit `GET /api/cockpit/today` injecte automatiquement une `alert.kind = "outlook_stale"` quand le niveau passe en warn ou critical.
+
+`GET /api/system/health` — ping détaillé : pid, uptime, mémoire, version Node.
+
+```bash
+curl http://localhost:3001/api/system/health
+```
+
+### SSE temps réel câblé front (S3.05)
+
+Le bus `EventEmitter` posé en S2.10 émet désormais sur les routes mutatrices :
+
+| Route | Émet |
+|---|---|
+| `POST /api/tasks` | `task.created` |
+| `PATCH /api/tasks/:id` | `task.updated` |
+| `POST /api/tasks/:id/toggle` | `task.updated` |
+| `DELETE /api/tasks/:id` | `task.deleted` |
+
+Le front (cockpit `index.html`, `taches.html`, `agenda.html`) souscrit via `EventSource('/api/cockpit/stream')` avec reconnexion exponentielle (1 s → 30 s plafond) et `refetch()` automatique sur événement.
+
+```bash
+# Suivre le flux SSE en CLI
+curl -N http://localhost:3001/api/cockpit/stream
+```
+
+Heartbeat `: ping <ts>` toutes les 25 s pour traverser les proxies (Zscaler timeout 60 s).
 
 ## Codes HTTP
 

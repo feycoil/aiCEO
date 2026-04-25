@@ -25,6 +25,7 @@ const arbitrageRouter = require("./src/routes/arbitrage");
 const eveningRouter   = require("./src/routes/evening");
 const weeklyReviewsRouter = require("./src/routes/weekly-reviews");
 const bigRocksRouter      = require("./src/routes/big-rocks");
+const systemRouter        = require("./src/routes/system");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3001;
@@ -47,6 +48,9 @@ app.get("/taches", (req, res) => {
 });
 app.get("/agenda", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "agenda.html"));
+});
+app.get("/revues", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "revues", "index.html"));
 });
 
 // --- API ---
@@ -72,6 +76,7 @@ app.use("/api/arbitrage", arbitrageRouter);
 app.use("/api/evening",   eveningRouter);
 app.use("/api/weekly-reviews", weeklyReviewsRouter);
 app.use("/api/big-rocks",      bigRocksRouter);
+app.use("/api/system",         systemRouter);
 
 // --- Legacy seed (compat arbitrage UI tant que la migration n'est pas finalisee) ---
 app.get("/api/seed", (req, res) => {

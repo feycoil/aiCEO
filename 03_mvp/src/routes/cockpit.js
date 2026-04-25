@@ -24,6 +24,7 @@
  */
 const express = require('express');
 const { getDb, now } = require('../db');
+const { getLastSyncStatus } = require('./system');
 
 const router = express.Router();
 
@@ -139,6 +140,24 @@ function buildCockpit() {
       kind: 'big_rocks_missing',
       message: `Aucun Big Rock défini pour la semaine ${week}`
     });
+  }
+
+  // S3.06 — Alerte fraicheur Outlook autosync (lastSync > 4h => warn, > 24h => critical)
+  try {
+    const sync = getLastSyncStatus();
+    if (sync.level === 'warn' || sync.level === 'critical') {
+      const ageH = sync.lastSyncAgeMin != null ? Math.round(sync.lastSyncAgeMin / 60) : '?';
+      alerts.push({
+        level: sync.level,
+        kind: 'outlook_stale',
+        message: sync.lastSyncAt
+          ? `Sync Outlook ancienne (${ageH} h). Verifier autosync schtasks.`
+          : `emails-summary.json absent. Lancer fetch-outlook.ps1.`,
+        ref: { type: 'system', id: 'last-sync' },
+      });
+    }
+  } catch (e) {
+    // tolerant : pas d'alerte si fichier introuvable / permissions
   }
 
   return {

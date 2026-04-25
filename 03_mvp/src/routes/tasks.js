@@ -15,6 +15,7 @@
  */
 const express = require('express');
 const { getDb, crud, uuid7, now } = require('../db');
+const { emitChange } = require('../realtime');
 
 const tasks = crud('tasks');
 
@@ -97,6 +98,7 @@ router.post('/', (req, res) => {
     };
     const created = tasks.insert(data);
     logEvent(created.id, 'created', { source: data.source_type });
+    emitChange('task.created', { id: created.id });
     res.status(201).json({ task: created });
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -137,6 +139,7 @@ router.patch('/:id', (req, res) => {
     if (!Object.keys(patch).length) return res.json({ task: existing });
     const updated = tasks.update(req.params.id, patch);
     logEvent(req.params.id, 'edited', { fields: Object.keys(patch) });
+    emitChange('task.updated', { id: updated.id, done: updated.done });
     res.json({ task: updated });
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -151,6 +154,7 @@ router.delete('/:id', (req, res) => {
     const existed = tasks.get(req.params.id);
     if (!existed) return res.status(404).json({ error: 'tâche introuvable' });
     tasks.remove(req.params.id);
+    emitChange('task.deleted', { id: existed.id });
     res.json({ ok: true, removed: existed.id });
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -167,6 +171,7 @@ router.post('/:id/toggle', (req, res) => {
     const newDone = t.done ? 0 : 1;
     const updated = tasks.update(req.params.id, { done: newDone });
     logEvent(req.params.id, newDone ? 'done' : 'undone', {});
+    emitChange('task.updated', { id: updated.id, done: updated.done });
     res.json({ task: updated });
   } catch (e) {
     res.status(500).json({ error: e.message });

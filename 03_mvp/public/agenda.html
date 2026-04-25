@@ -618,6 +618,26 @@
   const initialWeek = getWeekFromUrl() || isoWeek(new Date());
   setWeekInUrl(initialWeek);
   init(initialWeek);
+
+  // S3.05 — Cablage SSE front : refetch sur task.updated/.created/.deleted
+  let sseSource = null;
+  let sseRetry = 1000;
+  function connectSSE() {
+    if (typeof EventSource === 'undefined') return;
+    try {
+      sseSource = new EventSource('/api/cockpit/stream');
+      sseSource.addEventListener('hello', () => { sseRetry = 1000; });
+      ['task.updated', 'task.created', 'task.deleted'].forEach((kind) => {
+        sseSource.addEventListener(kind, () => { refetchAndRender().catch(() => {}); });
+      });
+      sseSource.onerror = () => {
+        sseSource && sseSource.close();
+        setTimeout(connectSSE, sseRetry);
+        sseRetry = Math.min(sseRetry * 2, 30000);
+      };
+    } catch (e) { /* non bloquant */ }
+  }
+  connectSSE();
 })();
 </script>
 </body>

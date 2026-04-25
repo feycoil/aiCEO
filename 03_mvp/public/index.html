@@ -359,18 +359,45 @@
     }
   }
 
-  try {
-    const r = await fetch('/api/cockpit/today', { headers: { 'Accept': 'application/json' } });
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const data = await r.json();
-    $('meta').textContent = fmtFr(data.date) + ' · ' + data.week_id;
-    renderIntention(data.intention);
-    renderBigRocks(data.big_rocks || []);
-    renderCounters(data.counters);
-    renderAlerts(data.alerts || []);
-  } catch (e) {
-    renderError(e.message || String(e));
+  async function refetch() {
+    try {
+      const r = await fetch('/api/cockpit/today', { headers: { 'Accept': 'application/json' } });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const data = await r.json();
+      $('meta').textContent = fmtFr(data.date) + ' · ' + data.week_id;
+      renderIntention(data.intention);
+      renderBigRocks(data.big_rocks || []);
+      renderCounters(data.counters);
+      renderAlerts(data.alerts || []);
+    } catch (e) {
+      renderError(e.message || String(e));
+    }
   }
+
+  // S3.05 — Cablage SSE front : subscribe au bus realtime + refetch sur evenement
+  let sseSource = null;
+  let sseRetry = 1000; // ms, exponentiel jusqu'a 30 s
+  function connectSSE() {
+    if (typeof EventSource === 'undefined') return; // navigateur trop ancien
+    try {
+      sseSource = new EventSource('/api/cockpit/stream');
+      sseSource.addEventListener('hello', () => { sseRetry = 1000; });
+      ['task.updated', 'task.created', 'task.deleted', 'cockpit.refresh', 'evening.committed'].forEach((kind) => {
+        sseSource.addEventListener(kind, () => { refetch(); });
+      });
+      sseSource.onerror = () => {
+        sseSource && sseSource.close();
+        // Reconnexion exponentielle, plafonne a 30 s
+        setTimeout(connectSSE, sseRetry);
+        sseRetry = Math.min(sseRetry * 2, 30000);
+      };
+    } catch (e) {
+      // pas bloquant, le cockpit continue de tourner sans live
+    }
+  }
+
+  await refetch();
+  connectSSE();
 })();
 </script>
 </body>
