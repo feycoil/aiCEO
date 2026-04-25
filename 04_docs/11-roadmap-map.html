@@ -506,6 +506,102 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
   .vbar-track { height: 18px; }
   .vbar-value { text-align: left; }
 }
+
+/* ──────────────────────────────────────────────────────────────
+ * GitHub references (issues, PRs, milestones) — style natif GH
+ * ────────────────────────────────────────────────────────────── */
+.gh-refs { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center;
+           margin-top: var(--space-3); padding-top: var(--space-3);
+           border-top: 1px dashed color-mix(in srgb, var(--text-3) 30%, transparent); }
+.gh-refs.compact { margin-top: 6px; padding-top: 0; border-top: none; }
+.gh-refs-empty { color: var(--text-3); font-style: italic; font-size: var(--fs-small); }
+.gh-refs-loading { color: var(--text-3); font-size: var(--fs-small); }
+.gh-refs-stale  { color: #b45309; font-size: var(--fs-small); }
+
+.gh-ref { display: inline-flex; align-items: center; gap: 6px;
+          padding: 3px 10px 3px 8px; border-radius: 999px;
+          background: #f6f8fa; color: #1f2328;
+          font-family: var(--font-sans); font-size: 12px; line-height: 1.4;
+          text-decoration: none; border: 1px solid #d0d7de;
+          transition: background .12s; white-space: nowrap; }
+.gh-ref:hover { background: #eaeef2; text-decoration: none; }
+.gh-ref .gh-icon { width: 14px; height: 14px; flex-shrink: 0; }
+.gh-ref .gh-num { font-weight: 600; color: #57606a; font-variant-numeric: tabular-nums; }
+.gh-ref .gh-title { color: #1f2328; max-width: 280px; overflow: hidden;
+                    text-overflow: ellipsis; }
+
+/* state badges (couleurs GH officielles) */
+.gh-state { display: inline-flex; align-items: center; gap: 4px;
+            padding: 2px 7px; border-radius: 999px;
+            font-size: 11px; font-weight: 600; line-height: 1.4;
+            color: #fff; }
+.gh-state.open    { background: #1a7f37; }   /* GH "Open" green */
+.gh-state.closed  { background: #8250df; }   /* GH "Closed (completed)" purple */
+.gh-state.notplanned { background: #6e7781; } /* GH "Closed (not planned)" gray */
+.gh-state.merged  { background: #8250df; }   /* GH "Merged" purple */
+.gh-state.draft   { background: #6e7781; }   /* GH "Draft" gray */
+
+/* labels (GitHub-style colored pills, contrast auto) */
+.gh-label { display: inline-block; padding: 1px 8px; border-radius: 999px;
+            font-size: 11px; line-height: 1.5; font-weight: 500;
+            border: 1px solid color-mix(in srgb, var(--gh-bg) 80%, black);
+            background: var(--gh-bg); color: var(--gh-fg); }
+
+/* milestone */
+.gh-milestone { display: inline-flex; align-items: center; gap: 4px;
+                padding: 2px 8px; border-radius: 999px;
+                background: #ddf4ff; color: #0969da;
+                font-size: 11px; line-height: 1.5; }
+.gh-milestone.closed { background: #e7e1ff; color: #6639ba; }
+
+/* assignees / reviewers */
+.gh-people { display: inline-flex; align-items: center; gap: 3px; }
+.gh-people .gh-label-mini { font-size: 10px; color: #57606a; margin-right: 4px;
+                            text-transform: uppercase; letter-spacing: 0.04em; }
+.gh-avatar { display: inline-flex; align-items: center; justify-content: center;
+             width: 20px; height: 20px; border-radius: 50%;
+             background: color-mix(in srgb, var(--rose) 25%, var(--surface-2));
+             color: var(--text-1); font-size: 10px; font-weight: 600;
+             border: 1px solid var(--surface-3);
+             text-transform: uppercase; }
+.gh-avatar.reviewer { background: color-mix(in srgb, var(--emerald) 30%, var(--surface-2)); }
+.gh-avatar.reviewer.changes_requested { background: color-mix(in srgb, var(--rose) 40%, var(--surface-2)); }
+.gh-avatar.reviewer.commented { background: color-mix(in srgb, var(--amber) 30%, var(--surface-2)); }
+
+/* branch chip */
+.gh-branch { display: inline-flex; align-items: center; gap: 4px;
+             padding: 2px 8px; border-radius: 999px;
+             background: var(--surface-2); color: var(--text-2);
+             font-family: var(--font-mono, monospace); font-size: 11px; }
+.gh-branch::before { content: "⌥"; opacity: 0.6; }
+
+/* tag chip */
+.gh-tag { display: inline-flex; align-items: center; gap: 4px;
+          padding: 2px 8px; border-radius: 999px;
+          background: #fff8c5; color: #633c01;
+          font-family: var(--font-mono, monospace); font-size: 11px; border: 1px solid #d4a72c40; }
+.gh-tag::before { content: "🏷"; }
+
+/* commit chip */
+.gh-commit { display: inline-flex; align-items: center; gap: 4px;
+             padding: 2px 8px; border-radius: 999px;
+             background: var(--surface-2); color: var(--text-2);
+             font-family: var(--font-mono, monospace); font-size: 11px; }
+.gh-commit::before { content: "⎇"; opacity: 0.6; }
+
+/* full GH detail block (used in milestone drawer) */
+.gh-detail { margin-top: var(--space-3); padding: var(--space-3) var(--space-3);
+             background: #f6f8fa; border: 1px solid #d0d7de;
+             border-radius: var(--radius-xs); }
+.gh-detail h5 { margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase;
+                letter-spacing: 0.05em; color: #57606a; font-weight: 600; }
+.gh-detail .gh-row { display: flex; flex-wrap: wrap; gap: 6px 8px;
+                     align-items: center; margin-bottom: 6px; }
+.gh-detail .gh-row:last-child { margin-bottom: 0; }
+.gh-detail .gh-row-label { font-size: 11px; color: #57606a;
+                            text-transform: uppercase; letter-spacing: 0.04em;
+                            min-width: 80px; }
+
 </style>
 <!-- Mermaid pour les 3 blocs ciblés (architecture / dépendances / ADR) -->
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
@@ -1217,6 +1313,7 @@ const MILESTONES = [
     desc:"5-card layout intention+progression, drawer source-inspector, gamif (streak/badges), end-of-day ritual.",
     artefacts:["aiCEO_Agent/index.html (v4)","drawer.css","gamif.js"] },
   { id:"web-06", lane:"web", period:"avril-s3", status:"done", title:"DS aligné MVP (Issue #1)", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
+    gh:{ issue:1, branch:"ds/wire-mvp-to-ds", milestone:"sprint-externe-v0.5" },
     desc:"Issue #1 close : 12 polices Fira Sans + Aubrielle déployées dans 03_mvp/public/assets/fonts/, link CSS injecté, 6 variables inline migrées vers tokens DS Twisty. Branche ds/wire-mvp-to-ds poussée sur origin.",
     artefacts:["03_mvp/public/assets/fonts/","02_design-system/colors_and_type.css"] },
   { id:"web-07", lane:"web", period:"avril-s3", status:"done", title:"Atelier de cohérence S1-S8", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
@@ -1269,21 +1366,27 @@ const MILESTONES = [
 
   // ── Sprint externe — éclaté en 6 livrables (anciennement mvp-10) ──
   { id:"mvp-10a", lane:"mvp", period:"avril-s3", status:"done", title:"Benchmark v2 (Issue #2)", date:"22 avril 2026", planned:"2026-04-22", actual:"2026-04-22",
+    gh:{ issue:2, branch:"docs/benchmark-v2", milestone:"sprint-externe-v0.5" },
     desc:"Étude approfondie 10-12 produits concurrents. P0 bloquant pour le pitch investisseur. Couvre Motion, Reclaim, Sunsama, Akiflow, Rize, Sweepy, Magical, Reflect, Mem, Adaptive AI Coach.",
     artefacts:["04_docs/02-benchmark.md (v2)"] },
   { id:"mvp-10b", lane:"mvp", period:"avril-s3", status:"done", title:"Pitch onepage (Issue #3)", date:"23 avril 2026", planned:"2026-04-23", actual:"2026-04-23",
+    gh:{ issue:3, branch:"docs/pitch-onepage", milestone:"sprint-externe-v0.5" },
     desc:"1 page A4 PDF stylé DS Twisty pour ouvrir des conversations. Tagline + 3 piliers + ROI + appel à l'action.",
     artefacts:["docs/PITCH-ONEPAGE.md","docs/PITCH-ONEPAGE.html"] },
   { id:"mvp-10c", lane:"mvp", period:"avril-s3", status:"done", title:"Business case (Issue #4)", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
+    gh:{ issue:4, branch:"docs/business-case", milestone:"sprint-externe-v0.5" },
     desc:"BUSINESS-CASE.md détaillé + synthèse PDF stylée. Hypothèses revenu, coûts 18 mois, ROI, point mort 250-350 CEO clients, trajectoire 1,69 M€.",
     artefacts:["docs/BUSINESS-CASE.md","docs/BUSINESS-CASE-SYNTHESE.html","docs/BUSINESS-CASE-SYNTHESE.pdf"] },
   { id:"mvp-10d", lane:"mvp", period:"avril-s3", status:"done", title:"Onboarding CEO pair (Issue #5)", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
+    gh:{ issue:5, branch:"docs/onboarding-ceo", milestone:"sprint-externe-v0.5" },
     desc:"Guide d'installation pour CEO pair externe : pré-requis (Node, Outlook, clé API), import Outlook 30j, premier arbitrage, FAQ, troubleshooting.",
     artefacts:["docs/ONBOARDING-CEO-PAIR.md"] },
   { id:"mvp-10e", lane:"mvp", period:"avril-s3", status:"done", title:"Lettre intro pair (Issue #6)", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
+    gh:{ issue:6, branch:"docs/lettre-intro", milestone:"sprint-externe-v0.5" },
     desc:"1 page pair-à-pair signée, ton CEO-CEO sans jargon. Mention « disponible juillet 2026 » pour pré-recrutement des 2-3 cibles.",
     artefacts:["docs/LETTRE-INTRO-CEO-PAIR.md"] },
   { id:"mvp-10f", lane:"mvp", period:"avril-s3", status:"done", title:"Pitch deck investisseur (Issue #7)", date:"25 avril 2026", planned:"2026-04-25", actual:"2026-04-25",
+    gh:{ issue:7, branch:"docs/pitch-deck", milestone:"sprint-externe-v0.5" },
     desc:"16 slides .pptx adapté du deck exec Feycoil. Couvre problème, solution, marché, traction MVP, team, roadmap, ask 110k€ → 290k€ → 693k€.",
     artefacts:["docs/PITCH-DECK-INVESTISSEUR.pptx"] },
 
@@ -1292,16 +1395,19 @@ const MILESTONES = [
     desc:"GO ExCom inconditionnel + pivot exécution : v0.5 produite en binôme CEO + Claude (pas de dev externe). Cadence 6 sprints / 10 sem / 5 mai → 14 juillet conservée. Budget effectif ~4,6 k€ infra + provision (105 k€ dev externe neutralisés).",
     artefacts:["04_docs/DOSSIER-GO-NOGO-V05.md","04_docs/POA-V05.xlsx","04_docs/KICKOFF-V05.pptx","00_BOUSSOLE/DECISIONS.md (ADR GO + ADR internalisation 25/04)"] },
   { id:"v05-s1", lane:"mvp", period:"avril-s4", status:"done", title:"Sprint S1 — Backend stable SQLite", date:"25 avril 2026 · livré", planned:"2026-05-09", actual:"2026-04-25",
+    gh:{ milestone:"v0.5-s1", tag:"v0.5-s1", commit:"141ca0f" },
     desc:"Sprint 1 LIVRÉ en avance par binôme CEO + Claude (vs cible 9 mai) : 14 tables SQLite + 18 indexes, 41 routes REST sur 6 modules, 23/23 tests verts en sandbox, migration data.js → SQLite OK (3/14/28/10/25/25). Hotfix S1.13 : pivot better-sqlite3 → node:sqlite (zéro binaire natif, Node 22.5+). Tag v0.5-s1 posé sur 141ca0f. Recette CEO en dogfood depuis 22/04, 0 incident bloquant. Marge ~2 j réinjectée en S2.",
     artefacts:["03_mvp/docs/SPRINT-S1-RECETTE.md","03_mvp/src/db-driver.js (node:sqlite)","tag v0.5-s1 → 141ca0f","04_docs/RELEASE-NOTES-v0.5-s1.md","04_docs/DOSSIER-GO-NOGO-V05.md §Plan d'exécution S1"] },
 
   // ── Sprint S2 — Cockpit unifié + flux matin/soir + tâches (LIVRÉ 25/04) ──
   { id:"v05-s2", lane:"mvp", period:"avril-s4", status:"done", title:"Sprint S2 — Cockpit live + rituels + spike SSE", date:"25 avril 2026 · livré", planned:"2026-06-01", actual:"2026-04-25",
+    gh:{ milestone:"v0.5-s2", branch:"release/v0.5-s2" },
     desc:"Sprint S2 LIVRÉ EN AVANCE par binôme CEO + Claude (vs cible 01/06) : 10/10 issues closes (S2.00 → S2.10), 11 commits sur release/v0.5-s2 (accea60 → 6f4e6e8), 55/55 tests verts (49 S1 + 6 nouveaux). Cockpit live GET /api/cockpit/today (counters SQL + alertes). Rituels matin/soir avec streak persistant. Modèles métier élargis (projets/groupes/contacts/recherche globale). IA décisions Anthropic + fallback. Doc API complète 487 lignes / 38 exemples curl. Spike SSE livré (bus + endpoint /stream + 3 tests + ADR SSE retenu vs WS) — non câblé front, reporté S3.05. 3 parcours e2e HTTP-boundary (Playwright différé S3+).",
     artefacts:["release/v0.5-s2","11 commits accea60 → 6f4e6e8","docs/API.md (487 lignes)","docs/SPIKE-WEBSOCKET.md","data/migrations/2026-04-25-init-schema.sql",".github/PR-S2.md","tag cible v0.5-s2 post-merge"] },
 
   // ── Sprint S3 — Agenda + Revues + SSE live + Outlook autosync (KICKOFF) ──
   { id:"v05-s3", lane:"mvp", period:"juin-s2", status:"doing", title:"Sprint S3 — Agenda + Revues + SSE live + Outlook autosync", date:"02 → 13 juin 2026 · 10 j-ouvrés · 22,1 k€", planned:"2026-06-13", actual:null,
+    gh:{ milestone:"v0.5-s3", branch:"docs/sprint-s3-kickoff" },
     desc:"Migration des 2 dernières pages métier (agenda.html · revues/index.html) + 2 chantiers transverses (câblage SSE front + Outlook autosync 2 h via schtasks). Spike Service Windows (POC node-windows) prépare S5. 11 issues S3.00 → S3.10 · 11,1 j-dev sur 20 j capacité (45 % marge dailys/retro/demos). Démarrage lundi 02/06 09:00 · demo intermédiaire 06/06 (agenda + cockpit live) · démo finale 13/06 16:00 · tag cible v0.5-s3 lundi 16/06.",
     artefacts:["04_docs/DOSSIER-SPRINT-S3.md","04_docs/POA-SPRINT-S3.xlsx","04_docs/KICKOFF-S3.pptx","branche release/v0.5-s3","tag cible v0.5-s3 sur 16/06"] },
 
@@ -1324,6 +1430,7 @@ const MILESTONES = [
     desc:"Modes de panne & remèdes : SQLite verrouillée, Outlook COM timeout, proxy SSL MITM, Service Windows ne démarre pas. Parqué sprint Phase 4 (Service+E2E).",
     artefacts:["03_mvp/docs/RUNBOOK-OPS.md (parqué)"] },
   { id:"hub-prereq-openapi", lane:"hub", period:"mai-juin", status:"todo", title:"OpenAPI 3.0 hand-written", date:"sprint v0.5 · sem 3-4", planned:"2026-05-29", actual:null,
+    gh:{ issue:10 },
     desc:"Spec OpenAPI 3.0 auto-générée via zod-to-openapi pour les 40+ endpoints. Audit S6 atelier l'a parqué Phase 2 (API+Outlook). Issue #10 GitHub.",
     artefacts:["03_mvp/docs/openapi.yaml (parqué)"] },
 
@@ -1376,12 +1483,15 @@ const BASELINE = {
 const JOURNAL = [
   { ts:"2026-04-25", type:"décision", component:"mvp", title:"Sprint S3 — kickoff préparé (agenda + revues + SSE live + Outlook autosync)",
     detail:"Kickoff S3 prêt : DOSSIER-SPRINT-S3.md (7 sections, 11 issues détaillées), POA-SPRINT-S3.xlsx (6 feuilles, 25 formules, 0 erreur, palette Coral Energy), KICKOFF-S3.pptx (12 slides QA passé). 11 issues S3.00 → S3.10 (11,1 j-dev / 20 capacité = 45 % marge). 2 pages migrées (agenda.html drag-drop hebdo + revues/index.html avec auto-draft Claude rubric ≥ 5/6) + 2 chantiers transverses (câblage SSE front du bus prototypé S2.10 + Outlook autosync 2 h via schtasks /sc HOURLY /mo 2 + endpoint /api/system/last-sync) + spike Service Windows (POC node-windows time-box 1,5 j strict). Démarrage lundi 02/06 09:00 · demo intermédiaire 06/06 · démo finale 13/06 16:00 · tag v0.5-s3 cible 16/06. Budget S3 = 22,1 k€ (cumul v0.5 fin S3 = 66,3 k€ / 110 k€ = 60 %).",
+    gh:{ milestone:"v0.5-s3", branch:"docs/sprint-s3-kickoff" },
     delta:0, source:"04_docs/DOSSIER-SPRINT-S3.md" },
   { ts:"2026-04-25", type:"livraison", component:"mvp", title:"Sprint S2 livré (release/v0.5-s2) — Cockpit live + rituels + spike SSE",
     detail:"Sprint S2 LIVRÉ EN AVANCE : 10/10 issues closes (S2.00 → S2.10), 11 commits sur release/v0.5-s2 (accea60 → 6f4e6e8), 55/55 tests verts (49 S1 + 6 nouveaux). Cockpit live GET /api/cockpit/today (counters SQL + alertes overdue/stale/big rocks manquants). Rituels matin/soir : arbitrage matinal (top 3/délégation IA/report) + bilan du soir (humeur ∈ {bien,moyen,mauvais} + énergie ∈ [1,5] + top 3 demain) avec streak persistant dans settings.evening.longest_streak. Modèles métier élargis : projects/groups/contacts CRUD + recherche globale full-text léger. IA décisions Anthropic + fallback offline. Doc API 487 lignes / 38 exemples curl + smoke-test 1 commande. Spike SSE retenu vs WS (mono-user, EventSource natif, zéro dépendance) : bus EventEmitter + GET /api/cockpit/stream + heartbeat 25 s + 3 tests realtime — NON câblé front (reporté S3.05). 3 parcours e2e HTTP-boundary (Playwright différé S3+ car Chromium infaisable en sandbox). Time-box S2.10 livré en 1,5 j vs 3 j → gain 1,5 j redéployé sur S2.07.",
+    gh:{ milestone:"v0.5-s2", branch:"release/v0.5-s2" },
     delta:-37, source:".github/PR-S2.md" },
   { ts:"2026-04-25", type:"livraison", component:"mvp", title:"Sprint S1 livré (tag v0.5-s1) — Backend stable SQLite",
     detail:"14 tables SQLite + 18 indexes via 1 migration idempotente. 41 routes REST sur 6 modules (tasks/decisions/contacts/projects/groups/events). Migration data.js → SQLite OK (3 groupes / 14 projets / 28 tâches / 10 décisions / 25 contacts / 25 events). 23/23 tests verts en sandbox (base isolée AICEO_DB_OVERRIDE). Recette Windows en dogfood CEO depuis 22/04, 0 incident bloquant.",
+    gh:{ milestone:"v0.5-s1", tag:"v0.5-s1", commit:"141ca0f" },
     delta:-14, source:"04_docs/RELEASE-NOTES-v0.5-s1.md" },
   { ts:"2026-04-25", type:"écart", component:"mvp", title:"Hotfix S1.13 — pivot better-sqlite3 → node:sqlite",
     detail:"better-sqlite3@11 n'a pas de prebuilds Node 24, et node-gyp échoue sans VS Build Tools : install bloqué côté poste CEO. Pivot vers node:sqlite (intégré Node 22.5+, stable Node 24) via adaptateur drop-in src/db-driver.js. Zéro dépendance native. Refactor du test isolation (AICEO_DB_OVERRIDE) au passage : la base de prod n'est plus jamais touchée. Tag v0.5-s1 redéplacé sur 141ca0f.",
@@ -1391,6 +1501,7 @@ const JOURNAL = [
     delta:0, source:"04_docs/11-roadmap-map.html" },
   { ts:"2026-04-25", type:"livraison", component:"mvp", title:"Pitch deck investisseur livré (Issue #7)",
     detail:"16 slides .pptx adapté du deck exec. Closes #7. Sprint externe v0.5 entièrement clos : 6/6 livrables externes.",
+    gh:{ issue:7, branch:"docs/pitch-deck" },
     delta:0, source:"docs/PITCH-DECK-INVESTISSEUR.pptx" },
   { ts:"2026-04-24", type:"livraison", component:"docs", title:"Atelier de cohérence S1-S8 closé",
     detail:"8 sessions menées en 1 journée. 7 dissonances critiques résolues. 8 ADRs supplémentaires versées dans DECISIONS.md (total 12 ADRs).",
@@ -1412,6 +1523,7 @@ const JOURNAL = [
     delta:0, source:"https://github.com/etic-services/aiCEO" },
   { ts:"2026-04-24", type:"livraison", component:"cockpit", title:"DS aligné MVP (Issue #1)",
     detail:"12 polices Fira Sans + Aubrielle déployées dans MVP, 6 variables CSS inline migrées vers tokens DS Twisty. Branche ds/wire-mvp-to-ds poussée.",
+    gh:{ issue:1, branch:"ds/wire-mvp-to-ds" },
     delta:0, source:"03_mvp/public/assets/fonts/" },
   { ts:"2026-04-24", type:"livraison", component:"mvp", title:"Run réel 24/04 validé",
     detail:"28/28 tâches classées en 41s · 5,2k tokens in / 2,5k out · ≈1ct/arbitrage. Budget quotidien stable ≈1,5ct.",
@@ -1447,6 +1559,171 @@ const JOURNAL = [
 
 const TYPE_LABEL = { livraison:"Livraison", "décision":"Décision", "écart":"Écart", dérive:"Dérive", "ajout-hors-plan":"Ajout hors plan" };
 const TYPE_COLOR = { livraison:"emerald", "décision":"sky", "écart":"amber", dérive:"rose", "ajout-hors-plan":"violet" };
+
+// ──────────────────────────────────────────────────────────────
+// GitHub state — chargé depuis _audit-2026-04-25/github-state.json
+// si présent. Permet d'enrichir les références issue/PR avec
+// labels, milestone, assignees, reviews. Tolérant à l'absence
+// du fichier : on dégrade en lien minimal.
+// ──────────────────────────────────────────────────────────────
+const GH_REPO = "feycoil/aiCEO";
+let GH_STATE = { loaded: false, generated_at: null, issues: {}, pulls: {}, milestones: {}, labels: {} };
+
+async function loadGhState() {
+  try {
+    const r = await fetch("_audit-2026-04-25/github-state.json", { cache: "no-store" });
+    if (!r.ok) return;
+    const data = await r.json();
+    GH_STATE.loaded = true;
+    GH_STATE.generated_at = data.generated_at;
+    (data.issues || []).forEach(i => { GH_STATE.issues[i.number] = i; });
+    (data.pulls  || []).forEach(p => { GH_STATE.pulls[p.number]  = p; });
+    (data.milestones || []).forEach(m => { GH_STATE.milestones[m.title] = m; GH_STATE.milestones[m.number] = m; });
+    (data.labels || []).forEach(l => { GH_STATE.labels[l.name] = l; });
+  } catch (e) {
+    // 404 ou parse error : on continue silencieusement
+  }
+}
+
+function ghContrastColor(hex) {
+  if (!hex) return "#1f2328";
+  hex = hex.replace("#","");
+  if (hex.length !== 6) return "#1f2328";
+  const r = parseInt(hex.slice(0,2),16), g = parseInt(hex.slice(2,4),16), b = parseInt(hex.slice(4,6),16);
+  const yiq = (r*299 + g*587 + b*114) / 1000;
+  return yiq >= 150 ? "#1f2328" : "#ffffff";
+}
+
+function ghIconIssue(state) {
+  const fill = state === "open" ? "#1a7f37" : "#8250df";
+  return `<svg class="gh-icon" viewBox="0 0 16 16" fill="${fill}" aria-hidden="true"><path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0Zm0 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Z"/></svg>`;
+}
+function ghIconPr(state, merged, draft) {
+  const fill = merged ? "#8250df" : (draft ? "#6e7781" : (state === "open" ? "#1a7f37" : "#cf222e"));
+  return `<svg class="gh-icon" viewBox="0 0 16 16" fill="${fill}" aria-hidden="true"><path d="M1.5 3.25a2.25 2.25 0 1 1 3 2.122v5.256a2.25 2.25 0 1 1-1.5 0V5.372A2.25 2.25 0 0 1 1.5 3.25Zm5.677-.177L9.573.677A.25.25 0 0 1 10 .854V2.5h1A2.5 2.5 0 0 1 13.5 5v5.628a2.25 2.25 0 1 1-1.5 0V5a1 1 0 0 0-1-1h-1v1.646a.25.25 0 0 1-.427.177L7.177 3.427a.25.25 0 0 1 0-.354ZM3.75 2.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm0 9.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm8.25.75a.75.75 0 1 0 1.5 0 .75.75 0 0 0-1.5 0Z"/></svg>`;
+}
+
+function ghIssueRef(num, opts) {
+  opts = opts || {};
+  const meta = GH_STATE.issues[num];
+  const url = meta ? meta.html_url : `https://github.com/${GH_REPO}/issues/${num}`;
+  const state = meta ? meta.state : null;
+  const stateLabel = state === "open" ? "Open" : (meta && meta.state_reason === "not_planned" ? "Closed" : "Closed");
+  const stateClass = state === "open" ? "open" : (meta && meta.state_reason === "not_planned" ? "notplanned" : "closed");
+  const titleSnip = meta && meta.title ? `<span class="gh-title">${escapeHtml(meta.title)}</span>` : "";
+  const stateBadge = state ? `<span class="gh-state ${stateClass}">${stateLabel}</span>` : "";
+  return `<a class="gh-ref" href="${url}" target="_blank" rel="noopener" title="Issue #${num}${meta ? ' — ' + meta.title : ''}">${ghIconIssue(state || "open")}<span class="gh-num">#${num}</span>${stateBadge}${opts.title ? titleSnip : ""}</a>`;
+}
+
+function ghPrRef(num, opts) {
+  opts = opts || {};
+  const meta = GH_STATE.pulls[num];
+  const url = meta ? meta.html_url : `https://github.com/${GH_REPO}/pull/${num}`;
+  let stateClass = "open", stateLabel = "Open";
+  if (meta) {
+    if (meta.merged) { stateClass = "merged"; stateLabel = "Merged"; }
+    else if (meta.draft) { stateClass = "draft"; stateLabel = "Draft"; }
+    else if (meta.state === "closed") { stateClass = "notplanned"; stateLabel = "Closed"; }
+    else { stateClass = "open"; stateLabel = "Open"; }
+  }
+  const titleSnip = meta && meta.title ? `<span class="gh-title">${escapeHtml(meta.title)}</span>` : "";
+  const stateBadge = meta ? `<span class="gh-state ${stateClass}">${stateLabel}</span>` : "";
+  return `<a class="gh-ref" href="${url}" target="_blank" rel="noopener" title="PR #${num}${meta ? ' — ' + meta.title : ''}">${ghIconPr(meta?.state, meta?.merged, meta?.draft)}<span class="gh-num">#${num}</span>${stateBadge}${opts.title ? titleSnip : ""}</a>`;
+}
+
+function ghMilestoneRef(title) {
+  const meta = GH_STATE.milestones[title];
+  const url = meta ? meta.html_url : `https://github.com/${GH_REPO}/milestone/${encodeURIComponent(title)}`;
+  const cls = meta && meta.state === "closed" ? "gh-milestone closed" : "gh-milestone";
+  const progress = (meta && (meta.open_issues + meta.closed_issues) > 0)
+    ? ` ${meta.closed_issues}/${meta.open_issues + meta.closed_issues}`
+    : "";
+  return `<a class="${cls}" href="${url}" target="_blank" rel="noopener">📌 ${escapeHtml(title)}${progress}</a>`;
+}
+
+function ghLabelChip(name) {
+  const meta = GH_STATE.labels[name];
+  const bg = meta && meta.color ? "#" + meta.color : "#eaeef2";
+  const fg = ghContrastColor(meta && meta.color ? meta.color : "eaeef2");
+  return `<span class="gh-label" style="--gh-bg:${bg}; --gh-fg:${fg};">${escapeHtml(name)}</span>`;
+}
+
+function ghAvatar(login, role, reviewState) {
+  const initials = login ? login.slice(0,2).toUpperCase() : "?";
+  const cls = role === "reviewer" ? `gh-avatar reviewer${reviewState ? ' ' + reviewState.toLowerCase() : ''}` : "gh-avatar";
+  return `<a class="${cls}" href="https://github.com/${login}" target="_blank" rel="noopener" title="${escapeHtml(login)}${role === "reviewer" && reviewState ? ' · ' + reviewState : ''}">${escapeHtml(initials)}</a>`;
+}
+
+// Compose une rangée compacte (issue + PR + milestone + branch + tag)
+function renderGhRef(gh) {
+  if (!gh) return "";
+  const parts = [];
+  // Issues
+  if (Array.isArray(gh.issues)) gh.issues.forEach(n => parts.push(ghIssueRef(n)));
+  if (gh.issue) parts.push(ghIssueRef(gh.issue));
+  // PRs
+  if (Array.isArray(gh.prs)) gh.prs.forEach(n => parts.push(ghPrRef(n)));
+  if (gh.pr) parts.push(ghPrRef(gh.pr));
+  // Milestone
+  if (gh.milestone) parts.push(ghMilestoneRef(gh.milestone));
+  // Branch / tag / commit
+  if (gh.branch) {
+    const url = `https://github.com/${GH_REPO}/tree/${encodeURIComponent(gh.branch)}`;
+    parts.push(`<a class="gh-branch" href="${url}" target="_blank" rel="noopener">${escapeHtml(gh.branch)}</a>`);
+  }
+  if (gh.tag) {
+    const url = `https://github.com/${GH_REPO}/releases/tag/${encodeURIComponent(gh.tag)}`;
+    parts.push(`<a class="gh-tag" href="${url}" target="_blank" rel="noopener">${escapeHtml(gh.tag)}</a>`);
+  }
+  if (gh.commit) {
+    const url = `https://github.com/${GH_REPO}/commit/${gh.commit}`;
+    parts.push(`<a class="gh-commit" href="${url}" target="_blank" rel="noopener">${escapeHtml(gh.commit.slice(0,7))}</a>`);
+  }
+  if (parts.length === 0) return "";
+  return `<div class="gh-refs compact">${parts.join("")}</div>`;
+}
+
+// Bloc détaillé (drawer milestone) avec labels + assignees + reviewers
+function renderGhDetail(gh) {
+  if (!gh) return "";
+  const rows = [];
+  // Issue détaillée si dispo
+  let issueMeta = null, prMeta = null;
+  if (gh.issue && GH_STATE.issues[gh.issue]) issueMeta = GH_STATE.issues[gh.issue];
+  if (gh.pr && GH_STATE.pulls[gh.pr]) prMeta = GH_STATE.pulls[gh.pr];
+
+  const refLine = renderGhRef(gh);
+  if (refLine) rows.push(`<div class="gh-row">${refLine.replace('<div class="gh-refs compact">','').replace('</div>','')}</div>`);
+
+  // Labels (issue + PR)
+  const labels = new Set();
+  if (issueMeta && issueMeta.labels) issueMeta.labels.forEach(l => labels.add(l.name));
+  if (prMeta && prMeta.labels)       prMeta.labels.forEach(l => labels.add(l.name));
+  if (labels.size) {
+    rows.push(`<div class="gh-row"><span class="gh-row-label">Labels</span>${[...labels].map(n => ghLabelChip(n)).join(" ")}</div>`);
+  }
+  // Assignees
+  const assignees = new Set();
+  if (issueMeta && issueMeta.assignees) issueMeta.assignees.forEach(a => assignees.add(a));
+  if (prMeta && prMeta.assignees)       prMeta.assignees.forEach(a => assignees.add(a));
+  if (assignees.size) {
+    rows.push(`<div class="gh-row"><span class="gh-row-label">Assignees</span>${[...assignees].map(a => ghAvatar(a, "assignee")).join("")}</div>`);
+  }
+  // Reviewers
+  if (prMeta) {
+    const reviewers = [];
+    (prMeta.requested_reviewers || []).forEach(r => reviewers.push({ login: r, state: "PENDING" }));
+    (prMeta.reviews || []).forEach(r => reviewers.push({ login: r.user, state: r.state }));
+    if (reviewers.length) {
+      rows.push(`<div class="gh-row"><span class="gh-row-label">Reviewers</span>${reviewers.map(r => ghAvatar(r.login, "reviewer", r.state)).join("")}</div>`);
+    }
+  }
+  if (rows.length === 0) return "";
+  const stale = !GH_STATE.loaded
+    ? `<div class="gh-refs-stale">⚠️ Données GitHub non chargées — exécutez <code>04_docs/_audit-2026-04-25/consistence-dump.ps1</code> depuis Windows pour enrichir labels/assignees/reviewers.</div>`
+    : "";
+  return `<div class="gh-detail"><h5>GitHub</h5>${rows.join("")}${stale}</div>`;
+}
 
 // ──────────────────────────────────────────────────────────────
 // Helpers
@@ -1608,6 +1885,7 @@ function selectMilestone(m) {
       <p>${escapeHtml(m.desc)}</p>
       ${sessionsHtml}
       <div class="artefacts"><strong>Artéfacts</strong>${renderArtefacts(m.artefacts)}</div>
+      ${renderGhDetail(m.gh)}
       ${m.id === "v05-hub" ? `<button type="button" class="d-jump-cta" data-jump-tab="fusion-v05" style="margin-top:var(--space-4); padding:10px 18px; border:1px solid var(--rose); background:var(--rose-50); color:var(--rose-800); border-radius:var(--radius-xs); font-family:var(--font-sans); font-weight:var(--fw-semi); font-size:var(--fs-small); cursor:pointer;">Voir le plan détaillé v0.5 →</button>` : ""}
     </div>
   `;
@@ -1681,6 +1959,7 @@ const RELEASES = [
   // ── 25/04/2026 — Sprint S1 livré (tag v0.5-s1) ──
   {
     id: "rn-mvp-0-5-s1",
+    gh: { milestone:"v0.5-s1", tag:"v0.5-s1", commit:"141ca0f" },
     component: "mvp",
     version: "v0.5-s1",
     date: "25 avr. 2026",
@@ -1710,6 +1989,7 @@ const RELEASES = [
   // ── 25/04/2026 — clôture sprint externe ──
   {
     id: "rn-mvp-0-4-final",
+    gh: { issues:[1,2,3,4,5,6,7] },
     component: "mvp",
     version: "v0.4",
     date: "25 avr. 2026",
@@ -1729,6 +2009,7 @@ const RELEASES = [
   },
   {
     id: "rn-cockpit-v4-2",
+    gh: { issue:1, branch:"ds/wire-mvp-to-ds" },
     component: "cockpit",
     version: "v4.2",
     date: "24 avr. 2026",
@@ -2121,6 +2402,13 @@ function renderReleases() {
       art.appendChild(sum);
     }
 
+    const ghHtml = renderGhRef(r.gh);
+    if (ghHtml) {
+      const ghDiv = document.createElement("div");
+      ghDiv.innerHTML = ghHtml;
+      art.appendChild(ghDiv);
+    }
+
     const changes = document.createElement("div");
     changes.className = "rn-changes";
     r.changes.forEach(c => {
@@ -2386,6 +2674,7 @@ function renderJournalFeed() {
             ${deltaTag}
           </div>
           ${srcLink}
+          ${renderGhRef(e.gh)}
         </div>
       </article>`;
   }).join("");
@@ -2409,4 +2698,128 @@ function renderJournalSource(s) {
 
 function renderAlertBanner() {
   const banner = document.getElementById("alert-banner");
-  i
+  if (!banner) return;
+
+  const tracked = trackedMilestones();
+  const drifts = tracked.map(m => ({ id:m.id, title:m.title, delta:computeDelta(m) }));
+  const critical = drifts.filter(d => d.delta.severity === "late" && d.delta.days > 3);
+  const watch    = drifts.filter(d => d.delta.severity === "late" && d.delta.days > 0 && d.delta.days <= 3);
+  const ontime   = drifts.filter(d => d.delta.severity === "ontime").length;
+
+  banner.classList.remove("lvl-ok", "lvl-watch", "lvl-warn");
+
+  let level, title, detail, icon;
+  if (critical.length > 0) {
+    level = "lvl-warn";
+    icon = "!";
+    title = `${critical.length} jalon${critical.length > 1 ? "s" : ""} en dérive critique`;
+    detail = critical.map(c => `<strong>${escapeHtml(c.title)}</strong> (${escapeHtml(c.delta.label)})`).join(" · ");
+  } else if (watch.length > 0) {
+    level = "lvl-watch";
+    icon = "~";
+    title = `${watch.length} jalon${watch.length > 1 ? "s" : ""} à surveiller`;
+    detail = watch.map(c => `<strong>${escapeHtml(c.title)}</strong> (${escapeHtml(c.delta.label)})`).join(" · ");
+  } else {
+    level = "lvl-ok";
+    icon = "✓";
+    title = "Tout est aligné sur la BASELINE";
+    detail = `${ontime} jalon${ontime > 1 ? "s" : ""} à l'heure · BASELINE figée le 24/04/2026 (atelier S4) · prochain jalon : <strong>onboarding dev — 15 mai 2026</strong>`;
+  }
+
+  banner.classList.add(level);
+  banner.querySelector(".icon").textContent = icon;
+  document.getElementById("alert-title").textContent = title;
+  document.getElementById("alert-detail").innerHTML = detail;
+  banner.hidden = false;
+
+  // Mise à jour du badge sur l'onglet Journal
+  const badge = document.getElementById("journal-badge");
+  if (badge) {
+    if (critical.length > 0) { badge.textContent = `⚠ ${critical.length}`; badge.style.background = "var(--rose-50)"; badge.style.color = "var(--rose-800)"; }
+    else if (watch.length > 0) { badge.textContent = `~ ${watch.length}`; badge.style.background = "var(--amber-50)"; badge.style.color = "var(--amber-800)"; }
+    else { badge.textContent = "OK"; badge.style.background = "var(--emerald-50)"; badge.style.color = "var(--emerald-800)"; }
+  }
+}
+
+function updateHeaderDate() {
+  const versionEl = document.querySelector(".page-header .version");
+  if (!versionEl) return;
+  const today = new Date();
+  const dd = String(today.getDate()).padStart(2, "0");
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const yyyy = today.getFullYear();
+  // Conserve la version en cours (lue depuis le markup) et met à jour la date
+  const match = versionEl.textContent.match(/^(v[\d.]+(?:-[a-z0-9]+)?)/i);
+  const version = match ? match[1] : "v0.5-s1";
+  versionEl.textContent = `${version} · ${dd}/${mm}/${yyyy}`;
+}
+
+// Filtres journal
+document.querySelectorAll(".j-flt").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".j-flt").forEach(b => b.setAttribute("aria-pressed", "false"));
+    btn.setAttribute("aria-pressed", "true");
+    jFilter = btn.dataset.jtype;
+    renderJournalFeed();
+  });
+});
+
+// CTA bandeau alerte → bascule onglet journal
+document.getElementById("alert-cta").addEventListener("click", () => {
+  activateTab("journal");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+// Init Mermaid (3 blocs ciblés)
+function initMermaid() {
+  if (typeof mermaid === "undefined") return;
+  try {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: "base",
+      fontFamily: "Fira Sans, system-ui, sans-serif",
+      themeVariables: {
+        primaryColor: "#fff",
+        primaryTextColor: "#324054",
+        primaryBorderColor: "#7790ae",
+        lineColor: "#7790ae",
+        secondaryColor: "#f5e9d8",
+        tertiaryColor: "#fff"
+      }
+    });
+    mermaid.run({ querySelector: ".mermaid" });
+  } catch (e) {
+    console.warn("Mermaid init failed:", e);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────
+// Init
+// ──────────────────────────────────────────────────────────────
+
+// Charger l'état GitHub avant les renders pour enrichir les refs (issues/PRs/labels/milestones).
+// Tolérant à l'absence de github-state.json (consistence-dump.ps1 non encore exécuté).
+loadGhState().then(() => {
+  renderTimeline();
+  renderCounters();
+  renderReleases();
+  // Sélection initiale : dernier jalon en date (mvp-10f = pitch deck investisseur)
+  selectMilestone(MILESTONES.find(m => m.id === "mvp-10f") || MILESTONES[0]);
+
+  // Tab 4 — Journal & écarts
+  updateHeaderDate();
+  renderKPIs();
+  renderVarianceChart();
+  renderJournalFeed();
+  renderAlertBanner();
+});
+
+// Mermaid : on laisse le DOM se peindre puis on initialise
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initMermaid);
+} else {
+  setTimeout(initMermaid, 50);
+}
+</script>
+</body>
+</html>
