@@ -31,7 +31,7 @@ Write-Host ""
 # --- 0. Auth check ----------------------------------------------------------
 & gh auth status 2>&1 | Out-Null
 if ($LASTEXITCODE -ne 0) {
-  Write-Host "ERREUR : gh auth status KO. Lance ''gh auth login'' avant." -ForegroundColor Red
+  Write-Host "ERREUR : gh auth status KO. Lance 'gh auth login' avant." -ForegroundColor Red
   exit 1
 }
 
@@ -118,7 +118,7 @@ $commonLabels = "sprint/s3,phase/v0.5-s3"
 # ----------------------------------------------------------------------------
 #  S3.00 — ADR Sprint S3 — méthode + zéro localStorage applicatif rappelé
 # ----------------------------------------------------------------------------
-$body00 = @"
+$body00 = @'
 Contexte
 --------
 S2 a livré l''ADR `2026-04-25 · S2.00 — Zéro localStorage applicatif` (source de vérité = SQLite serveur, le front lit/écrit toujours via REST).
@@ -144,13 +144,13 @@ Charge / Owner / Dépendances
 - Dépendances : aucune
 
 Source : `04_docs/DOSSIER-SPRINT-S3.md` §3 (S3.00), `00_BOUSSOLE/DECISIONS.md` 2026-04-25 (cadrage S3)
-"@
+'@
 Create-Issue "S3.00" "[S3.00] ADR Sprint S3 — méthode + zéro localStorage applicatif rappelé" "$commonLabels,lane/mvp,type/adr,priority/P0,owner/pmo" "v0.5-s3" $body00
 
 # ----------------------------------------------------------------------------
 #  S3.01 — Backend /api/events/week extension + /api/weekly-reviews + /api/big-rocks
 # ----------------------------------------------------------------------------
-$body01 = @"
+$body01 = @'
 Contexte
 --------
 `agenda.html` (S3.02) et `revues/index.html` (S3.04) ont besoin de 3 surfaces backend :
@@ -178,13 +178,13 @@ Charge / Owner / Dépendances
 - Dépendances : aucune (démarrage J1 02/06)
 
 Source : `04_docs/DOSSIER-SPRINT-S3.md` §1.1, §1.2, §3 (S3.01)
-"@
+'@
 Create-Issue "S3.01" "[S3.01] Backend /api/events/week extension + /api/weekly-reviews + /api/big-rocks" "$commonLabels,lane/mvp,type/feat,priority/P0,area/api,owner/dev1" "v0.5-s3" $body01
 
 # ----------------------------------------------------------------------------
 #  S3.02 — Frontend agenda.html migré (vue hebdo lun-dim + drag-drop natif HTML5)
 # ----------------------------------------------------------------------------
-$body02 = @"
+$body02 = @'
 Contexte
 --------
 `01_app-web/agenda.html` lit `AICEO.STATE.events` en `localStorage` et affiche une grille hebdo lun-dim Twisty.
@@ -215,13 +215,13 @@ Charge / Owner / Dépendances
 - Dépendances : **S3.01** (l''API doit être livrée d''abord, peut démarrer en parallèle sur le squelette dès J2)
 
 Source : `04_docs/DOSSIER-SPRINT-S3.md` §1.1, §3 (S3.02), §5.4 risque drag-drop Edge
-"@
+'@
 Create-Issue "S3.02" "[S3.02] Frontend agenda.html migré (vue hebdo lun-dim + drag-drop natif HTML5)" "$commonLabels,lane/mvp,type/feat,priority/P0,area/ux,owner/dev2" "v0.5-s3" $body02
 
 # ----------------------------------------------------------------------------
 #  S3.03 — Backend auto-draft revue Claude (POST /api/weekly-reviews/:week/draft)
 # ----------------------------------------------------------------------------
-$body03 = @"
+$body03 = @'
 Contexte
 --------
 Pour `revues/index.html` (S3.04), le CEO doit pouvoir cliquer "Demander brouillon Claude" et recevoir un markdown >= 200 mots cohérent en moins de 15 s.
@@ -250,13 +250,13 @@ Charge / Owner / Dépendances
 ⚠ **Plan B mid-sprint J5** : si dérive sur ce ticket, on dégrade en "draft template figé" (sans IA) et on réinjecte la partie Claude en début S4.
 
 Source : `04_docs/DOSSIER-SPRINT-S3.md` §1.2 et §3 (S3.03), §5.2 risque qualité auto-draft, §4 plan B
-"@
+'@
 Create-Issue "S3.03" "[S3.03] Backend auto-draft revue Claude (POST /api/weekly-reviews/:week/draft)" "$commonLabels,lane/mvp,type/feat,priority/P1,area/ai,owner/dev1" "v0.5-s3" $body03
 
 # ----------------------------------------------------------------------------
 #  S3.04 — Frontend revues/index.html migré (Big Rocks + auto-draft + archives)
 # ----------------------------------------------------------------------------
-$body04 = @"
+$body04 = @'
 Contexte
 --------
 `06_revues/index.html` est un dashboard statique avec les revues archivées (W17 markdown + widget). Pas d''éditeur de revue courante.
@@ -285,13 +285,13 @@ Charge / Owner / Dépendances
 - Dépendances : **S3.01** (CRUD weekly-reviews + big-rocks) ; **S3.03** souhaitée mais pas bloquante (le bouton "Demander brouillon" peut être désactivé tant que S3.03 pas livrée)
 
 Source : `04_docs/DOSSIER-SPRINT-S3.md` §1.2 et §3 (S3.04), §5.5 risque liens W17 archivés
-"@
+'@
 Create-Issue "S3.04" "[S3.04] Frontend revues/index.html migré (Big Rocks + auto-draft + archives)" "$commonLabels,lane/mvp,type/feat,priority/P0,area/ux,owner/dev2" "v0.5-s3" $body04
 
 # ----------------------------------------------------------------------------
 #  S3.05 — Câblage SSE front (cockpit + taches s'abonnent au flux temps réel)
 # ----------------------------------------------------------------------------
-$body05 = @"
+$body05 = @'
 Contexte
 --------
 Le spike S2.10 a livré `src/realtime.js` + `GET /api/cockpit/stream` + 3 tests verts, mais **aucun front ne s''abonne** au flux SSE.
@@ -319,13 +319,13 @@ Charge / Owner / Dépendances
 - Dépendances : aucune (démarrage J4 04/06 après S3.01-S3.02 stables)
 
 Source : `04_docs/DOSSIER-SPRINT-S3.md` §1.3 et §3 (S3.05), §5.3 risque SSE Zscaler
-"@
+'@
 Create-Issue "S3.05" "[S3.05] Câblage SSE front (cockpit + taches s'abonnent au flux temps réel)" "$commonLabels,lane/mvp,type/feat,priority/P1,area/realtime,owner/dev1" "v0.5-s3" $body05
 
 # ----------------------------------------------------------------------------
 #  S3.06 — Outlook autosync 2 h (schtasks + GET /api/system/last-sync + alerte cockpit)
 # ----------------------------------------------------------------------------
-$body06 = @"
+$body06 = @'
 Contexte
 --------
 Le sync Outlook 30 j est lancé manuellement par PowerShell (`scripts/import-outlook.ps1`). Le CEO doit penser à le relancer.
@@ -356,13 +356,13 @@ Charge / Owner / Dépendances
 ⚠ **Risque R1** : Schtasks Windows nécessite droits admin -> CEO doit valider sur poste corp (issue IT P0 ouverte dès J1).
 
 Source : `04_docs/DOSSIER-SPRINT-S3.md` §1.4 et §3 (S3.06), §5.1 risque schtasks admin
-"@
+'@
 Create-Issue "S3.06" "[S3.06] Outlook autosync 2 h (schtasks + GET /api/system/last-sync + alerte cockpit)" "$commonLabels,lane/mvp,type/feat,priority/P1,area/integration,owner/dev1" "v0.5-s3" $body06
 
 # ----------------------------------------------------------------------------
 #  S3.07 — Tests e2e parcours hebdo P4 (agenda + drag-drop -> revue draft -> commit)
 # ----------------------------------------------------------------------------
-$body07 = @"
+$body07 = @'
 Contexte
 --------
 S2 a livré 3 parcours e2e (matin / journée / soir) en HTTP boundary tests dans `tests/e2e.test.js`.
@@ -393,13 +393,13 @@ Charge / Owner / Dépendances
 - Dépendances : **S3.01**, **S3.03** (auto-draft) ; **S3.02** + **S3.04** non bloquants (e2e en HTTP, pas en browser)
 
 Source : `04_docs/DOSSIER-SPRINT-S3.md` §3 (S3.07)
-"@
+'@
 Create-Issue "S3.07" "[S3.07] Tests e2e parcours hebdo P4 (agenda + drag-drop -> revue draft -> commit)" "$commonLabels,lane/tests,type/test,priority/P0,owner/dev1" "v0.5-s3" $body07
 
 # ----------------------------------------------------------------------------
 #  S3.08 — Tests unitaires extensions (SSE émission, last-sync, events with_tasks, big-rocks) >= 65 verts
 # ----------------------------------------------------------------------------
-$body08 = @"
+$body08 = @'
 Contexte
 --------
 S2 a livré 55 tests verts (49 S1 + 6 S2). Critère S3 #9 : **>= 65 tests verts** = +10 tests supplémentaires (en plus de ceux ajoutés par S3.01 +6 et S3.03 +2 = +8 minimum, on vise +10 avec coverage SSE et autosync).
@@ -426,13 +426,13 @@ Charge / Owner / Dépendances
 - Dépendances : aucune (peut démarrer en parallèle dès J5)
 
 Source : `04_docs/DOSSIER-SPRINT-S3.md` §3 (S3.08), §2 critère #9
-"@
+'@
 Create-Issue "S3.08" "[S3.08] Tests unitaires extensions (SSE émission, last-sync, events with_tasks, big-rocks) >= 65 verts" "$commonLabels,lane/tests,type/test,priority/P1,owner/pmo" "v0.5-s3" $body08
 
 # ----------------------------------------------------------------------------
 #  S3.09 — Documentation API S3 (events/week, weekly-reviews, big-rocks, last-sync, SSE câblé)
 # ----------------------------------------------------------------------------
-$body09 = @"
+$body09 = @'
 Contexte
 --------
 S2 a livré `docs/API.md` 487 lignes / 15 sections / 38 exemples curl.
@@ -464,13 +464,13 @@ Charge / Owner / Dépendances
 - Dépendances : **S3.01**, **S3.03**, **S3.05**, **S3.06** (tous les endpoints livrés)
 
 Source : `04_docs/DOSSIER-SPRINT-S3.md` §3 (S3.09)
-"@
+'@
 Create-Issue "S3.09" "[S3.09] Documentation API S3 (events/week, weekly-reviews, big-rocks, last-sync, SSE câblé)" "$commonLabels,lane/mvp,type/docs,priority/P1,owner/pmo" "v0.5-s3" $body09
 
 # ----------------------------------------------------------------------------
 #  S3.10 — Spike Service Windows — POC node-windows + ADR (time-box 1,5 j strict)
 # ----------------------------------------------------------------------------
-$body10 = @"
+$body10 = @'
 Contexte
 --------
 Service Windows + raccourci desktop = livrable S5. Pour préparer le terrain, S3 lance un **spike POC** time-boxé **1,5 j strict** sur `node-windows`.
@@ -503,7 +503,7 @@ Charge / Owner / Dépendances
 ⚠ **Plan B** : si le spike explose le time-box, on arrête, on garde l''ADR "à finaliser en S5", l''issue ferme avec rapport de stop. Pas de débordement sur les autres tickets S3.
 
 Source : `04_docs/DOSSIER-SPRINT-S3.md` §1.5, §3 (S3.10), §4 plan B mid-sprint, §5 risque time-box
-"@
+'@
 Create-Issue "S3.10" "[S3.10] Spike Service Windows — POC node-windows + ADR (time-box 1,5 j strict)" "$commonLabels,lane/mvp,type/spike,priority/P2,area/deploy,owner/dev1" "v0.5-s3" $body10
 
 # --- 4. Cleanup -------------------------------------------------------------
