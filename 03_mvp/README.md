@@ -10,6 +10,8 @@ Trois flux qui tournent en local sur votre poste :
 
 Les données restent sur votre poste sauf le texte envoyé à Claude pour raisonner.
 
+> 📚 **Référence API REST complète** : voir [`docs/API.md`](docs/API.md) — tous les endpoints (cockpit, tasks, decisions, contacts, projects, groups, events, arbitrage, evening) avec exemples curl, codes HTTP et variables d'environnement.
+
 ---
 
 ## Démarrage en 3 commandes
@@ -203,4 +205,4 @@ Utile pour :
 
 ---
 
-*Copilote aiCEO · v0.4 · 24/04/2026 — déploiement réel validé*
+*Copilote aiCEO · v0.5 · 2026-04-25 — Sprint S2 livré (cockpit + arbitrage + evening + tâches Eisenhower + migration vérifiée + doc API)*
