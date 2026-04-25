@@ -21,6 +21,7 @@ const projectsRouter  = require("./src/routes/projects");
 const groupsRouter    = require("./src/routes/groups");
 const eventsRouter    = require("./src/routes/events");
 const cockpitRouter   = require("./src/routes/cockpit");
+const arbitrageRouter = require("./src/routes/arbitrage");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3001;
@@ -61,6 +62,7 @@ app.use("/api/projects",  projectsRouter);
 app.use("/api/groups",    groupsRouter);
 app.use("/api/events",    eventsRouter);
 app.use("/api/cockpit",   cockpitRouter);
+app.use("/api/arbitrage", arbitrageRouter);
 
 // --- Legacy seed (compat arbitrage UI tant que la migration n'est pas finalisee) ---
 app.get("/api/seed", (req, res) => {
@@ -68,17 +70,6 @@ app.get("/api/seed", (req, res) => {
     const seed = loadSeed();
     res.json({ tasks: seed.tasks, projects: seed.projects, events: seed.events, contacts: seed.contacts });
   } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
-app.post("/api/arbitrage", async (req, res) => {
-  try {
-    const date = req.body && req.body.date;
-    const result = await buildArbitrage({ date });
-    res.json(result);
-  } catch (e) {
-    console.error(e);
     res.status(500).json({ error: e.message });
   }
 });
