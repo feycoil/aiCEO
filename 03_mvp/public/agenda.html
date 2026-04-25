@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>aiCEO · Agenda hebdo</title>
+<link rel="stylesheet" href="/assets/styles/aiceo-tokens.css"/>
+<style>
+  :root {
+    --cream: #FAF6EF;
+    --cream-deep: #F2EBDD;
+    --ink: #1C1A22;
+    --ink-2: #3A3542;
+    --ink-3: #6A6277;
+    --line: #D9CFBC;
+    --lilac: #A895DB;
+    --lilac-soft: #EEE7FA;
+    --coral: #EC7A6A;
+    --coral-soft: #FBE1DC;
+    --sage: #A8C8A4;
+    --sage-soft: #E3EEE0;
+    --gold: #B88237;
+    --gold-soft: #F1E4CC;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    min-height: 100vh;
+  }
+  .layout {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px 24px 80px;
+  }
+  header.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 20px;
+  }
+  header h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 26px;
+    font-weight: 600;
+    margin: 0;
+  }
+  header nav { display: flex; gap: 14px; }
+  header nav a {
+    color: var(--ink-2);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  header nav a:hover, header nav a.active { background: var(--lilac-soft); }
+
+  .week-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .week-bar button {
+    background: var(--cream-deep);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font: inherit;
+    color: var(--ink);
+  }
+  .week-bar button:hover { background: var(--lilac-soft); }
+  .week-bar .week-label {
+    font-weight: 600;
+    flex: 1;
+    text-align: center;
+  }
+  .week-bar .week-range {
+    color: var(--ink-3);
+    font-size: 13px;
+  }
+
+  .grid-wrap {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 20px;
+  }
+
+  .tasks-rail {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px;
+    height: fit-content;
+    position: sticky;
+    top: 16px;
+  }
+  .tasks-rail h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 16px;
+    margin: 0 0 10px;
+  }
+  .tasks-rail .hint {
+    font-size: 12px;
+    color: var(--ink-3);
+    margin-bottom: 10px;
+  }
+  .task-pill {
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    cursor: grab;
+    font-size: 13px;
+    transition: background 80ms;
+  }
+  .task-pill:hover { background: var(--lilac-soft); border-color: var(--lilac); }
+  .task-pill.dragging { opacity: 0.4; cursor: grabbing; }
+  .task-pill.grabbed { background: var(--gold-soft); border-color: var(--gold); }
+  .task-pill .meta {
+    font-size: 11px;
+    color: var(--ink-3);
+    margin-top: 2px;
+  }
+  .priority-P0 { border-left: 3px solid var(--coral); }
+  .priority-P1 { border-left: 3px solid var(--gold); }
+  .priority-P2 { border-left: 3px solid var(--lilac); }
+
+  .agenda-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+  }
+  .day-col {
+    min-height: 480px;
+    padding: 8px;
+    border-radius: 8px;
+    background: var(--cream-deep);
+    transition: background 80ms;
+  }
+  .day-col.today {
+    background: var(--lilac-soft);
+    border: 1px solid var(--lilac);
+  }
+  .day-col.weekend { background: var(--cream); }
+  .day-col.drop-target {
+    background: var(--sage-soft);
+    outline: 2px dashed var(--sage);
+  }
+  .day-col h3 {
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-2);
+    text-align: center;
+  }
+  .day-col h3 .dom { font-family: 'Fraunces', Georgia, serif; font-size: 18px; display: block; }
+
+  .event {
+    background: white;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--lilac);
+    border-radius: 6px;
+    padding: 5px 8px;
+    margin-bottom: 4px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .event:hover { background: var(--lilac-soft); }
+  .event .time { color: var(--ink-3); font-size: 11px; }
+  .event.cat-amani { border-left-color: var(--coral); }
+  .event.cat-etic  { border-left-color: var(--gold); }
+  .event.cat-mhssn { border-left-color: var(--sage); }
+
+  .task-on-day {
+    background: var(--gold-soft);
+    border: 1px dashed var(--gold);
+    border-radius: 6px;
+    padding: 4px 8px;
+    margin-bottom: 4px;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+  .task-on-day .label { font-size: 10px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1px; }
+
+  #drawer {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 360px;
+    background: white;
+    border-left: 1px solid var(--line);
+    padding: 24px;
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform 200ms;
+    box-shadow: -4px 0 20px rgba(0,0,0,0.06);
+    z-index: 100;
+  }
+  #drawer.open { transform: translateX(0); }
+  #drawer h2 { font-family: 'Fraunces', Georgia, serif; margin: 0 0 12px; font-size: 20px; }
+  #drawer .close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    border: none;
+    background: var(--cream-deep);
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+  }
+  #drawer .field { margin-bottom: 12px; }
+  #drawer .field-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .footer {
+    margin-top: 32px;
+    color: var(--ink-3);
+    font-size: 13px;
+    text-align: center;
+  }
+  .footer code { background: var(--cream-deep); padding: 1px 6px; border-radius: 4px; }
+
+  .empty-day { color: var(--ink-3); font-size: 11px; font-style: italic; padding: 4px; text-align: center; }
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: var(--cream);
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity 200ms;
+    pointer-events: none;
+    z-index: 200;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+  <main class="layout">
+    <header class="topbar">
+      <div>
+        <h1>Agenda hebdo</h1>
+      </div>
+      <nav>
+        <a href="/">Cockpit</a>
+        <a href="/arbitrage">Arbitrage</a>
+        <a href="/taches">Tâches</a>
+        <a href="/agenda" class="active">Agenda</a>
+        <a href="/evening">Soir</a>
+      </nav>
+    </header>
+
+    <div class="week-bar" role="toolbar" aria-label="Navigation semaine">
+      <button id="btn-prev" aria-label="Semaine précédente">← Préc.</button>
+      <div class="week-label">
+        <div id="week-num">…</div>
+        <div class="week-range" id="week-range"></div>
+      </div>
+      <button id="btn-today" aria-label="Cette semaine">Aujourd'hui</button>
+      <button id="btn-next" aria-label="Semaine suivante">Suiv. →</button>
+    </div>
+
+    <div class="grid-wrap">
+      <aside class="tasks-rail" aria-label="Tâches sans date">
+        <h2>Tâches à planifier</h2>
+        <div class="hint">Glissez une tâche sur un jour pour fixer son <code>due_at</code>.</div>
+        <div id="tasks-pool" role="list"></div>
+      </aside>
+
+      <div class="agenda-grid" id="agenda-grid" role="grid" aria-label="Agenda hebdomadaire"></div>
+    </div>
+
+    <div class="footer">
+      Données live depuis <code>GET /api/events/week?week=YYYY-Www&amp;with_tasks=true</code> · Sprint S3 · zéro localStorage applicatif
+    </div>
+  </main>
+
+  <aside id="drawer" aria-hidden="true">
+    <button class="close-btn" id="drawer-close" aria-label="Fermer">×</button>
+    <h2 id="drawer-title">…</h2>
+    <div id="drawer-body"></div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/**
+ * agenda (S3.02) — vue hebdo lun-dim, drag-drop natif HTML5.
+ * Aucun accès AICEO.STATE / localStorage applicatif.
+ * Seule clé localStorage tolérée : aiCEO.uiPrefs (rappel S3.00 ADR).
+ */
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const DAYS_FR = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+
+  function isoWeek(d) {
+    const x = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+    const dayNum = x.getUTCDay() || 7;
+    x.setUTCDate(x.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(x.getUTCFullYear(), 0, 1));
+    const weekNum = Math.ceil((((x - yearStart) / 86400000) + 1) / 7);
+    return x.getUTCFullYear() + '-W' + String(weekNum).padStart(2, '0');
+  }
+
+  function isoMonday(weekId) {
+    const m = weekId.match(/^(\d{4})-W(\d{2})$/);
+    if (!m) return null;
+    const year = Number(m[1]);
+    const wk = Number(m[2]);
+    const jan4 = new Date(Date.UTC(year, 0, 4));
+    const jan4Dow = jan4.getUTCDay() || 7;
+    const week1Monday = new Date(jan4.getTime() - (jan4Dow - 1) * 86400000);
+    return new Date(week1Monday.getTime() + (wk - 1) * 7 * 86400000);
+  }
+
+  function fmtDate(d) {
+    return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+  }
+
+  function fmtTime(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  }
+
+  function escHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  }
+
+  function getWeekFromUrl() {
+    const u = new URLSearchParams(location.search);
+    return u.get('week');
+  }
+
+  function setWeekInUrl(week) {
+    const u = new URLSearchParams(location.search);
+    u.set('week', week);
+    history.replaceState(null, '', '?' + u.toString());
+  }
+
+  function showToast(msg) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  let state = { week: null, monday: null, days: [], events: [], tasks: [] };
+
+  async function loadWeek(week) {
+    const r = await fetch('/api/events/week?week=' + encodeURIComponent(week) + '&with_tasks=true');
+    if (!r.ok) {
+      const txt = await r.text();
+      throw new Error('Échec chargement semaine ' + week + ' (HTTP ' + r.status + ') : ' + txt);
+    }
+    const data = await r.json();
+    state.events = data.events || [];
+    state.tasks = data.tasks || [];
+    state.week = week;
+    state.monday = isoMonday(week);
+    state.days = [];
+    for (let i = 0; i < 7; i++) {
+      state.days.push(new Date(state.monday.getTime() + i * 86400000));
+    }
+  }
+
+  async function loadUnplannedTasks() {
+    const r = await fetch('/api/tasks');
+    if (!r.ok) return [];
+    const data = await r.json();
+    return (data.tasks || []).filter((t) => !t.due_at && !t.done).slice(0, 30);
+  }
+
+  function renderHeader() {
+    $('week-num').textContent = state.week;
+    const sun = new Date(state.monday.getTime() + 6 * 86400000);
+    $('week-range').textContent = fmtDate(state.monday) + ' → ' + fmtDate(sun);
+  }
+
+  function renderTasksRail(unplanned) {
+    const pool = $('tasks-pool');
+    pool.innerHTML = '';
+    if (!unplanned.length) {
+      pool.innerHTML = '<div class="hint">Aucune tâche sans date.</div>';
+      return;
+    }
+    unplanned.forEach((t) => {
+      const div = document.createElement('div');
+      div.className = 'task-pill priority-' + (t.priority || 'P2');
+      div.draggable = true;
+      div.setAttribute('role', 'listitem');
+      div.setAttribute('tabindex', '0');
+      div.setAttribute('aria-grabbed', 'false');
+      div.dataset.taskId = t.id;
+      const meta = [];
+      if (t.priority) meta.push(t.priority);
+      if (t.estimated_min) meta.push(t.estimated_min + ' min');
+      div.innerHTML =
+        '<div>' + escHtml(t.title) + '</div>' +
+        (meta.length ? '<div class="meta">' + meta.join(' · ') + '</div>' : '');
+
+      div.addEventListener('dragstart', (e) => {
+        div.classList.add('dragging');
+        div.setAttribute('aria-grabbed', 'true');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', t.id);
+      });
+      div.addEventListener('dragend', () => {
+        div.classList.remove('dragging');
+        div.setAttribute('aria-grabbed', 'false');
+      });
+
+      // Clavier : Espace pour grab, flèches pour cibler, Espace pour drop
+      div.addEventListener('keydown', (e) => {
+        if (e.key === ' ' || e.key === 'Enter') {
+          e.preventDefault();
+          if (div.classList.contains('grabbed')) {
+            // pas de cible => annuler
+            div.classList.remove('grabbed');
+            showToast('Annulé. Cible non sélectionnée.');
+          } else {
+            div.classList.add('grabbed');
+            showToast('Tâche saisie. Flèches → puis Espace sur un jour pour déposer.');
+            const firstDay = document.querySelector('.day-col');
+            if (firstDay) firstDay.focus();
+          }
+        }
+      });
+      pool.appendChild(div);
+    });
+  }
+
+  function renderGrid() {
+    const grid = $('agenda-grid');
+    grid.innerHTML = '';
+    const todayIso = new Date().toISOString().slice(0, 10);
+
+    state.days.forEach((d, i) => {
+      const iso = d.toISOString().slice(0, 10);
+      const isToday = iso === todayIso;
+      const isWeekend = i >= 5;
+      const col = document.createElement('div');
+      col.className = 'day-col' + (isToday ? ' today' : '') + (isWeekend ? ' weekend' : '');
+      col.setAttribute('tabindex', '0');
+      col.setAttribute('role', 'gridcell');
+      col.setAttribute('aria-label', DAYS_FR[i] + ' ' + fmtDate(d));
+      col.setAttribute('aria-dropeffect', 'move');
+      col.dataset.iso = iso;
+
+      const evsOfDay = state.events.filter((e) => (e.starts_at || '').slice(0, 10) === iso);
+      const tasksOfDay = state.tasks.filter((t) => (t.due_at || '').slice(0, 10) === iso);
+
+      let html = '<h3>' + DAYS_FR[i] + '<span class="dom">' + d.getUTCDate() + '</span></h3>';
+      if (!evsOfDay.length && !tasksOfDay.length) {
+        html += '<div class="empty-day">—</div>';
+      } else {
+        evsOfDay.forEach((e) => {
+          const cat = (e.source_type === 'outlook' ? 'outlook' : (e.project_id || '').split('-')[0]) || 'other';
+          html += '<div class="event cat-' + cat + '" data-event-id="' + e.id + '" tabindex="0" role="button">' +
+            '<div class="time">' + fmtTime(e.starts_at) + (e.ends_at ? ' – ' + fmtTime(e.ends_at) : '') + '</div>' +
+            '<div>' + escHtml(e.title) + '</div>' +
+            '</div>';
+        });
+        tasksOfDay.forEach((t) => {
+          html += '<div class="task-on-day" data-task-id="' + t.id + '">' +
+            '<div class="label">Tâche · ' + (t.priority || 'P2') + '</div>' +
+            '<div>' + escHtml(t.title) + '</div>' +
+            '</div>';
+        });
+      }
+      col.innerHTML = html;
+
+      // DnD targets
+      col.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        col.classList.add('drop-target');
+      });
+      col.addEventListener('dragleave', () => col.classList.remove('drop-target'));
+      col.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        col.classList.remove('drop-target');
+        const taskId = e.dataTransfer.getData('text/plain');
+        if (!taskId) return;
+        await dropTaskOnDay(taskId, iso);
+      });
+
+      // Clavier (drop par Espace)
+      col.addEventListener('keydown', (e) => {
+        if (e.key === ' ' || e.key === 'Enter') {
+          const grabbed = document.querySelector('.task-pill.grabbed');
+          if (grabbed) {
+            e.preventDefault();
+            grabbed.classList.remove('grabbed');
+            dropTaskOnDay(grabbed.dataset.taskId, iso);
+          }
+        } else if (e.key === 'ArrowRight') {
+          col.nextElementSibling && col.nextElementSibling.focus();
+        } else if (e.key === 'ArrowLeft') {
+          col.previousElementSibling && col.previousElementSibling.focus();
+        }
+      });
+
+      // Click event -> drawer
+      col.addEventListener('click', (e) => {
+        const evDiv = e.target.closest('[data-event-id]');
+        if (evDiv) {
+          const ev = state.events.find((x) => x.id === evDiv.dataset.eventId);
+          if (ev) openDrawer(ev);
+        }
+      });
+
+      grid.appendChild(col);
+    });
+  }
+
+  async function dropTaskOnDay(taskId, isoDay) {
+    try {
+      const newDueAt = isoDay + 'T09:00:00.000Z';
+      const r = await fetch('/api/tasks/' + taskId, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ due_at: newDueAt }),
+      });
+      if (!r.ok) throw new Error('PATCH HTTP ' + r.status);
+      showToast('Tâche planifiée ' + isoDay);
+      // Refetch optimiste après 200ms
+      setTimeout(refetchAndRender, 200);
+    } catch (err) {
+      showToast('Erreur planification : ' + err.message);
+    }
+  }
+
+  function openDrawer(ev) {
+    const drawer = $('drawer');
+    $('drawer-title').textContent = ev.title;
+    let body = '';
+    body += '<div class="field"><div class="field-label">Horaire</div><div>' + fmtTime(ev.starts_at) + (ev.ends_at ? ' – ' + fmtTime(ev.ends_at) : '') + '</div></div>';
+    if (ev.location) body += '<div class="field"><div class="field-label">Lieu</div><div>' + escHtml(ev.location) + '</div></div>';
+    if (ev.attendees) {
+      const att = Array.isArray(ev.attendees) ? ev.attendees : [];
+      if (att.length) body += '<div class="field"><div class="field-label">Participants</div><div>' + att.map(escHtml).join(', ') + '</div></div>';
+    }
+    if (ev.notes) body += '<div class="field"><div class="field-label">Notes</div><div>' + escHtml(ev.notes) + '</div></div>';
+    if (ev.source_type) body += '<div class="field"><div class="field-label">Source</div><div>' + escHtml(ev.source_type) + '</div></div>';
+    $('drawer-body').innerHTML = body;
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden', 'false');
+  }
+
+  $('drawer-close').addEventListener('click', () => {
+    $('drawer').classList.remove('open');
+    $('drawer').setAttribute('aria-hidden', 'true');
+  });
+
+  async function refetchAndRender() {
+    await loadWeek(state.week);
+    const unplanned = await loadUnplannedTasks();
+    renderHeader();
+    renderTasksRail(unplanned);
+    renderGrid();
+  }
+
+  function shiftWeek(delta) {
+    const m = isoMonday(state.week);
+    const newMonday = new Date(m.getTime() + delta * 7 * 86400000);
+    const newWeek = isoWeek(newMonday);
+    setWeekInUrl(newWeek);
+    init(newWeek);
+  }
+
+  $('btn-prev').addEventListener('click', () => shiftWeek(-1));
+  $('btn-next').addEventListener('click', () => shiftWeek(+1));
+  $('btn-today').addEventListener('click', () => {
+    const w = isoWeek(new Date());
+    setWeekInUrl(w);
+    init(w);
+  });
+
+  async function init(week) {
+    try {
+      await loadWeek(week);
+      const unplanned = await loadUnplannedTasks();
+      renderHeader();
+      renderTasksRail(unplanned);
+      renderGrid();
+    } catch (err) {
+      $('agenda-grid').innerHTML = '<div style="padding:24px;color:var(--coral);">' + escHtml(err.message) + '</div>';
+    }
+  }
+
+  // Bootstrap : ?week=YYYY-Www OU semaine courante
+  const initialWeek = getWeekFromUrl() || isoWeek(new Date());
+  setWeekInUrl(initialWeek);
+  init(initialWeek);
+
+  // S3.05 — Cablage SSE front : refetch sur task.updated/.created/.deleted
+  let sseSource = null;
+  let sseRetry = 1000;
+  function connectSSE() {
+    if (typeof EventSource === 'undefined') return;
+    try {
+      sseSource = new EventSource('/api/cockpit/stream');
+      sseSource.addEventListener('hello', () => { sseRetry = 1000; });
+      ['task.updated', 'task.created', 'task.deleted'].forEach((kind) => {
+        sseSource.addEventListener(kind, () => { refetchAndRender().catch(() => {}); });
+      });
+      sseSource.onerror = () => {
+        sseSource && sseSource.close();
+        setTimeout(connectSSE, sseRetry);
+        sseRetry = Math.min(sseRetry * 2, 30000);
+      };
+    } catch (e) { /* non bloquant */ }
+  }
+  connectSSE();
+})();
+</script>
+</body>
+</html>

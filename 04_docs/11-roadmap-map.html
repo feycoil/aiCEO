@@ -506,6 +506,102 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
   .vbar-track { height: 18px; }
   .vbar-value { text-align: left; }
 }
+
+/* ──────────────────────────────────────────────────────────────
+ * GitHub references (issues, PRs, milestones) — style natif GH
+ * ────────────────────────────────────────────────────────────── */
+.gh-refs { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center;
+           margin-top: var(--space-3); padding-top: var(--space-3);
+           border-top: 1px dashed color-mix(in srgb, var(--text-3) 30%, transparent); }
+.gh-refs.compact { margin-top: 6px; padding-top: 0; border-top: none; }
+.gh-refs-empty { color: var(--text-3); font-style: italic; font-size: var(--fs-small); }
+.gh-refs-loading { color: var(--text-3); font-size: var(--fs-small); }
+.gh-refs-stale  { color: #b45309; font-size: var(--fs-small); }
+
+.gh-ref { display: inline-flex; align-items: center; gap: 6px;
+          padding: 3px 10px 3px 8px; border-radius: 999px;
+          background: #f6f8fa; color: #1f2328;
+          font-family: var(--font-sans); font-size: 12px; line-height: 1.4;
+          text-decoration: none; border: 1px solid #d0d7de;
+          transition: background .12s; white-space: nowrap; }
+.gh-ref:hover { background: #eaeef2; text-decoration: none; }
+.gh-ref .gh-icon { width: 14px; height: 14px; flex-shrink: 0; }
+.gh-ref .gh-num { font-weight: 600; color: #57606a; font-variant-numeric: tabular-nums; }
+.gh-ref .gh-title { color: #1f2328; max-width: 280px; overflow: hidden;
+                    text-overflow: ellipsis; }
+
+/* state badges (couleurs GH officielles) */
+.gh-state { display: inline-flex; align-items: center; gap: 4px;
+            padding: 2px 7px; border-radius: 999px;
+            font-size: 11px; font-weight: 600; line-height: 1.4;
+            color: #fff; }
+.gh-state.open    { background: #1a7f37; }   /* GH "Open" green */
+.gh-state.closed  { background: #8250df; }   /* GH "Closed (completed)" purple */
+.gh-state.notplanned { background: #6e7781; } /* GH "Closed (not planned)" gray */
+.gh-state.merged  { background: #8250df; }   /* GH "Merged" purple */
+.gh-state.draft   { background: #6e7781; }   /* GH "Draft" gray */
+
+/* labels (GitHub-style colored pills, contrast auto) */
+.gh-label { display: inline-block; padding: 1px 8px; border-radius: 999px;
+            font-size: 11px; line-height: 1.5; font-weight: 500;
+            border: 1px solid color-mix(in srgb, var(--gh-bg) 80%, black);
+            background: var(--gh-bg); color: var(--gh-fg); }
+
+/* milestone */
+.gh-milestone { display: inline-flex; align-items: center; gap: 4px;
+                padding: 2px 8px; border-radius: 999px;
+                background: #ddf4ff; color: #0969da;
+                font-size: 11px; line-height: 1.5; }
+.gh-milestone.closed { background: #e7e1ff; color: #6639ba; }
+
+/* assignees / reviewers */
+.gh-people { display: inline-flex; align-items: center; gap: 3px; }
+.gh-people .gh-label-mini { font-size: 10px; color: #57606a; margin-right: 4px;
+                            text-transform: uppercase; letter-spacing: 0.04em; }
+.gh-avatar { display: inline-flex; align-items: center; justify-content: center;
+             width: 20px; height: 20px; border-radius: 50%;
+             background: color-mix(in srgb, var(--rose) 25%, var(--surface-2));
+             color: var(--text-1); font-size: 10px; font-weight: 600;
+             border: 1px solid var(--surface-3);
+             text-transform: uppercase; }
+.gh-avatar.reviewer { background: color-mix(in srgb, var(--emerald) 30%, var(--surface-2)); }
+.gh-avatar.reviewer.changes_requested { background: color-mix(in srgb, var(--rose) 40%, var(--surface-2)); }
+.gh-avatar.reviewer.commented { background: color-mix(in srgb, var(--amber) 30%, var(--surface-2)); }
+
+/* branch chip */
+.gh-branch { display: inline-flex; align-items: center; gap: 4px;
+             padding: 2px 8px; border-radius: 999px;
+             background: var(--surface-2); color: var(--text-2);
+             font-family: var(--font-mono, monospace); font-size: 11px; }
+.gh-branch::before { content: "⌥"; opacity: 0.6; }
+
+/* tag chip */
+.gh-tag { display: inline-flex; align-items: center; gap: 4px;
+          padding: 2px 8px; border-radius: 999px;
+          background: #fff8c5; color: #633c01;
+          font-family: var(--font-mono, monospace); font-size: 11px; border: 1px solid #d4a72c40; }
+.gh-tag::before { content: "🏷"; }
+
+/* commit chip */
+.gh-commit { display: inline-flex; align-items: center; gap: 4px;
+             padding: 2px 8px; border-radius: 999px;
+             background: var(--surface-2); color: var(--text-2);
+             font-family: var(--font-mono, monospace); font-size: 11px; }
+.gh-commit::before { content: "⎇"; opacity: 0.6; }
+
+/* full GH detail block (used in milestone drawer) */
+.gh-detail { margin-top: var(--space-3); padding: var(--space-3) var(--space-3);
+             background: #f6f8fa; border: 1px solid #d0d7de;
+             border-radius: var(--radius-xs); }
+.gh-detail h5 { margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase;
+                letter-spacing: 0.05em; color: #57606a; font-weight: 600; }
+.gh-detail .gh-row { display: flex; flex-wrap: wrap; gap: 6px 8px;
+                     align-items: center; margin-bottom: 6px; }
+.gh-detail .gh-row:last-child { margin-bottom: 0; }
+.gh-detail .gh-row-label { font-size: 11px; color: #57606a;
+                            text-transform: uppercase; letter-spacing: 0.04em;
+                            min-width: 80px; }
+
 </style>
 <!-- Mermaid pour les 3 blocs ciblés (architecture / dépendances / ADR) -->
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
@@ -541,7 +637,7 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
 
   <nav class="tabs" role="tablist" aria-label="Vues de la roadmap">
     <button class="tab" data-tab="convergence" role="tab" aria-selected="true" aria-controls="tab-convergence" id="tab-btn-convergence">Carte de convergence</button>
-    <button class="tab" data-tab="fusion-v05" role="tab" aria-selected="false" aria-controls="tab-fusion-v05" id="tab-btn-fusion-v05">Plan v0.5 fusion <span class="badge">S2 EN COURS</span></button>
+    <button class="tab" data-tab="fusion-v05" role="tab" aria-selected="false" aria-controls="tab-fusion-v05" id="tab-btn-fusion-v05">Plan v0.5 fusion <span class="badge">S3 KICKOFF</span></button>
     <button class="tab" data-tab="release-notes" role="tab" aria-selected="false" aria-controls="tab-release-notes" id="tab-btn-release-notes">Release notes</button>
     <button class="tab" data-tab="journal" role="tab" aria-selected="false" aria-controls="tab-journal" id="tab-btn-journal">Journal &amp; écarts <span class="badge" id="journal-badge">live</span></button>
   </nav>
@@ -601,11 +697,11 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
     <div class="youarehere" role="status">
       <span class="pulse" aria-hidden="true"></span>
       <div>
-        <div class="label">Vous êtes ici · 25/04/2026 · Sprint S2 kickoff préparé</div>
-        <h2>S1 livré ✓ · <strong>Sprint S2 ouvert</strong> · cockpit unifié + flux matin/soir + tâches · démarrage 19/05/2026</h2>
-        <p>Phase 1 archivée (tag <code>v0.5-s1</code> sur 141ca0f, 14 tables / 41 routes / 23 tests verts). <strong>Sprint S2 préparé en parallèle</strong> : périmètre élargi à <code>taches.html</code> (absorbé depuis S3 grâce au gain dogfood S1), 4 pages migrées vers API SQLite (<code>index.html</code> · <code>arbitrage.html</code> · <code>evening.html</code> · <code>taches.html</code>), 10 issues GitHub prêtes (S2.01 → S2.10), 22,1 k€ budget alloué (20 % de 110 k€). <strong>Démarrage lundi 19/05 09:00</strong> · démo finale vendredi 30/05 16:00 · tag <code>v0.5-s2</code> cible lundi 02/06.</p>
+        <div class="label">Vous êtes ici · 25/04/2026 · Sprint S3 kickoff préparé</div>
+        <h2>S1 livré ✓ · S2 livré ✓ · <strong>Sprint S3 ouvert</strong> · agenda + revues + SSE live + Outlook autosync · démarrage 02/06/2026</h2>
+        <p>Phases 1 &amp; 2 archivées. <strong>Sprint S2 livré</strong> en avance le 25/04 (branche <code>release/v0.5-s2</code> · 10/10 issues · 11 commits · <strong>55/55 tests verts</strong> · cockpit live <code>/api/cockpit/today</code> + rituels matin/soir + spike SSE bus + endpoint <code>/stream</code> non câblé front + doc API 38 exemples curl). <strong>Sprint S3 préparé</strong> : 2 pages migrées (<code>agenda.html</code> · <code>revues/index.html</code>) + 2 chantiers transverses (câblage SSE front + Outlook autosync 2 h via schtasks) + spike Service Windows (POC node-windows). 11 issues prêtes (S3.00 → S3.10) · 11,1 j-dev / 20 capacité (45 % marge). <strong>Démarrage lundi 02/06 09:00</strong> · démo finale vendredi 13/06 16:00 · tag <code>v0.5-s3</code> cible lundi 16/06.</p>
       </div>
-      <div class="stamp">S2 · 10 j-ouvrés · 22,1 k€ · 4 pages · binôme CEO+Claude</div>
+      <div class="stamp">S3 · 10 j-ouvrés · 22,1 k€ · 2 pages + 2 chantiers · binôme CEO+Claude</div>
     </div>
 
     <!-- Timeline 10 semaines -->
@@ -636,8 +732,15 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
           </g>
           <text x="270" y="48" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#1f4738">Phase 1 ✓</text>
 
-          <!-- Vous êtes ici marker (Phase 2 — Sprint S2 ouvert) -->
+          <!-- Phase 2 livrée — checkmark statique -->
           <g transform="translate(490,68)">
+            <circle r="9" fill="#3d7363"/>
+            <path d="M -4,0 L -1,3 L 4,-3" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <text x="490" y="48" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#1f4738">Phase 2 ✓</text>
+
+          <!-- Vous êtes ici marker (Phase 3 — Sprint S3 ouvert) -->
+          <g transform="translate(710,68)">
             <circle r="8" fill="#d96d3e">
               <animate attributeName="r" values="8;14;8" dur="1.8s" repeatCount="indefinite"/>
               <animate attributeName="opacity" values="1;0.3;1" dur="1.8s" repeatCount="indefinite"/>
@@ -645,7 +748,7 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
             <circle r="6" fill="#f5f3ef"/>
             <circle r="3" fill="#d96d3e"/>
           </g>
-          <text x="490" y="48" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#8a3b1b">Vous êtes ici</text>
+          <text x="710" y="48" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#8a3b1b">Vous êtes ici</text>
 
           <!-- Main timeline bar -->
           <rect x="160" y="84" width="1100" height="32" rx="16" fill="url(#phaseGrad)"/>
@@ -708,34 +811,36 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
           </ul>
           <div class="deliv"><strong>Livré 25/04 — Release notes</strong><code>04_docs/RELEASE-NOTES-v0.5-s1.md</code> · 6 commits ahead of origin/main · recette manuelle CEO en dogfood depuis le 22/04, 0 incident bloquant sur 4 jours.</div>
         </article>
-        <article class="phase doing">
+        <article class="phase done-code">
           <div class="phase-num">Phase 2 / Sprint S2</div>
           <div class="phase-name">Cockpit unifié + flux matin/soir + tâches</div>
-          <div class="phase-weeks">19/05 → 01/06/2026 · 10 j-ouvrés · 22,1 k€</div>
-          <p class="phase-lead">Migration de 4 pages vers API SQLite + stabilisation flux matin/soir. <strong>Périmètre élargi</strong> : <code>taches.html</code> absorbé depuis S3 grâce au gain S1 dogfood.</p>
+          <div class="phase-weeks">25 avril 2026 · livré · branche <code>release/v0.5-s2</code> → tag cible <code>v0.5-s2</code></div>
+          <p class="phase-lead">Sprint S2 livré complet par binôme CEO + Claude — accéléré sur 13/04 → 25/04 (gain time-box du spike SSE = 1,5 j réinvesti en e2e). 10/10 issues, 11 commits, 55/55 tests verts.</p>
           <ul>
-            <li><strong>4 pages migrées</strong> : <code>index.html</code> · <code>arbitrage.html</code> · <code>evening.html</code> · <code>taches.html</code></li>
-            <li><strong>Zéro localStorage applicatif</strong> · API <code>/api/cockpit/today</code>, <code>/api/arbitrage/*</code>, <code>/api/evening/*</code>, <code>/api/tasks</code></li>
-            <li>Flux matin/soir <strong>stables 3 jours consécutifs</strong> · streak engine en backend</li>
-            <li>Matrice Eisenhower 2×2 + drag &amp; drop natif (fallback SortableJS)</li>
-            <li>Tests Playwright e2e (3 specs) · ≥ 30 tests unitaires verts</li>
-            <li>10 issues GitHub <strong>S2.01 → S2.10</strong> · 19,5 j-dev sur 20 j capacité</li>
-            <li>Spike WebSocket time-boxé 3 j (préparation S4 chat live)</li>
+            <li><strong>4 pages migrées</strong> : <code>index.html</code> · <code>arbitrage.html</code> · <code>evening.html</code> · <code>taches.html</code> — <strong>zéro localStorage applicatif</strong></li>
+            <li>Cockpit live <code>GET /api/cockpit/today</code> (counters SQL + alertes overdue/stale/big rocks manquants)</li>
+            <li>Rituels matin/soir : arbitrage top 3/délégation/report + bilan humeur·énergie + <strong>streak persistant</strong></li>
+            <li>IA décisions : <code>POST /api/decisions/:id/recommend</code> (Anthropic + fallback offline)</li>
+            <li>Doc API complète <code>docs/API.md</code> · <strong>38 exemples curl</strong> + smoke-test 1 commande</li>
+            <li>Spike SSE livré : bus EventEmitter + <code>GET /api/cockpit/stream</code> + heartbeat 25 s · <strong>non câblé front</strong> (différé S3.05)</li>
+            <li>3 parcours e2e HTTP-boundary (Playwright sandboxé S3+) + 6 nouveaux tests unitaires</li>
           </ul>
-          <div class="deliv"><strong>Livrables Sprint S2 préparés</strong><code>04_docs/DOSSIER-SPRINT-S2.md</code> · <code>POA-SPRINT-S2.xlsx</code> · <code>KICKOFF-S2.pptx</code> · démarrage lundi 19/05 09:00 · démo finale vendredi 30/05 16:00 · tag cible <code>v0.5-s2</code> lundi 02/06.</div>
+          <div class="deliv"><strong>Livré 25/04 — PR-S2 mergée</strong><code>.github/PR-S2.md</code> · <code>data/migrations/2026-04-25-init-schema.sql</code> · <code>docs/API.md</code> (487 lignes) · <code>docs/SPIKE-WEBSOCKET.md</code> (ADR SSE retenu) · 11 commits du <code>accea60</code> au <code>6f4e6e8</code>.</div>
         </article>
-        <article class="phase">
-          <div class="phase-num">Phase 3</div>
-          <div class="phase-name">Fusion UI 21 → 13 pages</div>
-          <div class="phase-weeks">Sem 5-6 · risque dérive</div>
-          <p class="phase-lead">Une seule app-web, plus de séparation MVP / app statique.</p>
+        <article class="phase doing">
+          <div class="phase-num">Phase 3 / Sprint S3</div>
+          <div class="phase-name">Agenda hebdo + Revues + SSE live + Outlook autosync</div>
+          <div class="phase-weeks">02/06 → 13/06/2026 · 10 j-ouvrés · 22,1 k€</div>
+          <p class="phase-lead">Migration des 2 dernières pages métier (<code>agenda.html</code> · <code>revues/index.html</code>) + 2 chantiers transverses (câblage SSE front + Outlook autosync 2 h). 11 issues / 11,1 j-dev / 20 capacité (45 % marge dailys/retro/demos).</p>
           <ul>
-            <li>Consolidation <strong>21 → 13 pages</strong> (cf. SPEC-FONCTIONNELLE-FUSION)</li>
-            <li><code>index.html</code> + <code>evening.html</code> = 2 modes du cockpit</li>
-            <li>DS Twisty appliqué app-wide</li>
-            <li>Composants partagés (drawer, ⌘K, toasts, gamif)</li>
+            <li><strong>agenda.html</strong> migré API : vue hebdo lun-dim, drag-drop tâche → <code>due_at</code>, deep-link <code>?week=YYYY-Www</code>, drawer detail event</li>
+            <li><strong>revues/index.html</strong> migré API : Big Rocks éditables (max 3/sem), auto-draft Claude rubric ≥ 5/6, archives W17+</li>
+            <li><strong>Câblage SSE front</strong> (cockpit + tâches) : routes mutatrices émettent → bus → re-fetch &lt; 1 s, reconnexion auto navigateur</li>
+            <li><strong>Outlook autosync 2 h</strong> via <code>schtasks /sc HOURLY /mo 2</code> + endpoint <code>GET /api/system/last-sync</code> + alerte cockpit si &gt; 4 h sans sync</li>
+            <li>11 issues GitHub <strong>S3.00 → S3.10</strong> · ≥ 65 tests unitaires + tests e2e parcours hebdo (P4)</li>
+            <li>Spike Service Windows time-boxé 1,5 j (POC node-windows) — prépare S5 cutover</li>
           </ul>
-          <div class="deliv"><strong>Livrable visible CEO</strong>Une seule app cohérente, plus de duplication entre <code>aiCEO_Agent</code> et <code>03_mvp</code>.</div>
+          <div class="deliv"><strong>Livrables Sprint S3 préparés</strong><code>04_docs/DOSSIER-SPRINT-S3.md</code> · <code>POA-SPRINT-S3.xlsx</code> (6 feuilles, 25 formules, 0 erreur) · <code>KICKOFF-S3.pptx</code> (12 slides) · démarrage lundi 02/06 09:00 · demo intermédiaire 06/06 · démo finale 13/06 16:00 · tag cible <code>v0.5-s3</code> lundi 16/06.</div>
         </article>
         <article class="phase">
           <div class="phase-num">Phase 4</div>
@@ -973,13 +1078,14 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
 
     <!-- Décision GO ExCom prise + S1 en recette -->
     <div class="decision" style="background:linear-gradient(135deg,#dff0e6 0%,#f3faf6 100%);border-color:#3d7363;">
-      <div class="label" style="color:#1f4738;">Décision GO ExCom · prise le 25/04/2026 · S2 kickoff préparé</div>
-      <h2>GO inconditionnel · S1 livré ✓ · Sprint S2 ouvert (cockpit unifié, périmètre élargi)</h2>
-      <p>L'ExCom a tranché : v0.5 produite en binôme CEO + Claude (pas de dev externe). Cadence préservée : <strong>6 sprints / 10 sem · kickoff 5 mai · tag v0.5 → 14 juillet 2026</strong>. <strong>Sprint S1 livré</strong> en avance (14 tables / 41 routes / 23 tests verts / hotfix S1.13 node:sqlite, dogfood CEO depuis 22/04). <strong>Sprint S2 préparé</strong> avec périmètre élargi : <code>taches.html</code> absorbé depuis S3 grâce au gain dogfood. 4 pages, 10 issues, 22,1 k€, démarrage 19/05.</p>
+      <div class="label" style="color:#1f4738;">Décision GO ExCom · prise le 25/04/2026 · S2 livré ✓ · S3 kickoff préparé</div>
+      <h2>GO inconditionnel · S1 livré ✓ · S2 livré ✓ · Sprint S3 ouvert (agenda + revues + SSE + autosync)</h2>
+      <p>Cadence préservée : <strong>6 sprints / 10 sem · tag v0.5 → 14 juillet 2026</strong>. <strong>Sprints S1 + S2 livrés</strong> par binôme CEO + Claude. S2 = 10/10 issues · 11 commits · 55/55 tests verts (cockpit live + rituels matin/soir + spike SSE + doc API 38 exemples). <strong>Sprint S3 préparé</strong> : 2 pages (<code>agenda.html</code> · <code>revues/index.html</code>) + 2 chantiers transverses (câblage SSE front + Outlook autosync 2 h) + spike Service Windows. 11 issues, 22,1 k€, démarrage 02/06.</p>
       <div class="gate">
         <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4738;"><strong>S1 ✓</strong>livré · tag v0.5-s1 sur 141ca0f · 0 incident dogfood</div>
-        <div class="gate-pill" style="background:#fff;border-color:#d96d3e;color:#8a3b1b;"><strong>S2 EN COURS</strong>kickoff prêt · démarrage 19/05 · cockpit + matin/soir + tâches</div>
-        <div class="gate-pill" style="background:#fff;border-color:#b88237;color:#6d4816;"><strong>NEXT</strong>tag v0.5-s2 cible 02/06 · puis S3 agenda + revues</div>
+        <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4738;"><strong>S2 ✓</strong>livré 25/04 · 10/10 issues · 55/55 tests · branche release/v0.5-s2</div>
+        <div class="gate-pill" style="background:#fff;border-color:#d96d3e;color:#8a3b1b;"><strong>S3 KICKOFF</strong>préparé · démarrage 02/06 · agenda + revues + SSE + autosync</div>
+        <div class="gate-pill" style="background:#fff;border-color:#b88237;color:#6d4816;"><strong>NEXT</strong>tag v0.5-s3 cible 16/06 · puis S4 service Windows + E2E</div>
       </div>
     </div>
 
@@ -1057,9 +1163,11 @@ flowchart LR
     DS1 --> AW1
     DS1 --> MV1
   end
-  subgraph S1["S1 livre - 25 avril 2026"]
+  subgraph S1["S1+S2 livres - 25 avril 2026"]
     direction TB
     DB["SQLite 14 tables<br/>41 routes REST<br/>node:sqlite driver"]
+    CK["Cockpit live + rituels<br/>SSE bus + 38 ex. curl<br/>55/55 tests verts"]
+    DB --> CK
   end
   subgraph APRES["Apres v0.5 - 14 juillet 2026"]
     direction TB
@@ -1067,20 +1175,19 @@ flowchart LR
     HUB["Hub aiCEO v0.5<br/>UI cockpit + Express<br/>+ SQLite + Service Windows"]
     DS2 --> HUB
   end
-  AVANT -.->|S1 backend| S1
-  S1 -.->|S2-S6 fusion UI| APRES
+  AVANT -.->|S1+S2 livres| S1
+  S1 -.->|S3 fusion UI| APRES
   classDef done fill:#3d7363,stroke:#2c5247,color:#fff
   classDef doing fill:#d96d3e,stroke:#a4522e,color:#fff
   classDef todo fill:#fff,stroke:#7790ae,color:#324054
-  class DS1,AW1,MV1 done
-  class DB doing
+  class DS1,AW1,MV1,DB,CK done
   class DS2,HUB todo
         </div>
       </div>
 
       <div class="j-mermaid">
         <h3>Dépendances jalons critiques v0.5 — post-internalisation</h3>
-        <p class="hint">Cadence 6 sprints / 10 sem / 5 mai → 14 juillet 2026. GO ExCom pris (25/04) + S1 livré (dogfood CEO) + S2 kickoff prêt. Démarrage S2 le 19/05.</p>
+        <p class="hint">Cadence 6 sprints / 10 sem / 5 mai → 14 juillet 2026. GO ExCom pris (25/04) + S1 livré + S2 livré 25/04 (55/55 tests verts) + S3 kickoff prêt. Démarrage S3 le 02/06.</p>
         <div class="mermaid" id="mermaid-dependencies">
 flowchart TD
   GO["GO ExCom internalise<br/>25 avril 2026 - pris"]
@@ -1102,9 +1209,9 @@ flowchart TD
   classDef doing fill:#d96d3e,stroke:#a4522e,color:#fff
   classDef todo fill:#fff,stroke:#7790ae,color:#324054
   classDef tag fill:#b88237,stroke:#8a6429,color:#fff
-  class GO,S1 done
-  class REC doing
-  class S2,S3,S4,S5 todo
+  class GO,S1,REC,S2 done
+  class S3 doing
+  class S4,S5 todo
   class V05 tag
         </div>
       </div>
@@ -1177,9 +1284,9 @@ const PERIODS = [
   { id:"avril-s1",    label:"Avril 2026",       sub:"S14-S15 · sprint cockpit + MVP scaffolds" },
   { id:"avril-s2",    label:"Avril 2026",       sub:"S16 · pages app + arbitrage 3/2/N" },
   { id:"avril-s3",    label:"Avril 2026",       sub:"S17 · Outlook + cockpit serenity" },
-  { id:"avril-s4",    label:"Avril 2026",       sub:"S18 · GO ExCom v0.5 internalisée + Sprint S1 livré (tag v0.5-s1)" },
-  { id:"mai-s3",      label:"Mai 2026",         sub:"S20-S21 · Sprint S2 — cockpit unifié + flux matin/soir + taches.html (élargi)", now:true },
-  { id:"mai-juin",    label:"Mai-juin 2026",    sub:"Sprints S3 → S6 · agenda + revues · service Windows + E2E · polish + handoff" },
+  { id:"avril-s4",    label:"Avril 2026",       sub:"S18 · GO ExCom v0.5 internalisée + Sprint S1 livré (tag v0.5-s1) + Sprint S2 livré (release/v0.5-s2 · 10/10 issues · 55/55 tests)" },
+  { id:"juin-s2",     label:"Juin 2026",        sub:"S23-S24 · Sprint S3 — agenda hebdo + revues + SSE live + Outlook autosync (kickoff prêt)", now:true },
+  { id:"mai-juin",    label:"Mai-juin 2026",    sub:"Sprints S4 → S6 · service Windows + E2E · polish + handoff" },
   { id:"juillet",     label:"Juillet 2026",     sub:"Tag v0.5 · cutover", banner:true },
   { id:"annee-2027",  label:"2027",             sub:"V1 cloud-ready · 290 k€" },
   { id:"annee-2028",  label:"2028",             sub:"V2 multi-tenant · 693 k€" },
@@ -1206,6 +1313,7 @@ const MILESTONES = [
     desc:"5-card layout intention+progression, drawer source-inspector, gamif (streak/badges), end-of-day ritual.",
     artefacts:["aiCEO_Agent/index.html (v4)","drawer.css","gamif.js"] },
   { id:"web-06", lane:"web", period:"avril-s3", status:"done", title:"DS aligné MVP (Issue #1)", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
+    gh:{ branch:"ds/wire-mvp-to-ds", milestone:"sprint-externe-v0.5" },
     desc:"Issue #1 close : 12 polices Fira Sans + Aubrielle déployées dans 03_mvp/public/assets/fonts/, link CSS injecté, 6 variables inline migrées vers tokens DS Twisty. Branche ds/wire-mvp-to-ds poussée sur origin.",
     artefacts:["03_mvp/public/assets/fonts/","02_design-system/colors_and_type.css"] },
   { id:"web-07", lane:"web", period:"avril-s3", status:"done", title:"Atelier de cohérence S1-S8", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
@@ -1258,21 +1366,27 @@ const MILESTONES = [
 
   // ── Sprint externe — éclaté en 6 livrables (anciennement mvp-10) ──
   { id:"mvp-10a", lane:"mvp", period:"avril-s3", status:"done", title:"Benchmark v2 (Issue #2)", date:"22 avril 2026", planned:"2026-04-22", actual:"2026-04-22",
+    gh:{ branch:"docs/benchmark-v2", milestone:"sprint-externe-v0.5" },
     desc:"Étude approfondie 10-12 produits concurrents. P0 bloquant pour le pitch investisseur. Couvre Motion, Reclaim, Sunsama, Akiflow, Rize, Sweepy, Magical, Reflect, Mem, Adaptive AI Coach.",
     artefacts:["04_docs/02-benchmark.md (v2)"] },
   { id:"mvp-10b", lane:"mvp", period:"avril-s3", status:"done", title:"Pitch onepage (Issue #3)", date:"23 avril 2026", planned:"2026-04-23", actual:"2026-04-23",
+    gh:{ branch:"docs/pitch-onepage", milestone:"sprint-externe-v0.5" },
     desc:"1 page A4 PDF stylé DS Twisty pour ouvrir des conversations. Tagline + 3 piliers + ROI + appel à l'action.",
     artefacts:["docs/PITCH-ONEPAGE.md","docs/PITCH-ONEPAGE.html"] },
   { id:"mvp-10c", lane:"mvp", period:"avril-s3", status:"done", title:"Business case (Issue #4)", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
+    gh:{ branch:"docs/business-case", milestone:"sprint-externe-v0.5" },
     desc:"BUSINESS-CASE.md détaillé + synthèse PDF stylée. Hypothèses revenu, coûts 18 mois, ROI, point mort 250-350 CEO clients, trajectoire 1,69 M€.",
     artefacts:["docs/BUSINESS-CASE.md","docs/BUSINESS-CASE-SYNTHESE.html","docs/BUSINESS-CASE-SYNTHESE.pdf"] },
   { id:"mvp-10d", lane:"mvp", period:"avril-s3", status:"done", title:"Onboarding CEO pair (Issue #5)", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
+    gh:{ branch:"docs/onboarding-ceo", milestone:"sprint-externe-v0.5" },
     desc:"Guide d'installation pour CEO pair externe : pré-requis (Node, Outlook, clé API), import Outlook 30j, premier arbitrage, FAQ, troubleshooting.",
     artefacts:["docs/ONBOARDING-CEO-PAIR.md"] },
   { id:"mvp-10e", lane:"mvp", period:"avril-s3", status:"done", title:"Lettre intro pair (Issue #6)", date:"24 avril 2026", planned:"2026-04-24", actual:"2026-04-24",
+    gh:{ branch:"docs/lettre-intro", milestone:"sprint-externe-v0.5" },
     desc:"1 page pair-à-pair signée, ton CEO-CEO sans jargon. Mention « disponible juillet 2026 » pour pré-recrutement des 2-3 cibles.",
     artefacts:["docs/LETTRE-INTRO-CEO-PAIR.md"] },
   { id:"mvp-10f", lane:"mvp", period:"avril-s3", status:"done", title:"Pitch deck investisseur (Issue #7)", date:"25 avril 2026", planned:"2026-04-25", actual:"2026-04-25",
+    gh:{ branch:"docs/pitch-deck", milestone:"sprint-externe-v0.5" },
     desc:"16 slides .pptx adapté du deck exec Feycoil. Couvre problème, solution, marché, traction MVP, team, roadmap, ask 110k€ → 290k€ → 693k€.",
     artefacts:["docs/PITCH-DECK-INVESTISSEUR.pptx"] },
 
@@ -1281,13 +1395,21 @@ const MILESTONES = [
     desc:"GO ExCom inconditionnel + pivot exécution : v0.5 produite en binôme CEO + Claude (pas de dev externe). Cadence 6 sprints / 10 sem / 5 mai → 14 juillet conservée. Budget effectif ~4,6 k€ infra + provision (105 k€ dev externe neutralisés).",
     artefacts:["04_docs/DOSSIER-GO-NOGO-V05.md","04_docs/POA-V05.xlsx","04_docs/KICKOFF-V05.pptx","00_BOUSSOLE/DECISIONS.md (ADR GO + ADR internalisation 25/04)"] },
   { id:"v05-s1", lane:"mvp", period:"avril-s4", status:"done", title:"Sprint S1 — Backend stable SQLite", date:"25 avril 2026 · livré", planned:"2026-05-09", actual:"2026-04-25",
+    gh:{ milestone:"v0.5-s1", tag:"v0.5-s1", commit:"141ca0f" },
     desc:"Sprint 1 LIVRÉ en avance par binôme CEO + Claude (vs cible 9 mai) : 14 tables SQLite + 18 indexes, 41 routes REST sur 6 modules, 23/23 tests verts en sandbox, migration data.js → SQLite OK (3/14/28/10/25/25). Hotfix S1.13 : pivot better-sqlite3 → node:sqlite (zéro binaire natif, Node 22.5+). Tag v0.5-s1 posé sur 141ca0f. Recette CEO en dogfood depuis 22/04, 0 incident bloquant. Marge ~2 j réinjectée en S2.",
     artefacts:["03_mvp/docs/SPRINT-S1-RECETTE.md","03_mvp/src/db-driver.js (node:sqlite)","tag v0.5-s1 → 141ca0f","04_docs/RELEASE-NOTES-v0.5-s1.md","04_docs/DOSSIER-GO-NOGO-V05.md §Plan d'exécution S1"] },
 
-  // ── Sprint S2 — Cockpit unifié + flux matin/soir + taches (périmètre élargi) ──
-  { id:"v05-s2", lane:"mvp", period:"mai-s3", status:"doing", title:"Sprint S2 — Cockpit unifié + flux matin/soir + taches", date:"19 mai → 1er juin 2026", planned:"2026-06-01", actual:null,
-    desc:"Migration de 4 pages cockpit vers les endpoints API SQLite + stabilisation des flux matin/soir. PÉRIMÈTRE ÉLARGI : taches.html absorbé depuis S3 grâce au gain S1 dogfood (~2 j réinjectés). 4 pages : index.html (cockpit), arbitrage.html (matin), evening.html (soir), taches.html (CRUD + Eisenhower). Zéro localStorage applicatif. 10 issues S2.01 → S2.10 (19,5 j-dev / 20 capacité). Spike WebSocket time-boxé 3 j pour préparer S4. Plan B : si dérive ≥ 1 j vendredi 23/05, taches.html re-décalé en S3.",
-    artefacts:["04_docs/DOSSIER-SPRINT-S2.md","04_docs/POA-SPRINT-S2.xlsx","04_docs/KICKOFF-S2.pptx","branche release/v0.5-s2","tag cible v0.5-s2 sur 02/06"] },
+  // ── Sprint S2 — Cockpit unifié + flux matin/soir + tâches (LIVRÉ 25/04) ──
+  { id:"v05-s2", lane:"mvp", period:"avril-s4", status:"done", title:"Sprint S2 — Cockpit live + rituels + spike SSE", date:"25 avril 2026 · livré", planned:"2026-06-01", actual:"2026-04-25",
+    gh:{ milestone:"v0.5-s2", branch:"release/v0.5-s2", pr:111, issues:[101,102,103,104,105,106,107,108,109,110] },
+    desc:"Sprint S2 LIVRÉ EN AVANCE par binôme CEO + Claude (vs cible 01/06) : 10/10 issues closes (S2.00 → S2.10), 11 commits sur release/v0.5-s2 (accea60 → 6f4e6e8), 55/55 tests verts (49 S1 + 6 nouveaux). Cockpit live GET /api/cockpit/today (counters SQL + alertes). Rituels matin/soir avec streak persistant. Modèles métier élargis (projets/groupes/contacts/recherche globale). IA décisions Anthropic + fallback. Doc API complète 487 lignes / 38 exemples curl. Spike SSE livré (bus + endpoint /stream + 3 tests + ADR SSE retenu vs WS) — non câblé front, reporté S3.05. 3 parcours e2e HTTP-boundary (Playwright différé S3+).",
+    artefacts:["release/v0.5-s2","11 commits accea60 → 6f4e6e8","docs/API.md (487 lignes)","docs/SPIKE-WEBSOCKET.md","data/migrations/2026-04-25-init-schema.sql",".github/PR-S2.md","tag cible v0.5-s2 post-merge"] },
+
+  // ── Sprint S3 — Agenda + Revues + SSE live + Outlook autosync (KICKOFF) ──
+  { id:"v05-s3", lane:"mvp", period:"juin-s2", status:"doing", title:"Sprint S3 — Agenda + Revues + SSE live + Outlook autosync", date:"02 → 13 juin 2026 · 10 j-ouvrés · 22,1 k€", planned:"2026-06-13", actual:null,
+    gh:{ milestone:"v0.5-s3", branch:"docs/sprint-s3-kickoff", pr:112, issues:[113,114,115,116,117,118,119,120,121,122,123] },
+    desc:"Migration des 2 dernières pages métier (agenda.html · revues/index.html) + 2 chantiers transverses (câblage SSE front + Outlook autosync 2 h via schtasks). Spike Service Windows (POC node-windows) prépare S5. 11 issues S3.00 → S3.10 · 11,1 j-dev sur 20 j capacité (45 % marge dailys/retro/demos). Démarrage lundi 02/06 09:00 · demo intermédiaire 06/06 (agenda + cockpit live) · démo finale 13/06 16:00 · tag cible v0.5-s3 lundi 16/06.",
+    artefacts:["04_docs/DOSSIER-SPRINT-S3.md","04_docs/POA-SPRINT-S3.xlsx","04_docs/KICKOFF-S3.pptx","branche release/v0.5-s3","tag cible v0.5-s3 sur 16/06"] },
 
   // ═════════════════════════════════════════════════════════════
   // Hub fusion — Specs + Pipeline GitHub + Pré-requis dev
@@ -1358,11 +1480,21 @@ const BASELINE = {
 // ──────────────────────────────────────────────────────────────
 
 const JOURNAL = [
-  { ts:"2026-04-25", type:"décision", component:"mvp", title:"Sprint S2 — kickoff préparé · périmètre élargi à taches.html",
-    detail:"Kickoff S2 prêt : DOSSIER-SPRINT-S2.md (8 sections), POA-SPRINT-S2.xlsx (6 feuilles, 30 formules, 0 erreur), KICKOFF-S2.pptx (12 slides QA passé). PÉRIMÈTRE ÉLARGI : taches.html absorbé depuis S3 (4 pages au lieu de 3) grâce au gain ~2 j de la livraison S1 anticipée + dogfood CEO. Plan B explicite : si dérive ≥ 1 j cumulée vendredi 23/05, taches.html re-décalé en S3 (S3 alors allégé : agenda + revues seulement). 10 issues GitHub S2.01 → S2.10 prêtes (19,5 j-dev / 20 capacité). Démarrage lundi 19/05 09:00 · démo finale vendredi 30/05 16:00 · tag v0.5-s2 cible 02/06. Budget S2 = 22,1 k€ (20 % de 110 k€). Marge S1 dogfood (0 €) réinvestissable en provision risque.",
-    delta:0, source:"04_docs/DOSSIER-SPRINT-S2.md" },
+  { ts:"2026-04-25", type:"livraison", component:"mvp", title:"Sprint S3 livré (docs/sprint-s3-kickoff) — agenda + revues + SSE live + last-sync",
+    detail:"Sprint S3 LIVRÉ EN AVANCE (~3 h dogfood) : 11/11 issues closes (S3.00 → S3.10), 5 commits sur docs/sprint-s3-kickoff (ce22641 → 990be37), 75/75 tests verts (62 hérités + 11 nouveaux S3.05-S3.08). 4 piliers livrés : agenda.html migré API (drag-drop natif HTML5 + A11y clavier), revues/index.html migré API (Big Rocks max 3 + auto-draft Claude rubric 6 critères + archives), SSE câblé front (cockpit + tâches + agenda avec reconnexion exponentielle), Outlook autosync côté serveur (GET /api/system/last-sync + alerte cockpit outlook_stale). Auto-draft Claude src/llm-draft.js (Anthropic + fallback offline). POC node-windows S3.10 livré en code, test install reste à faire en dogfood admin CEO. Smoke live valide sur poste CEO Windows : 6/6 pages 200, contrainte max 3 confirmée HTTP 400.",
+    gh:{ milestone:"v0.5-s3", branch:"docs/sprint-s3-kickoff", pr:112 },
+    delta:-49, source:"00_BOUSSOLE/DECISIONS.md (2026-04-25 Sprint S3 livré)" },
+  { ts:"2026-04-25", type:"décision", component:"mvp", title:"Sprint S3 — kickoff préparé (agenda + revues + SSE live + Outlook autosync)",
+    detail:"Kickoff S3 prêt : DOSSIER-SPRINT-S3.md (7 sections, 11 issues détaillées), POA-SPRINT-S3.xlsx (6 feuilles, 25 formules, 0 erreur, palette Coral Energy), KICKOFF-S3.pptx (12 slides QA passé). 11 issues S3.00 → S3.10 (11,1 j-dev / 20 capacité = 45 % marge). 2 pages migrées (agenda.html drag-drop hebdo + revues/index.html avec auto-draft Claude rubric ≥ 5/6) + 2 chantiers transverses (câblage SSE front du bus prototypé S2.10 + Outlook autosync 2 h via schtasks /sc HOURLY /mo 2 + endpoint /api/system/last-sync) + spike Service Windows (POC node-windows time-box 1,5 j strict). Démarrage lundi 02/06 09:00 · demo intermédiaire 06/06 · démo finale 13/06 16:00 · tag v0.5-s3 cible 16/06. Budget S3 = 22,1 k€ (cumul v0.5 fin S3 = 66,3 k€ / 110 k€ = 60 %).",
+    gh:{ milestone:"v0.5-s3", branch:"docs/sprint-s3-kickoff", pr:112 },
+    delta:0, source:"04_docs/DOSSIER-SPRINT-S3.md" },
+  { ts:"2026-04-25", type:"livraison", component:"mvp", title:"Sprint S2 livré (release/v0.5-s2) — Cockpit live + rituels + spike SSE",
+    detail:"Sprint S2 LIVRÉ EN AVANCE : 10/10 issues closes (S2.00 → S2.10), 11 commits sur release/v0.5-s2 (accea60 → 6f4e6e8), 55/55 tests verts (49 S1 + 6 nouveaux). Cockpit live GET /api/cockpit/today (counters SQL + alertes overdue/stale/big rocks manquants). Rituels matin/soir : arbitrage matinal (top 3/délégation IA/report) + bilan du soir (humeur ∈ {bien,moyen,mauvais} + énergie ∈ [1,5] + top 3 demain) avec streak persistant dans settings.evening.longest_streak. Modèles métier élargis : projects/groups/contacts CRUD + recherche globale full-text léger. IA décisions Anthropic + fallback offline. Doc API 487 lignes / 38 exemples curl + smoke-test 1 commande. Spike SSE retenu vs WS (mono-user, EventSource natif, zéro dépendance) : bus EventEmitter + GET /api/cockpit/stream + heartbeat 25 s + 3 tests realtime — NON câblé front (reporté S3.05). 3 parcours e2e HTTP-boundary (Playwright différé S3+ car Chromium infaisable en sandbox). Time-box S2.10 livré en 1,5 j vs 3 j → gain 1,5 j redéployé sur S2.07.",
+    gh:{ milestone:"v0.5-s2", branch:"release/v0.5-s2", pr:111 },
+    delta:-37, source:".github/PR-S2.md" },
   { ts:"2026-04-25", type:"livraison", component:"mvp", title:"Sprint S1 livré (tag v0.5-s1) — Backend stable SQLite",
     detail:"14 tables SQLite + 18 indexes via 1 migration idempotente. 41 routes REST sur 6 modules (tasks/decisions/contacts/projects/groups/events). Migration data.js → SQLite OK (3 groupes / 14 projets / 28 tâches / 10 décisions / 25 contacts / 25 events). 23/23 tests verts en sandbox (base isolée AICEO_DB_OVERRIDE). Recette Windows en dogfood CEO depuis 22/04, 0 incident bloquant.",
+    gh:{ milestone:"v0.5-s1", tag:"v0.5-s1", commit:"141ca0f" },
     delta:-14, source:"04_docs/RELEASE-NOTES-v0.5-s1.md" },
   { ts:"2026-04-25", type:"écart", component:"mvp", title:"Hotfix S1.13 — pivot better-sqlite3 → node:sqlite",
     detail:"better-sqlite3@11 n'a pas de prebuilds Node 24, et node-gyp échoue sans VS Build Tools : install bloqué côté poste CEO. Pivot vers node:sqlite (intégré Node 22.5+, stable Node 24) via adaptateur drop-in src/db-driver.js. Zéro dépendance native. Refactor du test isolation (AICEO_DB_OVERRIDE) au passage : la base de prod n'est plus jamais touchée. Tag v0.5-s1 redéplacé sur 141ca0f.",
@@ -1372,6 +1504,7 @@ const JOURNAL = [
     delta:0, source:"04_docs/11-roadmap-map.html" },
   { ts:"2026-04-25", type:"livraison", component:"mvp", title:"Pitch deck investisseur livré (Issue #7)",
     detail:"16 slides .pptx adapté du deck exec. Closes #7. Sprint externe v0.5 entièrement clos : 6/6 livrables externes.",
+    gh:{ branch:"docs/pitch-deck", milestone:"sprint-externe-v0.5" },
     delta:0, source:"docs/PITCH-DECK-INVESTISSEUR.pptx" },
   { ts:"2026-04-24", type:"livraison", component:"docs", title:"Atelier de cohérence S1-S8 closé",
     detail:"8 sessions menées en 1 journée. 7 dissonances critiques résolues. 8 ADRs supplémentaires versées dans DECISIONS.md (total 12 ADRs).",
@@ -1393,6 +1526,7 @@ const JOURNAL = [
     delta:0, source:"https://github.com/etic-services/aiCEO" },
   { ts:"2026-04-24", type:"livraison", component:"cockpit", title:"DS aligné MVP (Issue #1)",
     detail:"12 polices Fira Sans + Aubrielle déployées dans MVP, 6 variables CSS inline migrées vers tokens DS Twisty. Branche ds/wire-mvp-to-ds poussée.",
+    gh:{ branch:"ds/wire-mvp-to-ds", milestone:"sprint-externe-v0.5" },
     delta:0, source:"03_mvp/public/assets/fonts/" },
   { ts:"2026-04-24", type:"livraison", component:"mvp", title:"Run réel 24/04 validé",
     detail:"28/28 tâches classées en 41s · 5,2k tokens in / 2,5k out · ≈1ct/arbitrage. Budget quotidien stable ≈1,5ct.",
@@ -1428,6 +1562,171 @@ const JOURNAL = [
 
 const TYPE_LABEL = { livraison:"Livraison", "décision":"Décision", "écart":"Écart", dérive:"Dérive", "ajout-hors-plan":"Ajout hors plan" };
 const TYPE_COLOR = { livraison:"emerald", "décision":"sky", "écart":"amber", dérive:"rose", "ajout-hors-plan":"violet" };
+
+// ──────────────────────────────────────────────────────────────
+// GitHub state — chargé depuis _audit-2026-04-25/github-state.json
+// si présent. Permet d'enrichir les références issue/PR avec
+// labels, milestone, assignees, reviews. Tolérant à l'absence
+// du fichier : on dégrade en lien minimal.
+// ──────────────────────────────────────────────────────────────
+const GH_REPO = "feycoil/aiCEO";
+let GH_STATE = { loaded: false, generated_at: null, issues: {}, pulls: {}, milestones: {}, labels: {} };
+
+async function loadGhState() {
+  try {
+    const r = await fetch("_audit-2026-04-25/github-state.json", { cache: "no-store" });
+    if (!r.ok) return;
+    const data = await r.json();
+    GH_STATE.loaded = true;
+    GH_STATE.generated_at = data.generated_at;
+    (data.issues || []).forEach(i => { GH_STATE.issues[i.number] = i; });
+    (data.pulls  || []).forEach(p => { GH_STATE.pulls[p.number]  = p; });
+    (data.milestones || []).forEach(m => { GH_STATE.milestones[m.title] = m; GH_STATE.milestones[m.number] = m; });
+    (data.labels || []).forEach(l => { GH_STATE.labels[l.name] = l; });
+  } catch (e) {
+    // 404 ou parse error : on continue silencieusement
+  }
+}
+
+function ghContrastColor(hex) {
+  if (!hex) return "#1f2328";
+  hex = hex.replace("#","");
+  if (hex.length !== 6) return "#1f2328";
+  const r = parseInt(hex.slice(0,2),16), g = parseInt(hex.slice(2,4),16), b = parseInt(hex.slice(4,6),16);
+  const yiq = (r*299 + g*587 + b*114) / 1000;
+  return yiq >= 150 ? "#1f2328" : "#ffffff";
+}
+
+function ghIconIssue(state) {
+  const fill = state === "open" ? "#1a7f37" : "#8250df";
+  return `<svg class="gh-icon" viewBox="0 0 16 16" fill="${fill}" aria-hidden="true"><path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0Zm0 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Z"/></svg>`;
+}
+function ghIconPr(state, merged, draft) {
+  const fill = merged ? "#8250df" : (draft ? "#6e7781" : (state === "open" ? "#1a7f37" : "#cf222e"));
+  return `<svg class="gh-icon" viewBox="0 0 16 16" fill="${fill}" aria-hidden="true"><path d="M1.5 3.25a2.25 2.25 0 1 1 3 2.122v5.256a2.25 2.25 0 1 1-1.5 0V5.372A2.25 2.25 0 0 1 1.5 3.25Zm5.677-.177L9.573.677A.25.25 0 0 1 10 .854V2.5h1A2.5 2.5 0 0 1 13.5 5v5.628a2.25 2.25 0 1 1-1.5 0V5a1 1 0 0 0-1-1h-1v1.646a.25.25 0 0 1-.427.177L7.177 3.427a.25.25 0 0 1 0-.354ZM3.75 2.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm0 9.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm8.25.75a.75.75 0 1 0 1.5 0 .75.75 0 0 0-1.5 0Z"/></svg>`;
+}
+
+function ghIssueRef(num, opts) {
+  opts = opts || {};
+  const meta = GH_STATE.issues[num];
+  const url = meta ? meta.html_url : `https://github.com/${GH_REPO}/issues/${num}`;
+  const state = meta ? meta.state : null;
+  const stateLabel = state === "open" ? "Open" : (meta && meta.state_reason === "not_planned" ? "Closed" : "Closed");
+  const stateClass = state === "open" ? "open" : (meta && meta.state_reason === "not_planned" ? "notplanned" : "closed");
+  const titleSnip = meta && meta.title ? `<span class="gh-title">${escapeHtml(meta.title)}</span>` : "";
+  const stateBadge = state ? `<span class="gh-state ${stateClass}">${stateLabel}</span>` : "";
+  return `<a class="gh-ref" href="${url}" target="_blank" rel="noopener" title="Issue #${num}${meta ? ' — ' + meta.title : ''}">${ghIconIssue(state || "open")}<span class="gh-num">#${num}</span>${stateBadge}${opts.title ? titleSnip : ""}</a>`;
+}
+
+function ghPrRef(num, opts) {
+  opts = opts || {};
+  const meta = GH_STATE.pulls[num];
+  const url = meta ? meta.html_url : `https://github.com/${GH_REPO}/pull/${num}`;
+  let stateClass = "open", stateLabel = "Open";
+  if (meta) {
+    if (meta.merged) { stateClass = "merged"; stateLabel = "Merged"; }
+    else if (meta.draft) { stateClass = "draft"; stateLabel = "Draft"; }
+    else if (meta.state === "closed") { stateClass = "notplanned"; stateLabel = "Closed"; }
+    else { stateClass = "open"; stateLabel = "Open"; }
+  }
+  const titleSnip = meta && meta.title ? `<span class="gh-title">${escapeHtml(meta.title)}</span>` : "";
+  const stateBadge = meta ? `<span class="gh-state ${stateClass}">${stateLabel}</span>` : "";
+  return `<a class="gh-ref" href="${url}" target="_blank" rel="noopener" title="PR #${num}${meta ? ' — ' + meta.title : ''}">${ghIconPr(meta?.state, meta?.merged, meta?.draft)}<span class="gh-num">#${num}</span>${stateBadge}${opts.title ? titleSnip : ""}</a>`;
+}
+
+function ghMilestoneRef(title) {
+  const meta = GH_STATE.milestones[title];
+  const url = meta ? meta.html_url : `https://github.com/${GH_REPO}/milestone/${encodeURIComponent(title)}`;
+  const cls = meta && meta.state === "closed" ? "gh-milestone closed" : "gh-milestone";
+  const progress = (meta && (meta.open_issues + meta.closed_issues) > 0)
+    ? ` ${meta.closed_issues}/${meta.open_issues + meta.closed_issues}`
+    : "";
+  return `<a class="${cls}" href="${url}" target="_blank" rel="noopener">📌 ${escapeHtml(title)}${progress}</a>`;
+}
+
+function ghLabelChip(name) {
+  const meta = GH_STATE.labels[name];
+  const bg = meta && meta.color ? "#" + meta.color : "#eaeef2";
+  const fg = ghContrastColor(meta && meta.color ? meta.color : "eaeef2");
+  return `<span class="gh-label" style="--gh-bg:${bg}; --gh-fg:${fg};">${escapeHtml(name)}</span>`;
+}
+
+function ghAvatar(login, role, reviewState) {
+  const initials = login ? login.slice(0,2).toUpperCase() : "?";
+  const cls = role === "reviewer" ? `gh-avatar reviewer${reviewState ? ' ' + reviewState.toLowerCase() : ''}` : "gh-avatar";
+  return `<a class="${cls}" href="https://github.com/${login}" target="_blank" rel="noopener" title="${escapeHtml(login)}${role === "reviewer" && reviewState ? ' · ' + reviewState : ''}">${escapeHtml(initials)}</a>`;
+}
+
+// Compose une rangée compacte (issue + PR + milestone + branch + tag)
+function renderGhRef(gh) {
+  if (!gh) return "";
+  const parts = [];
+  // Issues
+  if (Array.isArray(gh.issues)) gh.issues.forEach(n => parts.push(ghIssueRef(n)));
+  if (gh.issue) parts.push(ghIssueRef(gh.issue));
+  // PRs
+  if (Array.isArray(gh.prs)) gh.prs.forEach(n => parts.push(ghPrRef(n)));
+  if (gh.pr) parts.push(ghPrRef(gh.pr));
+  // Milestone
+  if (gh.milestone) parts.push(ghMilestoneRef(gh.milestone));
+  // Branch / tag / commit
+  if (gh.branch) {
+    const url = `https://github.com/${GH_REPO}/tree/${encodeURIComponent(gh.branch)}`;
+    parts.push(`<a class="gh-branch" href="${url}" target="_blank" rel="noopener">${escapeHtml(gh.branch)}</a>`);
+  }
+  if (gh.tag) {
+    const url = `https://github.com/${GH_REPO}/releases/tag/${encodeURIComponent(gh.tag)}`;
+    parts.push(`<a class="gh-tag" href="${url}" target="_blank" rel="noopener">${escapeHtml(gh.tag)}</a>`);
+  }
+  if (gh.commit) {
+    const url = `https://github.com/${GH_REPO}/commit/${gh.commit}`;
+    parts.push(`<a class="gh-commit" href="${url}" target="_blank" rel="noopener">${escapeHtml(gh.commit.slice(0,7))}</a>`);
+  }
+  if (parts.length === 0) return "";
+  return `<div class="gh-refs compact">${parts.join("")}</div>`;
+}
+
+// Bloc détaillé (drawer milestone) avec labels + assignees + reviewers
+function renderGhDetail(gh) {
+  if (!gh) return "";
+  const rows = [];
+  // Issue détaillée si dispo
+  let issueMeta = null, prMeta = null;
+  if (gh.issue && GH_STATE.issues[gh.issue]) issueMeta = GH_STATE.issues[gh.issue];
+  if (gh.pr && GH_STATE.pulls[gh.pr]) prMeta = GH_STATE.pulls[gh.pr];
+
+  const refLine = renderGhRef(gh);
+  if (refLine) rows.push(`<div class="gh-row">${refLine.replace('<div class="gh-refs compact">','').replace('</div>','')}</div>`);
+
+  // Labels (issue + PR)
+  const labels = new Set();
+  if (issueMeta && issueMeta.labels) issueMeta.labels.forEach(l => labels.add(l.name));
+  if (prMeta && prMeta.labels)       prMeta.labels.forEach(l => labels.add(l.name));
+  if (labels.size) {
+    rows.push(`<div class="gh-row"><span class="gh-row-label">Labels</span>${[...labels].map(n => ghLabelChip(n)).join(" ")}</div>`);
+  }
+  // Assignees
+  const assignees = new Set();
+  if (issueMeta && issueMeta.assignees) issueMeta.assignees.forEach(a => assignees.add(a));
+  if (prMeta && prMeta.assignees)       prMeta.assignees.forEach(a => assignees.add(a));
+  if (assignees.size) {
+    rows.push(`<div class="gh-row"><span class="gh-row-label">Assignees</span>${[...assignees].map(a => ghAvatar(a, "assignee")).join("")}</div>`);
+  }
+  // Reviewers
+  if (prMeta) {
+    const reviewers = [];
+    (prMeta.requested_reviewers || []).forEach(r => reviewers.push({ login: r, state: "PENDING" }));
+    (prMeta.reviews || []).forEach(r => reviewers.push({ login: r.user, state: r.state }));
+    if (reviewers.length) {
+      rows.push(`<div class="gh-row"><span class="gh-row-label">Reviewers</span>${reviewers.map(r => ghAvatar(r.login, "reviewer", r.state)).join("")}</div>`);
+    }
+  }
+  if (rows.length === 0) return "";
+  const stale = !GH_STATE.loaded
+    ? `<div class="gh-refs-stale">⚠️ Données GitHub non chargées — exécutez <code>04_docs/_audit-2026-04-25/consistence-dump.ps1</code> depuis Windows pour enrichir labels/assignees/reviewers.</div>`
+    : "";
+  return `<div class="gh-detail"><h5>GitHub</h5>${rows.join("")}${stale}</div>`;
+}
 
 // ──────────────────────────────────────────────────────────────
 // Helpers
@@ -1589,6 +1888,7 @@ function selectMilestone(m) {
       <p>${escapeHtml(m.desc)}</p>
       ${sessionsHtml}
       <div class="artefacts"><strong>Artéfacts</strong>${renderArtefacts(m.artefacts)}</div>
+      ${renderGhDetail(m.gh)}
       ${m.id === "v05-hub" ? `<button type="button" class="d-jump-cta" data-jump-tab="fusion-v05" style="margin-top:var(--space-4); padding:10px 18px; border:1px solid var(--rose); background:var(--rose-50); color:var(--rose-800); border-radius:var(--radius-xs); font-family:var(--font-sans); font-weight:var(--fw-semi); font-size:var(--fs-small); cursor:pointer;">Voir le plan détaillé v0.5 →</button>` : ""}
     </div>
   `;
@@ -1659,9 +1959,98 @@ document.querySelectorAll(".filter[data-lane]").forEach(btn => {
 // ──────────────────────────────────────────────────────────────
 
 const RELEASES = [
+  // ── 25/04/2026 — Sprint S3 livré (branche docs/sprint-s3-kickoff, tag v0.5-s3 cible) ──
+  {
+    id: "rn-mvp-0-5-s3",
+    gh: { milestone:"v0.5-s3", branch:"docs/sprint-s3-kickoff", pr:112, issues:[113,114,115,116,117,118,119,120,121,122,123] },
+    component: "mvp",
+    version: "v0.5-s3",
+    date: "25 avr. 2026",
+    title: "Agenda hebdo + revues + SSE live + last-sync — sprint S3 livré",
+    summary: "Sprint S3 du plan v0.5 livré en ~3 h chrono dogfood par binôme CEO + Claude (vélocité bien supérieure aux 11,1 j-dev planifiés). 11/11 issues closes (S3.00 → S3.10), 5 commits de <code>ce22641</code> à <code>990be37</code>, <strong>75/75 tests verts</strong>. 4 piliers : agenda + revues + SSE câblé front + Outlook autosync côté serveur. Smoke live validé sur poste CEO Windows.",
+    changes: [
+      { cat:"feat", items:[
+        "<strong>agenda.html migré API</strong> : grille hebdo lun-dim, <code>GET /api/events/week?week=YYYY-Www&amp;with_tasks=true</code>, drag-drop natif HTML5 (pattern S2.03) → <code>PATCH /api/tasks/:id { due_at }</code> + refetch optimiste 200 ms, A11y clavier complète (aria-grabbed, aria-dropeffect, flèches + Espace), drawer detail event",
+        "<strong>revues/index.html migré API</strong> : Big Rocks éditables CRUD inline avec contrainte applicative <strong>max 3/sem (HTTP 400)</strong>, bouton « Demander brouillon Claude » → <code>POST /api/weekly-reviews/:week/draft</code>, archives 12 dernières revues, deep link <code>?week=YYYY-Www</code>",
+        "<strong>SSE câblé front</strong> : <code>EventSource('/api/cockpit/stream')</code> sur cockpit + tâches + agenda avec reconnexion exponentielle 1 s → 30 s plafond. Bus émet sur <code>task.created/.updated/.deleted</code> depuis routes mutatrices",
+        "<strong>Outlook autosync (côté serveur)</strong> : <code>GET /api/system/last-sync</code> (mtime emails-summary.json, level ok/warn>4h/critical>24h) + injection automatique alerte cockpit <code>outlook_stale</code>",
+        "<strong>Auto-draft Claude</strong> : <code>src/llm-draft.js</code> agrège tâches done + sessions arbitrage/soir + big rocks → prompt système rubric 6 critères (focus / ton / 200-400 mots / 3+ sources / top 3 demain / écarts) → markdown structuré 4 sections. Fallback offline si pas de clé API",
+        "<strong>POC service Windows S3.10</strong> : <code>scripts/service-windows/install-service.js</code> (node-windows wrapper install/start/stop) + README + ADR template — test install à faire en dogfood admin CEO"
+      ]},
+      { cat:"improve", items:[
+        "<strong>Doc API</strong> <code>docs/API.md</code> +182 lignes (6 sections S3 : events/week, big-rocks, weekly-reviews, auto-draft, system, SSE) avec exemples curl complets",
+        "ADR S3.00 (méthode + zéro localStorage rappelé) + ADR S3 livré dans <code>00_BOUSSOLE/DECISIONS.md</code>",
+        "Restauration de 4 ADRs perdues par truncature historique (Timing &amp; budget v0.5, Livrables externes : cadrage, 2 templates)"
+      ]},
+      { cat:"perf", items:[
+        "<strong>75/75 tests verts</strong> : 62 hérités + 11 nouveaux (3 weekly-reviews, 3 big-rocks, 1 events with_tasks, 2 weekly-reviews-draft, 3 system, 2 realtime-emit, 6 e2e-hebdo). Durée 28 s, isolation <code>AICEO_DB_OVERRIDE</code> systématique"
+      ]},
+      { cat:"breaking", items:[
+        "Schedule variance vs BASELINE : <strong>-49 j</strong> (livré 25/04 vs planifié 13/06). Sprint S4 peut démarrer dès que le CEO décide"
+      ]}
+    ]
+  },
+  // ── 25/04/2026 — Sprint S2 livré (branche release/v0.5-s2) ──
+  {
+    id: "rn-mvp-0-5-s2",
+    gh: { milestone:"v0.5-s2", tag:"v0.5-s2", branch:"release/v0.5-s2", pr:111, issues:[101,102,103,104,105,106,107,108,109,110] },
+    component: "mvp",
+    version: "v0.5-s2",
+    date: "25 avr. 2026",
+    title: "Cockpit unifié + rituels matin/soir — sprint S2 livré",
+    summary: "Sprint S2 du plan v0.5 livré en avance par binôme CEO + Claude (gain 1,5 j du time-box spike SSE réinvesti en e2e). 10/10 issues fermées, PR #111 mergée, 11 commits de <code>accea60</code> à <code>6f4e6e8</code>, <strong>55/55 tests verts</strong>. Cockpit live + rituels matin/soir + spike SSE.",
+    changes: [
+      { cat:"feat", items:[
+        "<strong>4 pages migrées</strong> sur l'API : <code>index.html</code> · <code>arbitrage.html</code> · <code>evening.html</code> · <code>taches.html</code> — <strong>zéro localStorage applicatif</strong>",
+        "<strong>Cockpit live</strong> : <code>GET /api/cockpit/today</code> (counters SQL + alertes overdue / stale / big rocks manquants)",
+        "<strong>Rituels matin/soir</strong> : arbitrage top 3 / délégation / report + bilan humeur·énergie + <strong>streak persistant</strong>",
+        "<strong>Vue Eisenhower 2×2</strong> dans <code>taches.html</code> + drag &amp; drop natif sur <code>arbitrage.html</code> (3 colonnes faire / déléguer / différer)",
+        "<strong>IA décisions</strong> : <code>POST /api/decisions/:id/recommend</code> (Anthropic + fallback offline)",
+        "<strong>Spike SSE livré</strong> : bus EventEmitter + <code>GET /api/cockpit/stream</code> + heartbeat 25 s — non câblé front (différé S3.05)"
+      ]},
+      { cat:"improve", items:[
+        "<strong>Doc API complète</strong> <code>docs/API.md</code> · <strong>38 exemples curl</strong> + smoke-test 1 commande",
+        "Migration <code>data/appweb.json</code> → SQL via <code>scripts/migrate-from-appweb.js</code> + <code>check-migration</code>",
+        "ADR SSE retenu vs WebSocket : <code>docs/SPIKE-WEBSOCKET.md</code> (latence inférieure, simpler stack, pas de proxy reverse à configurer)"
+      ]},
+      { cat:"perf", items:[
+        "<strong>55/55 tests verts</strong> : 49 unitaires + 6 intégration HTTP-boundary (Playwright sandboxé reporté S3+)",
+        "Time-box spike SSE respecté : 1,5 j sur 3 j alloués · gain réinvesti en doc API + e2e"
+      ]}
+    ]
+  },
+  // ── 25/04/2026 — Audit cohérence GitHub ↔ roadmap ──
+  {
+    id: "rn-audit-2026-04-25",
+    gh: { branch:"main" },
+    component: "github",
+    version: "audit-2026-04-25",
+    date: "25 avr. 2026",
+    title: "Audit cohérence GitHub ↔ roadmap — 5 divergences résolues",
+    summary: "Première passe de l'audit récurrent <code>check_consistence_versions()</code> : snapshot complet de l'état GitHub (132 issues, 8 milestones, 70 labels) et résolution des 5 divergences détectées entre le repo et la roadmap. Process désormais industrialisable et reproductible.",
+    changes: [
+      { cat:"feat", items:[
+        "Script <code>04_docs/_audit-2026-04-25/consistence-dump.ps1</code> — snapshot GitHub via <code>gh api</code> + <code>ConvertTo-Json -Depth 8</code>",
+        "Script <code>04_docs/_audit-2026-04-25/scripts/gh-cleanup-coherence-v1.ps1</code> — patch idempotent des 5 divergences (S3 dups close, milestones manquants, S2 issues auto-fermées, métadonnées PR)",
+        "Snapshot <code>github-state.json</code> committé pour exploitation par le widget roadmap (résolution issue/PR/milestone)"
+      ]},
+      { cat:"fix", items:[
+        "<strong>5 divergences résolues</strong> : duplications S3 fermées (raison <em>not_planned</em>), milestones <code>v0.5-s1</code>/<code>v0.5-s2</code> créés rétrospectivement, 10 issues S2 auto-fermées via <code>Closes #N</code> dans PR #111 mergée, métadonnées PR #112 complétées (labels, milestone, assignee)",
+        "Détection auto interpréteur PowerShell (PS5 vs PS7+) dans cleanup script — compatibilité poste CEO sans <code>pwsh</code>"
+      ]},
+      { cat:"improve", items:[
+        "<code>CONVENTIONS-SCRIPTS.md</code> enrichi : pièges #5 (BOM UTF-8 obligatoire pour PS5) et #6 (échappement heredoc)",
+        "Process <code>check_consistence_versions()</code> documenté et reproductible — relancer après chaque sprint"
+      ]},
+      { cat:"perf", items:[
+        "Dette technique identifiée : bug truncature <code>ConvertTo-Json -Depth 8</code> sur le dump GitHub (sortie tronquée mid-PR-#112) — non bloquant, à corriger avant prochain dump"
+      ]}
+    ]
+  },
   // ── 25/04/2026 — Sprint S1 livré (tag v0.5-s1) ──
   {
     id: "rn-mvp-0-5-s1",
+    gh: { milestone:"v0.5-s1", tag:"v0.5-s1", commit:"141ca0f" },
     component: "mvp",
     version: "v0.5-s1",
     date: "25 avr. 2026",
@@ -1691,6 +2080,7 @@ const RELEASES = [
   // ── 25/04/2026 — clôture sprint externe ──
   {
     id: "rn-mvp-0-4-final",
+    gh: { milestone:"sprint-externe-v0.5", tag:"v0.4" },
     component: "mvp",
     version: "v0.4",
     date: "25 avr. 2026",
@@ -1710,6 +2100,7 @@ const RELEASES = [
   },
   {
     id: "rn-cockpit-v4-2",
+    gh: { branch:"ds/wire-mvp-to-ds", milestone:"sprint-externe-v0.5" },
     component: "cockpit",
     version: "v4.2",
     date: "24 avr. 2026",
@@ -1967,6 +2358,25 @@ const RELEASES = [
     ]
   },
   {
+    id: "rn-mvp-v0",
+    component: "mvp",
+    version: "v0",
+    date: "3 avr. 2026",
+    title: "MVP scaffold — Express + SDK Anthropic",
+    summary: "Premier squelette technique du MVP : serveur Node/Express sur le port 4747, intégration SDK Anthropic, mode démo fallback sans clé API. Point de départ qui débloquera l'arbitrage 3/2/N (v0.1) une semaine plus tard.",
+    changes: [
+      { cat:"feat", items:[
+        "Serveur <code>03_mvp/server.js</code> Node/Express port 4747",
+        "Intégration <code>@anthropic-ai/sdk</code> + wrapper appel LLM",
+        "Mode démo fallback : pas de clé → fixtures locales pour développer offline",
+        "<code>package.json</code> + <code>README.md</code> + structure dossier MVP"
+      ]},
+      { cat:"breaking", items:[
+        "Première version du MVP — pas d'antériorité"
+      ]}
+    ]
+  },
+  {
     id: "rn-roadmap-v0-4",
     component: "roadmap",
     version: "v0.4",
@@ -2100,6 +2510,13 @@ function renderReleases() {
       sum.className = "rn-summary";
       sum.innerHTML = r.summary;
       art.appendChild(sum);
+    }
+
+    const ghHtml = renderGhRef(r.gh);
+    if (ghHtml) {
+      const ghDiv = document.createElement("div");
+      ghDiv.innerHTML = ghHtml;
+      art.appendChild(ghDiv);
     }
 
     const changes = document.createElement("div");
@@ -2367,6 +2784,7 @@ function renderJournalFeed() {
             ${deltaTag}
           </div>
           ${srcLink}
+          ${renderGhRef(e.gh)}
         </div>
       </article>`;
   }).join("");
@@ -2442,7 +2860,7 @@ function updateHeaderDate() {
   const yyyy = today.getFullYear();
   // Conserve la version en cours (lue depuis le markup) et met à jour la date
   const match = versionEl.textContent.match(/^(v[\d.]+(?:-[a-z0-9]+)?)/i);
-  const version = match ? match[1] : "v0.5-s2";
+  const version = match ? match[1] : "v0.5-s1";
   versionEl.textContent = `${version} · ${dd}/${mm}/${yyyy}`;
 }
 
@@ -2489,18 +2907,22 @@ function initMermaid() {
 // Init
 // ──────────────────────────────────────────────────────────────
 
-renderTimeline();
-renderCounters();
-renderReleases();
-// Sélection initiale : dernier jalon en date (mvp-10f = pitch deck investisseur)
-selectMilestone(MILESTONES.find(m => m.id === "mvp-10f") || MILESTONES[0]);
+// Charger l'état GitHub avant les renders pour enrichir les refs (issues/PRs/labels/milestones).
+// Tolérant à l'absence de github-state.json (consistence-dump.ps1 non encore exécuté).
+loadGhState().then(() => {
+  renderTimeline();
+  renderCounters();
+  renderReleases();
+  // Sélection initiale : dernier jalon en date (mvp-10f = pitch deck investisseur)
+  selectMilestone(MILESTONES.find(m => m.id === "mvp-10f") || MILESTONES[0]);
 
-// Tab 4 — Journal & écarts
-updateHeaderDate();
-renderKPIs();
-renderVarianceChart();
-renderJournalFeed();
-renderAlertBanner();
+  // Tab 4 — Journal & écarts
+  updateHeaderDate();
+  renderKPIs();
+  renderVarianceChart();
+  renderJournalFeed();
+  renderAlertBanner();
+});
 
 // Mermaid : on laisse le DOM se peindre puis on initialise
 if (document.readyState === "loading") {

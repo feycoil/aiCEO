@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>aiCEO · Revue hebdomadaire</title>
+<link rel="stylesheet" href="/assets/styles/aiceo-tokens.css"/>
+<style>
+  :root {
+    --cream: #FAF6EF; --cream-deep: #F2EBDD;
+    --ink: #1C1A22; --ink-2: #3A3542; --ink-3: #6A6277;
+    --line: #D9CFBC;
+    --lilac: #A895DB; --lilac-soft: #EEE7FA;
+    --coral: #EC7A6A; --coral-soft: #FBE1DC;
+    --sage: #A8C8A4; --sage-soft: #E3EEE0;
+    --gold: #B88237; --gold-soft: #F1E4CC;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    background: var(--cream); color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px; line-height: 1.55; min-height: 100vh;
+  }
+  .layout { max-width: 1100px; margin: 0 auto; padding: 32px 28px 80px; }
+  header.topbar {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 24px;
+  }
+  header h1 {
+    font-family: 'Fraunces', Georgia, serif; font-size: 28px; font-weight: 600;
+    margin: 0; color: var(--ink);
+  }
+  header nav { display:flex; gap:14px; }
+  header nav a {
+    color: var(--ink-2); text-decoration:none; padding: 6px 12px;
+    border-radius: 8px; font-size: 14px;
+  }
+  header nav a:hover, header nav a.active { background: var(--lilac-soft); }
+
+  .week-bar {
+    display:flex; align-items:center; gap:12px; margin-bottom: 20px;
+    padding: 12px 16px; background: white; border:1px solid var(--line);
+    border-radius: 12px;
+  }
+  .week-bar button {
+    background: var(--cream-deep); border:1px solid var(--line); border-radius:8px;
+    padding: 6px 12px; cursor:pointer; font:inherit; color: var(--ink);
+  }
+  .week-bar button:hover { background: var(--lilac-soft); }
+  .week-bar button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .week-bar .week-label { font-weight:600; flex:1; text-align:center; }
+
+  section.card {
+    background: white; border:1px solid var(--line); border-radius: 14px;
+    padding: 20px; margin-bottom: 20px;
+  }
+  section.card h2 {
+    margin: 0 0 14px; font-family: 'Fraunces', Georgia, serif; font-size: 20px;
+  }
+
+  .big-rocks { list-style:none; padding:0; margin:0; }
+  .big-rocks li {
+    display:flex; align-items:center; gap: 10px; padding: 10px 12px;
+    border:1px solid var(--line); border-radius: 10px; margin-bottom: 8px;
+    background: var(--cream-deep);
+  }
+  .big-rocks li input[type="text"] {
+    flex:1; border:none; background:transparent; font:inherit; color: var(--ink);
+    outline: none;
+  }
+  .big-rocks li select {
+    border:1px solid var(--line); border-radius: 6px; padding: 4px 8px;
+    background: white; font:inherit;
+  }
+  .big-rocks li.status-accompli { background: var(--sage-soft); border-color: var(--sage); }
+  .big-rocks li.status-rate { background: var(--coral-soft); border-color: var(--coral); }
+  .big-rocks li .delete-btn {
+    border:none; background: transparent; cursor:pointer; color: var(--coral);
+    padding: 4px 8px; font-size: 18px;
+  }
+  .add-rock-btn {
+    background: var(--lilac-soft); border:1px dashed var(--lilac); border-radius: 10px;
+    padding: 10px 14px; width: 100%; cursor: pointer; color: var(--ink-2);
+    font: inherit;
+  }
+  .add-rock-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .draft-actions { display:flex; gap: 10px; margin-bottom: 12px; }
+  .btn-primary {
+    background: var(--ink); color: var(--cream); border: none;
+    border-radius: 8px; padding: 10px 18px; cursor: pointer; font: inherit;
+  }
+  .btn-primary:hover { background: var(--ink-2); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-secondary {
+    background: var(--cream-deep); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 8px; padding: 10px 18px; cursor: pointer; font: inherit;
+  }
+  .btn-secondary:hover { background: var(--lilac-soft); }
+
+  textarea.review-md {
+    width: 100%; min-height: 320px;
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 14px; font-family: 'JetBrains Mono', 'Consolas', monospace;
+    font-size: 13px; line-height: 1.6; color: var(--ink);
+    background: var(--cream-deep); resize: vertical;
+  }
+  textarea.review-md:focus { outline: 2px solid var(--lilac); border-color: var(--lilac); }
+
+  .save-status { margin-left: auto; color: var(--ink-3); font-size: 13px; }
+
+  .archives-list { list-style: none; padding: 0; margin: 0; }
+  .archives-list li {
+    padding: 8px 12px; border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .archives-list li:last-child { border-bottom: none; }
+  .archives-list li:hover { background: var(--cream-deep); }
+  .archives-list .week-id {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--ink-3);
+  }
+  .archives-list .status-pill {
+    font-size: 11px; padding: 2px 8px; border-radius: 12px;
+    background: var(--lilac-soft); color: var(--ink-2);
+  }
+  .archives-list .status-pill.final { background: var(--sage-soft); }
+
+  .footer { margin-top: 32px; color: var(--ink-3); font-size: 13px; text-align: center; }
+  .footer code { background: var(--cream-deep); padding: 1px 6px; border-radius: 4px; }
+
+  .toast {
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background: var(--ink); color: var(--cream); padding: 10px 18px;
+    border-radius: 8px; font-size: 13px; opacity: 0; transition: opacity 200ms;
+    pointer-events: none; z-index: 200;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+  <main class="layout">
+    <header class="topbar">
+      <div>
+        <h1>Revue hebdomadaire</h1>
+      </div>
+      <nav>
+        <a href="/">Cockpit</a>
+        <a href="/agenda">Agenda</a>
+        <a href="/taches">Tâches</a>
+        <a href="/revues" class="active">Revues</a>
+        <a href="/evening">Soir</a>
+      </nav>
+    </header>
+
+    <div class="week-bar" role="toolbar">
+      <button id="btn-prev" aria-label="Semaine précédente">← Préc.</button>
+      <div class="week-label" id="week-label">…</div>
+      <button id="btn-current" aria-label="Cette semaine">Cette semaine</button>
+      <button id="btn-next" aria-label="Semaine suivante">Suiv. →</button>
+    </div>
+
+    <section class="card">
+      <h2>Big Rocks <small style="color:var(--ink-3); font-size: 14px;">(max 3 / semaine)</small></h2>
+      <ul class="big-rocks" id="big-rocks-list"></ul>
+      <button class="add-rock-btn" id="add-rock-btn">+ Ajouter un Big Rock</button>
+    </section>
+
+    <section class="card">
+      <h2>Brouillon de revue</h2>
+      <div class="draft-actions">
+        <button class="btn-primary" id="btn-draft">Demander brouillon Claude</button>
+        <button class="btn-secondary" id="btn-save">Enregistrer la revue</button>
+        <span class="save-status" id="save-status">—</span>
+      </div>
+      <textarea class="review-md" id="review-md" placeholder="## Focus
+(1 phrase pour la chose essentielle de la semaine)
+
+## Faits saillants
+- ..."></textarea>
+    </section>
+
+    <section class="card">
+      <h2>Archives</h2>
+      <ul class="archives-list" id="archives-list"><li>Chargement…</li></ul>
+    </section>
+
+    <div class="footer">
+      Données live · <code>GET/POST /api/weekly-reviews</code> · <code>GET/POST /api/big-rocks</code> · <code>POST /api/weekly-reviews/:week/draft</code> · Sprint S3 · zéro localStorage applicatif
+    </div>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/**
+ * revues (S3.04) — Big Rocks editables max 3 + auto-draft Claude + archives.
+ * Aucun acces AICEO.STATE / localStorage applicatif.
+ */
+(function () {
+  const $ = (id) => document.getElementById(id);
+
+  function isoWeek(d) {
+    const x = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+    const dayNum = x.getUTCDay() || 7;
+    x.setUTCDate(x.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(x.getUTCFullYear(), 0, 1));
+    const wk = Math.ceil((((x - yearStart) / 86400000) + 1) / 7);
+    return x.getUTCFullYear() + '-W' + String(wk).padStart(2, '0');
+  }
+  function isoMonday(weekId) {
+    const m = weekId.match(/^(\d{4})-W(\d{2})$/); if (!m) return null;
+    const year = Number(m[1]); const wk = Number(m[2]);
+    const jan4 = new Date(Date.UTC(year, 0, 4));
+    const jan4Dow = jan4.getUTCDay() || 7;
+    const week1Monday = new Date(jan4.getTime() - (jan4Dow - 1) * 86400000);
+    return new Date(week1Monday.getTime() + (wk - 1) * 7 * 86400000);
+  }
+  function fmt(d) { return d.toLocaleDateString('fr-FR', { day:'2-digit', month:'short' }); }
+  function escHtml(s){ return String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+  function getWeekFromUrl() { return new URLSearchParams(location.search).get('week'); }
+  function setWeekInUrl(w) {
+    const u = new URLSearchParams(location.search);
+    u.set('week', w);
+    history.replaceState(null, '', '?' + u.toString());
+  }
+
+  function showToast(msg) {
+    const t = $('toast'); t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  let state = { week: null, bigRocks: [], reviewId: null, savedMd: '' };
+
+  async function loadWeek(week) {
+    state.week = week;
+    const monday = isoMonday(week);
+    const sunday = new Date(monday.getTime() + 6 * 86400000);
+    $('week-label').textContent = week + '   ·   ' + fmt(monday) + ' → ' + fmt(sunday);
+
+    // Charge big rocks
+    const rocksRes = await fetch('/api/big-rocks?week=' + encodeURIComponent(week));
+    const rocksData = await rocksRes.json();
+    state.bigRocks = rocksData.big_rocks || [];
+
+    // Charge revue
+    const revRes = await fetch('/api/weekly-reviews?week=' + encodeURIComponent(week));
+    if (revRes.status === 200) {
+      const revData = await revRes.json();
+      state.reviewId = revData.review.id;
+      state.savedMd = revData.review.bilan || '';
+      $('review-md').value = state.savedMd;
+    } else {
+      state.reviewId = null;
+      state.savedMd = '';
+      $('review-md').value = '';
+    }
+    $('save-status').textContent = state.savedMd ? 'Sauvegardée' : '—';
+
+    renderRocks();
+  }
+
+  function renderRocks() {
+    const list = $('big-rocks-list');
+    list.innerHTML = '';
+    state.bigRocks.forEach((r) => {
+      const li = document.createElement('li');
+      li.className = 'status-' + (r.status || 'defini');
+      li.innerHTML =
+        '<span style="color:var(--ink-3); font-size:13px;">#' + r.ordre + '</span>' +
+        '<input type="text" value="' + escHtml(r.title) + '" data-rock-id="' + r.id + '" data-field="title"/>' +
+        '<select data-rock-id="' + r.id + '" data-field="status">' +
+        ['defini','en-cours','accompli','rate'].map(s => '<option value="' + s + '"' + (s === (r.status || 'defini') ? ' selected' : '') + '>' + s + '</option>').join('') +
+        '</select>' +
+        '<button class="delete-btn" data-delete="' + r.id + '" aria-label="Supprimer">×</button>';
+      list.appendChild(li);
+    });
+    $('add-rock-btn').disabled = state.bigRocks.length >= 3;
+
+    list.querySelectorAll('input[data-field], select[data-field]').forEach(el => {
+      el.addEventListener('change', async () => {
+        const id = el.dataset.rockId;
+        const patch = { [el.dataset.field]: el.value };
+        const r = await fetch('/api/big-rocks/' + id, {
+          method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify(patch)
+        });
+        if (r.ok) {
+          showToast('Big rock mis à jour');
+          await loadWeek(state.week);
+        } else {
+          showToast('Erreur mise à jour');
+        }
+      });
+    });
+    list.querySelectorAll('[data-delete]').forEach(el => {
+      el.addEventListener('click', async () => {
+        if (!confirm('Supprimer ce big rock ?')) return;
+        const id = el.dataset.delete;
+        const r = await fetch('/api/big-rocks/' + id, { method: 'DELETE' });
+        if (r.ok) {
+          showToast('Big rock supprimé');
+          await loadWeek(state.week);
+        }
+      });
+    });
+  }
+
+  $('add-rock-btn').addEventListener('click', async () => {
+    if (state.bigRocks.length >= 3) return;
+    const title = prompt('Titre du big rock ?');
+    if (!title) return;
+    const r = await fetch('/api/big-rocks', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ week: state.week, title: title }),
+    });
+    if (r.ok) {
+      showToast('Big rock ajouté');
+      await loadWeek(state.week);
+    } else {
+      const err = await r.json();
+      showToast('Erreur : ' + (err.error || r.status));
+    }
+  });
+
+  $('btn-draft').addEventListener('click', async () => {
+    $('btn-draft').disabled = true;
+    $('save-status').textContent = 'Génération brouillon…';
+    try {
+      const r = await fetch('/api/weekly-reviews/' + encodeURIComponent(state.week) + '/draft', { method: 'POST' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const d = await r.json();
+      $('review-md').value = d.markdown;
+      $('save-status').textContent = 'Brouillon ' + d.source + ' (à valider/ajuster puis enregistrer)';
+      showToast('Brouillon ' + d.source + ' généré');
+    } catch (e) {
+      showToast('Erreur brouillon : ' + e.message);
+      $('save-status').textContent = 'Erreur';
+    } finally {
+      $('btn-draft').disabled = false;
+    }
+  });
+
+  $('btn-save').addEventListener('click', async () => {
+    const md = $('review-md').value;
+    const r = await fetch('/api/weekly-reviews', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ week: state.week, bilan: md }),
+    });
+    if (r.ok) {
+      const d = await r.json();
+      state.reviewId = d.review.id;
+      state.savedMd = md;
+      showToast('Revue enregistrée (' + d.upserted + ')');
+      $('save-status').textContent = 'Sauvegardée à ' + new Date().toLocaleTimeString('fr-FR');
+      await loadArchives();
+    } else {
+      showToast('Erreur enregistrement');
+    }
+  });
+
+  async function loadArchives() {
+    const r = await fetch('/api/weekly-reviews?limit=12');
+    const data = await r.json();
+    const list = $('archives-list');
+    list.innerHTML = '';
+    if (!data.reviews || !data.reviews.length) {
+      list.innerHTML = '<li>Aucune revue enregistrée.</li>';
+      return;
+    }
+    data.reviews.forEach((rv) => {
+      const li = document.createElement('li');
+      const status = rv.draft_by_llm ? 'brouillon' : 'final';
+      li.innerHTML =
+        '<span class="week-id">' + escHtml(rv.week_id) + '</span>' +
+        '<span class="status-pill ' + status + '">' + status + '</span>' +
+        '<span style="flex:1; color:var(--ink-3); font-size:13px;">' + escHtml((rv.bilan||'').slice(0, 80)) + '…</span>' +
+        '<a href="?week=' + encodeURIComponent(rv.week_id) + '" style="color:var(--lilac); text-decoration:none;">Ouvrir →</a>';
+      list.appendChild(li);
+    });
+  }
+
+  function shiftWeek(delta) {
+    const m = isoMonday(state.week);
+    const newMonday = new Date(m.getTime() + delta * 7 * 86400000);
+    const newWeek = isoWeek(newMonday);
+    setWeekInUrl(newWeek);
+    loadWeek(newWeek);
+  }
+
+  $('btn-prev').addEventListener('click', () => shiftWeek(-1));
+  $('btn-next').addEventListener('click', () => shiftWeek(+1));
+  $('btn-current').addEventListener('click', () => {
+    const w = isoWeek(new Date());
+    setWeekInUrl(w);
+    loadWeek(w);
+  });
+
+  // Bootstrap
+  const initial = getWeekFromUrl() || isoWeek(new Date());
+  setWeekInUrl(initial);
+  loadWeek(initial);
+  loadArchives();
+})();
+</script>
+</body>
+</html>
