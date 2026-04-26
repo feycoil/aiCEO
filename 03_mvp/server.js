@@ -26,6 +26,7 @@ const eveningRouter   = require("./src/routes/evening");
 const weeklyReviewsRouter = require("./src/routes/weekly-reviews");
 const bigRocksRouter      = require("./src/routes/big-rocks");
 const systemRouter        = require("./src/routes/system");
+const assistantRouter     = require("./src/routes/assistant");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3001;
@@ -52,6 +53,9 @@ app.get("/agenda", (req, res) => {
 app.get("/revues", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "revues", "index.html"));
 });
+app.get("/assistant", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "assistant.html"));
+});
 
 // --- API ---
 
@@ -77,6 +81,7 @@ app.use("/api/evening",   eveningRouter);
 app.use("/api/weekly-reviews", weeklyReviewsRouter);
 app.use("/api/big-rocks",      bigRocksRouter);
 app.use("/api/system",         systemRouter);
+app.use("/api/assistant",      assistantRouter);
 
 // --- Legacy seed (compat arbitrage UI tant que la migration n'est pas finalisee) ---
 app.get("/api/seed", (req, res) => {
