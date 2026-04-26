@@ -697,17 +697,17 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
     <div class="youarehere" role="status">
       <span class="pulse" aria-hidden="true"></span>
       <div>
-        <div class="label">Vous êtes ici · 25/04/2026 · Sprint S3 kickoff préparé</div>
-        <h2>S1 livré ✓ · S2 livré ✓ · <strong>Sprint S3 ouvert</strong> · agenda + revues + SSE live + Outlook autosync · démarrage 02/06/2026</h2>
+        <div class="label">Vous êtes ici · 26/04/2026 · v0.5 internalisée TERMINÉE — recette ExCom + décision GO V1</div>
+        <h2>S1 ✓ · S2 ✓ · S3 ✓ · S4 ✓ · <strong>S5 LIVRÉ ✓</strong> — tag <code>v0.5</code> posé · NEXT recette ExCom + GO V1</h2>
         <p>Phase v0.5 internalisée <strong>TERMINÉE le 26/04/2026</strong>. <strong>5 sprints livrés en ~16 h chrono cumulées</strong> par binôme CEO + Claude (vs 13 semaines BASELINE = ~520 h ETP, gain ×30) : S1 backend SQLite (25/04 · 23 tests) · S2 cockpit live + rituels + spike SSE (25/04 · 55 tests) · S3 agenda + revues + SSE live + Outlook autosync (25/04 · 75 tests) · S4 assistant chat live + 5 pages portefeuille + polish Windows (26/04 · 85 tests) · S5 cutover production (26/04 · ~95 tests · tag v0.5 final). <strong>Cumul : 110 k€ / 110 k€ = 100%</strong> budget consommé · 41 issues closes · 5 GitHub Releases publiées · ~150 j d'avance vs BASELINE. NEXT : recette ExCom + décision GO V1 (multi-tenant + équipes + intégrations + mobile, ordre de grandeur 300 k€).</p>
       </div>
-      <div class="stamp">S3 · 10 j-ouvrés · 22,1 k€ · 2 pages + 2 chantiers · binôme CEO+Claude</div>
+      <div class="stamp">5 sprints · ~16h chrono · 110 k€ · 41 issues · ~95 tests · 12 pages · binôme CEO+Claude</div>
     </div>
 
     <!-- Timeline 10 semaines -->
     <div class="section">
       <h2 class="section-title">Timeline · 10 semaines en 5 phases</h2>
-      <div class="section-sub">Découpage sprint 1 → tag v0.5 (cible juillet 2026)</div>
+      <div class="section-sub">Découpage final · 5 sprints livrés 25-26/04/2026 · tag v0.5 posé · ~150 j d'avance vs BASELINE</div>
       <div class="diagram">
         <svg viewBox="0 0 1280 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Timeline 10 semaines en 5 phases">
           <defs>
@@ -739,16 +739,26 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
           </g>
           <text x="490" y="48" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#1f4738">Phase 2 ✓</text>
 
-          <!-- Vous êtes ici marker (Phase 3 — Sprint S3 ouvert) -->
+          <!-- Phase 3 livrée — checkmark statique -->
           <g transform="translate(710,68)">
-            <circle r="8" fill="#d96d3e">
-              <animate attributeName="r" values="8;14;8" dur="1.8s" repeatCount="indefinite"/>
-              <animate attributeName="opacity" values="1;0.3;1" dur="1.8s" repeatCount="indefinite"/>
-            </circle>
-            <circle r="6" fill="#f5f3ef"/>
-            <circle r="3" fill="#d96d3e"/>
+            <circle r="9" fill="#3d7363"/>
+            <path d="M -4,0 L -1,3 L 4,-3" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
           </g>
-          <text x="710" y="48" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#8a3b1b">Vous êtes ici</text>
+          <text x="710" y="48" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#1f4738">Phase 3 ✓</text>
+
+          <!-- Phase 4 livrée — checkmark statique -->
+          <g transform="translate(930,68)">
+            <circle r="9" fill="#3d7363"/>
+            <path d="M -4,0 L -1,3 L 4,-3" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <text x="930" y="48" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#1f4738">Phase 4 ✓</text>
+
+          <!-- Phase 5 livrée — Vous êtes ici (post-livraison v0.5) -->
+          <g transform="translate(1150,68)">
+            <circle r="9" fill="#3d7363"/>
+            <path d="M -4,0 L -1,3 L 4,-3" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+          <text x="1150" y="48" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#1f4738">Phase 5 ✓ · v0.5 LIVRÉ</text>
 
           <!-- Main timeline bar -->
           <rect x="160" y="84" width="1100" height="32" rx="16" fill="url(#phaseGrad)"/>
@@ -787,7 +797,7 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
             <text x="0" y="46" text-anchor="middle" font-family="Fira Sans" font-size="9" fill="#5b5e68">Juillet 2026</text>
           </g>
 
-          <text x="640" y="180" text-anchor="middle" font-family="Fira Sans" font-size="11" fill="#5b5e68" font-style="italic">6 sprints · binôme CEO + Claude · ≈ 4,6 k€ infra · cutover dogfood CEO en S5</text>
+          <text x="640" y="180" text-anchor="middle" font-family="Fira Sans" font-size="11" fill="#5b5e68" font-style="italic">5 sprints livrés · binôme CEO + Claude · 110 k€ · cutover S5 LIVRÉ 26/04</text>
         </svg>
       </div>
     </div>
@@ -814,7 +824,7 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
         <article class="phase done-code">
           <div class="phase-num">Phase 2 / Sprint S2</div>
           <div class="phase-name">Cockpit unifié + flux matin/soir + tâches</div>
-          <div class="phase-weeks">25 avril 2026 · livré · branche <code>release/v0.5-s2</code> → tag cible <code>v0.5-s2</code></div>
+          <div class="phase-weeks">25 avril 2026 · LIVRÉ ✓ · branche <code>release/v0.5-s2</code> → tag <code>v0.5-s2</code> posé</div>
           <p class="phase-lead">Sprint S2 livré complet par binôme CEO + Claude le 25/04 (10/10 issues · 11 commits · 55/55 tests verts). Suivi par S3 (75 tests, 25/04), S4 (85 tests, 26/04), S5 (~95 tests, 26/04). Cumul v0.5 = 110 k€, ~150 j d'avance.</p>
           <ul>
             <li><strong>4 pages migrées</strong> : <code>index.html</code> · <code>arbitrage.html</code> · <code>evening.html</code> · <code>taches.html</code> — <strong>zéro localStorage applicatif</strong></li>
@@ -822,23 +832,23 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
             <li>Rituels matin/soir : arbitrage top 3/délégation/report + bilan humeur·énergie + <strong>streak persistant</strong></li>
             <li>IA décisions : <code>POST /api/decisions/:id/recommend</code> (Anthropic + fallback offline)</li>
             <li>Doc API complète <code>docs/API.md</code> · <strong>38 exemples curl</strong> + smoke-test 1 commande</li>
-            <li>Spike SSE livré : bus EventEmitter + <code>GET /api/cockpit/stream</code> + heartbeat 25 s · <strong>non câblé front</strong> (différé S3.05)</li>
-            <li>3 parcours e2e HTTP-boundary (Playwright sandboxé S3+) + 6 nouveaux tests unitaires</li>
+            <li>Spike SSE livré : bus EventEmitter + <code>GET /api/cockpit/stream</code> + heartbeat 25 s · câblé front <strong>livré S3.05</strong> (cockpit + tâches + agenda)</li>
+            <li>3 parcours e2e HTTP-boundary + 6 nouveaux tests unitaires · 6 parcours Playwright industrialisés <strong>livrés S5.01</strong></li>
           </ul>
           <div class="deliv"><strong>Livré 25/04 — PR-S2 mergée</strong><code>.github/PR-S2.md</code> · <code>data/migrations/2026-04-25-init-schema.sql</code> · <code>docs/API.md</code> (487 lignes) · <code>docs/SPIKE-WEBSOCKET.md</code> (ADR SSE retenu) · 11 commits du <code>accea60</code> au <code>6f4e6e8</code>.</div>
         </article>
         <article class="phase doing">
-          <div class="phase-num">Phase 3 / Sprint S3</div>
+          <div class="phase-num">Phase 3 / Sprint S3 ✓ LIVRÉ</div>
           <div class="phase-name">Agenda hebdo + Revues + SSE live + Outlook autosync</div>
-          <div class="phase-weeks">02/06 → 13/06/2026 · 10 j-ouvrés · 22,1 k€</div>
+          <div class="phase-weeks">25 avril 2026 · LIVRÉ EN AVANCE (~3 h dogfood) · 22,1 k€</div>
           <p class="phase-lead">Migration des 2 dernières pages métier (<code>agenda.html</code> · <code>revues/index.html</code>) + 2 chantiers transverses (câblage SSE front + Outlook autosync 2 h). 11 issues / 11,1 j-dev / 20 capacité (45 % marge dailys/retro/demos).</p>
           <ul>
             <li><strong>agenda.html</strong> migré API : vue hebdo lun-dim, drag-drop tâche → <code>due_at</code>, deep-link <code>?week=YYYY-Www</code>, drawer detail event</li>
             <li><strong>revues/index.html</strong> migré API : Big Rocks éditables (max 3/sem), auto-draft Claude rubric ≥ 5/6, archives W17+</li>
             <li><strong>Câblage SSE front</strong> (cockpit + tâches) : routes mutatrices émettent → bus → re-fetch &lt; 1 s, reconnexion auto navigateur</li>
             <li><strong>Outlook autosync 2 h</strong> via <code>schtasks /sc HOURLY /mo 2</code> + endpoint <code>GET /api/system/last-sync</code> + alerte cockpit si &gt; 4 h sans sync</li>
-            <li>11 issues GitHub <strong>S3.00 → S3.10</strong> · ≥ 65 tests unitaires + tests e2e parcours hebdo (P4)</li>
-            <li>Spike Service Windows time-boxé 1,5 j (POC node-windows) — prépare S5 cutover</li>
+            <li>11/11 issues GitHub <strong>S3.00 → S3.10</strong> closes · 75/75 tests verts (62 hérités + 11 nouveaux S3) · tag <code>v0.5-s3</code> posé</li>
+            <li>Spike Service Windows livré : POC node-windows ROUGE → <strong>variante D Startup folder retenue</strong> (ADR S3.10) · cutover S5 LIVRÉ 26/04 · raccourci Bureau + autostart logon Windows opérationnels</li>
           </ul>
           <div class="deliv"><strong>Livrables Sprint S3 LIVRÉS le 25/04</strong> (en avance, plan 02→13/06) · <code>04_docs/DOSSIER-SPRINT-S3.md</code> · <code>POA-SPRINT-S3.xlsx</code> · <code>KICKOFF-S3.pptx</code> · <code>04_docs/_release-notes/v0.5-s3.md</code> · 11/11 issues closes · tag <code>v0.5-s3</code> posé. Suivi par S4 (12/12 issues, 26/04) puis S5 (8/8 issues, 26/04, tag <code>v0.5</code> final).</div>
         </article>
@@ -921,7 +931,7 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
           <rect x="640" y="40" width="600" height="300" rx="14" fill="#f5f3ef" stroke="#3d7363" stroke-width="2"/>
           <rect x="640" y="40" width="600" height="46" rx="14" fill="#3d7363"/>
           <rect x="640" y="72" width="600" height="14" fill="#3d7363"/>
-          <text x="940" y="62" text-anchor="middle" font-family="Fira Sans" font-size="14" font-weight="800" fill="#f5f3ef">v0.5 fusion — cible juillet 2026</text>
+          <text x="940" y="62" text-anchor="middle" font-family="Fira Sans" font-size="14" font-weight="800" fill="#f5f3ef">v0.5 fusion — LIVRÉE 26/04/2026 ✓</text>
           <text x="940" y="78" text-anchor="middle" font-family="Fira Sans" font-size="10" fill="#e2ece8" opacity="0.95">app-web absorbe MVP · 1 produit unifié</text>
 
           <g transform="translate(660,108)">
@@ -1031,7 +1041,7 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
         <article class="prereq" style="border-left-color:#3d7363;background:#f3faf6;">
           <div class="n" style="color:#1f4738;">04 ✓</div>
           <h4>MVP v0.4 figé</h4>
-          <p>Plus de feature sur v0.4. Sprint S1 part de la branche <code>feat/v0.5/sprint-s1</code>. Dogfood CEO continue jusqu'au cutover S5.</p>
+          <p>Plus de feature sur v0.4. Sprint S1 livré 25/04 · S5 cutover LIVRÉ 26/04 · tag <code>v0.5</code> posé. Dogfood CEO quotidien depuis 25/04.</p>
         </article>
       </div>
     </div>
@@ -1069,7 +1079,7 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
           <div class="risk-icon">!</div>
           <div>
             <h4>Risque 4 — CEO pairs introuvables</h4>
-            <p>Si les 2-3 cibles ne sont pas identifiées sprint 6, la v0.5 termine sans validation externe non-Feycoil.</p>
+            <p><strong>Acceptable post-v0.5</strong> : v0.5 LIVRÉ avec ONBOARDING-CEO-PAIR.md révisé (S5.07) prêt à onboarder un pair en 1 journée. La validation externe non-Feycoil est désormais un sujet V1, pas un blocker v0.5.</p>
             <div class="mitig"><strong>Mitigation</strong>Envoyer les <code>LETTRE-INTRO-CEO-PAIR.md</code> dès maintenant en pré-recrutement (mention « disponible juillet 2026 »).</div>
           </div>
         </article>
@@ -1077,10 +1087,10 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
     </div>
 
     <!-- Décision GO ExCom prise + S1 en recette -->
-    <div class="decision" style="background:linear-gradient(135deg,#dff0e6 0%,#f3faf6 100%);border-color:#3d7363;">
-      <div class="label" style="color:#1f4738;">Décision GO ExCom · prise le 25/04/2026 · S2 livré ✓ · S3 kickoff préparé</div>
-      <h2>GO inconditionnel · S1 livré ✓ · S2 livré ✓ · Sprint S3 ouvert (agenda + revues + SSE + autosync)</h2>
-      <p>Cadence pulvérisée : <strong>5 sprints livrés en ~16 h chrono cumulées</strong> (vs plan 6 sprints / 10 sem). Tag <code>v0.5</code> final posé <strong>26/04/2026</strong> (vs plan 14 juillet 2026, soit ~150 j d'avance). Cumul : 110 k€ / 110 k€ = 100% · 41 issues closes · 5 GitHub Releases · 12 pages frontend · 4 routes assistant streaming Claude · 11 routers REST · 31 ADRs · ~95 tests verts. v0.5 internalisée TERMINÉE.</p>
+    <div class="decision" style="background:#0d0d0f;border-color:#b88237;color:#f5f3ef;">
+      <div class="label" style="color:#f5f3ef;letter-spacing:0.08em;">v0.5 internalisée TERMINÉE · 26/04/2026 · 5/5 sprints livrés · tag v0.5 posé</div>
+      <h2 style="color:#fff;">v0.5 internalisée TERMINÉE · S1 ✓ · S2 ✓ · S3 ✓ · S4 ✓ · S5 ✓ · tag <code style="background:#2a2a30;color:#f5f3ef;padding:2px 6px;border-radius:3px;">v0.5</code> posé</h2>
+      <p style="color:#d4d2d8;">Cadence pulvérisée : <strong style="color:#f5f3ef;">5 sprints livrés en ~16 h chrono cumulées</strong> (vs plan 6 sprints / 10 sem). Tag <code style="background:#2a2a30;color:#f5f3ef;padding:1px 5px;border-radius:3px;">v0.5</code> final posé <strong style="color:#f5f3ef;">26/04/2026</strong> (vs plan 14 juillet 2026, soit ~150 j d'avance). Cumul : <strong style="color:#f5f3ef;">110 k€ / 110 k€ = 100%</strong> · 41 issues closes · 5 GitHub Releases · 12 pages frontend · 4 routes assistant streaming Claude · 11 routers REST · 31 ADRs · ~95 tests verts. <strong style="color:#b88237;">v0.5 internalisée TERMINÉE</strong>. NEXT : recette ExCom + décision GO V1.</p>
       <div class="gate">
         <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4738;"><strong>S1 ✓</strong>livré · tag v0.5-s1 sur 141ca0f · 0 incident dogfood</div>
         <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4738;"><strong>S2 ✓</strong>livré 25/04 · 10/10 issues · 55/55 tests · branche release/v0.5-s2</div>
@@ -1819,7 +1829,7 @@ function renderTimeline() {
 
     const period = document.createElement("div");
     period.className = "tl-period";
-    period.innerHTML = `<div class="month">${escapeHtml(p.label)}</div><div class="sub">${escapeHtml(p.sub)}</div>${p.now ? '<span class="now-pill">Aujourd\'hui · 25 avr.</span>' : ''}`;
+    period.innerHTML = `<div class="month">${escapeHtml(p.label)}</div><div class="sub">${escapeHtml(p.sub)}</div>${p.now ? '<span class="now-pill">Aujourd\'hui · 26 avr.</span>' : ''}`;
     row.appendChild(period);
 
     ["web","mvp","hub","v2"].forEach(lane => {
