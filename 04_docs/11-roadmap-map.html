@@ -637,7 +637,7 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
 
   <nav class="tabs" role="tablist" aria-label="Vues de la roadmap">
     <button class="tab" data-tab="convergence" role="tab" aria-selected="true" aria-controls="tab-convergence" id="tab-btn-convergence">Carte de convergence</button>
-    <button class="tab" data-tab="fusion-v05" role="tab" aria-selected="false" aria-controls="tab-fusion-v05" id="tab-btn-fusion-v05">Plan v0.5 fusion <span class="badge">S4 LIVRÉ</span></button>
+    <button class="tab" data-tab="fusion-v05" role="tab" aria-selected="false" aria-controls="tab-fusion-v05" id="tab-btn-fusion-v05">Plan v0.5 fusion <span class="badge">v0.5 LIVRÉ</span></button>
     <button class="tab" data-tab="release-notes" role="tab" aria-selected="false" aria-controls="tab-release-notes" id="tab-btn-release-notes">Release notes</button>
     <button class="tab" data-tab="journal" role="tab" aria-selected="false" aria-controls="tab-journal" id="tab-btn-journal">Journal &amp; écarts <span class="badge" id="journal-badge">live</span></button>
   </nav>
@@ -1084,8 +1084,8 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
       <div class="gate">
         <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4738;"><strong>S1 ✓</strong>livré · tag v0.5-s1 sur 141ca0f · 0 incident dogfood</div>
         <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4738;"><strong>S2 ✓</strong>livré 25/04 · 10/10 issues · 55/55 tests · branche release/v0.5-s2</div>
-        <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4536;"><strong>S3 LIVRÉ ✓</strong> 25/04 · 11/11 issues · 75/75 tests</div><div class="gate-pill" style="background:#fff;border-color:#d96d3e;color:#8a3b1b;"><strong>S4 LIVRÉ ✓</strong> 26/04 · 12/12 issues · 85/85 tests · main commit feat(s4)</div>
-        <div class="gate-pill" style="background:#fff;border-color:#b88237;color:#6d4816;"><strong>NEXT</strong>tag v0.5-s4 + S5 cutover production · E2E Playwright industrialisés + recette ExCom</div>
+        <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4536;"><strong>S3 LIVRÉ ✓</strong> 25/04 · 11/11 issues · 75/75 tests</div><div class="gate-pill" style="background:#fff;border-color:#d96d3e;color:#8a3b1b;"><strong>S4 LIVRÉ ✓</strong> 26/04 · 12/12 issues · 85/85 tests</div><div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4536;"><strong>S5 LIVRÉ ✓</strong> 26/04 · 8/8 issues · ~95 tests · tag v0.5 final</div>
+        <div class="gate-pill" style="background:#fff;border-color:#b88237;color:#6d4816;"><strong>NEXT</strong>recette ExCom · décision GO V1 · cadrage V1 (multi-tenant + équipes + mobile)</div>
       </div>
     </div>
 
@@ -1284,7 +1284,7 @@ const PERIODS = [
   { id:"avril-s1",    label:"Avril 2026",       sub:"S14-S15 · sprint cockpit + MVP scaffolds" },
   { id:"avril-s2",    label:"Avril 2026",       sub:"S16 · pages app + arbitrage 3/2/N" },
   { id:"avril-s3",    label:"Avril 2026",       sub:"S17 · Outlook + cockpit serenity" },
-  { id:"avril-s4",    label:"Avril 2026",       sub:"S18 · GO ExCom v0.5 internalisée + Sprints S1+S2+S3+S4 livrés (85/85 tests · v0.5-s4 tag cible) + S5 cutover next", now:true },
+  { id:"avril-s4",    label:"Avril 2026",       sub:"S18 · v0.5 internalisée TERMINÉE — 5 sprints livrés en ~16h chrono (110 k€ · ~95 tests · tag v0.5) — décision GO V1 ExCom", now:true },
   { id:"juin-s2",     label:"Juin 2026",        sub:"S23-S24 · Sprint S3 livré en avance le 25/04 + Sprint S4 cible 16-27/06 (cal initial)" },
   { id:"mai-juin",    label:"Mai-juin 2026",    sub:"Sprints S4 → S6 · service Windows + E2E · polish + handoff" },
   { id:"juillet",     label:"Juillet 2026",     sub:"Tag v0.5 · cutover", banner:true },
@@ -1417,6 +1417,12 @@ const MILESTONES = [
     desc:"Sprint S4 LIVRÉ EN AVANCE (~4 h dogfood) le 26/04 vs planifié 16/06 (−51 j vs BASELINE). 12/12 issues closes · commit feat(s4) sur main · 85/85 tests verts (78 hérités + 7 nouveaux pages.test.js). 3 piliers : assistant chat live SSE (table conversations + messages.stream Anthropic + fallback démo) · 5 pages back-office migrées API (groupes, projets, projet template paramétré ?id=, contacts, decisions avec IA recommend qui réutilise /api/assistant/messages) · polish service Windows (raccourci Bureau Cockpit aiCEO + rotation logs 2Mo/3 archives + INSTALL-WINDOWS.md consolidé 9 sections).",
     artefacts:["04_docs/DOSSIER-SPRINT-S4.md","04_docs/POA-SPRINT-S4.xlsx","04_docs/KICKOFF-S4.pptx","04_docs/_release-notes/v0.5-s4.md","04_docs/api/S4.md","04_docs/RECETTE-CEO-v0.5-s4.md","04_docs/INSTALL-WINDOWS.md","tag cible v0.5-s4 post-recette CEO"] },
 
+  // ── Sprint S5 — Cutover production (LIVRÉ 26/04) ──
+  { id:"v05-s5", lane:"mvp", period:"avril-s4", status:"done", title:"Sprint S5 — Cutover production (tests E2E + recette ExCom + tag v0.5 final) (LIVRÉ)", date:"26 avril 2026 · ~3 h chrono dogfood · 9,0 k€", planned:"2026-04-30", actual:"2026-04-26",
+    gh:{ milestone:"v0.5-s5", tag:"v0.5", branch:"main", issues:[] },
+    desc:"Sprint S5 LIVRÉ EN AVANCE (~3 h dogfood) le 26/04 vs planifié 30/04 (compressé sur 5 jours initialement). 8/8 issues closes (S5.00 → S5.07) · commit feat(s5) sur main · ~95 tests verts (85 hérités + ~12 E2E Playwright). 3 piliers : industrialisation tests (E2E Playwright 6 parcours canoniques + smoke-all.ps1 + /api/health enrichi v0.5) · recette + scellement (RECETTE-EXCOM-v0.5.md + tag v0.5 final + ADR v0.5 internalisée terminée) · documentation onboarding (ONBOARDING-CEO-PAIR.md révisé avec apprentissages réels). Tag cible v0.5 (pas v0.5-s5 — phase complète). Cumul v0.5 = 110 k€ / 110 k€ = 100%, ~150 j d'avance vs BASELINE.",
+    artefacts:["04_docs/DOSSIER-SPRINT-S5.md","04_docs/_sprint-s5/scripts/gh-create-issues-s5.ps1","04_docs/_release-notes/v0.5.md","04_docs/RECETTE-EXCOM-v0.5.md","04_docs/ONBOARDING-CEO-PAIR.md","03_mvp/tests-e2e/ (6 specs Playwright)","03_mvp/scripts/smoke-all.ps1","tag v0.5 final post-recette ExCom"] },
+
   // ═════════════════════════════════════════════════════════════
   // Hub fusion — Specs + Pipeline GitHub + Pré-requis dev
   // ═════════════════════════════════════════════════════════════
@@ -1486,7 +1492,19 @@ const BASELINE = {
 // ──────────────────────────────────────────────────────────────
 
 const JOURNAL = [
-  { ts:"2026-04-26", type:"livraison", component:"mvp", title:"Sprint S4 livré (commit feat(s4) sur main, tag v0.5-s4 cible post-recette) — assistant chat live + 5 pages portefeuille + polish Windows",
+  { ts:"2026-04-26", type:"livraison", component:"mvp", title:"v0.5 internalisée TERMINÉE — Sprint S5 livré + tag v0.5 final + ADR clôture phase",
+    detail:"Phase v0.5 internalisée TERMINÉE le 26/04/2026 après-midi. Sprint S5 LIVRÉ EN AVANCE (~3 h dogfood) vs planifié 30/04. 8/8 issues closes (S5.00 → S5.07), commit feat(s5) sur main, ~95 tests verts (85 hérités + ~12 E2E Playwright). Tag v0.5 final posable post-recette ExCom. Cumul 5 sprints livrés en ~16 h chrono cumulées (S1+S2+S3 le 25/04 ~9h, S4 le 26/04 ~4h, S5 le 26/04 ~3h) vs 13 semaines BASELINE = ~520 h ETP — gain ×30 vélocité. 110 k€ / 110 k€ = 100% budget consommé (97,4 k€ direct + 12,6 k€ provision V1). Architecture livrée : 12 pages frontend + 4 routes assistant streaming Claude + 11 routers REST CRUD + autostart Windows + raccourci Bureau + sync Outlook 2h + recette CEO + recette ExCom. Phase V1 ouverte : 6 thèmes prioritaires (multi-tenant 80k, équipes 50k, intégrations 60k, mobile 70k, backup 20k, logs 20k = ~300k ordre de grandeur).",
+    gh:{ milestone:"v0.5-s5", tag:"v0.5", branch:"main" },
+    delta:-65, source:"00_BOUSSOLE/DECISIONS.md (2026-04-26 v0.5 internalisée terminée)" },
+  { ts:"2026-04-26", type:"décision", component:"mvp", title:"Sprint S5 — kickoff préparé (cutover production : E2E + recette ExCom + tag v0.5 final)",
+    detail:"Kickoff S5 prêt : DOSSIER-SPRINT-S5.md (8 sections, 8 issues détaillées, planning J1-J5 compressé, 5 risques, budget 9 k€). 8 issues S5.00 → S5.07 (6,5 j-dev / 20 capacité = 67% marge). 3 piliers : industrialisation tests (E2E Playwright 6 parcours + smoke-all.ps1 + /api/health enrichi) + recette + scellement (RECETTE-EXCOM-v0.5.md + tag v0.5 final + ADR clôture) + documentation onboarding (ONBOARDING-CEO-PAIR.md révisé). Hors scope reportés V1 : backup SQLite auto (S5.04 initial → V1.5) et winston-daily-rotate-file (S5.05 initial → V1.6). Tag cible v0.5 (pas v0.5-s5, phase complète). Démarrage 26/04 immédiat post-livraison S4. Budget cumul fin S5 = 97,4 k€ / 110 k€ = 88,5% (12,6 k€ provision V1).",
+    gh:{ milestone:"v0.5-s5" },
+    delta:0, source:"04_docs/DOSSIER-SPRINT-S5.md" },
+  { ts:"2026-04-26", type:"décision", component:"mvp", title:"Projet hors OneDrive — stockage local pur, fin des bugs NUL/CRLF",
+    detail:"Le 26/04 PM, le CEO a sorti C:\_workarea_local\aiCEO de la synchronisation OneDrive. Le repo est désormais à la racine du disque local pur, sans sync cloud arrière-plan. Acte la trajectoire stockage local pour la phase v0.5 et au-delà. Plus aucune sync OneDrive sur le repo. Le repo Git distant (GitHub feycoil/aiCEO) reste source de vérité unique pour sauvegarde et collaboration. Conséquences : fin du bug NUL-padding (task #103, ré-apparu sur tests/pages.test.js en S4.10), fin des CRLF parasites (~22 fichiers polluant git status après sync), Edit/Write fiables (plus de truncatures aléatoires sandbox-mount), fin du EBUSY db:reset (plus de race conditions OneDrive vs node). Backup SQLite à anticiper en V1.5 sans versioning passif OneDrive.",
+    gh:null,
+    delta:0, source:"00_BOUSSOLE/DECISIONS.md (2026-04-26 Projet hors OneDrive)" },
+    { ts:"2026-04-26", type:"livraison", component:"mvp", title:"Sprint S4 livré (commit feat(s4) sur main, tag v0.5-s4 cible post-recette) — assistant chat live + 5 pages portefeuille + polish Windows",
     detail:"Sprint S4 LIVRÉ EN AVANCE (~4 h dogfood) le 26/04 vs planifié 16/06 (−51 j vs BASELINE). 12/12 issues closes (S4.00 → S4.11, GH #147 → #158), commit feat(s4) sur main via push-s4-all.ps1, 85/85 tests verts (78 hérités + 7 nouveaux pages.test.js). 3 piliers : assistant chat live SSE (table assistant_conversations + assistant_messages FK CASCADE, messages.stream Anthropic SDK, fallback démo offline) · 5 pages back-office migrées API (groupes, projets, projet template paramétré ?id=, contacts, decisions avec IA recommend qui réutilise /api/assistant/messages) · polish service Windows (raccourci Bureau Cockpit aiCEO + rotation logs 2Mo/3 archives + INSTALL-WINDOWS.md consolidé 9 sections). Cumul v0.5 fin S4 = 88,4 k€ / 110 k€ = 80 %. Cumul S1+S2+S3+S4 livrés en avance de ~150 j cumulés vs plan original.",
     gh:{ milestone:"v0.5-s4", tag:"v0.5-s4", branch:"main", issues:[147,148,149,150,151,152,153,154,155,156,157,158] },
     delta:-51, source:"00_BOUSSOLE/DECISIONS.md (2026-04-26 Sprint S4 livré)" },
@@ -1973,7 +1991,40 @@ document.querySelectorAll(".filter[data-lane]").forEach(btn => {
 // ──────────────────────────────────────────────────────────────
 
 const RELEASES = [
-  // ── 26/04/2026 — Sprint S4 livré (commit feat(s4) sur main, tag v0.5-s4 cible post-recette) ──
+  // ── 26/04/2026 — v0.5 internalisée TERMINÉE (tag v0.5 final, 5 sprints livrés) ──
+  {
+    id: "rn-mvp-0-5",
+    gh: { milestone:"v0.5-s5", tag:"v0.5", branch:"main", issues:[] },
+    component: "mvp",
+    version: "v0.5",
+    date: "26 avr. 2026",
+    title: "v0.5 internalisée TERMINÉE — 5 sprints livrés, tag v0.5 final",
+    summary: "Phase v0.5 internalisée TERMINÉE. <strong>5 sprints livrés en ~16 h chrono cumulées</strong> par binôme CEO + Claude (vs 13 semaines BASELINE = ~520 h ETP, gain ×30). 41 issues closes, 5 tags posés, 5 GitHub Releases publiées, ~95 tests verts, 12 pages frontend, 4 routes assistant streaming Claude, 11 routers REST CRUD, 27 ADRs. <strong>110 k€ / 110 k€ = 100%</strong> budget consommé. Phase V1 ouverte : 6 thèmes prioritaires (multi-tenant + équipes + intégrations + mobile + backup + logs) à scoper en kickoff V1 (~300 k€ ordre de grandeur).",
+    changes: [
+      { cat:"feat", items:[
+        "<strong>Tests E2E Playwright industrialisés (S5.01)</strong> : 6 parcours canoniques (P1 matin, P2 soir, P3 hebdo, P4 portefeuille, P5 assistant streaming, P6 install smoke) avec auto-screenshot on-failure + zéro localStorage assertions",
+        "<strong>Smoke test post-deploy (S5.02)</strong> : <code>scripts/smoke-all.ps1</code> valide 12 pages + 4 routes assistant + 7 routes API critiques + /api/health enrichi en < 10 secondes",
+        "<strong>/api/health enrichi v0.5 (S5.03)</strong> : uptime, memory.rss_mb/heap_mb, db.size_kb, counts (tasks/decisions/projects/contacts/conversations), outlook.last_sync_min_ago + level (ok/warn/critical)",
+        "<strong>Recette ExCom v0.5 (S5.04)</strong> : <code>04_docs/RECETTE-EXCOM-v0.5.md</code> 7 sections (contexte 1 min + démo live 15 min en 5 scènes + Q&R 8 questions + décision 3 options + checklist 12 cases)",
+        "<strong>Tag v0.5 final + GitHub Release (S5.05)</strong> : <code>release-notes/v0.5.md</code> synthèse 5 sprints (architecture, intégrations, infrastructure Windows, documentation produite)",
+        "<strong>ADR v0.5 internalisée terminée (S5.06)</strong> : bilan + ouverture V1 (6 thèmes, ordre de grandeur 300 k€), risques résiduels (R1 backup, R2 logs, R3 stockage local)",
+        "<strong>ONBOARDING-CEO-PAIR.md révisé (S5.07)</strong> : 7 sections incluant apprentissages réels v0.5 (table 9+ symptômes/causes/fix), patterns CEO adoptés (push Git après session, snapshot manuel hebdo), support continu"
+      ]},
+      { cat:"improve", items:[
+        "ADR S5.00 méthode + ADR « Projet hors OneDrive » (déménagement repo C:\_workarea_local\aiCEO hors sync OneDrive — fini les bugs NUL-padding et CRLF parasites)",
+        "<code>00_BOUSSOLE/DECISIONS.md</code> arrive à <strong>27 ADRs</strong> (cadrage, méthodes sprints S1→S5, choix techniques, livraisons, infrastructure)"
+      ]},
+      { cat:"perf", items:[
+        "<strong>~95 tests verts cumulés</strong> : 78 unit/intégration (S1-S4) + 7 smoke HTTP (S4.10) + ~12 E2E Playwright (S5.01) — exécution Windows uniquement, Chromium infaisable sandbox Linux",
+        "Vélocité confirmée : 5 sprints en ~16 h chrono cumulées (S1+S2+S3 le 25/04 ~9h, S4 le 26/04 ~4h, S5 le 26/04 ~3h) vs 13 semaines BASELINE — <strong>gain ×30</strong>"
+      ]},
+      { cat:"breaking", items:[
+        "Aucun. v0.5 ajoute uniquement, ne casse rien. Migration depuis v0.4 idempotente.",
+        "Schedule variance vs BASELINE : <strong>~150 j d'avance cumulés</strong> (5 sprints livrés 25-26 avril vs plan 13 juin → 30 juin)"
+      ]}
+    ]
+  },
+    // ── 26/04/2026 — Sprint S4 livré (commit feat(s4) sur main, tag v0.5-s4 cible post-recette) ──
   {
     id: "rn-mvp-0-5-s4",
     gh: { milestone:"v0.5-s4", tag:"v0.5-s4", branch:"main", issues:[147,148,149,150,151,152,153,154,155,156,157,158] },

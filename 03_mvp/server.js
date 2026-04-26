@@ -189,23 +189,48 @@ app.get("/decisions", (req, res) => {
 
 
 app.get("/api/health", (req, res) => {
-
-
-  res.json({
-
-
+  // S5.03 — Health enrichi (uptime + memory + db size + counts + last sync Outlook)
+  const result = {
     ok: true,
-
-
     demo: !process.env.ANTHROPIC_API_KEY || process.env.DEMO_MODE === "1",
-
-
-    model: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6"
-
-
-  });
-
-
+    model: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6",
+    version: "v0.5",
+    uptime_s: Math.round(process.uptime()),
+    memory: {
+      rss_mb: Math.round(process.memoryUsage().rss / 1024 / 1024),
+      heap_mb: Math.round(process.memoryUsage().heapUsed / 1024 / 1024)
+    }
+  };
+  // DB size
+  try {
+    const dbPath = process.env.AICEO_DB_OVERRIDE || path.join(__dirname, "data", "aiceo.db");
+    if (fs.existsSync(dbPath)) {
+      result.db = { path: path.basename(dbPath), size_kb: Math.round(fs.statSync(dbPath).size / 1024) };
+    }
+  } catch (e) { /* swallow */ }
+  // Counts depuis SQLite
+  try {
+    const { getDb } = require("./src/db");
+    const db = getDb();
+    result.counts = {
+      tasks: db.prepare("SELECT COUNT(*) AS n FROM tasks").get().n,
+      decisions: db.prepare("SELECT COUNT(*) AS n FROM decisions").get().n,
+      projects: db.prepare("SELECT COUNT(*) AS n FROM projects").get().n,
+      contacts: db.prepare("SELECT COUNT(*) AS n FROM contacts").get().n,
+      conversations: db.prepare("SELECT COUNT(*) AS n FROM assistant_conversations").get().n
+    };
+  } catch (e) { result.counts_error = String(e.message || e); }
+  // Last sync Outlook
+  try {
+    const sumPath = path.join(__dirname, "data", "emails-summary.json");
+    if (fs.existsSync(sumPath)) {
+      const ageMin = Math.round((Date.now() - fs.statSync(sumPath).mtimeMs) / 60000);
+      result.outlook = { last_sync_min_ago: ageMin, level: ageMin < 240 ? "ok" : ageMin < 1440 ? "warn" : "critical" };
+    } else {
+      result.outlook = { level: "absent" };
+    }
+  } catch (e) { /* swallow */ }
+  res.json(result);
 });
 
 

@@ -10,6 +10,133 @@
 
 
 
+## 2026-04-26 · v0.5 internalisée terminée — bilan + ouverture phase V1
+
+**Statut** : Acté · **GO/NO-GO V1** : à statuer en ExCom (cf. RECETTE-EXCOM-v0.5.md)
+
+**Contexte** : Sprint S5 livré le 26/04/2026 après-midi, scellement formel de la phase **v0.5 internalisée**. Le binôme CEO + Claude a tenu son engagement de janvier 2026 : livrer un copilote IA exécutif fonctionnel, dogfood-prêt, sur 110 k€ de budget engagé. Bilan brut sur les 5 sprints :
+
+- **41 issues closes** (S2 #101-110, S3 #113-123, S4 #147-158, S5 #YYY-YYY) sur 5 milestones fermés
+- **5 tags posés** + 5 GitHub Releases publiées
+- **~95 tests verts** (85 unit/intégration + ~12 E2E Playwright)
+- **12 pages frontend** + 4 routes assistant streaming Claude + 11 routers REST CRUD
+- **27 ADRs** dans `00_BOUSSOLE/DECISIONS.md`
+- **Vélocité** : 5 sprints livrés en **~16 h chrono cumulées dogfood** vs **13 semaines BASELINE** = ~520 h ETP — **gain x30**
+- **Schedule variance cumulée** : ~150 j d'avance vs calendrier original
+- **Budget** : 97,4 k€ direct + 12,6 k€ provision V1 = **110 k€ / 110 k€ = 100%**
+- **Qualité** : 0 régression, 0 incident dogfood depuis 25/04
+
+**Décision** : **Acter la fin de la phase v0.5 internalisée**. Tag `v0.5` posé sur main, GitHub Release publiée, milestone v0.5-s5 fermé. Recette ExCom prête.
+
+**Ouverture V1** : 6 thèmes prioritaires (~300 k€ ordre de grandeur sur 6 mois) :
+1. Multi-tenant (Supabase + RLS + auth Microsoft Entra) — ~80 k€
+2. Équipes (vues role-specific + délégation pro matrice confiance) — ~50 k€
+3. Intégrations (Teams Microsoft Graph + Notion + Slack) — ~60 k€
+4. App mobile compagnon (notifications + dictée + consultation) — ~70 k€
+5. Backup SQLite automatique + chiffrement at-rest (S5.04 reporté) — ~20 k€
+6. Logs winston-daily-rotate-file + monitoring Langfuse (S5.05 reporté) — ~20 k€
+
+**Conséquences** :
+- Phase v0.5 close : aucune nouvelle issue acceptée sur milestone v0.5-* après ce 26/04
+- Dogfood CEO continue, frictions notées pour priorisation V1
+- CEO pair onboarding possible en 1 journée (`ONBOARDING-CEO-PAIR.md` mis à jour S5.07)
+- Architecture multi-tenant compatible : SQLite isolé par utilisateur via `AICEO_DB_OVERRIDE`
+- Méthode binôme CEO + Claude validée : vélocité x30 vs plan ETP, reproductible
+- Pression marché : Microsoft annonce Copilot CEO 2027, fenêtre d'avance limitée → **GO V1 immédiat recommandé**
+
+**Risques résiduels v0.5** :
+- R1 — Backup auto SQLite manquant (S5.04 → V1.5). Mitigation : push Git après chaque session
+- R2 — Logs non structurés (S5.05 → V1.6). Pas de prod externe avant V1.6
+- R3 — Stockage local pur (ADR « Projet hors OneDrive ») bloquant équipes V1.2
+
+**Sources** :
+- DOSSIER-SPRINT-S5.md
+- ADR S5.00 méthode S5
+- 5 release notes sprints (`_release-notes/v0.5-s{1..4}.md` + `v0.5.md`)
+- RECETTE-EXCOM-v0.5.md
+- ONBOARDING-CEO-PAIR.md révisé (S5.07)
+
+
+
+
+---
+
+
+
+
+## 2026-04-26 · S5.00 — Méthode Sprint S5 + zéro localStorage rappelé + projet hors OneDrive
+
+**Statut** : Acté
+
+**Contexte** : Ouverture du Sprint S5 (cutover production) immédiatement après livraison S4. Les 4 sprints précédents ont confirmé le pattern « zéro localStorage applicatif » (ADR S2.00 fondatrice, rappels S3.00 et S4.00). S5 introduit 0 page mais 1 critère structurant supplémentaire : tests E2E Playwright industrialisés (P1..P6) qui doivent eux aussi vérifier l'absence d'usage applicatif de `localStorage` au boundary navigateur. Par ailleurs, un changement d'infrastructure local mérite acte : le dossier projet vient d'être sorti d'OneDrive (cf. ADR « projet hors OneDrive » ci-dessous).
+
+**Décision** : Méthode S5 = **3 piliers + 8 issues + 5 jours compressés**.
+- **Pilier 1 — Industrialisation tests** (S5.01 E2E Playwright × 6 parcours, S5.02 smoke-all.ps1, S5.03 /api/health enrichi).
+- **Pilier 2 — Recette + scellement** (S5.04 RECETTE-EXCOM-v0.5.md + scénario démo 30 min, S5.05 tag v0.5 final + GitHub Release synthèse 4 sprints, S5.06 ADR « v0.5 internalisée terminée »).
+- **Pilier 3 — Documentation onboarding** (S5.07 ONBOARDING-CEO-PAIR.md révisé avec apprentissages réels v0.5).
+- **Démos** : pas d'intermédiaire (sprint compressé), démo finale = recette CEO 8/8 + scénario ExCom répété 1×.
+- **Tag cible** : `v0.5` (pas `v0.5-s5` — c'est le tag final de la phase v0.5 internalisée).
+- **Hors scope reportés v1** : backup SQLite automatique (S5.04 initial scope) et winston-daily-rotate-file (S5.05 initial scope). La rotation KISS S4.09 et le snapshot manuel suffisent pré-V1.
+- **Zéro localStorage applicatif rappelé** : les tests E2E Playwright S5.01 incluent un assert spécifique sur l'absence d'appel `localStorage.setItem|getItem|removeItem|clear|key|length` (pattern S4.10).
+
+**Conséquences** :
+- Sprint S5 = 6,5 j-dev sur 20 capacité = **67% marge**, le plus court des 5 sprints v0.5
+- Budget S5 = 9,0 k€ direct + 12,6 k€ provision V1 = **97,4 k€ / 110 k€ cumul** (88,5%) au tag v0.5
+- Avec S5 livré, **v0.5 internalisée terminée** : 90+ tests, 12 pages, 4 routes assistant, autostart Windows + raccourci Bureau + sync Outlook + recette CEO + recette ExCom
+- Phase v1 ouverte avec 6 thèmes prioritaires (multi-tenant, mobile, Teams, backup auto, logs winston, burnout)
+- Cumul S1+S2+S3+S4+S5 livrés en avance de **~155 j** vs BASELINE planifiée 13/06 → 30/06
+
+**Sources** :
+- DOSSIER-SPRINT-S5.md (8 issues détaillées, planning J1-J5, 5 risques, budget 9 k€)
+- ADR Sprint S4 livré (`2026-04-26`) qui bascule vers S5
+- Pattern méthode S2.00 / S3.00 / S4.00 (3 ADRs antérieures)
+
+
+
+
+---
+
+
+
+
+## 2026-04-26 · Projet hors OneDrive — stockage local pur, fin des bugs NUL/CRLF
+
+**Statut** : Acté
+
+**Contexte** : Depuis la mise en place du repo `C:\_workarea_local\aiCEO`, le dossier était synchronisé via OneDrive en arrière-plan. Cette synchronisation a causé plusieurs bugs récurrents documentés dans le sprint S2 et S4 :
+- **Bug NUL-padding** (task #103, ré-apparu sur `tests/pages.test.js` en S4.10) : OneDrive paddait les fichiers avec des octets `\x00` en fin de fichier après save, cassant `node --check` et le runtime. Workaround : strip via Python atomic write.
+- **CRLF parasites** : conversion automatique LF→CRLF sur les fichiers `.js`, `.md`, `.ps1` lors du sync, polluant `git status` à chaque commit (~22 fichiers affichés modifiés sans modif réelle). Workaround : `git checkout --` ciblé avant chaque commit.
+- **Truncature aléatoire** : Edit/Write tool sur le mount Windows tronquait silencieusement certains fichiers à mi-chemin (server.js, assistant.html en S4.02), nécessitant restauration depuis clone /tmp.
+- **Conflits écriture concurrente** : OneDrive verrouillait `aiceo.db` pendant la sync, causant `EBUSY` sur `npm run db:reset` quand un node tournait simultanément.
+
+Le 26/04 après-midi, le CEO a sorti le dossier projet d'OneDrive : il est désormais à la racine du disque local pur, sans synchronisation cloud arrière-plan.
+
+**Décision** : **Acter la trajectoire stockage local pur** pour la phase v0.5 et au-delà. Plus aucune synchronisation OneDrive sur `C:\_workarea_local\aiCEO`. Le repo Git distant (GitHub `feycoil/aiCEO`) reste la **source de vérité unique** pour la sauvegarde et la collaboration. Le versioning passif OneDrive (snapshot file history) est perdu mais remplacé par les tags Git + releases GitHub + commits sur main.
+
+**Conséquences** :
+- **Bug NUL-padding éliminé à la racine** : plus besoin du script `strip-nul.py` dans le pipeline build. Si réapparaît, c'est un autre vecteur (à investiguer).
+- **CRLF parasites éliminés** : `.gitattributes` global LF + checkout local CRLF Windows (config `core.autocrlf=true`) gère proprement, sans interférence OneDrive.
+- **Edit/Write fiables** : plus de truncatures aléatoires sandbox-mount. Le pipeline reste robuste avec Python atomic write pour les patches multi-section, mais la tolérance aux pannes est restaurée.
+- **EBUSY db:reset éliminé** : seul un process node peut verrouiller `aiceo.db`, plus le sync OneDrive en parallèle.
+- **Backup SQLite à anticiper en V1** : sans OneDrive versioning, le risque de perte irréversible est réel si crash disque sans push Git récent. S5.04 initial (backup auto via schtasks) est reporté V1 mais doit être priorisé tôt.
+- **Workflow CEO simplifié** : plus besoin de "double sauvegarde mentale" Git + OneDrive. Workflow = `git add . ; git commit -m "..." ; git push`. Point.
+- **Pour le binôme Claude** : le sandbox Linux mount voit toujours le même chemin (`C:\_workarea_local\aiCEO` → `/sessions/.../mnt/aiCEO/`). Aucun changement côté agent. Les patches Python atomic write restent recommandés pour les fichiers > 100 lignes par sécurité.
+
+**Sources** :
+- Bug NUL-padding initial : task #103 (S2, sprint Outlook scan)
+- Bug NUL ré-apparu : tests/pages.test.js S4.10 (712 bytes NUL strippés)
+- Bug CRLF récurrent : push-s4-all.ps1 § restoration des 22 fichiers parasites
+- Bug truncature Edit/Write : server.js S4.02 (224 → 671 lignes corrompues, restauré clone)
+- Décision CEO 26/04 PM : dossier sorti d'OneDrive
+
+
+
+
+---
+
+
+
+
 ## 2026-04-26 · Sprint S4 livré (release/v0.5-s4) — assistant chat live + 5 pages portefeuille + polish service Windows
 
 **Statut** : Acté

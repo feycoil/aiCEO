@@ -1,0 +1,15 @@
+{
+  "name": "aiceo-mvp-e2e",
+  "version": "0.5.0",
+  "private": true,
+  "description": "E2E Playwright tests pour aiCEO v0.5 (S5.01)",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.45.0"
+  }
+}
