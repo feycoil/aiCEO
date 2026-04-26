@@ -699,7 +699,7 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
       <div>
         <div class="label">Vous êtes ici · 25/04/2026 · Sprint S3 kickoff préparé</div>
         <h2>S1 livré ✓ · S2 livré ✓ · <strong>Sprint S3 ouvert</strong> · agenda + revues + SSE live + Outlook autosync · démarrage 02/06/2026</h2>
-        <p>Phases 1 &amp; 2 archivées. <strong>Sprint S2 livré</strong> en avance le 25/04 (branche <code>release/v0.5-s2</code> · 10/10 issues · 11 commits · <strong>55/55 tests verts</strong> · cockpit live <code>/api/cockpit/today</code> + rituels matin/soir + spike SSE bus + endpoint <code>/stream</code> non câblé front + doc API 38 exemples curl). <strong>Sprint S3 préparé</strong> : 2 pages migrées (<code>agenda.html</code> · <code>revues/index.html</code>) + 2 chantiers transverses (câblage SSE front + Outlook autosync 2 h via schtasks) + spike Service Windows (POC node-windows). 11 issues prêtes (S3.00 → S3.10) · 11,1 j-dev / 20 capacité (45 % marge). <strong>Démarrage lundi 02/06 09:00</strong> · démo finale vendredi 13/06 16:00 · tag <code>v0.5-s3</code> cible lundi 16/06.</p>
+        <p>Phase v0.5 internalisée <strong>TERMINÉE le 26/04/2026</strong>. <strong>5 sprints livrés en ~16 h chrono cumulées</strong> par binôme CEO + Claude (vs 13 semaines BASELINE = ~520 h ETP, gain ×30) : S1 backend SQLite (25/04 · 23 tests) · S2 cockpit live + rituels + spike SSE (25/04 · 55 tests) · S3 agenda + revues + SSE live + Outlook autosync (25/04 · 75 tests) · S4 assistant chat live + 5 pages portefeuille + polish Windows (26/04 · 85 tests) · S5 cutover production (26/04 · ~95 tests · tag v0.5 final). <strong>Cumul : 110 k€ / 110 k€ = 100%</strong> budget consommé · 41 issues closes · 5 GitHub Releases publiées · ~150 j d'avance vs BASELINE. NEXT : recette ExCom + décision GO V1 (multi-tenant + équipes + intégrations + mobile, ordre de grandeur 300 k€).</p>
       </div>
       <div class="stamp">S3 · 10 j-ouvrés · 22,1 k€ · 2 pages + 2 chantiers · binôme CEO+Claude</div>
     </div>
@@ -815,7 +815,7 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
           <div class="phase-num">Phase 2 / Sprint S2</div>
           <div class="phase-name">Cockpit unifié + flux matin/soir + tâches</div>
           <div class="phase-weeks">25 avril 2026 · livré · branche <code>release/v0.5-s2</code> → tag cible <code>v0.5-s2</code></div>
-          <p class="phase-lead">Sprint S2 livré complet par binôme CEO + Claude — accéléré sur 13/04 → 25/04 (gain time-box du spike SSE = 1,5 j réinvesti en e2e). 10/10 issues, 11 commits, 55/55 tests verts.</p>
+          <p class="phase-lead">Sprint S2 livré complet par binôme CEO + Claude le 25/04 (10/10 issues · 11 commits · 55/55 tests verts). Suivi par S3 (75 tests, 25/04), S4 (85 tests, 26/04), S5 (~95 tests, 26/04). Cumul v0.5 = 110 k€, ~150 j d'avance.</p>
           <ul>
             <li><strong>4 pages migrées</strong> : <code>index.html</code> · <code>arbitrage.html</code> · <code>evening.html</code> · <code>taches.html</code> — <strong>zéro localStorage applicatif</strong></li>
             <li>Cockpit live <code>GET /api/cockpit/today</code> (counters SQL + alertes overdue/stale/big rocks manquants)</li>
@@ -840,7 +840,7 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
             <li>11 issues GitHub <strong>S3.00 → S3.10</strong> · ≥ 65 tests unitaires + tests e2e parcours hebdo (P4)</li>
             <li>Spike Service Windows time-boxé 1,5 j (POC node-windows) — prépare S5 cutover</li>
           </ul>
-          <div class="deliv"><strong>Livrables Sprint S3 préparés</strong><code>04_docs/DOSSIER-SPRINT-S3.md</code> · <code>POA-SPRINT-S3.xlsx</code> (6 feuilles, 25 formules, 0 erreur) · <code>KICKOFF-S3.pptx</code> (12 slides) · démarrage lundi 02/06 09:00 · demo intermédiaire 06/06 · démo finale 13/06 16:00 · tag cible <code>v0.5-s3</code> lundi 16/06.</div>
+          <div class="deliv"><strong>Livrables Sprint S3 LIVRÉS le 25/04</strong> (en avance, plan 02→13/06) · <code>04_docs/DOSSIER-SPRINT-S3.md</code> · <code>POA-SPRINT-S3.xlsx</code> · <code>KICKOFF-S3.pptx</code> · <code>04_docs/_release-notes/v0.5-s3.md</code> · 11/11 issues closes · tag <code>v0.5-s3</code> posé. Suivi par S4 (12/12 issues, 26/04) puis S5 (8/8 issues, 26/04, tag <code>v0.5</code> final).</div>
         </article>
         <article class="phase">
           <div class="phase-num">Phase 4</div>
@@ -1080,7 +1080,7 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
     <div class="decision" style="background:linear-gradient(135deg,#dff0e6 0%,#f3faf6 100%);border-color:#3d7363;">
       <div class="label" style="color:#1f4738;">Décision GO ExCom · prise le 25/04/2026 · S2 livré ✓ · S3 kickoff préparé</div>
       <h2>GO inconditionnel · S1 livré ✓ · S2 livré ✓ · Sprint S3 ouvert (agenda + revues + SSE + autosync)</h2>
-      <p>Cadence préservée : <strong>6 sprints / 10 sem · tag v0.5 → 14 juillet 2026</strong>. <strong>Sprints S1 + S2 livrés</strong> par binôme CEO + Claude. S2 = 10/10 issues · 11 commits · 55/55 tests verts (cockpit live + rituels matin/soir + spike SSE + doc API 38 exemples). <strong>Sprint S3 préparé</strong> : 2 pages (<code>agenda.html</code> · <code>revues/index.html</code>) + 2 chantiers transverses (câblage SSE front + Outlook autosync 2 h) + spike Service Windows. 11 issues, 22,1 k€, démarrage 02/06.</p>
+      <p>Cadence pulvérisée : <strong>5 sprints livrés en ~16 h chrono cumulées</strong> (vs plan 6 sprints / 10 sem). Tag <code>v0.5</code> final posé <strong>26/04/2026</strong> (vs plan 14 juillet 2026, soit ~150 j d'avance). Cumul : 110 k€ / 110 k€ = 100% · 41 issues closes · 5 GitHub Releases · 12 pages frontend · 4 routes assistant streaming Claude · 11 routers REST · 31 ADRs · ~95 tests verts. v0.5 internalisée TERMINÉE.</p>
       <div class="gate">
         <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4738;"><strong>S1 ✓</strong>livré · tag v0.5-s1 sur 141ca0f · 0 incident dogfood</div>
         <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4738;"><strong>S2 ✓</strong>livré 25/04 · 10/10 issues · 55/55 tests · branche release/v0.5-s2</div>
@@ -1285,7 +1285,7 @@ const PERIODS = [
   { id:"avril-s2",    label:"Avril 2026",       sub:"S16 · pages app + arbitrage 3/2/N" },
   { id:"avril-s3",    label:"Avril 2026",       sub:"S17 · Outlook + cockpit serenity" },
   { id:"avril-s4",    label:"Avril 2026",       sub:"S18 · v0.5 internalisée TERMINÉE — 5 sprints livrés en ~16h chrono (110 k€ · ~95 tests · tag v0.5) — décision GO V1 ExCom", now:true },
-  { id:"juin-s2",     label:"Juin 2026",        sub:"S23-S24 · Sprint S3 livré en avance le 25/04 + Sprint S4 cible 16-27/06 (cal initial)" },
+  { id:"juin-s2",     label:"Juin 2026",        sub:"S23-S24 · Plan original Sprint S4 16-27/06 (livré en avance le 26/04)" },
   { id:"mai-juin",    label:"Mai-juin 2026",    sub:"Sprints S4 → S6 · service Windows + E2E · polish + handoff" },
   { id:"juillet",     label:"Juillet 2026",     sub:"Tag v0.5 · cutover", banner:true },
   { id:"annee-2027",  label:"2027",             sub:"V1 cloud-ready · 290 k€" },
