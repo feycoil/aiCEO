@@ -12,3 +12,5 @@ data/aiceo-test.db
 data/aiceo-test.db-wal
 data/aiceo-test.db-shm
 data/aiceo.db.bak-test
+
+daemon/
