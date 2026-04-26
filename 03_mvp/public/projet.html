@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>aiCEO · Projet</title>
+<link rel="stylesheet" href="/assets/styles/aiceo-tokens.css"/>
+<style>
+  :root{--cream:#FAF6EF;--cream-deep:#F2EBDD;--ink:#1C1A22;--ink-2:#3A3542;--ink-3:#6A6277;--line:#D9CFBC;--lilac:#A895DB;--lilac-soft:#EEE7FA;--coral:#EC7A6A;--coral-soft:#FBE1DC;--sage:#A8C8A4;--sage-soft:#E3EEE0;--amber:#C97B2C;--amber-soft:#F9E8D2}
+  *{box-sizing:border-box}html,body{margin:0;padding:0}
+  body{background:var(--cream);color:var(--ink);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;line-height:1.55;min-height:100vh}
+  .layout{display:grid;grid-template-columns:280px 1fr;min-height:100vh;max-width:1280px;margin:0 auto}
+  aside.sidebar{background:var(--cream-deep);border-right:1px solid var(--line);padding:18px 14px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+  aside.sidebar h1{font-family:'Fraunces',Georgia,serif;font-size:18px;margin:0 0 4px;font-weight:600}
+  aside.sidebar nav{display:flex;flex-direction:column;gap:2px;font-size:13.5px}
+  aside.sidebar nav a{color:var(--ink-2);text-decoration:none;padding:7px 10px;border-radius:6px;transition:background .15s}
+  aside.sidebar nav a:hover{background:var(--lilac-soft)}
+  aside.sidebar nav a.active{background:var(--lilac);color:#fff;font-weight:500}
+  main.content{padding:32px 36px;overflow-y:auto}
+  .breadcrumb{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:500;margin-bottom:8px}
+  .breadcrumb a{color:var(--ink-3);text-decoration:none;border-bottom:1px dashed var(--ink-3)}
+  .head{display:flex;gap:18px;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+  .head .icon{font-size:48px;line-height:1}
+  .head h2{font-family:'Fraunces',Georgia,serif;font-size:30px;margin:4px 0 6px;font-weight:600;letter-spacing:-.01em}
+  .head .tagline{margin:0;color:var(--ink-3);font-size:14px}
+  .head .progress-row{margin-top:14px;display:flex;align-items:center;gap:10px;width:100%}
+  .head .progress{flex:1;max-width:340px;height:6px;background:var(--cream-deep);border-radius:4px;overflow:hidden}
+  .head .progress .fill{height:100%;background:var(--accent,#A895DB);transition:width .4s}
+  .head .progress-label{font-size:13px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:28px}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  .kpi .lbl{font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em}
+  .kpi .val{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px}
+  .sections{display:grid;grid-template-columns:1.4fr 1fr;gap:20px}
+  .section{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px}
+  .section h3{font-family:'Fraunces',Georgia,serif;font-size:18px;margin:0 0 12px;font-weight:600}
+  ul.list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px;max-height:340px;overflow-y:auto}
+  ul.list li{padding:8px 10px;border-radius:8px;background:var(--cream);font-size:13.5px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+  ul.list li.done{opacity:.6;text-decoration:line-through}
+  ul.list .sub{font-size:11.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+  .empty{padding:18px;text-align:center;color:var(--ink-3);font-style:italic;font-size:13px}
+  @media (max-width:980px){.sections{grid-template-columns:1fr}.layout{grid-template-columns:1fr}aside.sidebar{display:none}main.content{padding:20px}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <h1>aiCEO</h1>
+    <nav>
+      <a href="/">Cockpit</a>
+      <a href="/arbitrage">Arbitrage matin</a>
+      <a href="/evening">Bilan soir</a>
+      <a href="/taches">Tâches</a>
+      <a href="/agenda">Agenda</a>
+      <a href="/revues">Revues hebdo</a>
+      <a href="/groupes">Groupes</a>
+      <a href="/projets">Projets</a>
+      <a href="/contacts">Contacts</a>
+      <a href="/decisions">Décisions</a>
+      <a href="/assistant">Assistant</a>
+    </nav>
+  </aside>
+  <main class="content" id="main">
+    <div class="breadcrumb"><a href="/projets">Projets</a> · <span id="bc-name">…</span></div>
+    <div id="content"><div class="empty">Chargement…</div></div>
+  </main>
+</div>
+<script>
+(() => {
+  const PALETTE=[{a:"#A895DB"},{a:"#EC7A6A"},{a:"#A8C8A4"},{a:"#C97B2C"}];
+  const ICON_FALLBACK=["📁","🎯","🌟","🪴"];
+  const $=id=>document.getElementById(id);
+  const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const fmtDate=ts=>{if(!ts)return"";try{return new Date(ts).toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})}catch(e){return""}};
+  async function fetchJson(u){const r=await fetch(u);if(!r.ok)throw new Error(`${u} ${r.status}`);return r.json()}
+
+  async function load(){
+    const usp=new URLSearchParams(location.search);
+    const id=usp.get('id');
+    if(!id){$('content').innerHTML='<div class="empty">Pas d\'identifiant projet (?id=xxx manquant).</div>';return}
+    try{
+      const [{project},{tasks=[]},{decisions=[]}]=await Promise.all([
+        fetchJson(`/api/projects/${encodeURIComponent(id)}`),
+        fetchJson(`/api/tasks?project=${encodeURIComponent(id)}`),
+        fetchJson(`/api/decisions?project=${encodeURIComponent(id)}`)
+      ]);
+      $('bc-name').textContent=project.name;
+      document.title=`aiCEO · ${project.name}`;
+      const palIdx=Math.abs([...id].reduce((a,c)=>a+c.charCodeAt(0),0))%PALETTE.length;
+      const accent=PALETTE[palIdx].a;
+      const icon=project.icon||ICON_FALLBACK[palIdx];
+      const c=project.counts||{};
+      const openTasks=tasks.filter(t=>!t.done);
+      const overdueTasks=openTasks.filter(t=>t.due_at&&new Date(t.due_at)<new Date());
+      const openDecisions=decisions.filter(d=>d.status==='ouverte');
+      $('content').innerHTML=`
+        <div class="head" style="--accent:${accent}">
+          <div class="icon">${icon}</div>
+          <div style="flex:1;min-width:0">
+            <h2>${esc(project.name)}</h2>
+            ${project.tagline?`<p class="tagline">${esc(project.tagline)}</p>`:''}
+            ${project.description?`<p style="margin:8px 0 0;font-size:13.5px;color:var(--ink-2)">${esc(project.description)}</p>`:''}
+            <div class="progress-row">
+              <div class="progress"><div class="fill" style="width:${project.progress||0}%"></div></div>
+              <span class="progress-label">${project.progress||0}% · statut <strong>${esc(project.status||'?')}</strong></span>
+            </div>
+          </div>
+        </div>
+        <div class="kpis">
+          <div class="kpi"><div class="lbl">Tâches ouvertes</div><div class="val">${c.tasks_open??openTasks.length}</div></div>
+          <div class="kpi"><div class="lbl">En retard</div><div class="val" style="${overdueTasks.length?'color:var(--amber)':''}">${overdueTasks.length}</div></div>
+          <div class="kpi"><div class="lbl">Décisions ouvertes</div><div class="val">${c.decisions_open??openDecisions.length}</div></div>
+          <div class="kpi"><div class="lbl">Contacts liés</div><div class="val">${c.contacts??'—'}</div></div>
+          <div class="kpi"><div class="lbl">RDV à venir</div><div class="val">${c.events_upcoming??'—'}</div></div>
+        </div>
+        <div class="sections">
+          <div class="section">
+            <h3>Tâches (${tasks.length})</h3>
+            ${tasks.length?`<ul class="list">${tasks.map(t=>`<li class="${t.done?'done':''}"><span>${esc(t.title)}</span>${t.due_at?`<span class="sub">${fmtDate(t.due_at)}</span>`:''}</li>`).join('')}</ul>`:'<div class="empty">Aucune tâche.</div>'}
+          </div>
+          <div class="section">
+            <h3>Décisions (${decisions.length})</h3>
+            ${decisions.length?`<ul class="list">${decisions.map(d=>`<li><span>${esc(d.title)}</span><span class="sub">${esc(d.status||'')}</span></li>`).join('')}</ul>`:'<div class="empty">Aucune décision.</div>'}
+          </div>
+        </div>
+      `;
+    }catch(e){$('content').innerHTML=`<div class="empty">Erreur: ${esc(e.message)}</div>`}
+  }
+  load();
+})();
+</script>
+</body>
+</html>

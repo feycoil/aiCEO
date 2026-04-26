@@ -167,6 +167,18 @@ app.get("/assistant", (req, res) => {
 app.get("/groupes", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "groupes.html"));
 });
+app.get("/projets", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "projets.html"));
+});
+app.get("/projet", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "projet.html"));
+});
+app.get("/contacts", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "contacts.html"));
+});
+app.get("/decisions", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "decisions.html"));
+});
 
 
 

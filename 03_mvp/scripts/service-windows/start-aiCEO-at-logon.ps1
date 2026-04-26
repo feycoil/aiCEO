@@ -23,6 +23,30 @@ $log  = Join-Path $mvp "data\aiCEO-server.log"
 
 Set-Location $mvp
 
+# === S4.09 — Rotation simple (pre-S5 winston) ===
+# Si le log courant > 2 Mo, rotate vers .1 (et .1 vers .2 si existe).
+# Garde 3 archives max. Pas de gzip (KISS).
+$ROTATE_MAX_BYTES = 2MB
+$ROTATE_KEEP      = 3
+if (Test-Path $log) {
+    $sz = (Get-Item $log).Length
+    if ($sz -ge $ROTATE_MAX_BYTES) {
+        for ($i = $ROTATE_KEEP; $i -ge 1; $i--) {
+            $src = "$log.$i"
+            $dst = "$log.$($i+1)"
+            if (Test-Path $src) {
+                if ($i -eq $ROTATE_KEEP) {
+                    Remove-Item $src -Force -ErrorAction SilentlyContinue
+                } else {
+                    Move-Item $src $dst -Force -ErrorAction SilentlyContinue
+                }
+            }
+        }
+        Move-Item $log "$log.1" -Force -ErrorAction SilentlyContinue
+        Add-Content -Path $log -Value "$(Get-Date -Format o) [rotate] previous log -> .1 (was $sz bytes)"
+    }
+}
+
 # Si le serveur tourne déjà sur 4747, ne rien faire (idempotent)
 $listening = (netstat -ano | findstr LISTENING | findstr :4747)
 if ($listening) {

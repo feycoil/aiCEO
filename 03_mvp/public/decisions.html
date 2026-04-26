@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>aiCEO · Décisions</title>
+<link rel="stylesheet" href="/assets/styles/aiceo-tokens.css"/>
+<style>
+  :root{--cream:#FAF6EF;--cream-deep:#F2EBDD;--ink:#1C1A22;--ink-2:#3A3542;--ink-3:#6A6277;--line:#D9CFBC;--lilac:#A895DB;--lilac-soft:#EEE7FA;--coral:#EC7A6A;--coral-soft:#FBE1DC;--sage:#A8C8A4;--sage-soft:#E3EEE0;--amber:#C97B2C;--amber-soft:#F9E8D2}
+  *{box-sizing:border-box}html,body{margin:0;padding:0}
+  body{background:var(--cream);color:var(--ink);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;line-height:1.55;min-height:100vh}
+  .layout{display:grid;grid-template-columns:280px 1fr;min-height:100vh;max-width:1280px;margin:0 auto}
+  aside.sidebar{background:var(--cream-deep);border-right:1px solid var(--line);padding:18px 14px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+  aside.sidebar h1{font-family:'Fraunces',Georgia,serif;font-size:18px;margin:0 0 4px;font-weight:600}
+  aside.sidebar nav{display:flex;flex-direction:column;gap:2px;font-size:13.5px}
+  aside.sidebar nav a{color:var(--ink-2);text-decoration:none;padding:7px 10px;border-radius:6px;transition:background .15s}
+  aside.sidebar nav a:hover{background:var(--lilac-soft)}
+  aside.sidebar nav a.active{background:var(--lilac);color:#fff;font-weight:500}
+  main.content{padding:32px 36px;overflow-y:auto}
+  header.page-head{margin-bottom:18px;display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap}
+  header.page-head .crumb{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:500}
+  header.page-head h2{font-family:'Fraunces',Georgia,serif;font-size:32px;margin:6px 0;font-weight:600;letter-spacing:-.01em}
+  .filter-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+  .chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer;font-size:13px;color:var(--ink-2);transition:all .15s}
+  .chip:hover{background:var(--cream-deep)}
+  .chip.active{background:var(--lilac);border-color:var(--lilac);color:#fff}
+  .search{flex:1;max-width:280px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;font-size:13.5px}
+  .search:focus{outline:none;border-color:var(--lilac)}
+  .list{display:flex;flex-direction:column;gap:10px}
+  .row{background:#fff;border:1px solid var(--line);border-left:3px solid var(--accent,#A895DB);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+  .row .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .row .title{font-weight:600;font-size:14.5px;line-height:1.35}
+  .row .status{font-size:10.5px;padding:2px 8px;border-radius:999px;background:var(--cream-deep);color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;font-weight:500;flex-shrink:0}
+  .row .status.ouverte{background:var(--lilac-soft);color:#5C4584}
+  .row .status.decidee{background:var(--amber-soft);color:#7A4719}
+  .row .status.executee{background:var(--sage-soft);color:#3F6939}
+  .row .status.abandonnee{background:#EEE;color:var(--ink-3)}
+  .row .meta{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums;display:flex;gap:14px;flex-wrap:wrap}
+  .row .ctx{font-size:13px;color:var(--ink-2);margin:4px 0 0;line-height:1.45}
+  .row .actions{display:flex;gap:6px;margin-top:8px}
+  .btn{border:1px solid var(--line);background:#fff;color:var(--ink);padding:5px 11px;border-radius:6px;cursor:pointer;font-size:12.5px;transition:background .15s}
+  .btn:hover{background:var(--cream-deep)}
+  .btn.primary{background:var(--lilac);border-color:var(--lilac);color:#fff}
+  .btn.primary:hover{filter:brightness(.95)}
+  .loading,.empty{padding:40px;text-align:center;color:var(--ink-3);font-style:italic}
+  /* Drawer recommend IA */
+  .drawer-bg{display:none;position:fixed;inset:0;background:rgba(28,26,34,.4);z-index:50;align-items:flex-start;justify-content:flex-end}
+  .drawer-bg.open{display:flex}
+  .drawer{background:var(--cream);width:min(520px,90vw);height:100vh;overflow-y:auto;padding:22px;border-left:1px solid var(--line);box-shadow:-4px 0 24px rgba(0,0,0,.1)}
+  .drawer h3{font-family:'Fraunces',Georgia,serif;font-size:20px;margin:0 0 6px}
+  .drawer .close{background:none;border:none;cursor:pointer;font-size:22px;color:var(--ink-3);float:right;line-height:1}
+  .drawer .recommend{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;font-size:13.5px;line-height:1.55;white-space:pre-wrap;min-height:120px}
+  .drawer .typing{display:inline-block;width:8px;height:14px;background:var(--lilac);vertical-align:text-bottom;animation:blink 1s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+  @media (max-width:768px){.layout{grid-template-columns:1fr}aside.sidebar{display:none}main.content{padding:20px}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <h1>aiCEO</h1>
+    <nav>
+      <a href="/">Cockpit</a>
+      <a href="/arbitrage">Arbitrage matin</a>
+      <a href="/evening">Bilan soir</a>
+      <a href="/taches">Tâches</a>
+      <a href="/agenda">Agenda</a>
+      <a href="/revues">Revues hebdo</a>
+      <a href="/groupes">Groupes</a>
+      <a href="/projets">Projets</a>
+      <a href="/contacts">Contacts</a>
+      <a href="/decisions" class="active">Décisions</a>
+      <a href="/assistant">Assistant</a>
+    </nav>
+  </aside>
+  <main class="content">
+    <header class="page-head">
+      <div>
+        <div class="crumb">Registre</div>
+        <h2>Décisions</h2>
+      </div>
+      <input class="search" id="q" type="search" placeholder="Rechercher (titre, contexte, décision)…"/>
+    </header>
+    <div class="filter-bar" id="filters">
+      <span class="chip active" data-status="">Toutes</span>
+      <span class="chip" data-status="ouverte">Ouvertes</span>
+      <span class="chip" data-status="decidee">Décidées</span>
+      <span class="chip" data-status="executee">Exécutées</span>
+      <span class="chip" data-status="abandonnee">Abandonnées</span>
+    </div>
+    <div id="list" class="list"><div class="loading">Chargement…</div></div>
+  </main>
+</div>
+
+<div class="drawer-bg" id="drawer-bg" onclick="if(event.target===this)closeDrawer()">
+  <div class="drawer">
+    <button class="close" onclick="closeDrawer()" aria-label="Fermer">×</button>
+    <div id="drawer-body"></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const PALETTE=["#A895DB","#EC7A6A","#A8C8A4","#C97B2C"];
+  const $=id=>document.getElementById(id);
+  const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const fmt=ts=>{if(!ts)return"";try{return new Date(ts).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})}catch(e){return""}};
+  const url=p=>{const q=new URLSearchParams();for(const[k,v]of Object.entries(p))if(v)q.set(k,v);const s=q.toString();return s?`/api/decisions?${s}`:`/api/decisions`};
+
+  document.querySelectorAll('#filters .chip').forEach(c=>c.addEventListener('click',()=>{document.querySelectorAll('#filters .chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');load()}));
+  let t;$('q').addEventListener('input',()=>{clearTimeout(t);t=setTimeout(load,250)});
+
+  let CACHE=[];
+  async function load(){
+    const lst=$('list');lst.innerHTML='<div class="loading">Chargement…</div>';
+    const status=document.querySelector('#filters .chip.active')?.dataset.status||"";
+    const q=$('q').value.trim();
+    try{
+      const r=await fetch(url({status,q}));const j=await r.json();CACHE=j.decisions||[];
+      if(!CACHE.length){lst.innerHTML='<div class="empty">Aucune décision ne correspond.</div>';return}
+      lst.innerHTML=CACHE.map((d,i)=>{
+        const accent=PALETTE[i%PALETTE.length];
+        return `<div class="row" style="--accent:${accent}" data-id="${esc(d.id)}">
+          <div class="top">
+            <div class="title">${esc(d.title)}</div>
+            <span class="status ${esc(d.status||'ouverte')}">${esc(d.status||'ouverte')}</span>
+          </div>
+          <div class="meta">
+            ${d.project_id?`<span>📁 ${esc(d.project_id)}</span>`:''}
+            ${d.owner?`<span>👤 ${esc(d.owner)}</span>`:''}
+            ${d.created_at?`<span>📅 ${esc(fmt(d.created_at))}</span>`:''}
+            ${d.decided_at?`<span>✓ Décidée ${esc(fmt(d.decided_at))}</span>`:''}
+          </div>
+          ${d.context?`<p class="ctx">${esc(d.context)}</p>`:''}
+          ${d.decision?`<p class="ctx" style="font-style:italic;color:var(--ink-2)"><strong>→</strong> ${esc(d.decision)}</p>`:''}
+          <div class="actions">
+            <button class="btn primary" data-action="recommend" data-id="${esc(d.id)}">💡 Recommander une suite</button>
+            ${d.status==='ouverte'?`<button class="btn" data-action="decide" data-id="${esc(d.id)}">Marquer décidée</button>`:''}
+            ${d.status==='decidee'?`<button class="btn" data-action="execute" data-id="${esc(d.id)}">Marquer exécutée</button>`:''}
+          </div>
+        </div>`;
+      }).join('');
+      lst.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',(e)=>{
+        e.stopPropagation();
+        const action=b.dataset.action;const id=b.dataset.id;
+        if(action==='recommend')openRecommend(id);
+        else if(action==='decide')patchStatus(id,'decide');
+        else if(action==='execute')patchStatus(id,'execute');
+      }));
+    }catch(e){lst.innerHTML=`<div class="empty">Erreur: ${esc(e.message)}</div>`}
+  }
+  async function patchStatus(id,verb){try{await fetch(`/api/decisions/${encodeURIComponent(id)}/${verb}`,{method:'POST'});load()}catch(e){alert(`Erreur ${verb}: ${e.message}`)}}
+
+  // === IA recommend via streaming SSE assistant ===
+  async function openRecommend(decId){
+    const dec=CACHE.find(d=>d.id===decId);if(!dec)return;
+    $('drawer-body').innerHTML=`
+      <div style="border-left:3px solid var(--lilac);padding-left:12px;margin-bottom:14px">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--lilac);font-weight:600">Recommandation IA</div>
+        <h3>${esc(dec.title)}</h3>
+        <div style="font-size:12px;color:var(--ink-3);margin-top:4px">Statut : ${esc(dec.status||'ouverte')}</div>
+      </div>
+      <div class="recommend" id="rec-out"><span class="typing"></span></div>
+    `;
+    $('drawer-bg').classList.add('open');
+
+    const prompt=`Décision (statut ${dec.status||'ouverte'}) — Titre : ${dec.title}\n${dec.context?`Contexte : ${dec.context}\n`:''}${dec.decision?`Décision actuelle : ${dec.decision}\n`:''}${dec.project_id?`Projet : ${dec.project_id}\n`:''}\nQu'est-ce que je devrais faire ensuite ? Donne 2-3 actions concrètes, ordonnées par impact, en restant calme et orienté exécution.`;
+    try{
+      const r=await fetch('/api/assistant/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:prompt})});
+      if(!r.ok)throw new Error(`HTTP ${r.status}`);
+      const reader=r.body.getReader();const dec0=new TextDecoder();let buf="";let out="";
+      const out$=$('rec-out');
+      while(true){
+        const {value,done}=await reader.read();if(done)break;
+        buf+=dec0.decode(value,{stream:true});
+        const lines=buf.split('\n\n');buf=lines.pop();
+        for(const ln of lines){
+          const ev=ln.match(/^event:\s*(\S+)/m);const dt=ln.match(/^data:\s*(.*)$/m);
+          if(ev&&dt){
+            try{const j=JSON.parse(dt[1]);
+              if(ev[1]==='text'&&j.text){out+=j.text;out$.innerHTML=esc(out)+'<span class="typing"></span>'}
+              else if(ev[1]==='done'){out$.innerHTML=esc(out)}
+              else if(ev[1]==='error'){out$.innerHTML=`<em>Erreur : ${esc(j.message||'inconnue')}</em>`}
+            }catch(e){}
+          }
+        }
+      }
+    }catch(e){$('rec-out').innerHTML=`<em>Erreur recommandation : ${esc(e.message)}</em>`}
+  }
+  function closeDrawer(){$('drawer-bg').classList.remove('open')}
+  window.closeDrawer=closeDrawer;
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('drawer-bg').classList.contains('open'))closeDrawer()});
+
+  load();
+})();
+</script>
+</body>
+</html>

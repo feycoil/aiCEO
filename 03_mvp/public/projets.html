@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>aiCEO · Projets</title>
+<link rel="stylesheet" href="/assets/styles/aiceo-tokens.css"/>
+<style>
+  :root {
+    --cream:#FAF6EF; --cream-deep:#F2EBDD;
+    --ink:#1C1A22; --ink-2:#3A3542; --ink-3:#6A6277;
+    --line:#D9CFBC;
+    --lilac:#A895DB; --lilac-soft:#EEE7FA;
+    --coral:#EC7A6A; --coral-soft:#FBE1DC;
+    --sage:#A8C8A4; --sage-soft:#E3EEE0;
+    --amber:#C97B2C;
+  }
+  *{box-sizing:border-box}html,body{margin:0;padding:0}
+  body{background:var(--cream);color:var(--ink);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;line-height:1.55;min-height:100vh}
+  .layout{display:grid;grid-template-columns:280px 1fr;min-height:100vh;max-width:1280px;margin:0 auto}
+  aside.sidebar{background:var(--cream-deep);border-right:1px solid var(--line);padding:18px 14px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+  aside.sidebar h1{font-family:'Fraunces',Georgia,serif;font-size:18px;margin:0 0 4px;font-weight:600}
+  aside.sidebar nav{display:flex;flex-direction:column;gap:2px;font-size:13.5px}
+  aside.sidebar nav a{color:var(--ink-2);text-decoration:none;padding:7px 10px;border-radius:6px;transition:background .15s}
+  aside.sidebar nav a:hover{background:var(--lilac-soft)}
+  aside.sidebar nav a.active{background:var(--lilac);color:#fff;font-weight:500}
+  main.content{padding:32px 36px;overflow-y:auto}
+  header.page-head{margin-bottom:22px;display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap}
+  header.page-head .crumb{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:500}
+  header.page-head h2{font-family:'Fraunces',Georgia,serif;font-size:32px;margin:6px 0;font-weight:600;letter-spacing:-.01em}
+  .filter-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+  .chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer;font-size:13px;color:var(--ink-2);transition:all .15s}
+  .chip:hover{background:var(--cream-deep)}
+  .chip.active{background:var(--lilac);border-color:var(--lilac);color:#fff}
+  .search{flex:1;max-width:280px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;font-size:13.5px;color:var(--ink)}
+  .search:focus{outline:none;border-color:var(--lilac)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;transition:transform .15s,box-shadow .15s,border-color .15s;cursor:pointer;border-left:3px solid var(--accent,#A895DB)}
+  .card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(28,26,34,.06);border-color:#C9BFAA}
+  .card .head{display:flex;gap:10px;align-items:flex-start}
+  .card .icon{font-size:24px;line-height:1}
+  .card .title{font-weight:600;font-size:15px;line-height:1.3;flex:1}
+  .card .tag{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--cream-deep);color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em;font-weight:500;flex-shrink:0}
+  .card .tag.hot{background:var(--coral-soft);color:#9B3F35}
+  .card .tag.new{background:var(--sage-soft);color:#3F6939}
+  .card .tag.archived{background:#EEE;color:var(--ink-3)}
+  .card .tagline{font-size:13px;color:var(--ink-3);line-height:1.4;margin:0}
+  .progress{height:5px;background:var(--cream-deep);border-radius:4px;overflow:hidden}
+  .progress .fill{height:100%;background:var(--accent,#A895DB);transition:width .4s}
+  .meta-line{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+  .loading,.empty{padding:40px;text-align:center;color:var(--ink-3);font-style:italic;grid-column:1/-1}
+  @media (max-width:768px){.layout{grid-template-columns:1fr}aside.sidebar{display:none}main.content{padding:20px}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <h1>aiCEO</h1>
+    <nav>
+      <a href="/">Cockpit</a>
+      <a href="/arbitrage">Arbitrage matin</a>
+      <a href="/evening">Bilan soir</a>
+      <a href="/taches">Tâches</a>
+      <a href="/agenda">Agenda</a>
+      <a href="/revues">Revues hebdo</a>
+      <a href="/groupes">Groupes</a>
+      <a href="/projets" class="active">Projets</a>
+      <a href="/contacts">Contacts</a>
+      <a href="/decisions">Décisions</a>
+      <a href="/assistant">Assistant</a>
+    </nav>
+  </aside>
+  <main class="content">
+    <header class="page-head">
+      <div>
+        <div class="crumb">Pilotage · Portefeuille</div>
+        <h2>Tous les projets</h2>
+      </div>
+      <input class="search" id="q" type="search" placeholder="Rechercher (nom, tagline, description)…"/>
+    </header>
+    <div class="filter-bar" id="filters"><span class="chip active" data-group="">Tous</span></div>
+    <div id="grid" class="grid"><div class="loading">Chargement…</div></div>
+  </main>
+</div>
+<script>
+(() => {
+  const PALETTE=[{a:"#A895DB"},{a:"#EC7A6A"},{a:"#A8C8A4"},{a:"#C97B2C"}];
+  const ICON_FALLBACK=["📁","🎯","🌟","🪴","🌊","🔥","💎","⚓"];
+  const $=id=>document.getElementById(id);
+  const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const url=p=>{const q=new URLSearchParams();for(const[k,v]of Object.entries(p))if(v)q.set(k,v);const s=q.toString();return s?`/api/projects?${s}`:`/api/projects`};
+  let groups=[]; let groupIdxById={};
+  async function loadGroups(){
+    try{const r=await fetch("/api/groups");const j=await r.json();groups=j.groups||[];groups.forEach((g,i)=>groupIdxById[g.id]=i);
+      const bar=$('filters');groups.forEach(g=>{const c=document.createElement('span');c.className='chip';c.dataset.group=g.id;c.textContent=g.name;bar.appendChild(c)});
+      bar.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{bar.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');loadProjects()}));
+      // Pré-filtre via ?group=xxx dans URL
+      const usp=new URLSearchParams(location.search);const g=usp.get('group');
+      if(g){bar.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active',c.dataset.group===g))}
+    }catch(e){console.error(e)}
+  }
+  async function loadProjects(){
+    const grid=$('grid');grid.innerHTML='<div class="loading">Chargement…</div>';
+    const activeGroup=document.querySelector('#filters .chip.active')?.dataset.group||"";
+    const q=$('q').value.trim();
+    try{
+      const r=await fetch(url({group:activeGroup,q}));const j=await r.json();
+      const ps=j.projects||[];
+      if(!ps.length){grid.innerHTML='<div class="empty">Aucun projet ne correspond à ces filtres.</div>';return}
+      grid.innerHTML=ps.map(p=>{
+        const idx=groupIdxById[p.group_id]??0;const accent=PALETTE[idx%PALETTE.length].a;
+        const icon=p.icon||ICON_FALLBACK[idx%ICON_FALLBACK.length];
+        const tagClass=p.status==='hot'?'hot':p.status==='new'?'new':p.status==='archived'?'archived':'';
+        return `<a class="card" href="/projet?id=${encodeURIComponent(p.id)}" style="--accent:${accent};text-decoration:none;color:inherit">
+          <div class="head"><div class="icon">${icon}</div><div class="title">${esc(p.name)}</div><span class="tag ${tagClass}">${esc(p.status||'')}</span></div>
+          ${p.tagline?`<p class="tagline">${esc(p.tagline)}</p>`:''}
+          <div class="progress"><div class="fill" style="width:${p.progress||0}%"></div></div>
+          <div class="meta-line"><span>${p.progress||0}% avancement</span><span>${groups.find(g=>g.id===p.group_id)?.name||'—'}</span></div>
+        </a>`;
+      }).join('');
+    }catch(e){grid.innerHTML=`<div class="empty">Erreur: ${esc(e.message)}</div>`}
+  }
+  let t;$('q').addEventListener('input',()=>{clearTimeout(t);t=setTimeout(loadProjects,250)});
+  (async()=>{await loadGroups();await loadProjects()})();
+})();
+</script>
+</body>
+</html>
