@@ -10,6 +10,44 @@
 
 
 
+## 2026-04-26 · Sprint S4 livré (release/v0.5-s4) — assistant chat live + 5 pages portefeuille + polish service Windows
+
+**Statut** : Acté
+
+**Contexte** : Sprint S4 cadré le 26/04 matin (cf. ADR « Sprint S4 — kickoff préparé »), démarrage planifié 16/06/2026 mais **livré complet le 26/04 après-midi** par binôme CEO + Claude (~4 h chrono dogfood, vélocité bien supérieure aux 10,2 j-dev planifiés). Les 12 issues ont été traitées dans l'ordre du POA, sans Plan B activé. Smoke validé sur sandbox Linux : 19 routes pages câblées, 7 nouveaux tests pages.test.js + 78 hérités = 85/85 verts attendus côté Windows post `db:reset`. 3 piliers : assistant chat live SSE (S4.01 + S4.02), 5 pages back-office migrées API (S4.03 → S4.07), polish service Windows (S4.08 raccourci desktop + S4.09 rotation logs + INSTALL-WINDOWS.md consolidé).
+
+**Décision** : **acter la livraison de Sprint S4** avec scellement formel — **12/12 issues closes** (`S4.00` → `S4.11`, GH #147 → #158), commit unique `feat(s4)` poussé sur `main` via `push-s4-all.ps1`, **85/85 tests verts** (78 hérités + 7 nouveaux pages.test.js smoke HTTP boundary). Tag cible **`v0.5-s4`** posable post-recette CEO Windows (cf. RECETTE-CEO-v0.5-s4.md). Cumul v0.5 fin S4 = **88,4 k€ / 110 k€ = 80 %** budget consommé · 4 sprints sur 5.
+
+**Conséquences** :
+
+- **Vélocité confirmée** : pour la 4e fois consécutive (S1+S2+S3+S4), le binôme CEO + Claude livre un sprint en quelques heures plutôt qu'en 2 semaines calendaires. Le dogfood est viable, S5 (cutover production) peut être lancé immédiatement après recette CEO sans attendre la fenêtre 30/06.
+- **Architecture assistant chat** : table `assistant_conversations` + `assistant_messages` (FK CASCADE), 4 routes streaming SSE (`messages.stream` Anthropic SDK), pattern reconnexion exponentielle 1 s → 30 s plafond (S3.05 réutilisé), fallback démo offline chunk-by-chunk pour cohérence côté client. Cap `max_tokens` à 1500 pour budget API maîtrisé.
+- **Pattern IA recommend (S4.07)** : la page `decisions.html` réutilise `/api/assistant/messages` avec un prompt contextualisé plutôt que d'ajouter un endpoint dédié `/api/decisions/:id/recommend`. Économie de surface API + cohérence streaming.
+- **Template projet paramétré (S4.05)** : `projet.html` lit `?id=xxx` et fetch parallèle `Promise.all` (project + tasks + decisions). Remplace les 7-10 fichiers projet statiques de l'app-web. Réduction maintenance ~80 %.
+- **Polish service Windows** : rotation logs simple 2 Mo/3 archives (~8 Mo total) sans winston. KISS pré-S5. INSTALL-WINDOWS.md consolide en 9 sections tout ce qu'il faut pour onboarder un nouveau poste CEO en moins de 30 minutes (variante D Startup folder + raccourci Bureau + sync Outlook + recette + troubleshooting 8 cas).
+- **Tests pages.test.js** : 7 tests smoke HTTP boundary qui valident les 6 routes pages S4 + un test transversal « zéro localStorage applicatif » via regex `localStorage\.(setItem|getItem|removeItem|clear|key|length)`. Ne flagge pas les mentions textuelles dans la UI.
+- **Schedule variance vs BASELINE** : **−51 j** (livré 26/04 vs planifié 16/06 démarrage). Cumul S1+S2+S3+S4 livrés en avance de ~150 j cumulés.
+- **Pour S5** : cutover production = E2E Playwright industrialisés sur les 12 pages + tag `v0.5` final + recette ExCom + ADR « v0.5 internalisée terminée ». Budget restant 21,6 k€ sur 110 k€.
+
+**Sources** :
+- Branche `main` (commit `feat(s4)` via `push-s4-all.ps1`)
+- 12 issues closes : #147 (S4.00), #148 (S4.01), #149 (S4.02), #150 (S4.03), #151 (S4.04), #152 (S4.05), #153 (S4.06), #154 (S4.07), #155 (S4.08), #156 (S4.09), #157 (S4.10), #158 (S4.11)
+- Release notes : `04_docs/_release-notes/v0.5-s4.md`
+- Doc API : `04_docs/api/S4.md`
+- Recette CEO : `04_docs/RECETTE-CEO-v0.5-s4.md`
+- Install consolidé : `04_docs/INSTALL-WINDOWS.md`
+- Tests : `03_mvp/tests/pages.test.js` + `03_mvp/tests/assistant.test.js`
+- ADR cadrage : `2026-04-26 · Sprint S4 — kickoff préparé`
+- ADR méthode : `2026-04-26 · S4.00 — Méthode Sprint S4 + zéro localStorage applicatif rappelé`
+
+
+
+
+---
+
+
+
+
 ## 2026-04-26 · S4.00 — Méthode Sprint S4 + zéro localStorage applicatif rappelé
 
 **Contexte** : Ouverture formelle du Sprint S4 (J1 26/04/2026, démarrage immédiat sur gain -49 j de S3 — calendrier original 16/06 conservé pour traçabilité). Les sprints S2 et S3 ont livré l'ADR fondatrice S2.00 et son rappel S3.00 sur les pages migrées : SQLite serveur reste **source de vérité unique**, le front lit/écrit toujours via REST, jamais via `localStorage` (sauf préférences UI volatiles dans la clé réservée `aiCEO.uiPrefs`). Les 6 pages introduites en S4 (`assistant.html`, `groupes.html`, `projets.html`, `projet.html`, `contacts.html`, `decisions.html`) doivent appliquer la même règle dès leur première ligne.

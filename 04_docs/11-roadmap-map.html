@@ -637,7 +637,7 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
 
   <nav class="tabs" role="tablist" aria-label="Vues de la roadmap">
     <button class="tab" data-tab="convergence" role="tab" aria-selected="true" aria-controls="tab-convergence" id="tab-btn-convergence">Carte de convergence</button>
-    <button class="tab" data-tab="fusion-v05" role="tab" aria-selected="false" aria-controls="tab-fusion-v05" id="tab-btn-fusion-v05">Plan v0.5 fusion <span class="badge">S4 KICKOFF</span></button>
+    <button class="tab" data-tab="fusion-v05" role="tab" aria-selected="false" aria-controls="tab-fusion-v05" id="tab-btn-fusion-v05">Plan v0.5 fusion <span class="badge">S4 LIVRÉ</span></button>
     <button class="tab" data-tab="release-notes" role="tab" aria-selected="false" aria-controls="tab-release-notes" id="tab-btn-release-notes">Release notes</button>
     <button class="tab" data-tab="journal" role="tab" aria-selected="false" aria-controls="tab-journal" id="tab-btn-journal">Journal &amp; écarts <span class="badge" id="journal-badge">live</span></button>
   </nav>
@@ -1084,8 +1084,8 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
       <div class="gate">
         <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4738;"><strong>S1 ✓</strong>livré · tag v0.5-s1 sur 141ca0f · 0 incident dogfood</div>
         <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4738;"><strong>S2 ✓</strong>livré 25/04 · 10/10 issues · 55/55 tests · branche release/v0.5-s2</div>
-        <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4536;"><strong>S3 LIVRÉ ✓</strong> 25/04 · 11/11 issues · 75/75 tests</div><div class="gate-pill" style="background:#fff;border-color:#d96d3e;color:#8a3b1b;"><strong>S4 KICKOFF</strong> préparé · 16 → 27 juin · assistant chat + 5 pages portefeuille + polish service</div>
-        <div class="gate-pill" style="background:#fff;border-color:#b88237;color:#6d4816;"><strong>NEXT</strong>tag v0.5-s3 cible 16/06 · puis S4 service Windows + E2E</div>
+        <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4536;"><strong>S3 LIVRÉ ✓</strong> 25/04 · 11/11 issues · 75/75 tests</div><div class="gate-pill" style="background:#fff;border-color:#d96d3e;color:#8a3b1b;"><strong>S4 LIVRÉ ✓</strong> 26/04 · 12/12 issues · 85/85 tests · main commit feat(s4)</div>
+        <div class="gate-pill" style="background:#fff;border-color:#b88237;color:#6d4816;"><strong>NEXT</strong>tag v0.5-s4 + S5 cutover production · E2E Playwright industrialisés + recette ExCom</div>
       </div>
     </div>
 
@@ -1284,7 +1284,7 @@ const PERIODS = [
   { id:"avril-s1",    label:"Avril 2026",       sub:"S14-S15 · sprint cockpit + MVP scaffolds" },
   { id:"avril-s2",    label:"Avril 2026",       sub:"S16 · pages app + arbitrage 3/2/N" },
   { id:"avril-s3",    label:"Avril 2026",       sub:"S17 · Outlook + cockpit serenity" },
-  { id:"avril-s4",    label:"Avril 2026",       sub:"S18 · GO ExCom v0.5 internalisée + Sprints S1+S2+S3 livrés (75/75 tests · v0.5-s3 tag posé) + S4 KICKOFF prêt", now:true },
+  { id:"avril-s4",    label:"Avril 2026",       sub:"S18 · GO ExCom v0.5 internalisée + Sprints S1+S2+S3+S4 livrés (85/85 tests · v0.5-s4 tag cible) + S5 cutover next", now:true },
   { id:"juin-s2",     label:"Juin 2026",        sub:"S23-S24 · Sprint S3 livré en avance le 25/04 + Sprint S4 cible 16-27/06 (cal initial)" },
   { id:"mai-juin",    label:"Mai-juin 2026",    sub:"Sprints S4 → S6 · service Windows + E2E · polish + handoff" },
   { id:"juillet",     label:"Juillet 2026",     sub:"Tag v0.5 · cutover", banner:true },
@@ -1412,10 +1412,10 @@ const MILESTONES = [
     artefacts:["04_docs/DOSSIER-SPRINT-S3.md","04_docs/POA-SPRINT-S3.xlsx","04_docs/KICKOFF-S3.pptx","04_docs/_release-notes/v0.5-s3.md","tag v0.5-s3 (commit 5a322dd)","GitHub Release v0.5-s3 publiée"] },
 
   // ── Sprint S4 — Pages portefeuille + Assistant chat + Polish service (KICKOFF) ──
-  { id:"v05-s4", lane:"mvp", period:"juin-s2", status:"doing", title:"Sprint S4 — Pages portefeuille + Assistant chat live + Polish service Windows", date:"16 → 27 juin 2026 · 10 j-ouvrés · 22,1 k€", planned:"2026-06-27", actual:null,
-    gh:{ milestone:"v0.5-s4", branch:"docs/sprint-s4-kickoff" },
-    desc:"Migration des 5 dernières pages back-office (groupes, projets, projet/:id template, contacts, decisions) + assistant chat live IA (streaming Claude SSE + table conversations) + polish service Windows (raccourci desktop + rotation logs + INSTALL-WINDOWS.md). 12 issues S4.00 → S4.11 · 10,2 j-dev sur 20 j capacité (49 % marge). Démarrage lundi 16/06 09:00 · démo intermédiaire 20/06 16:00 · démo finale 27/06 16:00 · tag cible v0.5-s4 lundi 30/06.",
-    artefacts:["04_docs/DOSSIER-SPRINT-S4.md","04_docs/POA-SPRINT-S4.xlsx","04_docs/KICKOFF-S4.pptx","04_docs/_sprint-s4/scripts/gh-create-issues-s4.ps1","branche release/v0.5-s4 (à créer)","tag cible v0.5-s4 sur 30/06"] },
+  { id:"v05-s4", lane:"mvp", period:"avril-s4", status:"done", title:"Sprint S4 — Pages portefeuille + Assistant chat live + Polish service Windows (LIVRÉ)", date:"26 avril 2026 · ~4 h chrono dogfood · 22,1 k€", planned:"2026-06-27", actual:"2026-04-26",
+    gh:{ milestone:"v0.5-s4", tag:"v0.5-s4", branch:"main", issues:[147,148,149,150,151,152,153,154,155,156,157,158] },
+    desc:"Sprint S4 LIVRÉ EN AVANCE (~4 h dogfood) le 26/04 vs planifié 16/06 (−51 j vs BASELINE). 12/12 issues closes · commit feat(s4) sur main · 85/85 tests verts (78 hérités + 7 nouveaux pages.test.js). 3 piliers : assistant chat live SSE (table conversations + messages.stream Anthropic + fallback démo) · 5 pages back-office migrées API (groupes, projets, projet template paramétré ?id=, contacts, decisions avec IA recommend qui réutilise /api/assistant/messages) · polish service Windows (raccourci Bureau Cockpit aiCEO + rotation logs 2Mo/3 archives + INSTALL-WINDOWS.md consolidé 9 sections).",
+    artefacts:["04_docs/DOSSIER-SPRINT-S4.md","04_docs/POA-SPRINT-S4.xlsx","04_docs/KICKOFF-S4.pptx","04_docs/_release-notes/v0.5-s4.md","04_docs/api/S4.md","04_docs/RECETTE-CEO-v0.5-s4.md","04_docs/INSTALL-WINDOWS.md","tag cible v0.5-s4 post-recette CEO"] },
 
   // ═════════════════════════════════════════════════════════════
   // Hub fusion — Specs + Pipeline GitHub + Pré-requis dev
@@ -1965,6 +1965,42 @@ document.querySelectorAll(".filter[data-lane]").forEach(btn => {
 // ──────────────────────────────────────────────────────────────
 
 const RELEASES = [
+  // ── 26/04/2026 — Sprint S4 livré (commit feat(s4) sur main, tag v0.5-s4 cible post-recette) ──
+  {
+    id: "rn-mvp-0-5-s4",
+    gh: { milestone:"v0.5-s4", tag:"v0.5-s4", branch:"main", issues:[147,148,149,150,151,152,153,154,155,156,157,158] },
+    component: "mvp",
+    version: "v0.5-s4",
+    date: "26 avr. 2026",
+    title: "Assistant chat live + 5 pages portefeuille + polish Windows — sprint S4 livré",
+    summary: "Sprint S4 du plan v0.5 livré en ~4 h chrono dogfood par binôme CEO + Claude (vélocité bien supérieure aux 10,2 j-dev planifiés). 12/12 issues closes (S4.00 → S4.11), <strong>85/85 tests verts</strong> (78 hérités + 7 nouveaux pages.test.js). 3 piliers : assistant chat live SSE + 5 pages back-office migrées API + polish service Windows.",
+    changes: [
+      { cat:"feat", items:[
+        "<strong>Assistant chat live (S4.01 + S4.02)</strong> : table SQLite <code>assistant_conversations</code> + <code>assistant_messages</code> (FK CASCADE), 4 routes <code>/api/assistant/*</code>, <strong>streaming Claude via SSE</strong> (<code>messages.stream</code> Anthropic SDK), fallback démo offline chunk-by-chunk, frontend <code>assistant.html</code> avec sidebar conversations + thread + indicateur typing animé + Ctrl+Enter",
+        "<strong>groupes.html migré API (S4.03)</strong> : <code>GET /api/groups</code> + drill-down <code>GET /api/groups/:id</code>, cards portefeuille avec progression moyenne calculée client-side, KPIs, drawer projets, palette Twisty rotative (lilac/coral/sage/amber)",
+        "<strong>projets.html migré API (S4.04)</strong> : liste cross-groupe + filtres groupe (chips) + recherche full-text, badges status, pré-filtre via <code>?group=xxx</code> URL",
+        "<strong>projet.html template paramétré (S4.05)</strong> : 1 template au lieu de 7-10 pages projet statiques, lit <code>?id=xxx</code>, fetch parallèle <code>Promise.all</code> (project + tasks + decisions), 5 KPIs, 2 listes",
+        "<strong>contacts.html migré API (S4.06)</strong> : cartes avec avatar initiales + filtres trust_level + recherche full-text + mailto direct",
+        "<strong>decisions.html migré API + IA recommend (S4.07)</strong> : registre filtrable, transitions inline (decide/execute/abandon), bouton « 💡 Recommander une suite » qui réutilise le streaming <code>/api/assistant/messages</code> avec prompt contextualisé",
+        "<strong>Raccourci desktop &quot;Cockpit aiCEO&quot; (S4.08)</strong> : <code>scripts/service-windows/install-desktop-shortcut.ps1</code> install/uninstall/status, icône custom, port configurable",
+        "<strong>Polish service Windows (S4.09)</strong> : <code>start-aiCEO-at-logon.ps1</code> étendu avec rotation des logs (2 Mo, 3 archives ≈ 8 Mo total) — KISS pré-S5"
+      ]},
+      { cat:"improve", items:[
+        "<strong>INSTALL-WINDOWS.md consolidé</strong> : 9 sections (pré-requis, démarrage manuel, autostart Variante D, raccourci Bureau, sync Outlook, recette validation, mises à jour, désinstallation complète, troubleshooting 8 cas)",
+        "<strong>Doc API S4</strong> <code>04_docs/api/S4.md</code> : 6 sections (assistant + groupes + projets + contacts + décisions + health) avec exemples curl + parsing SSE",
+        "<strong>RECETTE-CEO-v0.5-s4.md</strong> : 8 sections, 25 minutes de validation, checklist 6/6 pour GO tag",
+        "ADR S4.00 (méthode + zéro localStorage rappelé sur 6 nouvelles pages) + ADR S4 livré dans <code>00_BOUSSOLE/DECISIONS.md</code>"
+      ]},
+      { cat:"perf", items:[
+        "<strong>85/85 tests verts</strong> : 78 hérités + 7 nouveaux <code>pages.test.js</code> (smoke HTTP boundary sur 6 pages S4 + audit zéro localStorage applicatif via regex <code>localStorage\.(setItem|getItem|...)</code>)",
+        "4 routes <code>/api/assistant/*</code> testées en isolation <code>AICEO_DB_OVERRIDE</code> avec migration s4-assistant"
+      ]},
+      { cat:"breaking", items:[
+        "Aucun. Migration <code>2026-04-26-s4-assistant.sql</code> ajoute uniquement 2 tables + 2 index, pas de modification des schémas existants",
+        "Schedule variance vs BASELINE : <strong>−51 j</strong> (livré 26/04 vs planifié 16/06 démarrage). Cumul S1+S2+S3+S4 livrés en avance de ~150 j cumulés"
+      ]}
+    ]
+  },
   // ── 25/04/2026 — Sprint S3 livré (branche docs/sprint-s3-kickoff, tag v0.5-s3 cible) ──
   {
     id: "rn-mvp-0-5-s3",
