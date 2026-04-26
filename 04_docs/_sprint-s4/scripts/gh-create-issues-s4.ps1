@@ -353,7 +353,7 @@ Charge / Owner / Dépendances
 
 Source : `04_docs/DOSSIER-SPRINT-S4.md` §1.7, §5.4
 '@
-Create-Issue "S4.08" "[S4.08] Raccourci desktop "Cockpit aiCEO" + script install" "$commonLabels,lane/mvp,type/feat,priority/P2,owner/dev1" "v0.5-s4" $body08
+Create-Issue "S4.08" '[S4.08] Raccourci desktop "Cockpit aiCEO" + script install' "$commonLabels,lane/mvp,type/feat,priority/P2,owner/dev1" "v0.5-s4" $body08
 
 # ----------------------------------------------------------------------------
 #  S4.09
