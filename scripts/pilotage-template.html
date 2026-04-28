@@ -526,6 +526,8 @@ body {
       <div class="nav-section">Documentation</div>
       <div class="nav-item" data-section="docs">📚 Index docs <span class="badge" id="doc-count">0</span></div>
       <div class="nav-item" data-section="audits">🔍 Audits & rapports</div>
+      <div class="nav-item" data-section="tree">🌳 Arborescence projet</div>
+      <div class="nav-item" data-section="github">🔗 État GitHub</div>
 
       <div class="nav-section">Méthode</div>
       <div class="nav-item" data-section="method">⚡ ADD-AI</div>
@@ -659,6 +661,28 @@ body {
       </div>
     </section>
 
+    <!-- Section Tree -->
+    <section class="section" id="section-tree">
+      <div class="card">
+        <h3 class="card-title">🌳 Arborescence du projet (3 niveaux)</h3>
+        <p class="card-subtitle">Structure du dossier projet · auto-scannée à chaque build</p>
+        <div id="tree-view" style="font-family:ui-monospace,'Cascadia Code',Consolas,monospace;font-size:12px;line-height:1.7"></div>
+      </div>
+    </section>
+
+    <!-- Section GitHub -->
+    <section class="section" id="section-github">
+      <div class="card">
+        <h3 class="card-title">🔗 État du dépôt GitHub</h3>
+        <p class="card-subtitle">Sync depuis consistence-dump.json · regenerer avec consistence-dump.ps1</p>
+        <div class="kpi-row" id="gh-kpis"></div>
+        <h4 style="margin:24px 0 8px">Milestones</h4>
+        <div id="gh-milestones"></div>
+        <h4 style="margin:24px 0 8px">Releases</h4>
+        <div id="gh-releases"></div>
+      </div>
+    </section>
+
     <!-- Section Methode -->
     <section class="section" id="section-method">
       <div class="card">
@@ -748,6 +772,8 @@ function init() {
   renderVelStats();
   renderDocs();
   renderAudits();
+  renderTree();
+  renderGithub();
 
   bindNav();
   bindAdrSearch();
@@ -772,7 +798,9 @@ function bindNav() {
         docs: ['Documentation', 'Index complet des .md du projet'],
         audits: ['Audits & rapports', 'Tous les audits produits'],
         method: ['Méthode ADD-AI', 'AI-Driven Development pour aiCEO'],
-        'ceo-actions': ['Actions CEO', 'Tâches qui requièrent ton intervention Windows']
+        'ceo-actions': ['Actions CEO', 'Tâches qui requièrent ton intervention Windows'],
+        tree: ['Arborescence projet', 'Structure du dossier scannée automatiquement'],
+        github: ['État GitHub', 'Snapshot du dépôt distant feycoil/aiCEO']
       };
       const t = titles[id];
       if (t) { $('#page-title').textContent = t[0]; $('#page-subtitle').textContent = t[1]; }
@@ -968,6 +996,71 @@ function renderAudits() {
       '<p class="doc-excerpt">' + escHtml(d.excerpt) + '</p>' +
     '</a>';
   }).join('');
+}
+
+function renderTree() {
+  if (!DATA.tree) { $('#tree-view').textContent = 'Tree non disponible.'; return; }
+  function buildLine(node, prefix, isLast) {
+    var connector = prefix === '' ? '' : (isLast ? '└─ ' : '├─ ');
+    var icon = node.type === 'dir' ? '📁' : (
+      /\.md$/.test(node.name) ? '📝' :
+      /\.(js|ts|jsx)$/.test(node.name) ? '⚙️' :
+      /\.(html|htm)$/.test(node.name) ? '🌐' :
+      /\.(css|scss)$/.test(node.name) ? '🎨' :
+      /\.(ps1)$/.test(node.name) ? '💻' :
+      /\.(json|xml|yml)$/.test(node.name) ? '📋' :
+      /\.(sql)$/.test(node.name) ? '🗄️' : '📄');
+    var label = '<span style="color:var(--text-2)">' + prefix + connector + '</span>' + icon + ' <strong>' + node.name + '</strong>';
+    if (node.type === 'dir') {
+      label += ' <span style="color:var(--text-3);font-size:10px">(' + node.dir_count + ' dirs · ' + node.file_count + ' files)</span>';
+    } else {
+      var kb = (node.size / 1024).toFixed(1);
+      label += ' <span style="color:var(--text-3);font-size:10px">' + kb + ' KB</span>';
+    }
+    var line = '<div>' + label + '</div>';
+    if (node.children && node.children.length > 0) {
+      var newPrefix = prefix + (prefix === '' ? '' : (isLast ? '   ' : '│  '));
+      node.children.forEach(function (c, i) {
+        var last = (i === node.children.length - 1);
+        line += buildLine(c, newPrefix, last);
+      });
+    }
+    return line;
+  }
+  $('#tree-view').innerHTML = buildLine(DATA.tree, '', true);
+}
+
+function renderGithub() {
+  var gh = DATA.github || { milestones: [], issues_open: 0, issues_closed: 0, releases: [] };
+  $('#gh-kpis').innerHTML = ''
+    + '<div class="kpi"><div class="lbl">Milestones</div><div class="val">' + gh.milestones.length + '</div></div>'
+    + '<div class="kpi"><div class="lbl">Issues open</div><div class="val">' + gh.issues_open + '</div></div>'
+    + '<div class="kpi"><div class="lbl">Issues closed</div><div class="val">' + gh.issues_closed + '</div></div>'
+    + '<div class="kpi"><div class="lbl">Releases</div><div class="val">' + gh.releases.length + '</div></div>';
+
+  if (gh.milestones.length === 0) {
+    $('#gh-milestones').innerHTML = '<p style="color:var(--text-3);font-size:12px">Aucune milestone synchronisée. Lancer <code>pwsh consistence-dump.ps1</code>.</p>';
+  } else {
+    $('#gh-milestones').innerHTML = gh.milestones.map(function (m) {
+      var openClass = m.state === 'closed' ? 'tag' : 'milestone';
+      return '<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface-2);border-radius:8px;margin-bottom:4px;border:1px solid var(--border)">'
+        + '<span class="pill ' + openClass + '">' + m.state + '</span>'
+        + '<span style="font-weight:600;flex:1">' + escHtml(m.title) + '</span>'
+        + '<span style="font-size:11px;color:var(--text-3)">' + (m.open || 0) + ' open · ' + (m.closed || 0) + ' closed</span>'
+        + '</div>';
+    }).join('');
+  }
+  if (gh.releases.length === 0) {
+    $('#gh-releases').innerHTML = '<p style="color:var(--text-3);font-size:12px">Aucune release synchronisée.</p>';
+  } else {
+    $('#gh-releases').innerHTML = gh.releases.slice(0, 10).map(function (r) {
+      return '<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface-2);border-radius:8px;margin-bottom:4px;border:1px solid var(--border)">'
+        + '<span class="pill tag">' + escHtml(r.tag_name || r.name || '') + '</span>'
+        + '<span style="font-weight:600;flex:1">' + escHtml(r.name || '') + '</span>'
+        + '<span style="font-size:11px;color:var(--text-3)">' + (r.published_at ? new Date(r.published_at).toLocaleDateString('fr-FR') : '') + '</span>'
+        + '</div>';
+    }).join('');
+  }
 }
 
 function bindAdrSearch() {

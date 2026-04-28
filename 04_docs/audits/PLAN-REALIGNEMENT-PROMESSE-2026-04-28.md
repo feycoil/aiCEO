@@ -26,17 +26,33 @@
 
 ## 1. Stratégie de réalignement — 3 phases
 
-### Phase 1 — FONDATIONS (semaines 1-4) · ~5.5 j-binôme
+### Phase 0 — SETUP ADD-AI + REFONTE FRONTEND (semaines 1-2) · ~3.5 j-binôme
+
+**Mantra** : *Préparer la fondation avant de construire dessus.*
+
+| Sprint | Objectif | Effort |
+|---|---|---|
+| **S6.9-bis — Setup ADD-AI + restructuration projet + extension pilotage** | Plugin Cowork + 8 subagents + memory/ + restructuration dossier + sync GitHub auto | 1.5 j |
+| **S6.10-bis — Refonte frontend "Atomic Templates"** | Framework templates vierges + 3 pages migrées (decisions, connaissance, arbitrage) + 12 composants atomiques | 2 j |
+
+**Livrables Phase 0** :
+- Plugin Cowork `aiceo-dev` opérationnel
+- Dossier projet restructuré (00_methode, 01_produit, 02_architecture, 03_roadmap, etc.)
+- Pilotage avec arborescence + sync GitHub
+- Framework Atomic Templates documenté + 3 pages-pilote migrées
+- Plan migration des 15 autres pages chiffré
+
+### Phase 1 — FONDATIONS (semaines 3-6) · ~5.5 j-binôme
 
 **Mantra** : *Solidifier le DS et la vitesse avant tout le reste.*
 
 | Sprint | Objectif | Effort |
 |---|---|---|
-| **S6.9 — DS consolidation** | Extraire styles inline, documenter composants, tokens élévation | 1.5 j |
-| **S6.10 — Keyboard-first arbitrage** | Mode plein écran inbox-zero, navigation ↑↓, Big Rocks topbar | 1 j |
-| **S6.11 — Cmd+K palette + FTS5** | Recherche globale full-text + quick actions | 1 j |
-| **S6.12 — Contexte LLM enrichi** | System prompt enrichi serveur, mémoire inter-fils | 1 j |
-| **S6.13 — Revues hebdo refondue** | KPIs réels, posture LLM, mouvement, cap | 1 j |
+| **S6.11 — DS consolidation finale** | Extraire styles inline restants, documenter composants v07, tokens élévation | 1 j |
+| **S6.12 — Keyboard-first arbitrage** | Mode plein écran inbox-zero, navigation ↑↓, Big Rocks topbar (sur arbitrage v07) | 1 j |
+| **S6.13 — Cmd+K palette + FTS5** | Recherche globale full-text + quick actions | 1 j |
+| **S6.14 — Contexte LLM enrichi** | System prompt enrichi serveur, mémoire inter-fils | 1 j |
+| **S6.15 — Revues hebdo refondue** | KPIs réels, posture LLM, mouvement, cap (page revues migrée v07) | 1.5 j |
 
 **Livrables Phase 1** :
 - Note produit : 6.3 → 8.0
@@ -81,7 +97,7 @@
 - Engagement : streak moyen > 14 jours
 - 5 ADRs
 
-**Total 3 phases** : ~17 j-binôme = ~6 semaines CEO chrono = ~12 semaines calendaire si interruptions.
+**Total 4 phases** (incl. Phase 0) : ~20.5 j-binôme = ~6 semaines CEO chrono = ~12 semaines calendaire si interruptions.
 
 ---
 

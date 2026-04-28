@@ -102,6 +102,56 @@ function loadConsistence() {
   try { return JSON.parse(fs.readFileSync(p, 'utf-8')); } catch (e) { return null; }
 }
 
+// Scan tree : structure du dossier projet (3 niveaux max)
+function scanTree(dir, base, depth) {
+  base = base || PROJECT_ROOT;
+  depth = depth || 0;
+  if (depth > 3) return null;
+  const name = path.basename(dir);
+  const rel = path.relative(base, dir).replace(/\\/g, '/');
+  const stat = fs.statSync(dir);
+  if (stat.isFile()) {
+    return { type: 'file', name, path: rel, size: stat.size, mtime: stat.mtime.toISOString() };
+  }
+  if (['.git', 'node_modules', '_archive', '.claude'].includes(name)) return null;
+  const children = [];
+  try {
+    fs.readdirSync(dir, { withFileTypes: true }).forEach(e => {
+      const sub = path.join(dir, e.name);
+      const node = scanTree(sub, base, depth + 1);
+      if (node) children.push(node);
+    });
+  } catch (e) { /* skip */ }
+  // Sort : dirs first, then files
+  children.sort((a, b) => {
+    if (a.type !== b.type) return a.type === 'dir' ? -1 : 1;
+    return a.name.localeCompare(b.name);
+  });
+  return {
+    type: 'dir',
+    name: name === '' ? 'aiCEO' : name,
+    path: rel || '.',
+    children,
+    file_count: children.filter(c => c.type === 'file').length,
+    dir_count: children.filter(c => c.type === 'dir').length
+  };
+}
+
+// GitHub state : dernier consistence-dump.json + tentative gh CLI
+function githubState() {
+  const dump = loadConsistence();
+  let snapshot = { milestones: [], issues_open: 0, issues_closed: 0, releases: [] };
+  if (dump) {
+    snapshot.milestones = dump.milestones || [];
+    snapshot.releases = dump.releases || [];
+    if (dump.issues) {
+      snapshot.issues_open = dump.issues.filter(i => i.state === 'open').length;
+      snapshot.issues_closed = dump.issues.filter(i => i.state === 'closed').length;
+    }
+  }
+  return snapshot;
+}
+
 function velocity(commits) {
   const byDay = {};
   const now = new Date();
@@ -130,13 +180,23 @@ function generate() {
   const vel = velocity(git.commits);
   const consistence = loadConsistence();
 
+  console.log('Scanning project tree...');
+  const tree = scanTree(PROJECT_ROOT);
+  console.log('  ' + (tree ? tree.dir_count : 0) + ' top-level dirs');
+
+  console.log('Loading GitHub state...');
+  const ghState = githubState();
+  console.log('  ' + ghState.milestones.length + ' milestones, ' + ghState.issues_open + ' open issues');
+
   const data = {
     generated_at: new Date().toISOString(),
     docs, adrs,
     commits: git.commits,
     tags: git.tags,
     velocity_30j: vel,
-    consistence
+    consistence,
+    tree,
+    github: ghState
   };
 
   if (!fs.existsSync(TEMPLATE)) {
