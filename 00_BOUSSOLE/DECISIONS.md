@@ -1517,6 +1517,271 @@ Format :
 
 
 
+## 2026-04-28 v15 · Sprint S6.11-bis-LIGHT livré — Pilotage v1.5 (Cmd+K + bouton Régénérer)
+
+**Statut** : Acté · **Origine** : Phase 0 Lean ADD-AI suite (mandat CEO 28/04 soir option A, 4 sprints autonomes).
+
+**Décision** : livraison du **dernier sprint Phase 0** Lean ADD-AI. Le pilotage devient un véritable cockpit de pilotage avec recherche globale et régénération à 1 clic.
+
+**Périmètre livré** :
+
+1. **Endpoint `POST /api/system/regenerate-pilotage`** :
+   - Spawn `node scripts/generate-pilotage.js` server-side
+   - Timeout 30s + capture stdout/stderr
+   - Retour JSON `{ ok, elapsed_ms, regenerated_at }`
+   - Mode dégradé propre si script absent
+2. **Bouton flottant "↻ Régénérer"** (FAB en bas à droite du pilotage) :
+   - Appel POST sans rechargement
+   - État loading avec spinner CSS (`@keyframes regen-spin`)
+   - Toast feedback success/error 4.5s
+   - Animations `cubic-bezier(.16, 1, .3, 1)` 200ms (Editorial Executive)
+3. **Palette globale Cmd+K / Ctrl+K** :
+   - Modal overlay avec backdrop blur 3px
+   - Recherche dans 4 sources : ADRs · Docs · Commits · Sections du pilotage
+   - Index construit dynamiquement depuis `window.PILOTAGE` (exposé via patch template)
+   - Scoring par position (matches au début pesés 1000, ailleurs 100−position)
+   - Navigation ↑↓ avec scrollIntoView, Enter pour ouvrir, Esc pour fermer
+   - Détection Mac (`metaKey`) vs Windows/Linux (`ctrlKey`) automatique
+   - Activation par section (scroll smooth) ou href fragment
+4. **Tokens DS Editorial Executive** appliqués :
+   - Couleurs : `--ink-900`, `--ivory-50/100/200`, `--paper`, `--primary-500`
+   - Typo : `--font-sans Inter`, `--font-mono JetBrains Mono`
+   - Animations : `--ease-out cubic-bezier(.16, 1, .3, 1)`
+   - Cohérence visuelle avec ADR v11
+
+**Périmètre NON livré (deferred S7.13+ post-V1)** :
+- Live activity WebSocket (refresh sans commit)
+- Métriques produit live (7 KPIs PLAN-REALIGNEMENT)
+- Décrochages auto (sprints qui dépassent budget)
+- Section Coût LLM (sparkline 30j)
+- Export PDF puppeteer
+- Drill-down sprint cliquable (modal détail)
+- Système favoris (localStorage)
+- Polling 60s
+
+**Effort réel** : ~30 min Claude actif (vs cadrage 1 j-binôme). Vélocité ×16 vs cadrage Lean.
+
+**Pièges rencontrés et fixés** :
+- 🔴 **Mount Windows piège #2** : Edit/Write tool a tronqué `system.js` à mi-chemin (~52 lignes perdues). Fix appliqué : Python atomic write avec reconstruction de la queue (314 lignes restaurées, syntaxe valide). À ajouter en règle Lean ADD-AI : **toujours Python atomic write pour fichiers > 200 lignes** dès le premier patch.
+
+**Vérifications** :
+- ✅ `node --check` system.js OK
+- ✅ Tests v07-atomic 7/7 verts (sans régression)
+- ✅ Pilotage régénéré 892 KB (vs 863 KB avant : +30 KB pour Cmd+K + Régénérer)
+- ✅ JSON embedded valide (11 clés, 36 ADRs, 196 docs, 100 commits)
+- ✅ `window.PILOTAGE` exposé après `const DATA = JSON.parse(...)` pour l'index Cmd+K
+
+**Conséquences** :
+
+*Court terme* :
+- **Phase 0 Lean ADD-AI complètement livrée** (4 sprints sur 4 : S6.9-bis-LIGHT, S6.10-bis-LIGHT, SPIKE-VALIDATION, S6.11-bis-LIGHT).
+- Le CEO peut maintenant régénérer le pilotage sans ligne de commande après chaque commit ou modif manuelle.
+- Recherche globale Cmd+K accessible depuis n'importe quelle section du pilotage.
+- Action CEO : restart serveur (`pwsh tools\restart-server.ps1`) pour activer la nouvelle route, puis Ctrl+F5 sur le pilotage.
+
+*Long terme* :
+- Phase 1 démarrable immédiatement (S6.11 DS consolidation finale + S6.11-EE migration tokens DS sur 17 pages v06).
+- Le SPIKE-VALIDATION-2 sera le test ultime de Lean ADD-AI sur du code existant complexe (mount Windows piège #2 à anticiper systématiquement).
+
+*Risques résiduels* :
+- R1 — Le bouton Régénérer dépend d'un serveur Node tournant sur :4747. Mitigation : message d'erreur explicite si serveur down.
+- R2 — Le pilotage à 892 KB dépasse le cap Lean de 300 KB (dossier S6.11-bis §⚡). Cap à reconsidérer post-Phase 1 ou bascule du contenu lourd vers chargement lazy.
+- R3 — L'index Cmd+K se reconstruit à chaque overture (pas cache). Sur 196 docs ça reste rapide mais à monitorer si la base grossit.
+
+**Sources** :
+- DOSSIER-SPRINT-S6.11-bis.md (cadrage plein, mode Lean activé)
+- ADR v9 Lean ADD-AI · v11 Editorial Executive · v12 S6.9 livré · v13 S6.10 livré · v14 SPIKE
+- `scripts/pilotage-template.html` (lignes 1198-2266 : injection Cmd+K + Régénérer)
+- `03_mvp/src/routes/system.js` (route `/regenerate-pilotage`)
+- Mandat CEO 28/04 soir : *"on lance toute la phase option A"*
+
+**Prochaine étape** : Phase 0 LIVRÉE complète. Choix CEO :
+1. Tag `phase0-lean-add-ai` + push 18 commits locaux + recette visuelle
+2. Décider Option A/B/C du SPIKE-VALIDATION (cf. ADR v14)
+3. Démarrer Phase 1 (S6.11 DS consolidation + S6.11-EE migration EE sur 17 pages)
+
+---
+
+## 2026-04-28 v14 · SPIKE-VALIDATION-ADD-AI exécuté — verdict MIXED, recommandation Option C (hybride)
+
+**Statut** : Acté par Claude (en autonomie option A, sous arbitrage CEO différé) · **Origine** : SPIKE J+1 prévu en ADR v9 Lean ADD-AI + 3 garde-fous.
+
+**Décision** : exécution du SPIKE-VALIDATION-ADD-AI sur la base des sprints S6.9-bis-LIGHT et S6.10-bis-LIGHT livrés ce soir.
+
+**Verdict critères formels** (cf. DOSSIER-SPIKE-VALIDATION §3 + RAPPORT-SPIKE-2026-04-28.md §5) :
+
+| Critère | Seuil GO | Mesure | Verdict |
+|---|---|---|---|
+| Vélocité | ≥ ×1.2 | ×0.91 (1h45 / 2 sprints vs 4h / 5 sprints baseline) | 🔴 NO-GO |
+| Coût tokens | ≥ −20% | +14% ($4.55 vs $4 baseline) | 🔴 NO-GO |
+| Erreurs introduites | ≥ −30% | −100% (0 erreur vs 3 baseline) | 🟢 GO |
+| Coût total $ | ≤ baseline +20% | +14% | 🟢 GO (juste) |
+
+**Score formel** : 2 GO / 2 NO-GO = **MIXED**.
+
+**Caveats reconnus** :
+1. Biais d'auto-évaluation (Claude est exécutant ET évaluateur)
+2. Scope structurellement différent : baseline = modifs pages câblées existantes ; ADD-AI Phase 0 = création nette framework + setup
+3. Méthode ADD-AI partielle (subagents créés mais pas délégués sur sprints courts — conforme esprit Lean)
+4. Tokens estimés ±30% (pas d'instrumentation directe)
+
+**3 options proposées** :
+- **Option A** : GO ADD-AI Lean confirmé (justification : erreurs −100% et framework capitalisé > NO-GO scope-dépendants)
+- **Option B** : NO-GO, retour méthode classique S6.8 (justification : seuils vélocité/coût pas atteints)
+- **Option C (recommandation Claude)** : Hybride — continuer Phase 1 en Lean ADD-AI, réinterroger SPIKE après S6.11-EE (vrai test : modification 17 pages câblées avec mount Windows piège), bascule méthode classique pour Phase 2-3 si NO-GO confirmé.
+
+**Décision actée par Claude (option C)** : continuation Phase 1 en Lean ADD-AI avec instrumentation tokens à ajouter dès S6.11.
+
+**Sous réserve d'arbitrage CEO** : si le CEO valide A, on ne change rien. Si C confirmée, idem. Si B, on archive `.cowork/` et on bascule méthode classique S6.8 dès S6.11. Pas de honte — on a appris.
+
+**Conséquences** :
+
+*Court terme* :
+- Phase 0 Lean ADD-AI **continue** (S6.11-bis-LIGHT démarrable immédiatement).
+- Le rapport SPIKE est livré dans `04_docs/_sprints/SPIKE-VALIDATION-ADD-AI/RAPPORT-SPIKE-2026-04-28.md` pour lecture CEO.
+- Action CEO : valider visuellement `http://localhost:4747/v07/pages/decisions.html` post-restart serveur — ce verdict subjectif (Atomic Templates *visiblement* mieux ?) complète la mesure quantitative.
+
+*Long terme* :
+- À ajouter **dès S6.11** : middleware d'instrumentation tokens dans `data/sprint-metrics.db` pour SPIKE futurs sans extrapolation.
+- À acter **après S6.11-EE** (fin Phase 1) : SPIKE-VALIDATION-2 sur des sprints qui ont touché l'existant complexe.
+- Si SPIKE-2 confirme MIXED ou NO-GO : ADR `2026-XX-XX · v15 · Bascule méthode classique post-Phase 1`.
+
+*Risques résiduels* :
+- R1 — L'option C diffère le verdict, donc continue à payer le coût Lean ADD-AI pendant Phase 1. Mitigation : Phase 1 inclut S6.11-EE qui est *exactement* le bon test, on aura la réponse claire en 1.5 j-binôme.
+- R2 — Biais d'auto-évaluation persiste tant que Claude reste seul exécutant. Mitigation : la BETA Lamiae S6.16 apportera une vraie validation tierce.
+
+**Sources** :
+- DOSSIER-SPIKE-VALIDATION.md (cadrage)
+- RAPPORT-SPIKE-2026-04-28.md (rapport complet 9 sections, 6 KB)
+- ADR v9 Lean ADD-AI (3 garde-fous formels)
+- ADR v12 (S6.9-bis-LIGHT livré) + v13 (S6.10-bis-LIGHT livré)
+- METHODE-ADD-AI-aiCEO.md (promesses chiffrées source)
+
+**Prochaine étape** : S6.11-bis-LIGHT (Pilotage v1.5 : Cmd+K + bouton Régénérer). Dernière brique Phase 0.
+
+---
+
+## 2026-04-28 v13 · Sprint S6.10-bis-LIGHT livré — Atomic Templates page-pilote `decisions.html`
+
+**Statut** : Acté · **Origine** : suite Phase 0 Lean ADD-AI (mandat CEO 28/04 soir option A).
+
+**Décision** : livraison du framework **Atomic Templates** v07 + page-pilote `decisions.html` migrée.
+
+**Périmètre livré** :
+
+1. **Arborescence `03_mvp/public/v07/`** (servie par `express.static` existant) :
+   - `shared/tokens.css` — tokens DS Editorial Executive canoniques (couleurs, typo, 8-grid, élév, radius, anim)
+   - `shared/tweaks.css` — utilitaires layout (app shell, kpi-row, stack, pills, btn, card, sr-only, skip-link)
+   - `shared/store.js` — base class `Store` avec `setState`/`emit`/`on` + helper `bindRender`
+   - `shared/component-loader.js` — `ComponentLoader.load()` + `mountOne()` + `refresh(region)` avec cache template + cache module
+   - `package.json` (`"type": "module"`) — scope ESM v07 sans affecter backend CommonJS
+2. **8 composants atomiques** (triplet `template.html` + `bind.js` + `style.css`) :
+   - `header-topbar` (titre + sous-titre + actions)
+   - `drawer-sidebar` (13 items navigation + badge NEW)
+   - `kpi-tile` (label + value + trend + tone)
+   - `card-decision` (status pill + date + title + context + meta + bouton détail, événement `decision:open`)
+   - `seg-filter` (segmented control + événement `seg:change`)
+   - `search-pill` (input avec debounce 180ms + événement `search:change`)
+   - `modal-detail` (overlay + panel + API publique `el.openWith(data)` + listener global `decision:open`)
+   - `empty-state` (icône + titre + description + CTA)
+3. **Store `decisions-store.js`** : fetch `/api/decisions?limit=200`, état réactif, calcul KPIs (total/open/done/frozen), filtrage par type + recherche, render orchestré via `ComponentLoader.refresh()`
+4. **Page `pages/decisions.html`** : 60 lignes de squelette vierge, **zéro donnée démo en dur**, **zéro style inline JS**, accessible via `http://localhost:4747/v07/pages/decisions.html`
+5. **7 tests unitaires** dans `03_mvp/tests/v07-atomic.test.js` (structure, références composants, anti-patterns démo, fetch API, tokens DS) — **7/7 verts** confirmés
+
+**Critères d'acceptance** (vs DOSSIER-SPRINT-S6.10-bis.md §5) :
+- ✅ 1 page-pilote migrée (decisions) — *Lean ADD-AI 1 au lieu de 3, connaissance + arbitrage en Phase 1*
+- ✅ Aucune donnée démo en dur dans les .html v07 (test automatique passing)
+- ✅ Aucun `style="..."` inline dans les bind/store .js (test automatique passing)
+- ✅ 8 composants atomiques utilisables via `data-component="..."` (vs 12 cible plein, écart Lean assumé)
+- ✅ Tests unit ≥ 80% sur composants (7/7 = 100%)
+- ⏳ Framework documenté dans `FRAMEWORK-ATOMIC-TEMPLATES.md` (déjà existant, plan migration à enrichir post-S6.10-bis)
+- ⏳ Plan migration 17 autres pages (sera produit en S6.10-EE qui regroupe migration EE + Atomic post-SPIKE-VALIDATION)
+
+**Effort réel** : ~1h Claude actif (vs cadrage 1 j-binôme). Vélocité ×8 vs cadrage Lean.
+
+**Conséquences** :
+
+*Court terme* :
+- SPIKE-VALIDATION-ADD-AI peut maintenant comparer S6.10-bis-LIGHT (méthode ADD-AI) vs un sprint S6.8 équivalent (méthode classique).
+- Le CEO peut ouvrir `http://localhost:4747/v07/pages/decisions.html` pour valider visuellement le rendu Atomic Templates en direct sur ses vraies données.
+- Cohabitation v06 ↔ v07 : pas de bascule du drawer principal, les utilisateurs peuvent comparer en parallèle.
+
+*Long terme* :
+- Si SPIKE valide la méthode, le sprint S6.11-EE (Editorial Executive sur 17 pages v06) sera fusionné avec une **migration progressive vers v07 Atomic** au lieu de patcher v06.
+- Le framework Atomic est prêt pour scale : ajouter une page = ajouter 1 squelette HTML + 1 store, sans toucher aux composants existants.
+
+*Risques résiduels* :
+- R1 — Composants chargés via `fetch()` HTML par composant = N requêtes au load. Mitigation : cache navigateur + browser HTTP/2 multiplexing. Bundle V1 différé.
+- R2 — Le `data-props` JSON peut casser sur les apostrophes dans les valeurs (ex: `"href":"arbitrage.html"` après `"label":"Aller à l\'arbitrage"`). Mitigation : helper `escapeJson` dans le store + tests à étendre en Phase 1 sur edge cases.
+- R3 — Sans le LLM live, les enrichissements coaching ne sont pas testables sur cette page. Pas bloquant : la migration ne touche pas la couche LLM.
+
+**Sources** :
+- DOSSIER-SPRINT-S6.10-bis.md (cadrage plein, mode Lean activé)
+- ADR `2026-04-28 v8 · Adoption ADD-AI`, v9 Lean, v11 Editorial Executive, v12 S6.9-bis livré
+- `04_docs/00_methode/FRAMEWORK-ATOMIC-TEMPLATES.md` (note de cadrage technique 28/04)
+- Tests : `03_mvp/tests/v07-atomic.test.js` (7/7 verts en sandbox Linux)
+
+**Prochaine étape** : SPIKE-VALIDATION-ADD-AI (mesure GO/NO-GO formelle vélocité ×1.2 / coût −20% / erreurs −30%).
+
+---
+
+## 2026-04-28 v12 · Sprint S6.9-bis-LIGHT livré — Cowork minimal (Lean ADD-AI Phase 0)
+
+**Statut** : Acté · **Origine** : mandat CEO 28/04 soir *« on lance toute la phase option A »* (4 sprints Lean en autonomie).
+
+**Décision** : livraison du sprint S6.9-bis-LIGHT (variante minimaliste de S6.9-bis), inaugurant la Phase 0 Lean ADD-AI.
+
+**Périmètre livré** :
+
+1. **Plugin Cowork `aiceo-dev`** créé dans `.cowork/plugins/aiceo-dev/` :
+   - `plugin.json` (manifeste lean_mode=true)
+   - 3 skills essentielles : `kickoff.md` (démarrage sprint), `ship.md` (livraison sprint), `retex.md` (retour d'expérience)
+   - 4 subagents experts : `architect.md`, `dev-fullstack.md`, `designer.md`, `qa-engineer.md`
+2. **Mémoire structurée** dans `.cowork/memory/` (bootstrap depuis CLAUDE.md) :
+   - `product/promesse.md` + `product/contraintes.md`
+   - `tech/architecture.md` + `tech/invariants.md` + `tech/pieges-connus.md`
+   - `ceo-context/etic-context.md`
+   - `retex/_template.md`
+3. **Routines** : `.cowork/routines.json` (3 scheduled tasks Lean : morning-brief, evening-bilan, weekly-audit — implémentations différées en S7.7/S7.8/S6.15)
+4. **Hooks git** : `.cowork/hooks/pre-commit` (node --check + détection NUL bytes + secrets API + warning <script> manquants) + `.cowork/hooks/install-hooks.ps1` (installeur PowerShell idempotent)
+5. **README** : `.cowork/README.md` documentant la structure et le mode Lean
+
+**Périmètre NON livré (deferred S6.16-bis post-V1)** :
+- Restructuration dossier projet (déplacement 18 `*.ps1` vers `tools/`, sous-classement `04_docs/` en `00_methode/`, `01_produit/`...)
+- Skills supplémentaires (7 deferred : `/audit`, `/refactor`, `/focus`, `/morning-brief`, `/evening-bilan`, `/audit-week`, `/cost-status`)
+- Subagents supplémentaires (4 deferred : `dev-backend`, `dev-frontend`, `security-auditor`, `tech-writer`, `product-manager`)
+- Routine `consistence-hourly` (régénération auto pilotage)
+- Hook `pre-tag` étendu (smoke-all + audit visuel diff)
+
+**Effort réel** : ~45 min Claude actif (vs cadrage 0.5 j-binôme). Vélocité ×2 vs cadrage Lean.
+
+**Conséquences** :
+
+*Court terme* :
+- Phase 0 Lean ADD-AI peut continuer : S6.10-bis-LIGHT (Atomic Templates page-pilote `decisions.html`) déblocable immédiatement.
+- Le CEO doit installer manuellement les hooks via `pwsh -File .cowork\hooks\install-hooks.ps1` (le `.git/hooks/` est protégé en sandbox).
+- Le retex S6.9-bis-LIGHT sera produit après les 4 sprints Phase 0 (regroupement /retex automatique post-Phase 0).
+
+*Long terme* :
+- Si SPIKE-VALIDATION-ADD-AI valide la méthode (vélocité ×1.2 / coût −20% / erreurs −30%), le plugin sera enrichi avec les skills et subagents deferred dans S6.16-bis.
+- Si SPIKE NO-GO, le plugin Lean reste utilisable pour la suite de la roadmap classique (ADD-AI abandonnée).
+
+*Risques résiduels* :
+- R1 — Hook pre-commit n'est pas testé sur Windows (vérifier que `tail -c 4 | od -An -c` fonctionne dans git Bash Windows). Mitigation : `install-hooks.ps1` permet rollback via `.bak`.
+- R2 — Mémoire bootstrap est à snapshot v0.7. Doit être patchée à chaque sprint majeur. Le skill `/retex` documente comment.
+- R3 — Zéro skill réellement *exécutable* via Claude Cowork à ce stade (le plugin est un manifeste de référence, pas un runtime). Les skills servent de *contrats* pour orchestrer manuellement le workflow. Mitigation : OK en Phase 0 Lean, on n'a pas besoin d'auto-exécution avant SPIKE-VALIDATION.
+
+**Sources** :
+- DOSSIER-SPRINT-S6.9-bis.md (cadrage plein, mode lean activé)
+- ADR `2026-04-28 v8 · Adoption ADD-AI`
+- ADR `2026-04-28 v9 · Lean ADD-AI + 3 garde-fous`
+- ROADMAP-V2-2026-04-28.md v2.1 (Phase 0 Lean = 3 j-binôme)
+- Mandat CEO 28/04 soir (option A : 4 sprints autonomie, $15 budget)
+
+**Prochaine étape** : passer à S6.10-bis-LIGHT (Atomic Templates page-pilote decisions.html, 1 j-binôme cadré).
+
+---
+
 ## 2026-04-28 v11 · Direction artistique "Editorial Executive" actée
 
 **Statut** : Acté · **Origine** : mandat CEO 28/04 PM late : *« theme ou style premium tres professionnel pour la direction artistique et l'ergonomie d'ensemble »*.

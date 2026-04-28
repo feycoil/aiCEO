@@ -1,0 +1,65 @@
+#!/bin/sh
+# pre-commit Lean ADD-AI (S6.9-bis-LIGHT)
+# Verifications minimales avant commit:
+# - .js casse syntaxiquement (node --check)
+# - NUL bytes en fin de fichier (piege mount Windows / OneDrive)
+# - secrets API Anthropic detectes
+# - Avertissement (non-bloquant) si pages cablees v06 ont <10 <script>
+
+set -e
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+
+# 1. node --check sur les .js modifies
+JS_FILES=$(echo "$STAGED_FILES" | grep -E '\.js$' || true)
+if [ -n "$JS_FILES" ]; then
+  for f in $JS_FILES; do
+    if [ -f "$REPO_ROOT/$f" ]; then
+      node --check "$REPO_ROOT/$f" 2>&1 || {
+        echo "X pre-commit: $f a une erreur de syntaxe JS"
+        exit 1
+      }
+    fi
+  done
+fi
+
+# 2. NUL bytes en fin de fichier
+for f in $STAGED_FILES; do
+  if [ -f "$REPO_ROOT/$f" ]; then
+    case "$f" in
+      *.js|*.html|*.md|*.css|*.json|*.ps1)
+        if tail -c 4 "$REPO_ROOT/$f" 2>/dev/null | od -An -c 2>/dev/null | grep -q '\\0'; then
+          echo "X pre-commit: $f contient des NUL bytes (corruption mount Windows)"
+          echo "   Fix: python3 strip-nul.py $f"
+          exit 1
+        fi
+        ;;
+    esac
+  fi
+done
+
+# 3. Secrets API
+for f in $STAGED_FILES; do
+  if [ -f "$REPO_ROOT/$f" ]; then
+    if grep -qE 'sk-ant-[a-zA-Z0-9_-]{20,}' "$REPO_ROOT/$f" 2>/dev/null; then
+      echo "X pre-commit: cle API Anthropic detectee dans $f"
+      echo "   Les secrets ne doivent JAMAIS etre commites."
+      exit 1
+    fi
+  fi
+done
+
+# 4. Avertissement (non-bloquant) sur HTML cables v06
+HTML_FILES=$(echo "$STAGED_FILES" | grep -E '03_mvp/public/v06/.+\.html$' || true)
+for f in $HTML_FILES; do
+  if [ -f "$REPO_ROOT/$f" ]; then
+    SCRIPT_COUNT=$(grep -c '<script src' "$REPO_ROOT/$f" 2>/dev/null || echo 0)
+    if [ "$SCRIPT_COUNT" -lt 10 ]; then
+      echo "! pre-commit warning: $f a seulement $SCRIPT_COUNT <script src> (attendu >=10 sur pages cablees v06)"
+    fi
+  fi
+done
+
+echo "OK pre-commit Lean ADD-AI"
+exit 0

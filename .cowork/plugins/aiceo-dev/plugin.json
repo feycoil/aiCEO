@@ -1,0 +1,21 @@
+{
+  "name": "aiceo-dev",
+  "version": "0.1.0-lean",
+  "description": "Plugin Cowork pour le projet aiCEO (variante Lean ADD-AI) — 3 skills essentielles + 4 subagents experts.",
+  "owner": "Major Fey",
+  "lean_mode": true,
+  "rationale": "Cf. ADR 2026-04-28 v9 · Lean ADD-AI. Phase 0 minimale, enrichie incrémentalement après validation SPIKE J+1.",
+  "skills": [
+    "kickoff",
+    "ship",
+    "retex"
+  ],
+  "agents": [
+    "architect",
+    "dev-fullstack",
+    "designer",
+    "qa-engineer"
+  ],
+  "memory_root": "../../memory/",
+  "routines_file": "../../routines.json"
+}

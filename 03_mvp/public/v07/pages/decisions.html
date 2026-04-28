@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>aiCEO — Décisions (v07 Atomic)</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/tweaks.css">
+  <link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css">
+  <link rel="stylesheet" href="../components/header-topbar/header-topbar.css">
+  <link rel="stylesheet" href="../components/kpi-tile/kpi-tile.css">
+  <link rel="stylesheet" href="../components/card-decision/card-decision.css">
+  <link rel="stylesheet" href="../components/seg-filter/seg-filter.css">
+  <link rel="stylesheet" href="../components/search-pill/search-pill.css">
+  <link rel="stylesheet" href="../components/modal-detail/modal-detail.css">
+  <link rel="stylesheet" href="../components/empty-state/empty-state.css">
+  <style>
+    .loading-state, .error-state {
+      padding: var(--space-5);
+      text-align: center;
+      color: var(--ink-500);
+      font-style: italic;
+    }
+    .error-state { color: var(--danger); }
+    .filters-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body data-route="decisions">
+  <a href="#main" class="skip-link">Aller au contenu principal</a>
+  <div class="app">
+    <aside data-component="drawer-sidebar" data-props='{"active":"decisions"}'></aside>
+    <main class="app-main" id="main">
+      <div data-component="header-topbar" data-props='{"title":"Décisions","subtitle":"Ce que vous avez choisi de faire — et de ne pas faire","actions":[{"id":"new","label":"Nouvelle décision","icon":"+","primary":true},{"id":"export","icon":"↓","iconOnly":true,"label":"Exporter"}]}'></div>
+
+      <div data-region="kpis" class="kpi-row"></div>
+
+      <div class="filters-row">
+        <div data-component="seg-filter" data-props='{"id":"type","options":["Toutes","À trancher","Tranchées","Reportées","Gelées"],"active":"Toutes"}'></div>
+        <div data-component="search-pill" data-props='{"placeholder":"Rechercher dans les décisions…"}'></div>
+      </div>
+
+      <div data-region="timeline" class="stack-3"></div>
+
+      <div data-region="empty" hidden>
+        <div data-component="empty-state" data-props='{"icon":"decision","title":"Aucune décision pour ce filtre","description":"Modifiez les filtres ou lancez un arbitrage pour générer de nouvelles décisions à trancher.","cta":{"label":"Aller à l'arbitrage","href":"arbitrage.html"}}'></div>
+      </div>
+    </main>
+  </div>
+
+  <div data-component="modal-detail"></div>
+
+  <script type="module" src="../shared/store.js"></script>
+  <script type="module" src="../shared/component-loader.js"></script>
+  <script type="module" src="../stores/decisions-store.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "aiceo-v07-atomic",
+  "version": "0.1.0",
+  "description": "aiCEO frontend v07 — Atomic Templates framework (S6.10-bis-LIGHT). Vanilla JS + ES modules + composants atomiques.",
+  "type": "module",
+  "private": true,
+  "owner": "Major Fey",
+  "rationale": "Le `type: module` ici scope l'ES module à v07/ sans affecter le backend Node CommonJS du projet."
+}

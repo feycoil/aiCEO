@@ -1204,6 +1204,7 @@ code, pre, .mono { font-family: var(--font-mono); }
 
 <script>
 const DATA = JSON.parse(document.getElementById('pilotage-data').textContent);
+window.PILOTAGE = DATA; // S6.11-bis-LIGHT : exposition globale pour Cmd+K
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));
 const escHtml = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -1832,5 +1833,435 @@ $('#md-viewer').addEventListener('click', function (e) {
 
 init();
 </script>
+
+<!-- ===== S6.11-bis-LIGHT · Cmd+K palette + bouton Régénérer ===== -->
+<style>
+  /* Bouton flottant Régénérer */
+  .regen-fab {
+    position: fixed;
+    bottom: var(--space-5, 24px);
+    right: var(--space-5, 24px);
+    background: var(--ink-900, #1a1816);
+    color: var(--paper, #fff);
+    border: 0;
+    border-radius: var(--radius-pill, 9999px);
+    padding: 10px 18px;
+    font-family: var(--font-sans, 'Inter', sans-serif);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(26, 24, 22, 0.18), 0 2px 4px rgba(26, 24, 22, 0.08);
+    transition: all 200ms cubic-bezier(.16, 1, .3, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 50;
+  }
+  .regen-fab:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(26, 24, 22, 0.24); }
+  .regen-fab:disabled { opacity: 0.6; cursor: wait; }
+  .regen-fab .ico {
+    display: inline-block;
+    transition: transform 600ms cubic-bezier(.16, 1, .3, 1);
+  }
+  .regen-fab.is-loading .ico { animation: regen-spin 1s linear infinite; }
+  @keyframes regen-spin { to { transform: rotate(360deg); } }
+
+  .regen-toast {
+    position: fixed;
+    bottom: 80px;
+    right: 24px;
+    background: var(--paper, #fff);
+    border: 1px solid var(--ivory-200, #ebe7df);
+    border-radius: var(--radius-md, 8px);
+    padding: 10px 14px;
+    font-family: var(--font-sans, 'Inter', sans-serif);
+    font-size: 13px;
+    color: var(--ink-900, #1a1816);
+    box-shadow: 0 4px 12px rgba(26, 24, 22, 0.12);
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: all 200ms cubic-bezier(.16, 1, .3, 1);
+    z-index: 51;
+    max-width: 320px;
+  }
+  .regen-toast.show { opacity: 1; transform: translateY(0); }
+  .regen-toast.success { border-left: 3px solid var(--success, #2d7a4d); }
+  .regen-toast.error { border-left: 3px solid var(--danger, #c14a4a); }
+
+  /* Cmd+K palette */
+  .cmdk-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26, 24, 22, 0.45);
+    backdrop-filter: blur(3px);
+    z-index: 200;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 12vh;
+    animation: cmdk-fade 150ms cubic-bezier(.16, 1, .3, 1);
+  }
+  .cmdk-overlay.open { display: flex; }
+  @keyframes cmdk-fade { from { opacity: 0; } to { opacity: 1; } }
+  .cmdk-panel {
+    background: var(--paper, #fff);
+    width: 640px;
+    max-width: 92vw;
+    max-height: 70vh;
+    border-radius: 16px;
+    box-shadow: 0 24px 48px rgba(26, 24, 22, 0.18), 0 8px 16px rgba(26, 24, 22, 0.10);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: cmdk-slide 250ms cubic-bezier(.16, 1, .3, 1);
+  }
+  @keyframes cmdk-slide { from { opacity: 0; transform: translateY(-12px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .cmdk-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--ivory-200, #ebe7df);
+  }
+  .cmdk-input-row .ico { font-size: 18px; color: var(--ink-300, #aaa49b); }
+  .cmdk-input {
+    flex: 1;
+    border: 0;
+    outline: none;
+    font-family: var(--font-sans, 'Inter', sans-serif);
+    font-size: 16px;
+    color: var(--ink-900, #1a1816);
+    background: transparent;
+  }
+  .cmdk-input::placeholder { color: var(--ink-300, #aaa49b); }
+  .cmdk-kbd {
+    font-family: var(--font-mono, monospace);
+    font-size: 11px;
+    background: var(--ivory-100, #f5f3ee);
+    border: 1px solid var(--ivory-200, #ebe7df);
+    border-radius: 4px;
+    padding: 2px 6px;
+    color: var(--ink-500, #6b665e);
+  }
+  .cmdk-results {
+    overflow-y: auto;
+    flex: 1;
+    padding: 6px 0;
+  }
+  .cmdk-section-title {
+    padding: 8px 18px 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-300, #aaa49b);
+  }
+  .cmdk-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 18px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: background 100ms cubic-bezier(.16, 1, .3, 1);
+  }
+  .cmdk-item:hover, .cmdk-item.active {
+    background: var(--ivory-50, #fbfaf7);
+    border-left-color: var(--primary-500, #6b4dff);
+  }
+  .cmdk-item-ico {
+    width: 20px;
+    text-align: center;
+    color: var(--ink-300, #aaa49b);
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .cmdk-item-body { flex: 1; min-width: 0; }
+  .cmdk-item-title {
+    font-size: 14px;
+    color: var(--ink-900, #1a1816);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cmdk-item-meta {
+    font-size: 11px;
+    color: var(--ink-500, #6b665e);
+    margin-top: 2px;
+    font-family: var(--font-mono, monospace);
+  }
+  .cmdk-empty {
+    padding: 32px 18px;
+    text-align: center;
+    color: var(--ink-500, #6b665e);
+    font-size: 14px;
+    font-style: italic;
+  }
+  .cmdk-footer {
+    border-top: 1px solid var(--ivory-200, #ebe7df);
+    padding: 8px 18px;
+    font-size: 11px;
+    color: var(--ink-500, #6b665e);
+    display: flex;
+    gap: 16px;
+    background: var(--ivory-50, #fbfaf7);
+  }
+  .cmdk-footer .cmdk-kbd { font-size: 10px; padding: 1px 4px; }
+</style>
+
+<button id="regen-fab" class="regen-fab" aria-label="Régénérer le pilotage">
+  <span class="ico">↻</span>
+  <span class="lbl">Régénérer</span>
+</button>
+<div id="regen-toast" class="regen-toast" role="status" aria-live="polite"></div>
+
+<div id="cmdk-overlay" class="cmdk-overlay" role="dialog" aria-modal="true" aria-label="Recherche globale">
+  <div class="cmdk-panel">
+    <div class="cmdk-input-row">
+      <span class="ico" aria-hidden="true">⌕</span>
+      <input id="cmdk-input" class="cmdk-input" type="search"
+             placeholder="Rechercher dans ADRs, docs, commits, sections…"
+             autocomplete="off" spellcheck="false" />
+      <span class="cmdk-kbd">Esc</span>
+    </div>
+    <div id="cmdk-results" class="cmdk-results"></div>
+    <div class="cmdk-footer">
+      <span><span class="cmdk-kbd">↑↓</span> naviguer</span>
+      <span><span class="cmdk-kbd">↵</span> ouvrir</span>
+      <span><span class="cmdk-kbd">Esc</span> fermer</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  // ===== Bouton Régénérer =====
+  var fab = document.getElementById('regen-fab');
+  var toast = document.getElementById('regen-toast');
+
+  function showToast(msg, kind) {
+    toast.textContent = msg;
+    toast.className = 'regen-toast show ' + (kind || '');
+    setTimeout(function () { toast.className = 'regen-toast'; }, 4500);
+  }
+
+  fab.addEventListener('click', async function () {
+    if (fab.disabled) return;
+    fab.disabled = true;
+    fab.classList.add('is-loading');
+    fab.querySelector('.lbl').textContent = 'Régénération…';
+    try {
+      var r = await fetch('/api/system/regenerate-pilotage', { method: 'POST' });
+      var data = await r.json();
+      if (r.ok && data.ok) {
+        var s = Math.round((data.elapsed_ms || 0) / 100) / 10;
+        showToast('Pilotage régénéré en ' + s + 's. Rafraîchir la page (Ctrl+F5)', 'success');
+      } else {
+        showToast('Erreur : ' + (data.error || 'inconnue') + ' — ' + (data.message || ''), 'error');
+      }
+    } catch (e) {
+      showToast('Erreur réseau : ' + e.message + '. Le serveur tourne-t-il sur :4747 ?', 'error');
+    } finally {
+      fab.disabled = false;
+      fab.classList.remove('is-loading');
+      fab.querySelector('.lbl').textContent = 'Régénérer';
+    }
+  });
+
+  // ===== Cmd+K palette =====
+  var overlay = document.getElementById('cmdk-overlay');
+  var input = document.getElementById('cmdk-input');
+  var results = document.getElementById('cmdk-results');
+  var activeIdx = 0;
+  var items = [];
+
+  function buildIndex() {
+    var idx = [];
+    var data = (typeof window.PILOTAGE !== 'undefined') ? window.PILOTAGE : null;
+    if (!data) return idx;
+
+    // ADRs
+    (data.adrs || []).forEach(function (adr) {
+      idx.push({
+        kind: 'adr', icon: '◆',
+        title: adr.title || 'ADR',
+        meta: adr.date || '',
+        href: adr.path ? ('#adr-' + (adr.id || '')) : null,
+        searchText: ((adr.title || '') + ' ' + (adr.context || '')).toLowerCase()
+      });
+    });
+    // Docs
+    (data.docs || []).forEach(function (doc) {
+      idx.push({
+        kind: 'doc', icon: '📄',
+        title: doc.title || doc.path,
+        meta: doc.path,
+        href: doc.path ? ('#doc-' + encodeURIComponent(doc.path)) : null,
+        searchText: ((doc.title || '') + ' ' + (doc.path || '')).toLowerCase()
+      });
+    });
+    // Commits
+    (data.commits || []).slice(0, 100).forEach(function (commit) {
+      idx.push({
+        kind: 'commit', icon: '⎇',
+        title: commit.subject || commit.message || commit.hash,
+        meta: (commit.hash || '').substring(0, 7) + ' · ' + (commit.date || ''),
+        href: null,
+        searchText: ((commit.subject || commit.message || '') + ' ' + (commit.hash || '')).toLowerCase()
+      });
+    });
+    // Sections du pilotage (navigation rapide)
+    document.querySelectorAll('section[id], h1[id], h2[id]').forEach(function (sec) {
+      if (sec.id && sec.id.length > 0 && !sec.id.startsWith('cmdk') && !sec.id.startsWith('regen')) {
+        var t = sec.textContent.trim().split('\n')[0].slice(0, 80);
+        if (t.length > 0) {
+          idx.push({
+            kind: 'section', icon: '#',
+            title: t,
+            meta: '#' + sec.id,
+            href: '#' + sec.id,
+            searchText: t.toLowerCase()
+          });
+        }
+      }
+    });
+    return idx;
+  }
+
+  var index = null;
+  function getIndex() {
+    if (!index) index = buildIndex();
+    return index;
+  }
+
+  function search(q) {
+    q = (q || '').toLowerCase().trim();
+    var all = getIndex();
+    if (!q) return all.slice(0, 30);
+    var scored = [];
+    for (var i = 0; i < all.length; i++) {
+      var item = all[i];
+      var pos = item.searchText.indexOf(q);
+      if (pos !== -1) {
+        scored.push({ item: item, score: (pos === 0 ? 1000 : 100) - pos });
+      }
+    }
+    scored.sort(function (a, b) { return b.score - a.score; });
+    return scored.slice(0, 50).map(function (s) { return s.item; });
+  }
+
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function render(matches) {
+    items = matches;
+    activeIdx = 0;
+    if (matches.length === 0) {
+      results.innerHTML = '<div class="cmdk-empty">Aucun résultat</div>';
+      return;
+    }
+    var byKind = { adr: [], doc: [], commit: [], section: [] };
+    matches.forEach(function (m) { byKind[m.kind].push(m); });
+
+    var html = '';
+    var sections = [
+      { key: 'adr', label: 'Décisions (ADRs)' },
+      { key: 'doc', label: 'Documents' },
+      { key: 'commit', label: 'Commits' },
+      { key: 'section', label: 'Sections du pilotage' }
+    ];
+    var globalIdx = 0;
+    sections.forEach(function (sec) {
+      if (byKind[sec.key].length === 0) return;
+      html += '<div class="cmdk-section-title">' + sec.label + '</div>';
+      byKind[sec.key].forEach(function (item) {
+        html += '<div class="cmdk-item' + (globalIdx === activeIdx ? ' active' : '') + '" data-idx="' + globalIdx + '">'
+          + '<span class="cmdk-item-ico">' + item.icon + '</span>'
+          + '<div class="cmdk-item-body">'
+          + '<div class="cmdk-item-title">' + escapeHtml(item.title) + '</div>'
+          + (item.meta ? '<div class="cmdk-item-meta">' + escapeHtml(item.meta) + '</div>' : '')
+          + '</div></div>';
+        globalIdx++;
+      });
+    });
+    results.innerHTML = html;
+  }
+
+  function activate(item) {
+    if (!item) return;
+    if (item.href) {
+      try {
+        var target = document.querySelector(item.href);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        else window.location.hash = item.href;
+      } catch (e) {}
+    }
+    closeCmdK();
+  }
+
+  function openCmdK() {
+    overlay.classList.add('open');
+    input.value = '';
+    render(search(''));
+    setTimeout(function () { input.focus(); }, 30);
+  }
+  function closeCmdK() {
+    overlay.classList.remove('open');
+  }
+
+  input.addEventListener('input', function () { render(search(input.value)); });
+
+  results.addEventListener('click', function (e) {
+    var el = e.target.closest('.cmdk-item');
+    if (!el) return;
+    var idx = parseInt(el.dataset.idx, 10);
+    activate(items[idx]);
+  });
+
+  document.addEventListener('keydown', function (e) {
+    var isMac = /Mac|iPhone|iPad/.test(navigator.platform);
+    var meta = isMac ? e.metaKey : e.ctrlKey;
+    if (meta && e.key === 'k') {
+      e.preventDefault();
+      if (overlay.classList.contains('open')) closeCmdK(); else openCmdK();
+      return;
+    }
+    if (!overlay.classList.contains('open')) return;
+    if (e.key === 'Escape') { e.preventDefault(); closeCmdK(); return; }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (items.length === 0) return;
+      activeIdx = (activeIdx + 1) % items.length;
+      var qcur = input.value;
+      render(search(qcur));
+      var act = results.querySelector('.cmdk-item.active');
+      if (act) act.scrollIntoView({ block: 'nearest' });
+    }
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (items.length === 0) return;
+      activeIdx = (activeIdx - 1 + items.length) % items.length;
+      var qcur2 = input.value;
+      render(search(qcur2));
+      var act2 = results.querySelector('.cmdk-item.active');
+      if (act2) act2.scrollIntoView({ block: 'nearest' });
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      activate(items[activeIdx]);
+    }
+  });
+
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) closeCmdK();
+  });
+})();
+</script>
+
 </body>
 </html>

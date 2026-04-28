@@ -1,0 +1,94 @@
+/* modal-detail.css */
+.md {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+.md-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 24, 22, 0.4);
+  backdrop-filter: blur(2px);
+  animation: mdFade var(--dur-norm) var(--ease-out);
+}
+@keyframes mdFade { from { opacity: 0; } to { opacity: 1; } }
+
+.md-panel {
+  position: relative;
+  background: var(--paper);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--elev-2), 0 24px 48px rgba(26, 24, 22, 0.12);
+  max-width: 640px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: mdSlide var(--dur-slow) var(--ease-out);
+}
+@keyframes mdSlide {
+  from { opacity: 0; transform: translateY(20px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.md-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--ivory-200);
+}
+.md-title {
+  font-family: var(--font-serif);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--ink-900);
+  margin: 0;
+}
+.md-close {
+  font-size: 22px;
+  line-height: 1;
+}
+.md-body {
+  padding: var(--space-5);
+  overflow-y: auto;
+  flex: 1;
+}
+.md-foot {
+  padding: var(--space-3) var(--space-5);
+  border-top: 1px solid var(--ivory-200);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  background: var(--ivory-50);
+}
+.md-meta {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: var(--space-2) var(--space-3);
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-sm);
+}
+.md-meta dt {
+  color: var(--ink-500);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+}
+.md-meta dd {
+  margin: 0;
+  color: var(--ink-900);
+}
+.md-context {
+  background: var(--ivory-50);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--ink-700);
+  line-height: 1.6;
+}

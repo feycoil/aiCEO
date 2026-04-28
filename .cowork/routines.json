@@ -1,0 +1,40 @@
+{
+  "version": "0.1.0-lean",
+  "description": "Scheduled tasks Lean ADD-AI pour aiCEO. 3 routines essentielles seulement (Phase 0). Enrichir post-SPIKE-VALIDATION si méthode validée.",
+  "owner": "Major Fey",
+  "routines": [
+    {
+      "name": "morning-brief",
+      "cron": "0 30 7 * * 1-5",
+      "skill": "/morning-brief",
+      "description": "Résumé nuit + alertes matin (7h30 lun-ven). Skill non encore implémentée — déclenche manuellement via assistant.",
+      "lean_status": "deferred",
+      "implemented_in": "S7.7 Daily digest matin"
+    },
+    {
+      "name": "evening-bilan",
+      "cron": "0 0 19 * * 1-5",
+      "skill": "/evening-bilan",
+      "description": "Résumé jour + question coaching (19h00 lun-ven). Skill non encore implémentée.",
+      "lean_status": "deferred",
+      "implemented_in": "S7.8 Bilan soir augmenté"
+    },
+    {
+      "name": "weekly-audit",
+      "cron": "0 0 19 * * 0",
+      "skill": "/audit-week",
+      "description": "Revue hebdo automatique dimanche 19h. Skill non encore implémentée.",
+      "lean_status": "deferred",
+      "implemented_in": "S6.15 Revues hebdo refondue"
+    }
+  ],
+  "deferred_routines": [
+    {
+      "name": "consistence-hourly",
+      "command": "node scripts/consistence-dump-now.js",
+      "description": "Régénérer consistence-dump.json chaque heure. Reporté à S6.16-bis (post-V1).",
+      "rationale": "Lean ADD-AI : éviter sur-ingénierie en Phase 0."
+    }
+  ],
+  "next_step": "Si SPIKE-VALIDATION-ADD-AI valide la méthode (vélocité ×1.2 / coût -20% / erreurs -30%), enrichir avec /retex-month + /cost-status + /focus."
+}

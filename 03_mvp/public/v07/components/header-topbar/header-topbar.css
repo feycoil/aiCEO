@@ -1,0 +1,38 @@
+/* header-topbar.css */
+.ht {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-5);
+  margin-bottom: var(--space-5);
+  border-bottom: 1px solid var(--ivory-200);
+}
+.ht-title {
+  font-family: var(--font-serif);
+  font-size: var(--text-3xl);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink-900);
+  margin: 0;
+  line-height: 1.1;
+}
+.ht-sub {
+  font-size: var(--text-sm);
+  color: var(--ink-500);
+  margin: var(--space-1) 0 0;
+  font-style: italic;
+  font-family: var(--font-serif);
+}
+.ht-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+.ht-act-ico {
+  font-size: 14px;
+}
+@media (max-width: 640px) {
+  .ht { flex-direction: column; align-items: stretch; }
+  .ht-title { font-size: var(--text-2xl); }
+}

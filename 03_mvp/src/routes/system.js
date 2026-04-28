@@ -78,6 +78,65 @@ router.get('/health', (req, res) => {
   }
 });
 
+// --- POST /regenerate-pilotage --------------------------------
+// Lance node scripts/generate-pilotage.js pour régénérer 04_docs/00-pilotage-projet.html
+// Sprint S6.11-bis-LIGHT (28/04/2026 soir) — bouton Régénérer manuel.
+router.post('/regenerate-pilotage', (req, res) => {
+  const { spawn } = require('node:child_process');
+  const repoRoot = path.resolve(__dirname, '..', '..', '..');
+  const scriptPath = path.join(repoRoot, 'scripts', 'generate-pilotage.js');
+
+  if (!fs.existsSync(scriptPath)) {
+    return res.status(500).json({
+      error: 'script_not_found',
+      message: `generate-pilotage.js introuvable à ${scriptPath}`
+    });
+  }
+
+  const startedAt = Date.now();
+  const child = spawn('node', [scriptPath], {
+    cwd: repoRoot,
+    env: { ...process.env, AICEO_REGEN_TRIGGER: 'pilotage-button' }
+  });
+
+  let stdout = '';
+  let stderr = '';
+  child.stdout.on('data', (chunk) => { stdout += chunk.toString(); });
+  child.stderr.on('data', (chunk) => { stderr += chunk.toString(); });
+
+  // Timeout 30s
+  const timeout = setTimeout(() => {
+    child.kill('SIGTERM');
+  }, 30000);
+
+  child.on('close', (code) => {
+    clearTimeout(timeout);
+    const elapsed_ms = Date.now() - startedAt;
+    if (code === 0) {
+      res.json({
+        ok: true,
+        elapsed_ms,
+        stdout: stdout.split('\n').slice(-10).join('\n'),
+        regenerated_at: new Date().toISOString()
+      });
+    } else {
+      res.status(500).json({
+        ok: false,
+        error: 'regen_failed',
+        exit_code: code,
+        elapsed_ms,
+        stderr: stderr.split('\n').slice(-20).join('\n'),
+        stdout: stdout.split('\n').slice(-10).join('\n')
+      });
+    }
+  });
+
+  child.on('error', (e) => {
+    clearTimeout(timeout);
+    res.status(500).json({ error: e.message });
+  });
+});
+
 router.post('/sync-outlook', (req, res) => {
   // Stub : la sync Outlook réelle se fait via scripts/sync-outlook.ps1 (Windows)
   // Pour l'instant on retourne une réponse explicite que l'UI peut consommer
