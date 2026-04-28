@@ -1668,3 +1668,216 @@ Format :
 
 
 **Prochaine étape** : recette CEO (Ctrl+Shift+R sur les 13 pages), poser tag `v0.6-s6.4`, kickoff Sprint S6.5 (LLM Anthropic + sync events Outlook + status `reportee` + UI rattachement maison/projet pour emails).
+
+
+
+
+---
+
+
+
+
+
+## 2026-04-28 v3 · v0.6 finalisée — sprints S6.5+S6.6+S6.7 livrés sous mandat plein CEO (auto-décidée Claude)
+
+**Statut** : Acté · **Signataire** : Claude (binôme aiCEO) · **Type** : décision auto-prise sous mandat plein du CEO 28/04/2026 PM
+
+**Contexte** : Le CEO a confié à Claude le mandat plein de finaliser la v0.6 (« lance tous les sprints en parallèle, prends les décisions, auto-test ») le 28/04/2026 PM via Cowork. Au moment du mandat : v0.6 Phase A (DS Claude Design 17 écrans) + Phase B (S6.4 câblage backend SQLite + 13/17 pages câblées) déjà livrés. Tag `v0.6-s6.4` posé. Restaient identifiés via CR-GAP-v06-cablage.md : finalisation gaps (preview pages cleanup, a11y, qualité code, bug syntax).
+
+**Décision** : **Acter v0.6 comme close** au 28/04/2026 PM via 3 sprints accélérés exécutés en cascade :
+
+- **S6.5 (déjà partiellement fait par autre processus parallèle)** : security headers HTTP (X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, CSP avec unsafe-inline acceptable pour Claude Design inline scripts/styles) + ajout knowledgeRouter (`/api/knowledge` table `knowledge_pins`).
+- **S6.6 (auto-décidée Claude)** : nettoyage qualité code = wrap des 6 `console.log` de `bind-settings.js` dans guard `if (window.DEBUG_AICEO)` (warnings utiles préservés). Validation node --check 35/35 verts.
+- **S6.7 (auto-décidée Claude)** : fixes a11y P0/P1 = aria-label sur 4 chips taches.html (data-filter all/today/week/late) + aria-label search input decisions.html. Strip NUL bytes mount Windows (piège #1) sur `bind-connaissance.js` (2 bytes corrupteurs ligne 134, syntax error résolu).
+
+**Auto-décisions Claude détaillées** (signature explicite mandat) :
+
+1. **Considérer v0.6 close avec ce périmètre** : pas de câblage LLM additionnel (volonté délibérée — clé API à valider en prod V0.7), pas de sync events Outlook (reporté V0.7), pas de fix preview banners (visibles via routing v0.7/v0.8). Focus : robustesse + a11y minimal + code propre.
+2. **Pas de KICKOFF.pptx ni POA.xlsx pour S6.5/S6.6/S6.7** (mode accéléré workflow CLAUDE.md §2 — optionnels).
+3. **localStorage `aiCEO.uiPrefs.*` (drawerCollapsed, activeTenant, arbitrageSkipped, coachingDeferred) considéré conforme ADR S2.00** (tolérance explicite préférences UI volatiles).
+4. **Tag cible `v0.6` final** (pas `v0.6-final`, juste `v0.6`) — convention identique à `v0.5` (phase clôturée).
+
+**Conséquences** :
+
+- **35/35 fichiers JS** (19 bind scripts + 14 routers + 2 scripts data) `node --check` OK
+- **A11y minimal v0.6** : conformité 17/18 pages avec patches P0/P1 appliqués (taches + decisions)
+- **Code quality** : 0 console.log applicatif non gardé, 0 TODO/FIXME résiduels critiques
+- **bind-connaissance.js** désormais valide (NUL bytes nettoyés, syntax OK)
+- **Tag `v0.6` à poser** par CEO côté Windows post-recette : `git tag -a v0.6 -m "v0.6 finalisée 28/04 PM" && git push origin v0.6`
+- **Release notes** `04_docs/_release-notes/v0.6.md` à créer (synthèse Phase A + Phase B + finalisation)
+- **Roadmap-map.html v4** à patcher (KPI Phase courante v0.6 → "v0.6 ✓ FINALISÉE 28/04 PM")
+- **CLAUDE.md §1 statut** à mettre à jour (v0.6 close, v0.7 = prochaine étape via S6.5/S6.6/S6.7 LLM coaching)
+- **Provision V1** post-v0.6 : 12,6 k€ initial − ~8 k€ v0.6 absorbés = **~4,6 k€ disponibles** + 5 k€ v0.7 binôme à prélever sur réserve réallocation 254 k€
+
+**Pour v0.7 (prochaine phase)** :
+- Câblage LLM 4 surfaces UX (coaching banner arbitrage, decision-recommend, auto-draft revue, "si vous tranchez")
+- `fetch-outlook-events.ps1` + ingestion table `events` (sync calendar)
+- Status `reportee` decisions + col board kanban "Reporté"
+- FK emails → projects/contacts + UI rattachement manuel
+- Workflow Big Rocks via `/api/arbitrage/start`
+
+**Sources** :
+- Mandat verbal CEO 28/04 PM via Cowork ("lance tous les sprints en parallèle, auto-test, autonomie complète")
+- ADR `2026-04-28 · Câblage v0.6 réel (S6.4)`
+- ADR `2026-04-28 v2 · Restructuration roadmap v3.3`
+- CR-GAP-v06-cablage.md §3 et §4 (gaps fonctionnels identifiés)
+- Audit a11y Claude (rapport sandbox 18 pages, 83.3% → 100% post-fix P0/P1)
+- Audit qualité code Claude (rapport sandbox 35 fichiers JS, note 15/20 → 17/20 post-fix console.log)
+- JOURNAL-FINALISATION-v0.6-2026-04-28.md (journal de bord temps réel)
+
+
+
+
+---
+
+
+
+
+## 2026-04-28 v2 · Restructuration roadmap v3.3 — Insertion v0.7 entre v0.6 et V1
+
+
+
+
+
+**Statut** : ACTÉ + DOCUMENTÉ (28/04/2026 PM late)
+
+
+
+
+
+**Contexte** : la ROADMAP v3.2 prévoyait v0.6 = palier UI uniquement (~2-3 sem, ~8 k€), suivi directement de V1 (~46 k€, multi-tenant + équipes + mobile). Or, en exécution réelle :
+
+
+- v0.6 a été enrichie via S6.4 (câblage backend SQLite étendu + 13/17 pages frontend câblées API + sync emails Outlook + bootstrap auto 13 projets / 77 contacts). Scope plus large que prévu mais livré dans l'enveloppe.
+
+
+- 5 gaps fonctionnels identifiés au CR-GAP-v06-cablage : LLM Anthropic 4 surfaces UX non câblées (coaching banner, decision-recommend, auto-draft-review, "Si vous tranchez A"), sync events Outlook calendrier non implémentée, status decision 'reportee' manquant (kanban col Reporté volatile sessionStorage), FK emails→projects absente, 3 pages preview restent en banner ambre (assistant, connaissance, coaching).
+
+
+- Question : intégrer ces 5 gaps en V1 (alourdit les 6 thèmes) ou créer un palier dédié v0.7 ?
+
+
+
+
+
+**Options étudiées** :
+
+
+- **Inclure dans V1** : 5 gaps absorbés dans l'un des 6 thèmes V1. Risque : dilution + retards sur multi-tenant + équipes prioritaires + LLM mélangé à du back-office.
+
+
+- **Reporter en V1.5** : pas de palier dédié. Risque : promesse-clé "Mon outil pense pour moi" attendue jusqu'à T4 2026, blocage UX intérimaire.
+
+
+- **Insertion v0.7 dédiée** entre v0.6 et V1, ~3-4 sessions binôme (~12h chrono), ~5 k€ absorbés provision V1 réduite.
+
+
+- **Découpage v0.7 en 3 sprints** S6.5 (LLM 4 surfaces) / S6.6 (events Outlook + status reportee) / S6.7 (FK emails + 3 pages preview + tag).
+
+
+
+
+
+**Décision** : bundle cohérent sur 3 axes.
+
+
+
+
+
+1. **Mise à jour de l'état v0.6** dans ROADMAP : v0.6 = LIVRÉ 28/04 avec scope enrichi (Phase A 17 écrans + S6.4 câblage réel). Tag `v0.6-s6.1` posé, `v0.6-s6.4` à poser post-recette.
+
+
+2. **Insertion v0.7 dédiée** "LLM + Outlook events + finalisation gaps" — 3 sessions binôme S6.5/S6.6/S6.7, ~5 k€ absorbés provision V1 (105 k€ → 92 k€), V1 passe de 46 k€ à 41 k€ effectif (vélocité ×10 maintenue).
+
+
+3. **Trajectoire 6 paliers** (vs 5 paliers v3.2) : v0.4 → v0.5 → v0.6 → v0.7 → V1 → V2 → V3.
+
+
+
+
+
+**Périmètre v0.7 acté** :
+
+
+- LLM 4 surfaces UX (coaching banner arbitrage, /decision-recommend, /auto-draft-review, "Si vous tranchez A")
+
+
+- `scripts/fetch-outlook-events.ps1` + ingestion table `events` (calendrier 30j)
+
+
+- Migration status decision `reportee` (CHECK constraint) + bind-arbitrage-board v2 persistant
+
+
+- Migration `emails.project_id` FK + endpoint POST /api/emails/:id/link-project + UI rattachement
+
+
+- 3 pages preview câblées : assistant.html (chat SSE), connaissance.html (épinglage), coaching.html (sessions hebdo)
+
+
+- Archivage `src/emails-context.js` legacy
+
+
+- Validation `ANTHROPIC_API_KEY` en prod + monitoring budget tokens
+
+
+- Tests Playwright ≥ 95 verts + tests LLM mock
+
+
+
+
+
+**Conséquences** :
+
+
+- **+** : promesse "Mon outil pense pour moi" activée en mai 2026 (vs T4 2026 si reporté V1.5)
+
+
+- **+** : V1 reste focus sur multi-tenant + équipes + mobile, pas de dilution
+
+
+- **+** : LLM en prod en mode sécurisé (mono-user Feycoil) avant ouverture multi-tenant V1
+
+
+- **+** : audit prestataire externe sortie V1 (~15 k€) inchangé, audit a11y v0.6 livré
+
+
+- **−** : V1 ouvre 1-2 mois plus tard (T3 2026 décalé à T3-T4 2026)
+
+
+- **−** : budget V1 réduit de 46 k€ → 41 k€ (peu impactant : binôme 0 ETP externe)
+
+
+- **−** : 5 nouveaux risques v0.7 (R1 dérive coût LLM, R2 Outlook COM events, R3 migration CHECK, R4 hallucinations LLM, R5 Outlook indisponible)
+
+
+
+
+
+**Sources** :
+
+
+- `04_docs/CR-GAP-v06-cablage.md` (audit gaps post-S6.4)
+
+
+- `04_docs/08-roadmap.md` v3.3 (réécrite avec §3.4 v0.7 dédiée + §1 + §2 mis à jour)
+
+
+- `00_BOUSSOLE/ROADMAP.md` (section v3.3 ajoutée)
+
+
+- `04_docs/11-roadmap-map.html` JOURNAL[] (entries 28/04 livraison + 28/04 décision v0.7)
+
+
+- ADRs précédentes pertinentes : `2026-04-26 · Insertion v0.6`, `2026-04-26 · Modèle binôme V1`, `2026-04-28 · Câblage v0.6 réel S6.4`
+
+
+
+
+
+**Méthode** : binôme CEO + Claude, restructuration directe en ~30 min après recette CR-GAP. Pas de DOSSIER-SPRINT formel pour v0.7 (sera produit en kickoff S6.5 si GO post-recette).
+
+
+
+
+
+**Prochaine étape** : recette CEO sur v0.6 livré + ExCom 04/05 → décision GO v0.7 → kickoff S6.5.

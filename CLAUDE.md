@@ -2,7 +2,7 @@
 
 > **Lis ce fichier en premier** quand tu démarres une nouvelle session sur ce projet. Il consolide le contexte, les conventions, les pièges connus et les workflows types pour t'éviter de tout redécouvrir.
 
-**Version** : 28/04/2026 PM v2 (post-S6.4 — câblage v0.6 réel + onglets Logs/Releases settings + restauration scripts)
+**Version** : 28/04/2026 PM v3 (v0.6 FINALISÉE par mandat plein CEO + sprints S6.5/S6.6/S6.7 livrés Claude auto-décidée)
 **À jour à chaque clôture de sprint** ou décision structurante (cf. § 8 Maintenance).
 
 ---
@@ -24,9 +24,15 @@
   - **13/17 pages frontend câblées sur API** : cockpit (KPIs + Cap stratégique + dot-chart 7j + projects-houses + Top3), arbitrage (file emails + focus + board kanban drag-drop SQL), projets (auto-status alerte/à-surveiller/sain heuristique), équipe (avatars uniformes + recence), décisions (liste + tri + summary), tâches (buckets temporels + chips filtres dynamiques + tri + toggle done), revues (CTA "Démarrer la revue"), evening, settings, onboarding, projet, hub, components.
   - **3 pages preview annoncées** : assistant.html (v0.7), connaissance.html (v0.7), coaching.html (v0.8) — banners ambres, démo masquée.
   - **Auto-suggestions aiCEO rule-based** : projet status (volume emails 30j + récence), arbitrage scoring SQL, KPIs cockpit. **LLM Anthropic disponible côté serveur (4 routes SSE) mais non branché en UI v0.6** — décision délibérée : nécessite validation `ANTHROPIC_API_KEY` en prod.
-- **Tags Git** : `v0.5` (final v0.5), `v0.6-s6.1` (DS atomic archivé). **`v0.6-s6.4` posé 28/04 PM** (HEAD = `12abe7d feat(s6.4): câblage v0.6 réel + ingestion emails SQLite + bootstrap`).
+- **Tags Git** : `v0.5` (final v0.5), `v0.6-s6.1` (DS atomic archivé), `v0.6-s6.4` (câblage réel S6.4). **`v0.6` finalisée 28/04 PM** sous mandat plein CEO (sprints S6.5/S6.6/S6.7 auto-décidés Claude). À poser : `git tag -a v0.6` post-recette.
+- **v0.6 finalisation accélérée 28/04 PM** (mandat plein CEO) :
+  - **S6.5** : security headers HTTP (X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, CSP) + router `/api/knowledge` + page `connaissance.html` câblée
+  - **S6.6** : 6 console.log debug bind-settings.js wrappés dans `if (window.DEBUG_AICEO)` (production silencieuse)
+  - **S6.7** : a11y P0/P1 fixes (4 chips taches.html aria-label + decisions.html search aria-label) + strip NUL bytes bind-connaissance.js (piège #1 mount Windows résolu)
+  - **35/35 fichiers JS** `node --check` verts · A11y 18/18 pages conformes · 0 usage applicatif localStorage non-`aiCEO.uiPrefs.*`
+  - **27 ADRs datés** dans DECISIONS.md (incl. ADR `v3 · v0.6 finalisée par mandat plein CEO`)
 
-**Prochaine étape** : recette CEO + ExCom → GO câblage v0.7 LLM (coaching + auto-draft + decision-recommend) + sync events Outlook + tag `v0.6-s6.4`.
+**Prochaine étape** : poser tag `v0.6` côté Windows + recette CEO + ExCom → GO v0.7 (LLM coaching/auto-draft/decision-recommend + sync events Outlook + finalisation gaps CR-GAP, ~5 k€ binôme prélevés sur réallocation 254 k€).
 
 **Ajouts S6.4 v2 (28/04 PM late)** :
 - **Onglet Logs** dans Réglages : `GET /api/system/logs` (lecture `data/*.log` + tail 200 lignes), bouton "Charger les logs" manuel + spinner, console dark theme avec coloration syntaxique (rouge=error, ambre=warn, vert=OK), bandeau ambre d'aide pédagogique, métadonnées (size/lignes/mtime).
