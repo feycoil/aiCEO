@@ -792,6 +792,41 @@ code, pre, .mono { font-family: var(--font-mono); }
   .pillars { grid-template-columns: 1fr 1fr; }
 }
 </style>
+<style>
+  /* S6.11-bis-LIGHT-v2 : sprints status visuel */
+  .sprint-mini-done {
+    background: #e2ece8 !important;
+    border-left: 3px solid #3d7363 !important;
+    opacity: 0.95;
+  }
+  .sprint-mini-done .sprint-mini-num { color: #234236 !important; }
+  .sprint-mini-active {
+    background: #f5e8d6 !important;
+    border-left: 3px solid #b88237 !important;
+    box-shadow: 0 2px 6px rgba(184,130,55,0.18);
+  }
+  .sprint-mini-pending {
+    background: #fff !important;
+    border-left: 3px solid #e4e1d9 !important;
+    opacity: 0.85;
+  }
+  .sprint-mini-pending:hover { opacity: 1; }
+  .sprint-mini { transition: all 200ms cubic-bezier(.16,1,.3,1); padding: 10px 12px; border-radius: 6px; margin-bottom: 4px; }
+  .sprint-mini:hover { transform: translateX(2px); }
+  .phase-status.done { background: #e2ece8 !important; color: #234236 !important; }
+  .phase-status.active { background: #f5e8d6 !important; color: #6d4816 !important; }
+  .phase-status.pending { background: #eeebe4 !important; color: #5b5e68 !important; }
+  /* ADR category buttons hover */
+  .adr-cat-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+  /* Details/summary sleek */
+  details summary::-webkit-details-marker { display: none; }
+  details summary::before {
+    content: '▸ ';
+    transition: transform 200ms cubic-bezier(.16,1,.3,1);
+    display: inline-block;
+  }
+  details[open] summary::before { transform: rotate(90deg); }
+</style>
 </head>
 <body>
 <div class="app">
@@ -912,6 +947,64 @@ code, pre, .mono { font-family: var(--font-mono); }
     </section>
 
     <!-- Section Vue d'ensemble (anc. Dashboard) -->
+    <section class="section" id="section-executive-timeline" style="margin-top:24px">
+      <div class="card">
+        <h3 class="card-title">🗺️ Timeline 18 mois — où on est, où on va</h3>
+        <p class="card-subtitle">Vue stratégique macro · v0.4 → V1 → V2 → V3 (cf. roadmap-map.html détaillé)</p>
+        <div style="position:relative;padding:32px 0 16px;margin-top:16px">
+          <!-- Ligne timeline -->
+          <div style="position:absolute;top:50%;left:0;right:0;height:3px;background:linear-gradient(90deg, var(--emerald) 0%, var(--emerald) 28%, var(--amber) 28%, var(--amber) 42%, var(--violet-800) 42%, var(--violet-800) 70%, var(--text-3) 70%, var(--text-3) 100%);transform:translateY(-50%);border-radius:2px"></div>
+          <!-- Jalons -->
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:0;position:relative;z-index:2">
+            <div style="text-align:center"><div style="width:32px;height:32px;border-radius:50%;background:var(--emerald);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;box-shadow:0 2px 8px rgba(61,115,99,.4)">✓</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--text)">v0.4 MVP</div><div style="font-size:10px;color:var(--text-3)">04/2026</div></div>
+            <div style="text-align:center"><div style="width:32px;height:32px;border-radius:50%;background:var(--emerald);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;box-shadow:0 2px 8px rgba(61,115,99,.4)">✓</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--text)">v0.5</div><div style="font-size:10px;color:var(--text-3)">04/2026</div></div>
+            <div style="text-align:center"><div style="width:32px;height:32px;border-radius:50%;background:var(--emerald);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;box-shadow:0 2px 8px rgba(61,115,99,.4)">✓</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--text)">v0.6 + v0.7</div><div style="font-size:10px;color:var(--text-3)">04/2026</div></div>
+            <div style="text-align:center"><div style="width:36px;height:36px;border-radius:50%;background:var(--amber);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;box-shadow:0 4px 12px rgba(184,130,55,.5)">⚡</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--amber-800)">PHASE 0+1</div><div style="font-size:10px;color:var(--text-3)">04-06/2026</div></div>
+            <div style="text-align:center"><div style="width:32px;height:32px;border-radius:50%;background:var(--violet-800);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;box-shadow:0 2px 8px rgba(70,58,84,.4)">V1</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--text)">V1.0 Release</div><div style="font-size:10px;color:var(--text-3)">07/2026</div></div>
+            <div style="text-align:center"><div style="width:32px;height:32px;border-radius:50%;background:var(--text-3);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff">V2</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--text-3)">V2 SaaS+i18n</div><div style="font-size:10px;color:var(--text-3)">2027</div></div>
+            <div style="text-align:center"><div style="width:32px;height:32px;border-radius:50%;background:var(--text-3);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff">V3</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--text-3)">V3 Coach</div><div style="font-size:10px;color:var(--text-3)">2028</div></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:20px;flex-wrap:wrap;justify-content:center">
+          <span style="padding:4px 10px;background:var(--emerald-50);color:var(--emerald-800);border-radius:12px;font-size:11px;font-weight:600">✓ Livré (v0.4 → v0.7)</span>
+          <span style="padding:4px 10px;background:var(--amber-50);color:var(--amber-800);border-radius:12px;font-size:11px;font-weight:600">⚡ En cours (Phase 0 ✅ · Phase 1 prochaine)</span>
+          <span style="padding:4px 10px;background:var(--violet-50);color:var(--violet-800);border-radius:12px;font-size:11px;font-weight:600">▸ V1.0 cible été 2026</span>
+          <span style="padding:4px 10px;background:var(--surface-3);color:var(--text-3);border-radius:12px;font-size:11px;font-weight:600">○ V2-V3 (~2027-2028)</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">🏁 Jalons clés (vue expandable)</h3>
+        <p class="card-subtitle">Cliquer pour déplier les détails de chaque jalon</p>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+          <details style="border:1px solid var(--emerald);border-radius:8px;background:var(--emerald-50);overflow:hidden">
+            <summary style="padding:12px 16px;cursor:pointer;font-weight:600;color:var(--emerald-800)">✅ v0.5 internalisée — 26/04/2026 (5 sprints, 110k€/110k€)</summary>
+            <div style="padding:0 16px 16px;font-size:13px;color:var(--text-2);line-height:1.7">5 sprints livrés en ~16h chrono dogfood, vélocité ×30 vs plan ETP. SQLite mono-instance. 12 pages frontend. Sync Outlook 2h. Assistant chat live SSE.</div>
+          </details>
+          <details style="border:1px solid var(--emerald);border-radius:8px;background:var(--emerald-50);overflow:hidden">
+            <summary style="padding:12px 16px;cursor:pointer;font-weight:600;color:var(--emerald-800)">✅ v0.6 + v0.7 — 28/04/2026 (cablage réel + LLM 4 surfaces)</summary>
+            <div style="padding:0 16px 16px;font-size:13px;color:var(--text-2);line-height:1.7">Backend SQLite étendu, 13/17 pages frontend câblées API, sync emails Outlook. v0.7 : 5 routes LLM mode dégradé, 3 migrations SQL, 8 binds frontend.</div>
+          </details>
+          <details style="border:1px solid var(--amber);border-radius:8px;background:var(--amber-50);overflow:hidden" open>
+            <summary style="padding:12px 16px;cursor:pointer;font-weight:600;color:var(--amber-800)">⚡ Phase 0 Lean ADD-AI — 28/04/2026 (5 sprints en 4h, ADR v12-v17)</summary>
+            <div style="padding:0 16px 16px;font-size:13px;color:var(--text-2);line-height:1.7">Plugin Cowork minimal + Atomic Templates + SPIKE-VALIDATION (Option C) + Pilotage v1.5 + S6.10-EE parité Claude Design. 9/10 tests verts.</div>
+          </details>
+          <details style="border:1px solid var(--violet-800);border-radius:8px;background:var(--violet-50);overflow:hidden">
+            <summary style="padding:12px 16px;cursor:pointer;font-weight:600;color:var(--violet-800)">▸ V1.0 cible — Été 2026 (12 semaines, ~46k€)</summary>
+            <div style="padding:0 16px 16px;font-size:13px;color:var(--text-2);line-height:1.7">Note produit ≥ 9.0/10, smoke 100%, 7 KPIs instrumentés, vélocité arbitrage ≥ 5 emails/min, NPS interne ≥ 8/10. Multi-tenant Supabase + RLS. Mobile responsive. Beta closed avec 5 CEO pairs.</div>
+          </details>
+          <details style="border:1px solid var(--text-3);border-radius:8px;background:var(--surface-3);overflow:hidden">
+            <summary style="padding:12px 16px;cursor:pointer;font-weight:600;color:var(--text-2)">○ V2 SaaS international — 2027 (~800k€)</summary>
+            <div style="padding:0 16px 16px;font-size:13px;color:var(--text-2);line-height:1.7">i18n FR+EN+AR, RTL prep, premier client international, SOC 2 Type II + RGPD complet, Canvas IA tldraw+Yjs, graphe Cytoscape, API publique.</div>
+          </details>
+          <details style="border:1px solid var(--text-3);border-radius:8px;background:var(--surface-3);overflow:hidden">
+            <summary style="padding:12px 16px;cursor:pointer;font-weight:600;color:var(--text-2)">○ V3 Coach IA — 2028 (~600k€)</summary>
+            <div style="padding:0 16px 16px;font-size:13px;color:var(--text-2);line-height:1.7">Coach Opus modes (arbitrage/coincé/revue stoïque), mirror moments, self-talk monitoring, détection burnout, post-mortem auto, offline-first ElectricSQL, multi-CEO écosystème.</div>
+          </details>
+        </div>
+      </div>
+    </section>
+
     <section class="section" id="section-dashboard">
       <div class="kpi-row">
         <div class="kpi">
@@ -1141,21 +1234,122 @@ code, pre, .mono { font-family: var(--font-mono); }
         </div>
         <p style="margin-top:18px"><a href="00_methode/METHODE-ADD-AI-aiCEO.md" style="color:var(--violet-800);font-weight:600">📖 Lire la note descriptive complète →</a></p>
       </div>
+
+      <div class="card">
+        <h3 class="card-title">🛠️ Ce qui fonctionne aujourd'hui (livré · 28/04/2026)</h3>
+        <p class="card-subtitle">Plugin Cowork <code>aiceo-dev</code> (variante Lean) · S6.9-bis-LIGHT</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:14px">
+          <div style="border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface-2)">
+            <h4 style="margin:0 0 6px;color:var(--text)">📦 3 Skills slash-commands</h4>
+            <ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text-2);line-height:1.7">
+              <li><code>/kickoff &lt;sprint&gt;</code> — démarrage sprint Lean ADD-AI</li>
+              <li><code>/ship</code> — finalisation sprint (pre-tag → smoke → tag → release)</li>
+              <li><code>/retex</code> — retour d'expérience auto post-sprint</li>
+            </ul>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface-2)">
+            <h4 style="margin:0 0 6px;color:var(--text)">🎭 4 Subagents experts</h4>
+            <ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text-2);line-height:1.7">
+              <li><strong>architect</strong> — ADR, modélisation, tradeoffs</li>
+              <li><strong>dev-fullstack</strong> — routes Express + bind frontend</li>
+              <li><strong>designer</strong> — DS Editorial Executive + parité maquette</li>
+              <li><strong>qa-engineer</strong> — smoke, a11y, recette CEO</li>
+            </ul>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface-2)">
+            <h4 style="margin:0 0 6px;color:var(--text)">🧠 Mémoire structurée</h4>
+            <ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text-2);line-height:1.7">
+              <li><code>memory/product/</code> — promesse + contraintes</li>
+              <li><code>memory/tech/</code> — architecture + invariants + pièges</li>
+              <li><code>memory/ceo-context/</code> — ETIC + CEO</li>
+              <li><code>memory/retex/</code> — 1 retex par sprint (template)</li>
+            </ul>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface-2)">
+            <h4 style="margin:0 0 6px;color:var(--text)">🪝 Hooks Git</h4>
+            <ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text-2);line-height:1.7">
+              <li><strong>pre-commit</strong> — node --check + détection NUL bytes + secrets API + warning HTML</li>
+              <li><strong>post-commit</strong> — régénération auto pilotage</li>
+              <li>Installeur : <code>pwsh .cowork\hooks\install-hooks.ps1</code></li>
+            </ul>
+          </div>
+        </div>
+        <p style="margin-top:18px;font-size:12px;color:var(--text-3)"><strong>Statut SPIKE-VALIDATION-ADD-AI</strong> : MIXED (2 GO / 2 NO-GO) → <strong>Option C hybride</strong> actée. Vrai test en S6.11-EE migration des 17 pages.</p>
+      </div>
     </section>
 
     <!-- Section CEO actions -->
     <section class="section" id="section-ceo-actions">
       <div class="card">
         <h3 class="card-title">👤 Actions à exécuter côté CEO (Windows)</h3>
-        <p class="card-subtitle">Tâches que Claude ne peut pas faire et qui requièrent ton intervention</p>
-        <ol style="line-height:1.9">
-          <li><strong>Push vers origin :</strong><br><code>git push origin main</code> — pousse les commits S6.8 + audit + méthode</li>
-          <li><strong>Lancer la routine de mise à jour pilotage :</strong><br><code>pwsh -File update-pilotage.ps1</code> — régénère ce dashboard à la demande</li>
-          <li><strong>Configurer le hook git post-commit auto :</strong><br><code>pwsh -File update-pilotage.ps1 -InstallHook</code> — pilotage régénéré à chaque commit</li>
-          <li><strong>Restart serveur après tout patch backend :</strong><br><code>pwsh -File restart-server.ps1</code></li>
-          <li><strong>Valider l'ADR v8 ADD-AI</strong> dans <code>DECISIONS.md</code> (changer Statut "Proposé" → "Acté")</li>
-          <li><strong>Créer milestone GitHub Phase-1-Fondations</strong> + 5 issues S6.9 à S6.13</li>
-        </ol>
+        <p class="card-subtitle">Tâches que Claude ne peut pas faire (sandbox Linux) — structuré par catégorie</p>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-top:16px">
+
+          <div style="border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface-2)">
+            <h4 style="margin:0 0 10px;color:var(--text)">🔄 Git & versioning</h4>
+            <ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text-2);line-height:1.7">
+              <li>Push commits : <code>git push origin main</code></li>
+              <li>Push tags : <code>git push origin --tags</code></li>
+              <li>Vérif état : <code>git status</code> + <code>git log --oneline -10</code></li>
+              <li>Hook pre-commit : <code>pwsh .cowork\hooks\install-hooks.ps1</code></li>
+            </ul>
+          </div>
+
+          <div style="border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface-2)">
+            <h4 style="margin:0 0 10px;color:var(--text)">⚙️ Serveur Node :4747</h4>
+            <ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text-2);line-height:1.7">
+              <li>Restart : <code>pwsh -File restart-server.ps1</code></li>
+              <li>Stop seul : <code>pwsh -File restart-server.ps1 -StopOnly</code></li>
+              <li>Vérif port : <code>Get-NetTCPConnection -LocalPort 4747</code></li>
+            </ul>
+          </div>
+
+          <div style="border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface-2)">
+            <h4 style="margin:0 0 10px;color:var(--text)">📊 Pilotage & données</h4>
+            <ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text-2);line-height:1.7">
+              <li>Régen pilotage : bouton ↻ <strong>en bas-droite</strong> de cette page</li>
+              <li>Régen manuelle : <code>node scripts/generate-pilotage.js</code></li>
+              <li>Sync GitHub : <code>pwsh -File consistence-dump.ps1</code></li>
+              <li>Sync Outlook : <code>pwsh -File scripts/sync-outlook.ps1</code></li>
+            </ul>
+          </div>
+
+          <div style="border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface-2)">
+            <h4 style="margin:0 0 10px;color:var(--text)">🧪 Tests & recette</h4>
+            <ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text-2);line-height:1.7">
+              <li>Tests unit : <code>cd 03_mvp ; npm test</code></li>
+              <li>Smoke : <code>pwsh scripts/smoke-all.ps1</code></li>
+              <li>E2E Playwright : <code>cd 03_mvp ; npx playwright test</code></li>
+              <li>Recette CEO : <code>04_docs/05_recette/RECETTE-CEO-v0.5-s4.md</code></li>
+            </ul>
+          </div>
+
+          <div style="border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface-2)">
+            <h4 style="margin:0 0 10px;color:var(--text)">🛠️ DB & migrations</h4>
+            <ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text-2);line-height:1.7">
+              <li>Reset DB : <code>cd 03_mvp ; npm run db:reset</code></li>
+              <li>Init : <code>node scripts/init-db.js</code></li>
+              <li>Backup : <code>cp data/aiceo.db data/aiceo.db.bak</code></li>
+            </ul>
+          </div>
+
+          <div style="border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface-2)">
+            <h4 style="margin:0 0 10px;color:var(--text)">🐛 Pièges connus</h4>
+            <ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text-2);line-height:1.7">
+              <li>NUL bytes : <code>python3 strip-nul.py &lt;fichier&gt;</code></li>
+              <li>Tronc HTML : grep <code>&lt;script src</code> ≥ 15</li>
+              <li>EBUSY DB : kill port 4747 avant <code>db:reset</code></li>
+              <li>Cf. CLAUDE.md §5 pour la liste complète</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <h4 style="margin:24px 0 10px;color:var(--text)">📋 Actions courantes — ce qui reste à faire</h4>
+        <div id="ceo-actions-todo" style="font-size:13px;color:var(--text-2)">
+          <em>Action immédiate : push 25+ commits Phase 0 + S6.10-EE-FIX vers origin (cf. ci-dessus § Git)</em>
+        </div>
       </div>
     </section>
 
@@ -1346,6 +1540,19 @@ function renderFullTimeline() {
 }
 
 function renderRoadmap() {
+  // Détection automatique des sprints livrés depuis ADR (v12-v17 = Phase 0)
+  const livredIds = new Set();
+  (DATA.adrs || []).forEach(a => {
+    const t = (a.title || '').toLowerCase();
+    const m = t.match(/(s\d+\.\d+(?:-bis)?(?:-light|-ee|-ee-fix\d?)?|spike-validation)/i);
+    if (m && /(livr|livre|complete|cloture)/.test(t)) livredIds.add(m[1].toLowerCase());
+  });
+  function sprintStatus(id) {
+    var lid = id.toLowerCase();
+    if (livredIds.has(lid)) return 'done';
+    if (lid.startsWith('s6.10-ee') || lid.startsWith('s6.11-bis-light') || lid.startsWith('s6.10-bis-light') || lid.startsWith('s6.9-bis-light') || lid === 'spike-validation') return 'done';
+    return 'pending';
+  }
   const phases = [
     { num: 0, title: 'PHASE 0 LEAN — Setup minimal + Validation', status: 'pending', subtitle: 'Variante Lean : preuve avant engagement · 3 j-binôme', sprints: [
       { id: 'S6.9-bis-LIGHT', desc: 'Cowork minimal (3 skills + 4 subagents) · 0.5 j', doc: '_sprints/S6.9-bis/DOSSIER-SPRINT-S6.9-bis.md' },
@@ -1387,16 +1594,65 @@ function renderRoadmap() {
       '</div>' +
       '<p style="margin:4px 0 0;color:var(--text-3);font-size:12px">' + p.subtitle + ' · cible : <strong>' + p.cible + '</strong></p>' +
       '<div class="phase-sprints">' + p.sprints.map(s => {
+        var st = sprintStatus(s.id);
+        var stIcon = st === 'done' ? '✅ ' : (st === 'active' ? '⚡ ' : '○ ');
+        var stClass = ' sprint-mini-' + st;
         var docLink = s.doc ? ('<a href="' + s.doc + '" target="_blank" style="text-decoration:none;color:inherit;display:block">') : '<div>';
         var docClose = s.doc ? '</a>' : '</div>';
-        return docLink + '<div class="sprint-mini" style="' + (s.doc ? 'cursor:pointer' : '') + '"><div class="sprint-mini-num">' + s.id + (s.doc ? ' 📄' : '') + '</div><div class="sprint-mini-desc">' + s.desc + '</div></div>' + docClose;
+        return docLink + '<div class="sprint-mini' + stClass + '" style="' + (s.doc ? 'cursor:pointer' : '') + '"><div class="sprint-mini-num">' + stIcon + s.id + (s.doc ? ' 📄' : '') + '</div><div class="sprint-mini-desc">' + s.desc + '</div></div>' + docClose;
       }).join('') + '</div>' +
     '</div>';
   }).join('');
 }
 
+function adrCategory(adr) {
+  var t = ((adr.title || '') + ' ' + (adr.context || '')).toLowerCase();
+  if (/livr|livre|cloture|spike|sprint|s\d+\.\d+/.test(t)) return 'livraisons';
+  if (/method|add-ai|cowork|atomic templates/.test(t)) return 'methode';
+  if (/design|editorial|claude design|maquette|palette|font|theme/.test(t)) return 'design';
+  if (/architecture|sqlite|llm|outlook|migration|infra/.test(t)) return 'architecture';
+  if (/strateg|roadmap|budget|excom|gouvernance|allocation/.test(t)) return 'strategie';
+  return 'autre';
+}
 function renderAllAdrs() {
-  $('#all-adrs').innerHTML = DATA.adrs.map(a => renderAdrCard(a)).join('');
+  if (!DATA.adrs || DATA.adrs.length === 0) { $('#all-adrs').innerHTML = '<p>Aucune ADR.</p>'; return; }
+  var groups = { livraisons: [], strategie: [], methode: [], design: [], architecture: [], autre: [] };
+  DATA.adrs.forEach(function (a) { groups[adrCategory(a)].push(a); });
+  var labels = {
+    livraisons: '🚀 Livraisons & Sprints',
+    strategie: '🎯 Stratégie & Roadmap',
+    methode: '⚡ Méthode & Outillage',
+    design: '🎨 Design & UX',
+    architecture: '🏗️ Architecture & Tech',
+    autre: '📂 Autre'
+  };
+  var html = '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">';
+  Object.keys(groups).forEach(function (k) {
+    if (groups[k].length === 0) return;
+    html += '<button class="adr-cat-btn" data-cat="' + k + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:6px;background:var(--surface-2);cursor:pointer;font-size:12px;font-weight:600">' + labels[k] + ' <span style="opacity:.6">(' + groups[k].length + ')</span></button>';
+  });
+  html += '</div>';
+  Object.keys(groups).forEach(function (k) {
+    if (groups[k].length === 0) return;
+    html += '<div class="adr-group" data-cat="' + k + '">';
+    html += '<h4 style="margin:18px 0 8px;color:var(--text);font-size:13px;text-transform:uppercase;letter-spacing:.06em">' + labels[k] + '</h4>';
+    html += groups[k].map(function (a) { return renderAdrCard(a); }).join('');
+    html += '</div>';
+  });
+  $('#all-adrs').innerHTML = html;
+  // Filter handlers
+  document.querySelectorAll('.adr-cat-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var cat = btn.dataset.cat;
+      var allActive = btn.classList.toggle('active');
+      btn.style.background = allActive ? 'var(--text)' : 'var(--surface-2)';
+      btn.style.color = allActive ? '#fff' : 'var(--text)';
+      // Toggle visibility
+      document.querySelectorAll('.adr-group').forEach(function (g) {
+        if (g.dataset.cat === cat) g.style.display = allActive ? 'none' : 'block';
+      });
+    });
+  });
 }
 
 function renderAllCommits() {

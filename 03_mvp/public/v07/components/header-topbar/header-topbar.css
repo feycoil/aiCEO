@@ -1,4 +1,4 @@
-/* header-topbar.css — refonte parité Claude Design */
+/* header-topbar.css — Editorial Executive aligne v06 */
 .ht {
   display: grid;
   grid-template-columns: 1fr auto auto;
@@ -13,35 +13,34 @@
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.09em;
   color: var(--ink-500);
   margin: 0 0 var(--space-2);
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  font-family: var(--font-sans);
 }
-.ht-bc-link {
-  color: var(--ink-500);
-  text-decoration: none;
-}
+.ht-bc-link { color: var(--ink-500); text-decoration: none; }
 .ht-bc-link:hover { color: var(--ink-900); }
 .ht-bc-current { color: var(--ink-900); }
 .ht-bc-sep { color: var(--ink-300); }
+
+/* H1 d accroche : SIGNATURE Aubrielle (parite maquette Claude Design) */
 .ht-title {
-  font-family: var(--font-serif);
-  font-size: var(--text-3xl);
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-family: var(--font-signature);
+  font-weight: var(--font-signature-weight, 500);
+  font-size: var(--text-4xl);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
   color: var(--ink-900);
   margin: 0;
-  line-height: 1.1;
 }
 .ht-sub {
   font-size: var(--text-sm);
   color: var(--ink-500);
   margin: var(--space-1) 0 0;
-  font-style: italic;
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
 }
 .ht-tools, .ht-actions {
   display: flex;
@@ -51,12 +50,8 @@
 .ht-act-ico { font-size: 14px; }
 
 @media (max-width: 880px) {
-  .ht {
-    grid-template-columns: 1fr;
-  }
-  .ht-tools, .ht-actions {
-    width: 100%;
-  }
+  .ht { grid-template-columns: 1fr; }
+  .ht-tools, .ht-actions { width: 100%; }
 }
 @media (max-width: 640px) {
   .ht-title { font-size: var(--text-2xl); }

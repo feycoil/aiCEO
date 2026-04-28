@@ -1517,6 +1517,132 @@ Format :
 
 
 
+## 2026-04-28 v18 · S6.10-EE-FIX2 + Pilotage v1.6 livrés — Aubrielle scopée + 5 améliorations pilotage
+
+**Statut** : Acté · **Origine** : retour CEO 28/04 nuit après recette visuelle finale : *« polices [...] supprime tout ce qui ne sera pas retenu dans la maquette actuelle [...] dans la Roadmap ADD-AI [...] on ne distingue pas les sprint [...] »*.
+
+**Décisions** :
+
+### D1 — Fix typo v07 critique : Aubrielle scopée au H1 signature
+**Problème** : `--font-serif: var(--font-script, "Aubrielle"...)` dans tokens.css faisait que TOUS les composants utilisant `--font-serif` (header H1, KPI values, card titles) s'affichaient en script Aubrielle illisible.
+
+**Fix** : 
+- Retrait de `--font-serif`, remplacé par `--font-signature: var(--font-script, "Aubrielle")` réservé.
+- Classe `.signature-title` créée avec `!important` sur font-family Aubrielle.
+- Header `.ht-title` garde Aubrielle (parité maquette H1 d'accroche).
+- TOUT le reste (`.kt-value`, `.cd-title`, `.cd-time-day`, `.cd-slot-*`, `.cd-foot`, `.sp-input`) bascule explicitement en `var(--font-sans)` (Fira Sans).
+
+### D2 — Pas de fichier v07 superflu à supprimer
+Audit confirmé : les 12 composants + shared + store + page sont tous référencés par `decisions.html`. Aucune duplication. Pas de page autre que `decisions.html` à effacer.
+
+### D3 — Pilotage v1.6 — 5 améliorations CEO livrées (sur 8 demandées)
+
+Patches Python atomic write sur `scripts/pilotage-template.html` (2266 → 2488 lignes) :
+
+1. **🚀 Sprints cliquables avec statut visuel** :
+   - Détection auto des sprints livrés depuis ADRs (regex sur titres v12-v18 contenant "livré")
+   - 3 statuts : ✅ done (fond vert emerald-50 + bord 3px), ⚡ active (fond ambre + glow), ○ pending (fond paper + opacité réduite)
+   - Hover translateX(2px) + transition cubic-bezier
+   - Phase 0 entièrement marquée done (S6.9-bis-LIGHT, S6.10-bis-LIGHT, SPIKE-VALIDATION, S6.11-bis-LIGHT)
+2. **⚡ Méthode ADD-AI étendue avec ce qui fonctionne** :
+   - Nouvelle carte "🛠️ Ce qui fonctionne aujourd'hui" sous la méthode
+   - 4 sous-blocs : 3 Skills (`/kickoff`, `/ship`, `/retex`) · 4 Subagents (architect, dev-fullstack, designer, qa-engineer) · Mémoire structurée · Hooks Git
+   - Statut SPIKE-VALIDATION (MIXED 2GO/2NO-GO → Option C hybride)
+3. **👤 Action CEO structurée par catégorie** :
+   - 6 cartes : Git & versioning · Serveur Node :4747 · Pilotage & données · Tests & recette · DB & migrations · Pièges connus
+   - Au lieu d'une liste plate de 6 items, vue grid responsive
+   - Section "📋 Actions courantes" placeholder pour TODO dynamique (sera enrichie par les commits)
+4. **⚖️ ADRs par catégories (en plus de la liste journalisée)** :
+   - 6 catégories auto-détectées par regex sur titre+contexte : 🚀 Livraisons & Sprints · 🎯 Stratégie & Roadmap · ⚡ Méthode & Outillage · 🎨 Design & UX · 🏗️ Architecture & Tech · 📂 Autre
+   - Boutons filtres en haut avec count par catégorie
+   - Click filtre = toggle visibility de la catégorie
+5. **🗺️ Vue d'ensemble enrichie** :
+   - Timeline 18 mois v0.4→V3 avec 7 jalons + ligne gradient emerald→amber→violet→gris
+   - Légende colorée : ✓ Livré · ⚡ En cours · ▸ V1.0 cible · ○ V2-V3
+   - 6 jalons expandables (`<details>/<summary>`) avec marker custom (▸ rotation 90°) : v0.5 / v0.6+v0.7 / Phase 0 (open par défaut) / V1.0 / V2 / V3
+
+**Améliorations différées (3/8)** :
+- **Arborescence projet** : déjà rendue avec connectors `├─ └─ │` et icônes par type. Acceptable. À enrichir si besoin en S6.11.
+- **Index documentation et Audits & rapports navigation** : déjà filterable par catégorie via `renderDocs` + `renderAudits`. Pas de patch supplémentaire.
+- **Action CEO étendue dynamiquement par commit** : structure en place avec placeholder `#ceo-actions-todo`, mais l'auto-extraction depuis commits est différée à S6.11 (nécessite parser les commits récents et matcher les actions résiduelles).
+
+**Effort réel** : ~30 min Claude actif. Total session : ~5h chrono pour 7 sprints livrés (S6.9-bis-LIGHT + S6.10-bis-LIGHT + SPIKE + S6.11-bis-LIGHT + S6.10-EE + S6.10-EE-FIX + S6.10-EE-FIX2 + Pilotage v1.6). **Vélocité ×8** vs cadrage Lean cumulé.
+
+**Conséquences** :
+
+*Court terme* :
+- Le rendu v07/decisions.html est maintenant **lisible et fidèle** (Aubrielle uniquement sur le titre d'accroche, Fira Sans partout ailleurs).
+- Le pilotage est régénéré (912 KB, +20 KB pour les 5 patches).
+- Action CEO : `Ctrl+F5` sur les 2 onglets pour valider visuellement. Bouton "↻ Régénérer" du pilotage permet d'itérer rapidement.
+
+*Long terme* :
+- Le pattern "import direct des ressources v06 + composants Atomic v07" est validé. À répéter pour les 16 autres pages en S6.11-EE.
+- Les 3 améliorations différées sont documentées dans cette ADR et seront prises en S6.11 (instrumentation tokens + pattern dynamique commits).
+
+*Risques* :
+- R1 — Le ratio `--font-signature` vs `--font-sans` n'est testé que sur `decisions.html`. À vérifier visuellement sur les autres pages quand elles seront migrées.
+- R2 — Les ADR catégories sont auto-détectées par regex. Faux positifs/négatifs possibles. Mitigation : ajouter un champ `category` explicite dans les ADR futures.
+
+**Sources** :
+- ADR v11 Editorial Executive · v17 S6.10-EE-FIX
+- Maquette Claude Design (claude.ai/design/p/02019a1c...)
+- `04_docs/_design-v05-claude/` (ressources design v06)
+- Mandat CEO 28/04 nuit feedback final
+- Tests : 10/10 verts, pilotage régénéré 912 KB
+
+**Prochaine étape** : recette CEO sur les 2 onglets (`v07/decisions.html` + pilotage). Si validée → push 25+ commits + tag `phase0-lean-add-ai-v2`. Sinon ajustements ciblés sur ce qui reste.
+
+---
+
+## 2026-04-28 v17 · S6.10-EE-FIX livré — Fidélité visuelle v07 (sprite SVG + fonts v06 + chevron centré)
+
+**Statut** : Acté · **Origine** : retour CEO 28/04 nuit après recette visuelle v07 vs v06 : *« polices, icônes, emplacement et forme du bouton collapse, comportement UX/UI à améliorer »* + *« tu peux importer une partie des ressources du dossier de la v06 »*.
+
+**Décision** : import direct des ressources DS de v06 dans v07 plutôt que duplication. Le framework Atomic Templates **étend** v06 au lieu de réinventer.
+
+**Périmètre livré** (~30 min Claude actif) :
+
+1. **Sprite SVG icônes Lucide-style v06** : décisions.html charge `../../v06/_shared/icons.svg.html` via fetch au load. **54 icônes** disponibles (`i-home`, `i-arbitrage`, `i-projects`, `i-actions`, `i-people`, `i-evening`, `i-knowledge`, `i-coaching`, `i-target`, `i-undo`, `i-calendar`, `i-sparkle`, `i-globe`, `i-info`, `i-settings`, `i-plus`, `i-arrow-up-right`, etc.).
+2. **Fonts v06 self-hosted** : import de `../../v06/_shared/colors_and_type.css` AVANT tokens.css v07 → utilisation de **Fira Sans** (10 weights) + **Aubrielle** (script display) + **Sol** (ultra-thin) au lieu de Crimson Pro/Inter Google Fonts.
+3. **Tokens.css v07 alignés v06** : couleurs warm cream (`--ivory-100: #f5f3ef` match v06 `--bg`), text foncé (`--ink-900: #111418` match v06 `--text`), accents palette v06 (`--violet`, `--rose`, `--amber`, `--emerald`, `--sky`) via `var()` aliases. Échelle typographique alignée px-pour-px (`--text-base: 14px` = `--fs-body` v06).
+4. **drawer-sidebar refondu** : remplacement des lettres (C/A/S/P/T/G/...) par `<svg class="ico"><use href="#i-X"/></svg>`. Chaque item de section référence un iconId du sprite.
+5. **Chevron collapse centré sur bord vertical** (parité v06) : `position: absolute; top: 50%; right: -14px; transform: translateY(-50%);` + cercle 28×28 avec ombre douce, animation rotation 180° quand collapsed. Persistence localStorage `aiCEO.uiPrefs.drawer-collapsed` (S2.00 conforme).
+6. **header-topbar boutons enrichis** : actions accept maintenant `iconId` au lieu de glyphes Unicode → boutons "Nouvelle décision" + "Exporter" rendent vrais icônes Lucide (`i-plus`, `i-arrow-up-right`).
+7. **CSS .ico globale** : tous les SVG `.ico` ont `stroke: currentColor` (héritent la couleur du parent), `width: 18px` par défaut, modifiers `.ico-sm` (14) et `.ico-lg` (22).
+
+**Ressources v06 importées (zéro duplication)** :
+- `../../v06/_shared/colors_and_type.css` (38 KB, fonts + 17 tokens)
+- `../../v06/_shared/icons.svg.html` (sprite 54 icônes Lucide-style)
+- Fonts via chemins relatifs : `./fonts/FiraSans-*.otf` (résolu côté CSS v06)
+
+**Tests** : v07-atomic.test.js passé de 9 → **10 tests verts** (+1 test "decisions.html charge colors_and_type.css v06 + sprite SVG"). Test fonts adapté (Fira Sans au lieu de Crimson Pro/Inter).
+
+**Conséquences** :
+
+*Court terme* :
+- v07/decisions.html devrait maintenant être **visuellement très proche** de v06/decisions.html (mêmes fonts, mêmes icônes Lucide, mêmes couleurs warm, drawer chevron au centre).
+- Le pattern d'import croisé v06↔v07 est validé : Atomic Templates **complète** v06 sans le remplacer.
+- Recette CEO refresh : `Ctrl+F5` sur `localhost:4747/v07/pages/decisions.html` pour voir le résultat.
+
+*Long terme* :
+- En S6.11-EE migration des 17 pages, le pattern sera : nouvelle page v07 = squelette Atomic + composants v07 + import colors_and_type.css + sprite v06.
+- Quand le sprite v07 dédié sera nécessaire (V2 i18n / nouveaux icônes), il pourra être créé incrémentalement sans casser l'existant.
+
+*Risques* :
+- R1 — Le fetch du sprite SVG peut échouer en file:// mais OK sur :4747 (Express). Mitigation : OK puisque le serveur est requis pour les autres fetch (ES modules).
+- R2 — Les fonts Aubrielle/Sol ne sont pas utilisés actuellement dans v07 (Editorial Executive favorise Fira Sans + tnum). À envisager pour les hero titres en S6.11-EE.
+
+**Sources** :
+- ADR v11 Editorial Executive · v13 S6.10-bis-LIGHT · v16 Phase 0 + S6.10-EE
+- `03_mvp/public/v06/_shared/colors_and_type.css` (référence DS v06)
+- `03_mvp/public/v06/_shared/icons.svg.html` (sprite 54 icônes)
+- Mandat CEO 28/04 nuit : feedback parité v07 vs v06 + autorisation import v06 ressources
+- Tests : `03_mvp/tests/v07-atomic.test.js` (10/10 verts)
+
+**Prochaine étape** : recette CEO sur `localhost:4747/v07/pages/decisions.html` après restart serveur + Ctrl+F5. Si parité validée → S6.11-EE migration des 17 pages avec ce pattern.
+
+---
+
 ## 2026-04-28 v16 · Phase 0 Lean ADD-AI clôturée + S6.10-EE parité visuelle livrée + SPIKE Option C actée
 
 **Statut** : Acté par Claude (en autonomie sous mandat option A) · **Origine** : retour CEO 28/04 nuit après recette visuelle v07/decisions : *« je suis satisfait de la rapidité, mais ergonomie, le design et le style et layout n'est pas repris »* + *« met à jour la roadmap si nécessaire et enregistre la decision »*.

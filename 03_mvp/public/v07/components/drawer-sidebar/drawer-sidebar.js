@@ -1,38 +1,43 @@
-// drawer-sidebar.js — refonte parite Claude Design avec sections
+// drawer-sidebar.js — Editorial Executive aligne v06 (sprite SVG)
+// S6.10-EE-FIX
+function ico(id) {
+  return `<svg class="ico" aria-hidden="true"><use href="#i-${id}"/></svg>`;
+}
+
 const SECTIONS = [
   {
     title: 'Pilotage',
     items: [
-      { id: 'cockpit',     label: 'Cockpit',      href: '../../v06/index.html',      icon: 'C' },
-      { id: 'arbitrage',   label: 'Arbitrage',    href: '../../v06/arbitrage.html',  icon: 'A', badgeCount: 0 },
-      { id: 'evening',     label: 'Soiree',       href: '../../v06/evening.html',    icon: 'S' }
+      { id: 'cockpit',     label: 'Cockpit',      href: '../../v06/index.html',      iconId: 'home' },
+      { id: 'arbitrage',   label: 'Arbitrage',    href: '../../v06/arbitrage.html',  iconId: 'arbitrage', badgeCount: 0 },
+      { id: 'evening',     label: 'Soiree',       href: '../../v06/evening.html',    iconId: 'evening' }
     ]
   },
   {
     title: 'Travail',
     items: [
-      { id: 'projets',     label: 'Projets',      href: '../../v06/projets.html',    icon: 'P', badgeCount: 0 },
-      { id: 'taches',      label: 'Actions',      href: '../../v06/taches.html',     icon: 'T', badgeCount: 0 },
-      { id: 'agenda',      label: 'Agenda',       href: '../../v06/agenda.html',     icon: 'G' },
-      { id: 'assistant',   label: 'Assistant',    href: '../../v06/assistant.html',  icon: '@', badge: 'NEW' },
-      { id: 'equipe',      label: 'Equipe',       href: '../../v06/equipe.html',     icon: 'E' }
+      { id: 'projets',     label: 'Projets',      href: '../../v06/projets.html',    iconId: 'projects', badgeCount: 0 },
+      { id: 'taches',      label: 'Actions',      href: '../../v06/taches.html',     iconId: 'actions', badgeCount: 0 },
+      { id: 'agenda',      label: 'Agenda',       href: '../../v06/agenda.html',     iconId: 'calendar' },
+      { id: 'assistant',   label: 'Assistant',    href: '../../v06/assistant.html',  iconId: 'sparkle', badge: 'NEW' },
+      { id: 'equipe',      label: 'Equipe',       href: '../../v06/equipe.html',     iconId: 'people' }
     ]
   },
   {
     title: 'Capital',
     items: [
-      { id: 'connaissance',label: 'Connaissance', href: '../../v06/connaissance.html', icon: 'K', badge: 'NEW' },
-      { id: 'coaching',    label: 'Coaching',     href: '../../v06/coaching.html',     icon: 'X', badge: 'NEW' },
-      { id: 'revues',      label: 'Revues',       href: '../../v06/revues.html',     icon: 'R' },
-      { id: 'decisions',   label: 'Decisions',    href: 'decisions.html',            icon: 'D' }
+      { id: 'connaissance',label: 'Connaissance', href: '../../v06/connaissance.html', iconId: 'knowledge', badge: 'NEW' },
+      { id: 'coaching',    label: 'Coaching',     href: '../../v06/coaching.html',     iconId: 'coaching', badge: 'NEW' },
+      { id: 'revues',      label: 'Revues',       href: '../../v06/revues.html',     iconId: 'undo' },
+      { id: 'decisions',   label: 'Decisions',    href: 'decisions.html',            iconId: 'target' }
     ]
   }
 ];
 
-const FOOTER_LINKS = [
-  { id: 'lang',    label: 'Francais',  href: '#',                          icon: 'L', tag: 'V2' },
-  { id: 'help',    label: 'Aide',      href: '../../v06/aide.html',        icon: '?' },
-  { id: 'settings',label: 'Reglages',  href: '../../v06/settings.html',    icon: 'O' }
+// Aide + Reglages : section additionnelle apres Capital (pas avec FOOTER plus, evite duplication avec ds-locale).
+const EXTRA_LINKS = [
+  { id: 'help',    label: 'Aide',      href: '../../v06/aide.html',        iconId: 'info' },
+  { id: 'settings',label: 'Reglages',  href: '../../v06/settings.html',    iconId: 'settings' }
 ];
 
 function renderItem(item, active) {
@@ -44,7 +49,7 @@ function renderItem(item, active) {
   return `
     <li class="ds-item${isActive}">
       <a href="${item.href}" class="ds-link"${ariaCurrent}>
-        <span class="ds-icon" aria-hidden="true">${item.icon}</span>
+        ${ico(item.iconId)}
         <span class="ds-label">${item.label}</span>
         ${badge}
       </a>
@@ -72,12 +77,12 @@ export default {
       sectionsRegion.innerHTML += `
         <div class="ds-section ds-section-extras">
           <ul class="ds-list">
-            ${FOOTER_LINKS.map(item => `
+            ${EXTRA_LINKS.map(item => `
               <li class="ds-item">
                 <a href="${item.href}" class="ds-link ds-link-extra">
-                  <span class="ds-icon" aria-hidden="true">${item.icon}</span>
+                  ${ico(item.iconId)}
                   <span class="ds-label">${item.label}</span>
-                  ${item.tag ? `<span class="ds-tag">${item.tag}</span>` : ''}
+                  
                 </a>
               </li>
             `).join('')}

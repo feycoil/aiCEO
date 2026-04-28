@@ -11,10 +11,16 @@
     <div class="cd-grid" data-region="cd-grid"></div>
     <footer class="cd-foot">
       <span class="cd-source" data-region="cd-source"></span>
-      <button class="cd-action" data-action="open" type="button">
-        <span class="cd-action-label">Ouvrir</span>
-        <span class="cd-action-arrow" aria-hidden="true">-></span>
-      </button>
+      <div class="cd-actions">
+        <a class="cd-ai-link" data-region="cd-ai-link" href="#" hidden>
+          <svg class="ico ico-sm" aria-hidden="true"><use href="#i-sparkle"/></svg>
+          <span>Demander a l'assistant</span>
+        </a>
+        <button class="cd-action" data-action="open" type="button">
+          <span>Ouvrir</span>
+          <svg class="ico ico-sm cd-action-arrow" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+        </button>
+      </div>
     </footer>
   </div>
 </article>

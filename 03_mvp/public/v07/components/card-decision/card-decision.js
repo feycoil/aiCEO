@@ -105,12 +105,35 @@ export default {
 
     const src = el.querySelector('[data-region="cd-source"]');
     if (src) {
+      // Toujours afficher la source : props.source > props.source_label > fallback "Posee [date]"
       if (props.source) {
         src.innerHTML = `Source : <a href="#" class="cd-source-link">${escapeHtml(props.source)}</a>`;
       } else if (props.source_label) {
         src.textContent = `Source : ${props.source_label}`;
       } else {
-        src.hidden = true;
+        const iso = props.created_at || props.date || '';
+        if (iso) {
+          const d = new Date(iso);
+          if (!isNaN(d.getTime())) {
+            src.textContent = `Posee le ${d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}`;
+          } else {
+            src.textContent = 'Source : decision interne';
+          }
+        } else {
+          src.textContent = 'Source : decision interne';
+        }
+      }
+    }
+
+    // Lien "Demander a l assistant" : visible uniquement si decision ouverte
+    const aiLink = el.querySelector('[data-region="cd-ai-link"]');
+    if (aiLink) {
+      const isOpen = ['active', 'open', 'pending'].includes(status);
+      if (isOpen && props.id) {
+        aiLink.hidden = false;
+        aiLink.href = `../../v06/assistant.html?context=decision:${encodeURIComponent(props.id)}`;
+      } else {
+        aiLink.hidden = true;
       }
     }
 

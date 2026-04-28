@@ -1,4 +1,5 @@
-// header-topbar.js — refonte parite Claude Design
+// header-topbar.js — Editorial Executive aligne v06 (sprite SVG)
+// S6.10-EE-FIX
 import { ComponentLoader } from '../../shared/component-loader.js';
 
 function escapeHtml(s) {
@@ -6,8 +7,10 @@ function escapeHtml(s) {
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
 }
-function escapeJsonAttr(s) {
-  return String(s).replace(/'/g, '&#39;');
+function escapeJsonAttr(s) { return String(s).replace(/'/g, '&#39;'); }
+function ico(id) {
+  if (!id) return '';
+  return `<svg class="ico" aria-hidden="true"><use href="#i-${id}"/></svg>`;
 }
 
 export default {
@@ -42,8 +45,8 @@ export default {
       acts.innerHTML = props.actions.map(a => `
         <button class="btn ${a.primary ? 'btn-pri' : 'btn-sec'} ${a.iconOnly ? 'btn-icon' : ''}"
                 ${a.id ? `data-action="${a.id}"` : ''}
-                aria-label="${a.label || a.icon || 'action'}">
-          ${a.icon ? `<span class="ht-act-ico" aria-hidden="true">${a.icon}</span>` : ''}
+                aria-label="${a.label || a.iconId || 'action'}">
+          ${a.iconId ? ico(a.iconId) : ''}
           ${!a.iconOnly && a.label ? `<span>${a.label}</span>` : ''}
         </button>
       `).join('');
