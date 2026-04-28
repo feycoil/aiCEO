@@ -706,6 +706,7 @@ body {
       <div class="nav-item" data-section="velocity">📈 Vélocité 30j</div>
 
       <div class="nav-section">Documentation</div>
+      <div class="nav-item" data-section="glossary">🔤 Glossaire CEO</div>
       <div class="nav-item" data-section="docs">📚 Index docs <span class="badge" id="doc-count">0</span></div>
       <div class="nav-item" data-section="audits">🔍 Audits & rapports</div>
       <div class="nav-item" data-section="tree">🌳 Arborescence projet</div>
@@ -927,6 +928,69 @@ body {
       </div>
     </section>
 
+    <!-- Section Glossaire -->
+    <section class="section" id="section-glossary">
+      <div class="card hero-card" style="background: linear-gradient(135deg, var(--surface-2) 0%, var(--amber-50) 100%);">
+        <div class="hero-content">
+          <span class="hero-eyebrow">🔤 Glossaire pour CEO non-tech</span>
+          <h2 class="hero-title">Tous les acronymes et le jargon expliqués</h2>
+          <p class="hero-quote">À consulter dès qu'un terme inconnu apparaît dans une ADR, un sprint, un audit. 33 acronymes techniques + 15 termes du jargon interne aiCEO, chacun avec sa définition simple et un exemple.</p>
+          <div class="hero-actions">
+            <a class="btn-pri md-link" href="00_methode/GLOSSAIRE.md">📖 Ouvrir le glossaire complet →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">📚 Acronymes les plus utilisés</h3>
+          <ul class="adr-list-mini" style="max-height:none">
+            <li><span class="date">ADR</span> · Architecture Decision Record · décision technique tracée</li>
+            <li><span class="date">ADD-AI</span> · AI-Driven Development · méthode où l'IA code, le CEO valide</li>
+            <li><span class="date">KPI</span> · Key Performance Indicator · métrique chiffrée suivie</li>
+            <li><span class="date">LLM</span> · Large Language Model · ChatGPT, Claude, etc.</li>
+            <li><span class="date">MCP</span> · Model Context Protocol · standard Anthropic pour connecter outils</li>
+            <li><span class="date">MVP</span> · Minimum Viable Product · version minimale qui marche</li>
+            <li><span class="date">NPS</span> · Net Promoter Score · satisfaction utilisateur 0-10</li>
+            <li><span class="date">PWA</span> · Progressive Web App · web installable comme app native</li>
+            <li><span class="date">SaaS</span> · Software as a Service · logiciel hébergé chez fournisseur</li>
+            <li><span class="date">SSE</span> · Server-Sent Events · streaming serveur → navigateur</li>
+            <li><span class="date">UX/UI</span> · User Experience / Interface · parcours + visuel</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">🎯 Jargon interne aiCEO</h3>
+          <ul class="adr-list-mini" style="max-height:none">
+            <li><span class="date">Big Rocks</span> · 3 priorités hebdo du CEO (gros cailloux)</li>
+            <li><span class="date">Cockpit</span> · page d'accueil de l'app aiCEO</li>
+            <li><span class="date">Boucle du soir</span> · rituel quotidien (humeur, top 3, streak)</li>
+            <li><span class="date">Eisenhower 5 verdicts</span> · Faire / Déléguer / Décaler / Archiver / Décliner</li>
+            <li><span class="date">Inbox-zero</span> · objectif arbitrage matinal — emails traités</li>
+            <li><span class="date">Pin to knowledge</span> · épingler dans la base mémoire long-terme</li>
+            <li><span class="date">Spike</span> · sprint court de validation d'hypothèse</li>
+            <li><span class="date">Subagent</span> · Claude spécialisé (architect, dev, designer, etc.)</li>
+            <li><span class="date">Tool calling</span> · LLM appelle fonction externe au lieu de juste générer texte</li>
+            <li><span class="date">Twisty</span> · nom du Design System aiCEO</li>
+            <li><span class="date">j-binôme</span> · journée de travail CEO + Claude (pas Claude seul)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">🧭 Comment lire les documents techniques du projet</h3>
+        <ol style="line-height:1.9;font-size:13px">
+          <li><strong>Pour comprendre POURQUOI une décision a été prise</strong> → onglet ⚖️ Décisions ou <code>00_BOUSSOLE/DECISIONS.md</code></li>
+          <li><strong>Pour voir CE QU'ON FAIT cette semaine</strong> → onglet 🎯 Synthèse exécutive (cadre + prochain sprint)</li>
+          <li><strong>Pour suivre L'AVANCEMENT</strong> → onglet 🗺️ Roadmap ADD-AI (4 phases sur 12 semaines)</li>
+          <li><strong>Pour explorer la DOCUMENTATION détaillée</strong> → onglet 📚 Index docs avec recherche + filtres</li>
+          <li><strong>Pour comprendre LA MÉTHODE</strong> → onglet ⚡ ADD-AI (5 principes fondateurs)</li>
+          <li><strong>Pour CE QUE TU DOIS FAIRE</strong> → onglet 👤 Actions CEO (checklist Windows / git push / etc.)</li>
+        </ol>
+        <p style="margin-top:14px;font-size:12px;color:var(--text-3);font-style:italic">💡 Le pilotage est <strong>auto-régénéré après chaque commit</strong> : tu n'as jamais besoin de regarder un document en plus.</p>
+      </div>
+    </section>
+
     <!-- Section Audits -->
     <section class="section" id="section-audits">
       <div class="card">
@@ -1102,7 +1166,8 @@ function bindNav() {
         tree: ['Arborescence projet', 'Structure du dossier scannée automatiquement'],
         github: ['État GitHub', 'Snapshot du dépôt distant feycoil/aiCEO'],
         executive: ['Synthèse exécutive', 'Vue produit · vision · trajectoire 2026-2030 · modèle économique'],
-        releases: ['Releases', 'Historique des versions livrées · release notes complètes']
+        releases: ['Releases', 'Historique des versions livrées · release notes complètes'],
+        glossary: ['Glossaire CEO', 'Acronymes et jargon expliqués en français simple']
       };
       const t = titles[id];
       if (t) { $('#page-title').textContent = t[0]; $('#page-subtitle').textContent = t[1]; }

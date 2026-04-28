@@ -1517,6 +1517,47 @@ Format :
 
 
 
+## 2026-04-28 v10 · Intégration recommandations audit pilotage R1-R12 + glossaire CEO
+
+**Statut** : Acté · **Origine** : analyse UX/UI sans concession du pilotage 00-pilotage-projet.html (commit 2633d77).
+
+**Décision** : intégration des 12 recommandations identifiées dans la roadmap V2 sans modifier sa structure globale (12 semaines, 4 phases) :
+
+**Intégration sprint par sprint** :
+- **S6.11-bis-LIGHT** (Phase 0, inchangé 1 j) : R1 Live bar + R3 Cmd+K + R4 TOC drawer
+- **S6.13** Cmd+K palette + FTS5 (1 j → 1.25 j) : ajout R5 partiel (donut V1 + heatmap commits)
+- **S6.14** Contexte LLM (1 j → 1.5 j) : ajout R7 (KPIs ADD-AI temps réel)
+- **S6.15** Revues (1.5 j → 1.75 j) : ajout R6 (blockers + validations en attente)
+- **S7.5** Skeleton + perf (0.5 j → 0.75 j) : ajout R12 (lazy load) + R8 (hierarchy 3 niveaux)
+- **S7.6** Mobile (1 j → 1.25 j) : ajout R9 (hamburger pilotage) + R11 (deep-link + favoris)
+- **S7.11** Light/dark mode (1 j → 1.5 j) : ajout R10 (accessibilité WCAG AA)
+
+**Coût total** : +2 j-binôme dispersés. Roadmap passe de 22 j → 24 j sur 12 semaines.
+
+**Glossaire CEO** : création de `04_docs/00_methode/GLOSSAIRE.md` qui définit en français simple :
+- 33 acronymes techniques (ADR, ADD-AI, API, KPI, LLM, MCP, NPS, PWA, RGPD, ROI, SaaS, SOC 2, SQL, SSE, UI, UX, WCAG, etc.)
+- 15 termes du jargon interne aiCEO (Big Rocks, Boucle du soir, Cockpit, Cmd+K, Eisenhower 5 verdicts, Garde-fou, Pin to knowledge, Spike, Subagent, Tool calling, Twisty, etc.)
+- Table express acronymes
+- Convention de mise à jour vivante (chaque sprint qui introduit un terme l'ajoute)
+
+**Narratif d'introduction** : ROADMAP-V2 reçoit une section §0 "Pour le CEO non-tech" qui explique les conventions de lecture (sprint, j-binôme, ADD-AI, Lean, garde-fou) avant de plonger dans les chiffres.
+
+**Référencement pilotage** : section "🔤 Glossaire" ajoutée à la sidebar du pilotage HTML, accessible en 1 clic depuis n'importe quel sprint ou ADR contenant un terme technique.
+
+**Conséquences** :
+- 24 j-binôme au lieu de 22 (+9% effort)
+- Pilotage devient un vrai cockpit actionnable (R1, R6, R7) et non plus un wiki rétrospectif
+- Documentation accessible à un CEO non-tech via glossaire + narratif
+- Garde-fous SPIKE J+1 et BETA Lamiae S6.16 inchangés
+
+**Sources** :
+- Audit UX/UI sans concession (cette session)
+- ADR v9 Lean ADD-AI
+- GLOSSAIRE.md (nouveau)
+- ROADMAP-V2-2026-04-28.md mise à jour
+
+---
+
 ## 2026-04-28 v9 · Adoption variante "Lean ADD-AI" + critères de sortie formalisés
 
 **Statut** : Acté · **Origine** : analyse stratégique sans concession demandée par CEO 28/04 PM late.
