@@ -32,6 +32,8 @@
     list.id = 'aiceo-arb-list';
     // Mode compact par defaut : liste repliee
     list.style.cssText = 'display:none;flex-direction:column;gap:6px;max-height:360px;overflow-y:auto;padding-right:4px;margin-top:12px';
+    // S6.8.2 — expose queue pour bind-arbitrage-detail.js
+    window.aiceoArbQueue = queue;
     queue.forEach(function (item) {
       const row = document.createElement('div');
       row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--surface,#faf8f3);border-radius:8px;font-size:13px';

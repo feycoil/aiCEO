@@ -22,6 +22,7 @@
  * branché plus tard ; ici on garantit un fallback déterministe + testable.
  */
 const express = require('express');
+const { createAnthropicClient } = require('../anthropic-client');
 const { getDb, uuid7, now } = require('../db');
 const { loadEmails } = require('../emails-context');
 
@@ -591,6 +592,92 @@ router.get("/emails/suggest-project", (req, res) => {
       email_id: email_id,
       suggestions: candidates.slice(0, 3),
       ready: candidates.length > 0,
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// S6.8.2 — POST /suggest-action : suggestion verdict riche pour un email d'arbitrage
+//   Body : { email_id: string, kind?: 'task'|'decision'|'project' }
+//   Retour : { verdict, title, suggested_delegate, suggested_schedule, confidence, reason, source: 'llm'|'rule' }
+router.post('/suggest-action', async (req, res) => {
+  try {
+    const body = req.body || {};
+    if (!body.email_id) return res.status(400).json({ error: 'email_id requis' });
+    const db = getDb();
+    let email;
+    try {
+      email = db.prepare("SELECT id, subject, from_name, from_email, preview, received_at, inferred_project FROM emails WHERE id = ?").get(body.email_id);
+    } catch (e) { return res.status(500).json({ error: e.message }); }
+    if (!email) return res.status(404).json({ error: 'email introuvable' });
+
+    const subject = (email.subject || '').toLowerCase();
+    const preview = (email.preview || '').slice(0, 600);
+    let verdict = 'faire';
+    let suggested_delegate = null;
+    let suggested_schedule = null;
+    let reason = '';
+    let confidence = 0.6;
+    let source = 'rule';
+
+    // Heuristique fallback (si pas de LLM)
+    if (/d[ée]l[ée]guer|charge|lamiae|karim|na[iî]ma|envoyer\s+a/i.test(subject + preview)) {
+      verdict = 'deleguer';
+      suggested_delegate = 'Lamiae';
+      reason = "Tache operationnelle qui peut etre traitee par un membre de l'equipe.";
+    } else if (/^(re|fwd|tr)\s*:|reportee?|reporter|decaler|repousser|recaler/i.test(subject)) {
+      verdict = 'decaler';
+      reason = "Pas urgent. Pourra etre traite plus tard cette semaine.";
+    } else if (/newsletter|spam|courriel|marketing|promo/i.test(subject + email.from_email)) {
+      verdict = 'decliner';
+      reason = "Communication non strategique. A archiver.";
+    } else if (/[?]\s*$/.test(subject) || /(decider|trancher|valider|aval|approbation)/i.test(subject)) {
+      verdict = 'faire';
+      reason = "Demande explicite : trancher cette semaine.";
+      confidence = 0.75;
+    }
+
+    // LLM enrichi si dispo (Claude prompte avec contexte)
+    if (process.env.ANTHROPIC_API_KEY && process.env.DEMO_MODE !== '1') {
+      try {
+        const client = createAnthropicClient();
+        const sys = "Tu es l'assistant d'arbitrage du CEO. Pour chaque email, tu dois suggerer un verdict parmi : faire (P0/P1, action immediate), deleguer (un membre equipe pourrait s'en charger), decaler (pas urgent, reporter), archiver (reference, pas d'action), decliner (refus poli). Tu retournes UNIQUEMENT du JSON strict {verdict, title, suggested_delegate, suggested_schedule, confidence (0-1), reason (1 phrase courte)}.";
+        const userMsg = `Email recu de ${email.from_name || email.from_email}, sujet: "${email.subject}".\nProjet infere: ${email.inferred_project || '(aucun)'}.\nExtrait: ${preview}\n\nQuel verdict suggeres-tu ?`;
+        const resp = await client.messages.create({
+          model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
+          max_tokens: 400,
+          system: sys,
+          messages: [{ role: 'user', content: userMsg }]
+        });
+        const txt = (resp.content && resp.content[0] && resp.content[0].text) || '';
+        const m = txt.match(/\{[\s\S]*\}/);
+        if (m) {
+          const llmObj = JSON.parse(m[0]);
+          if (['faire','deleguer','decaler','archiver','decliner'].includes(llmObj.verdict)) {
+            verdict = llmObj.verdict;
+            suggested_delegate = llmObj.suggested_delegate || suggested_delegate;
+            suggested_schedule = llmObj.suggested_schedule || suggested_schedule;
+            reason = llmObj.reason || reason;
+            confidence = typeof llmObj.confidence === 'number' ? llmObj.confidence : 0.85;
+            source = 'llm';
+          }
+        }
+      } catch (e) {
+        // LLM echec : on garde l'heuristique fallback
+      }
+    }
+
+    res.json({
+      email_id: email.id,
+      verdict,
+      title: email.subject,
+      suggested_delegate,
+      suggested_schedule,
+      confidence,
+      reason,
+      source,
+      inferred_project: email.inferred_project || null
     });
   } catch (e) {
     res.status(500).json({ error: e.message });
