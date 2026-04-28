@@ -684,4 +684,96 @@ router.post('/suggest-action', async (req, res) => {
   }
 });
 
+// S6.8.3 — POST /analyze-emails-grouped : meme logique que /analyze-emails
+//   mais regroupe les propositions par inferred_project (macro-scenarios).
+//   Retour : { blocks: [{ project: '...', count, proposals: [...] }], orphans: [...] }
+router.post('/analyze-emails-grouped', async (req, res) => {
+  try {
+    // Reuse /analyze-emails internally via fetch local : trop complique en sandbox
+    // Plus simple : appel direct au meme code SQL inline.
+    const db = getDb();
+    let candidates = [];
+    try {
+      candidates = db.prepare(`
+        SELECT
+          id, subject, from_name, from_email, preview, received_at,
+          inferred_project, is_self,
+          (CASE WHEN unread = 1 THEN 30 ELSE 0 END
+            + CASE WHEN flagged = 1 THEN 50 ELSE 0 END
+            + CASE WHEN inferred_project IS NOT NULL AND inferred_project != '' THEN 10 ELSE 0 END
+            + (CASE WHEN received_at >= datetime('now', '-3 day') THEN 20 ELSE 0 END)
+            + (CASE WHEN received_at >= datetime('now', '-7 day') THEN 10 ELSE 0 END)
+            + CASE WHEN subject LIKE '%RFP%' OR subject LIKE '%urgent%' OR subject LIKE '%?' OR subject LIKE '%decider%' THEN 25 ELSE 0 END) AS score,
+          unread, flagged
+        FROM emails
+        WHERE arbitrated_at IS NULL AND is_self = 0
+        ORDER BY score DESC, received_at DESC
+        LIMIT 30
+      `).all();
+    } catch (e) {
+      return res.status(500).json({ error: e.message });
+    }
+
+    const kindFor = (subject) => {
+      const sub = (subject || "");
+      if (/[?]\s*$/.test(sub)) return "decision";
+      if (/^(re|fwd|tr)\s*:/i.test(sub)) return "task";
+      if (/(projet|launch|kickoff|lancement)/i.test(sub)) return "project";
+      return "task";
+    };
+
+    const proposalsAll = candidates.map((r, i) => ({
+      id: "arb-grp-" + (i + 1),
+      source_id: r.id,
+      kind: kindFor(r.subject),
+      title: r.subject || "(sans objet)",
+      from: r.from_name || r.from_email || "",
+      from_email: r.from_email || "",
+      excerpt: (r.preview || "").slice(0, 220).trim(),
+      proposed_priority: r.score >= 100 ? "P0" : r.score >= 50 ? "P1" : "P2",
+      inferred_project: r.inferred_project || null,
+      received_at: r.received_at,
+      score: r.score
+    }));
+
+    // Groupage par inferred_project
+    const byProject = {};
+    const orphans = [];
+    proposalsAll.forEach((p) => {
+      if (p.inferred_project) {
+        if (!byProject[p.inferred_project]) byProject[p.inferred_project] = [];
+        byProject[p.inferred_project].push(p);
+      } else {
+        orphans.push(p);
+      }
+    });
+
+    const blocks = Object.keys(byProject).map((projSlug) => {
+      const props = byProject[projSlug];
+      const counts = { task: 0, decision: 0, project: 0 };
+      props.forEach((p) => { counts[p.kind] = (counts[p.kind] || 0) + 1; });
+      return {
+        project: projSlug,
+        count: props.length,
+        kinds: counts,
+        proposals: props,
+        // Score moyen pour priorite tri
+        avg_score: Math.round(props.reduce((s, p) => s + p.score, 0) / props.length)
+      };
+    }).sort((a, b) => b.avg_score - a.avg_score);
+
+    res.json({
+      blocks,
+      orphans,
+      total: proposalsAll.length,
+      total_blocks: blocks.length,
+      total_orphans: orphans.length,
+      ready: true,
+      message: blocks.length + ' macro-scenario(s) detecte(s) + ' + orphans.length + ' orphelin(s).'
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 module.exports = router;
