@@ -1517,6 +1517,60 @@ Format :
 
 
 
+## 2026-04-28 v9 · Adoption variante "Lean ADD-AI" + critères de sortie formalisés
+
+**Statut** : Acté · **Origine** : analyse stratégique sans concession demandée par CEO 28/04 PM late.
+
+**Décision** : suite à l'analyse synthétique (avantages/risques/recommandations) de la stratégie ADD-AI proposée en ADR v8, adoption de la variante **Lean ADD-AI** plus prudente :
+
+**Ajustements vs ADR v8** :
+- ✂️ Phase 0 réduite de 5 j → 2.5 j :
+  - S6.9-bis allégé (1.5 j → 0.5 j) : 3 skills + 4 subagents au lieu de 10/8, restructuration dossier reportée
+  - S6.10-bis allégé (2 j → 1 j) : 1 page-pilote (decisions) au lieu de 3
+  - S6.11-bis allégé (1.5 j → 1 j) : Cmd+K only, pas de live/PDF/métriques
+- ✅ Ajout **SPIKE Validation ADD-AI** (0.5 j) à J+1 : prouver vélocité ×1.2 / coût −20% / erreurs −30% avant d'engager 22 j
+- ✅ Ajout **Sprint S6.16 BETA Lamiae** (1 j + 3 j calendaire) en fin Phase 1, semaine 4 : validation utilisateur réelle avant Phase 2 (au lieu de S7.9)
+- ✅ Ajout **Sprint S6.16-bis Restructuration projet** (1 j) en fin de course, post-V1
+- ✅ Critères de sortie ADD-AI formalisés (cf. SPIKE)
+
+**Critères de sortie ADD-AI (formels)** :
+
+| Critère | Seuil GO | Seuil NO-GO |
+|---|---|---|
+| Vélocité | ×1.2 ou + | < ×1.0 |
+| Coût tokens | −20% ou + | > baseline S6.8 |
+| Erreurs introduites | −30% ou + | ≥ baseline S6.8 |
+| Coût total $ | ≤ baseline | > baseline +20% |
+| NPS Lamiae S6.16 | ≥ 6/10 | < 6/10 |
+
+**Si SPIKE échoue** : abandon ADD-AI, retour méthode classique avec apprentissages capitalisés. ADR `Abandon ADD-AI` actée. Pas de honte — on a appris.
+
+**Si Beta Lamiae échoue** : ajustement majeur de la roadmap, possible pivot produit avant Phase 2.
+
+**Total roadmap inchangé** : 22 j-binôme sur 12 semaines, mais répartition différente :
+- Phase 0 : 2.5 j (au lieu de 5)
+- Phase 1 + Beta Lamiae : 7.5 j
+- Phase 2 : 6 j
+- Phase 3 + Restructuration : 6.5 j
+
+**Conséquences** :
+- 3 garde-fous critiques en place (spike J+1, Beta Lamiae S6.16, critères de sortie chiffrés)
+- Économie de 2.5 j méta-infrastructure réinvestis en validation produit
+- Risque R1 (sur-ingénierie) mitigé
+- Risque R3 (effet tunnel) mitigé via Beta Lamiae anticipée
+- Risque R4 (promesse ADD-AI non mesurée) mitigé via SPIKE
+- Risque R7 (engagement aveugle) mitigé via critères de sortie
+
+**Sources** :
+- Analyse stratégique sans concession (cette session)
+- ADR v8 ADD-AI (référence)
+- METHODE-ADD-AI-aiCEO.md (promesses)
+- ROADMAP V2 mise à jour avec variante Lean
+- DOSSIER-SPIKE-VALIDATION.md
+- DOSSIER-SPRINT-S6.16-beta-lamiae.md
+
+---
+
 ## 2026-04-28 v8 · Adoption méthode ADD-AI (AI-Driven Development) pour aiCEO
 
 **Statut** : Proposé · **Origine** : mandat CEO 28/04 PM late « logiciel fully developped by ai, projet fully managed by ai ».

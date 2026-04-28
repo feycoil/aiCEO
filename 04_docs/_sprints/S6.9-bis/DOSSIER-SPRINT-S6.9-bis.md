@@ -2,8 +2,29 @@
 
 > **Origine** : ADR `2026-04-28 v8 · Adoption méthode ADD-AI` + mandat CEO 28/04 PM late
 > **Préalable indispensable** avant Phase 1 du Plan de Réalignement
-> **Effort estimé** : 1.5 j-binôme (~6h chrono Claude)
-> **Cible** : projet aiCEO converti en mode ADD-AI, dashboard pilotage complet, dossier projet refactor.
+> **Effort estimé (LEAN)** : 0.5 j-binôme (~3h chrono Claude) — version allégée validée par CEO 28/04 PM late
+> **Effort plein (deferred)** : 1.5 j → reporté à S6.16-bis post-V1 si ADD-AI valide ses promesses
+> **Cible LEAN** : Cowork minimal (3 skills + 4 subagents) + memory/ bootstrap + hooks essentiels. Restructuration dossier reportée à S6.16-bis.
+
+---
+
+## ⚡ Note LEAN ADD-AI (28/04 PM late)
+
+**Décision CEO** : adopter la variante Lean ADD-AI plutôt que la version pleine.
+
+**Ajustements vs version originale** :
+- ✂️ Skills : 3 essentielles (`/kickoff`, `/ship`, `/retex`) au lieu de 10
+- ✂️ Subagents : 4 essentiels (architect, dev-fullstack, designer, qa-engineer) au lieu de 8
+- ✂️ Restructuration dossier projet : **reportée à S6.16-bis** (fin de course, après V1 validé)
+- ✂️ Scheduled tasks : 3 essentielles (morning, evening, weekly) au lieu de 5
+- ✂️ Plugin Cowork minimal viable, pas exhaustif
+- ✅ Hooks git pre-commit + post-commit gardés
+- ✅ Memory/ bootstrap depuis CLAUDE.md gardé
+- ✅ ADR de cadrage gardée
+
+**Effort réduit** : 1.5 j → **0.5 j** (3h chrono Claude).
+
+**Rationale** : éviter la sur-ingénierie en Phase 0. On formalise le minimum viable, on valide la promesse ADD-AI via spike J+1, puis on enrichit incrémentalement quand le besoin réel apparaît.
 
 ---
 

@@ -2,8 +2,27 @@
 
 > **Origine** : observation CEO 28/04 — *"la maquette s'appuie sur des pages HTML avec des données démo et est ensuite templatée par une stack JS avec parfois plusieurs passes pour obtenir un résultat final, ce qui rend le ciblage des updates UX/UI complexe avec des comportements indésirables difficile à debugger."*
 > **Préalable** : Sprint S6.9-bis ADD-AI livré
-> **Effort estimé** : 2 j-binôme
+> **Effort estimé (LEAN)** : 1 j-binôme (1 page-pilote au lieu de 3)
+> **Effort plein** : 2 j → reporté à Phase 1 et 2 (migration progressive)
 > **Cible** : framework "Atomic Templates" + 3 pages migrées exemplaires + plan migration des 15 autres
+
+---
+
+## ⚡ Note LEAN ADD-AI (28/04 PM late)
+
+**Décision CEO** : version allégée — 1 page-pilote (decisions) au lieu de 3.
+
+**Ajustements** :
+- ✂️ 1 page migrée pilote : **decisions** uniquement (le cas d'usage le plus simple)
+- ✅ Framework Atomic Templates documenté en entier
+- ✅ 8 composants atomiques au lieu de 12 (header-topbar, drawer-sidebar, kpi-tile, card-decision, seg-filter, search-pill, modal-detail, empty-state)
+- ✂️ connaissance + arbitrage : reportés en Phase 1 (S6.13 / S6.14) une fois le pattern validé
+- ✅ Tests unit JSDOM gardés (≥ 80%)
+- ✅ Plan migration des 17 autres pages chiffré
+
+**Effort réduit** : 2 j → **1 j**.
+
+**Rationale** : prouver le pattern sur la page la plus simple avant de l'étendre. Si le framework ne tient pas la promesse (debug 5 min vs 30 min), on apprend en 1 j au lieu de 2.
 
 ---
 

@@ -20,10 +20,11 @@ if ($Apply) {
 Write-Host ""
 
 $milestones = @(
-    # Phase 0 (3)
-    @{ title="Phase 0 - S6.9-bis Setup ADD-AI"; desc="Restructuration projet + Cowork plugin + 8 subagents + memory/ + sync GitHub. 1.5 j-binome." },
-    @{ title="Phase 0 - S6.10-bis Atomic Templates"; desc="Framework templates vierges + 12 composants atomiques + 3 pages migrees (decisions/connaissance/arbitrage). 2 j-binome." },
-    @{ title="Phase 0 - S6.11-bis Pilotage v2"; desc="Interface pilotage temps reel : live activity + Cmd+K + metriques produit + decrochages + export PDF. 1.5 j-binome." },
+    # Phase 0 LEAN (4 incl. SPIKE)
+    @{ title="Phase 0 - S6.9-bis-LIGHT Cowork minimal"; desc="3 skills + 4 subagents + memory/ bootstrap + hooks essentiels. 0.5 j-binome." },
+    @{ title="Phase 0 - S6.10-bis-LIGHT Atomic Templates 1 page"; desc="Framework templates + 8 composants + 1 page-pilote (decisions). 1 j-binome." },
+    @{ title="Phase 0 - SPIKE Validation ADD-AI"; desc="Mesure baseline S6.8 vs ADD-AI Lean. Criteres GO/NO-GO chiffres. 0.5 j-binome." },
+    @{ title="Phase 0 - S6.11-bis-LIGHT Pilotage v1.5"; desc="Cmd+K palette + bouton Regenerer + sprints cliquables. 1 j-binome." },
 
     # Phase 1 (5)
     @{ title="Phase 1 - S6.11 DS consolidation"; desc="0 styles inline, components.html v07 documente, 5 tokens elevation. 1 j." },
@@ -46,6 +47,12 @@ $milestones = @(
     @{ title="Phase 3 - S7.9 Onboarding CEO pair"; desc="Seed data + walkthrough 7 jours + Lamiae francophone. 1.5 j." },
     @{ title="Phase 3 - S7.10 Notifications PWA"; desc="Reminders matin/soir/hebdo (sans push cloud). 1 j." },
     @{ title="Phase 3 - S7.11 Light/dark mode"; desc="DS etendu + switcher Reglages. 1 j." },
+
+    # Validation mi-parcours
+    @{ title="Phase 1 - S6.16 BETA Lamiae"; desc="Validation utilisateur reelle a mi-parcours. NPS >= 6, time-to-first-decision < 5 min. 1 j + 3 j calendaire. CRITIQUE GO/NO-GO Phase 2." },
+
+    # Restructuration deferred
+    @{ title="Phase 3 - S6.16-bis Restructuration projet"; desc="Restructuration dossier projet (sous-dossiers thematiques) en fin de course post-V1 valide. 1 j." },
 
     # V1.0 final
     @{ title="V1.0 - Produit dev-grade ready"; desc="Note produit >= 9.0/10, smoke 100%, 7 KPIs instrumentes, NPS >= 8, 100% pages v07. Tag v1.0 + Release." }

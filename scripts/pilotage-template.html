@@ -882,17 +882,19 @@ function renderFullTimeline() {
 
 function renderRoadmap() {
   const phases = [
-    { num: 0, title: 'SETUP ADD-AI + FONDATIONS', status: 'pending', subtitle: 'Preparer la fondation avant de construire · ~5 j-binome', sprints: [
-      { id: 'S6.9-bis', desc: 'Setup ADD-AI + restructuration', doc: '_sprints/S6.9-bis/DOSSIER-SPRINT-S6.9-bis.md' },
-      { id: 'S6.10-bis', desc: 'Atomic Templates frontend', doc: '_sprints/S6.10-bis/DOSSIER-SPRINT-S6.10-bis.md' },
-      { id: 'S6.11-bis', desc: 'Pilotage v2 temps reel', doc: '_sprints/S6.11-bis/DOSSIER-SPRINT-S6.11-bis.md' }
-    ], cible: '5 j-binome' },
+    { num: 0, title: 'PHASE 0 LEAN — Setup minimal + Validation', status: 'pending', subtitle: 'Variante Lean : preuve avant engagement · 3 j-binôme', sprints: [
+      { id: 'S6.9-bis-LIGHT', desc: 'Cowork minimal (3 skills + 4 subagents) · 0.5 j', doc: '_sprints/S6.9-bis/DOSSIER-SPRINT-S6.9-bis.md' },
+      { id: 'S6.10-bis-LIGHT', desc: 'Atomic Templates : 1 page-pilote · 1 j', doc: '_sprints/S6.10-bis/DOSSIER-SPRINT-S6.10-bis.md' },
+      { id: 'SPIKE-VALIDATION', desc: '⚡ MESURE GO/NO-GO ADD-AI · 0.5 j', doc: '_sprints/SPIKE-VALIDATION-ADD-AI/DOSSIER-SPIKE-VALIDATION.md' },
+      { id: 'S6.11-bis-LIGHT', desc: 'Pilotage v1.5 : Cmd+K + Régénérer · 1 j', doc: '_sprints/S6.11-bis/DOSSIER-SPRINT-S6.11-bis.md' }
+    ], cible: '3 j-binome' },
     { num: 1, title: 'FONDATIONS', status: 'pending', subtitle: 'Solidifier le DS et la vitesse · ~5.5 j-binôme', sprints: [
       { id: 'S6.11', desc: 'DS consolidation finale' },
       { id: 'S6.12', desc: 'Keyboard-first arbitrage v07' },
       { id: 'S6.13', desc: 'Cmd+K palette + FTS5' },
       { id: 'S6.14', desc: 'Contexte LLM enrichi serveur' },
-      { id: 'S6.15', desc: 'Revues hebdo refondue v07' }
+      { id: 'S6.15', desc: 'Revues hebdo refondue v07' },
+      { id: 'S6.16', desc: '🔍 BETA LAMIAE validation utilisateur · 1 j + 3 j cal.', doc: '_sprints/S6.16-beta-lamiae/DOSSIER-SPRINT-S6.16-beta-lamiae.md' }
     ], cible: 'Note 6.3 → 8.0' },
     { num: 2, title: 'INTELLIGENCE', status: 'pending', subtitle: 'L\'IA devient un binôme contextualisé · ~6 j-binôme', sprints: [
       { id: 'S7.1', desc: 'Mémoire inter-fils LLM' },
@@ -907,7 +909,8 @@ function renderRoadmap() {
       { id: 'S7.8', desc: 'Bilan soir augmenté' },
       { id: 'S7.9', desc: 'Onboarding CEO pair' },
       { id: 'S7.10', desc: 'Notifications PWA' },
-      { id: 'S7.11', desc: 'Light/dark mode' }
+      { id: 'S7.11', desc: 'Light/dark mode' },
+      { id: 'S6.16-bis', desc: 'Restructuration projet (deferred fin course)' }
     ], cible: 'Note 9.0 → 9.5' }
   ];
   $('#roadmap-phases').innerHTML = phases.map(p => {

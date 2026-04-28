@@ -2,8 +2,32 @@
 
 > **Origine** : mandat CEO 28/04 PM late : *"prevoit aussi un sprint pour ameliorer l'interface de pilotage de projet"*
 > **Préalable** : S6.9-bis livré (Setup ADD-AI) + S6.10-bis livré (Atomic Templates)
-> **Effort estimé** : 1.5 j-binôme (~6h chrono)
+> **Effort estimé (LEAN)** : 1 j-binôme — Cmd+K + lien sprint cliquable + bouton Régénérer
+> **Effort plein (deferred)** : 1.5 j → reporté à post-V1 (S7.13+) si pertinent
 > **Cible** : pilotage = vrai poste de pilotage temps réel, pas juste un index statique
+
+---
+
+## ⚡ Note LEAN ADD-AI (28/04 PM late)
+
+**Décision CEO** : version allégée — fonctionnalités essentielles uniquement.
+
+**Ajustements** :
+- ✅ **Cmd+K palette globale** (recherche ADRs + docs + commits + sections)
+- ✅ **Sprints cliquables** dans la roadmap (déjà partiellement fait)
+- ✅ **Bouton "↻ Régénérer"** manuel (lance generate-pilotage.js via API)
+- ✂️ Live activity WebSocket : reporté
+- ✂️ Métriques produit live : reportées (pas avant Phase 2 quand instrumentées)
+- ✂️ Décrochages auto : reportés
+- ✂️ Coût LLM section : reporté
+- ✂️ Export PDF puppeteer : reporté
+- ✂️ Polling 60s : reporté
+
+**Effort réduit** : 1.5 j → **1 j**.
+
+**Rationale** : le pilotage v1 actuel suffit pour piloter Phase 1. Les features avancées (live, métriques, PDF) n'ont de sens qu'une fois le produit lui-même mature. Sinon on construit un cockpit pour piloter un cockpit.
+
+**Cap** : le pilotage ne dépasse jamais **300 KB**. Toute fonctionnalité au-delà = sortir vers une page séparée.
 
 ---
 
