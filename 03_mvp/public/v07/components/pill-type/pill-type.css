@@ -1,0 +1,26 @@
+/* pill-type.css */
+.pt {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  background: var(--paper);
+  border: 1px solid var(--ivory-200);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-700);
+  white-space: nowrap;
+}
+.pt[data-type="strategique"], .pt[data-type="strategic"] {
+  border-color: var(--info-bg);
+  color: var(--info);
+}
+.pt[data-type="operationnelle"], .pt[data-type="operationnel"], .pt[data-type="operational"] {
+  border-color: var(--success-bg);
+  color: var(--success);
+}
+.pt[data-type="posture"] {
+  border-color: var(--rare-bg);
+  color: var(--rare);
+}

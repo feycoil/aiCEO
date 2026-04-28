@@ -1,0 +1,20 @@
+/* pill-status.css */
+.ps {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+.ps[data-tone="active"]   { background: var(--warning-bg); color: var(--warning); }
+.ps[data-tone="warning"]  { background: var(--warning-bg); color: var(--warning); }
+.ps[data-tone="info"]     { background: var(--info-bg); color: var(--info); }
+.ps[data-tone="success"]  { background: var(--success-bg); color: var(--success); }
+.ps[data-tone="neutral"]  { background: var(--ivory-100); color: var(--ink-500); }
+.ps[data-tone="rare"]     { background: var(--rare-bg); color: var(--rare); }
+.ps[data-tone="pinned"]   { background: #fbf2dc; color: #b8842b; border: 1px solid rgba(184, 132, 43, 0.2); }

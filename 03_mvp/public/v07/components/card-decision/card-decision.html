@@ -1,12 +1,20 @@
-<article class="cd">
-  <header class="cd-head">
-    <span class="pill" data-region="cd-status"></span>
-    <span class="cd-date" data-region="cd-date"></span>
-  </header>
-  <h3 class="cd-title" data-region="cd-title"></h3>
-  <p class="cd-context" data-region="cd-context"></p>
-  <footer class="cd-foot">
-    <span class="cd-meta" data-region="cd-meta"></span>
-    <button class="btn btn-sec cd-action" data-action="open">Détail</button>
-  </footer>
+<article class="cd" data-region="cd-root">
+  <aside class="cd-rail" data-region="cd-rail" aria-hidden="true"></aside>
+  <div class="cd-time" data-region="cd-time">
+    <span class="cd-time-day"></span>
+    <span class="cd-time-hm"></span>
+  </div>
+  <div class="cd-body">
+    <div class="cd-meta-row" data-region="cd-meta"></div>
+    <h3 class="cd-title" data-region="cd-title"></h3>
+    <p class="cd-context" data-region="cd-context"></p>
+    <div class="cd-grid" data-region="cd-grid"></div>
+    <footer class="cd-foot">
+      <span class="cd-source" data-region="cd-source"></span>
+      <button class="cd-action" data-action="open" type="button">
+        <span class="cd-action-label">Ouvrir</span>
+        <span class="cd-action-arrow" aria-hidden="true">-></span>
+      </button>
+    </footer>
+  </div>
 </article>

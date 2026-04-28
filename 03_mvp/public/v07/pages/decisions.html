@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>aiCEO — Décisions (v07 Atomic)</title>
+  <title>aiCEO - Decisions (v07 Atomic - parite Claude Design)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../shared/tokens.css">
   <link rel="stylesheet" href="../shared/tweaks.css">
   <link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css">
@@ -14,14 +15,20 @@
   <link rel="stylesheet" href="../components/search-pill/search-pill.css">
   <link rel="stylesheet" href="../components/modal-detail/modal-detail.css">
   <link rel="stylesheet" href="../components/empty-state/empty-state.css">
+  <link rel="stylesheet" href="../components/pill-project/pill-project.css">
+  <link rel="stylesheet" href="../components/pill-type/pill-type.css">
+  <link rel="stylesheet" href="../components/pill-status/pill-status.css">
+  <link rel="stylesheet" href="../components/time-filter/time-filter.css">
   <style>
     .loading-state, .error-state {
-      padding: var(--space-5);
+      padding: var(--space-7) var(--space-5);
       text-align: center;
       color: var(--ink-500);
       font-style: italic;
+      font-family: var(--font-serif);
     }
     .error-state { color: var(--danger); }
+
     .filters-row {
       display: flex;
       align-items: center;
@@ -29,26 +36,70 @@
       margin-bottom: var(--space-5);
       flex-wrap: wrap;
     }
+    .filters-spacer { flex: 1; }
+    .filters-meta {
+      font-size: var(--text-xs);
+      color: var(--ink-500);
+      font-style: italic;
+      font-family: var(--font-serif);
+    }
+    .filters-meta strong { color: var(--ink-900); font-style: normal; font-weight: 600; }
+
+    .v07-banner {
+      background: var(--primary-50);
+      border: 1px solid var(--primary-100);
+      border-radius: var(--radius-md);
+      padding: var(--space-2) var(--space-4);
+      margin-bottom: var(--space-4);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      font-size: var(--text-xs);
+      color: var(--primary-900);
+    }
+    .v07-banner-tag {
+      background: var(--primary-700);
+      color: var(--paper);
+      padding: 1px 6px;
+      border-radius: var(--radius-sm);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+    .v07-banner-link {
+      margin-left: auto;
+      color: var(--primary-700);
+      font-weight: 600;
+    }
   </style>
 </head>
 <body data-route="decisions">
   <a href="#main" class="skip-link">Aller au contenu principal</a>
   <div class="app">
-    <aside data-component="drawer-sidebar" data-props='{"active":"decisions"}'></aside>
+    <aside data-component="drawer-sidebar" data-props='{"active":"decisions","tenant":{"label":"Mon espace"},"user":{"name":"Major Fey","role":"CEO"}}'></aside>
     <main class="app-main" id="main">
-      <div data-component="header-topbar" data-props='{"title":"Décisions","subtitle":"Ce que vous avez choisi de faire — et de ne pas faire","actions":[{"id":"new","label":"Nouvelle décision","icon":"+","primary":true},{"id":"export","icon":"↓","iconOnly":true,"label":"Exporter"}]}'></div>
+
+      <div class="v07-banner" role="status">
+        <span class="v07-banner-tag">v07 ATOMIC</span>
+        <span>Page-pilote framework Atomic Templates - parite Claude Design (S6.10-EE).</span>
+        <a href="../../v06/decisions.html" class="v07-banner-link">^ Comparer avec v06</a>
+      </div>
+
+      <div data-component="header-topbar" data-props='{"breadcrumb":[{"label":"Cockpit","href":"../../v06/index.html"},{"label":"Decisions"}],"title":"Ce que vous avez choisi de faire - et de ne pas faire","subtitle":"","search":{"placeholder":"Chercher une decision..."},"actions":[{"id":"new","label":"Nouvelle decision","icon":"+","primary":true},{"id":"export","label":"Exporter","icon":"v"}]}'></div>
 
       <div data-region="kpis" class="kpi-row"></div>
 
       <div class="filters-row">
-        <div data-component="seg-filter" data-props='{"id":"type","options":["Toutes","À trancher","Tranchées","Reportées","Gelées"],"active":"Toutes"}'></div>
-        <div data-component="search-pill" data-props='{"placeholder":"Rechercher dans les décisions…"}'></div>
+        <div data-component="seg-filter" data-props='{"id":"type","options":["Toutes","Strategiques","Operationnelles","Posture"],"active":"Toutes"}'></div>
+        <div data-component="time-filter" data-props='{"id":"horizon","active":"all"}'></div>
+        <div class="filters-spacer"></div>
+        <span class="filters-meta" data-region="filter-meta">- resultats - les plus recentes en haut</span>
       </div>
 
-      <div data-region="timeline" class="stack-3"></div>
+      <div data-region="timeline"></div>
 
       <div data-region="empty" hidden>
-        <div data-component="empty-state" data-props='{"icon":"decision","title":"Aucune décision pour ce filtre","description":"Modifiez les filtres ou lancez un arbitrage pour générer de nouvelles décisions à trancher.","cta":{"label":"Aller à l'arbitrage","href":"arbitrage.html"}}'></div>
+        <div data-component="empty-state" data-props='{"icon":"decision","title":"Aucune decision pour ce filtre","description":"Modifiez les filtres ou lancez un arbitrage pour generer de nouvelles decisions a trancher.","cta":{"label":"Aller a l arbitrage","href":"../../v06/arbitrage.html"}}'></div>
       </div>
     </main>
   </div>

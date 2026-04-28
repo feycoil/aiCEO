@@ -1,13 +1,32 @@
-/* header-topbar.css */
+/* header-topbar.css — refonte parité Claude Design */
 .ht {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: end;
   gap: var(--space-4);
   padding-bottom: var(--space-5);
   margin-bottom: var(--space-5);
   border-bottom: 1px solid var(--ivory-200);
 }
+.ht-text { min-width: 0; }
+.ht-breadcrumb {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-500);
+  margin: 0 0 var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.ht-bc-link {
+  color: var(--ink-500);
+  text-decoration: none;
+}
+.ht-bc-link:hover { color: var(--ink-900); }
+.ht-bc-current { color: var(--ink-900); }
+.ht-bc-sep { color: var(--ink-300); }
 .ht-title {
   font-family: var(--font-serif);
   font-size: var(--text-3xl);
@@ -24,15 +43,21 @@
   font-style: italic;
   font-family: var(--font-serif);
 }
-.ht-actions {
+.ht-tools, .ht-actions {
   display: flex;
   gap: var(--space-2);
   flex-shrink: 0;
 }
-.ht-act-ico {
-  font-size: 14px;
+.ht-act-ico { font-size: 14px; }
+
+@media (max-width: 880px) {
+  .ht {
+    grid-template-columns: 1fr;
+  }
+  .ht-tools, .ht-actions {
+    width: 100%;
+  }
 }
 @media (max-width: 640px) {
-  .ht { flex-direction: column; align-items: stretch; }
   .ht-title { font-size: var(--text-2xl); }
 }

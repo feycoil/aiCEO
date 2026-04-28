@@ -1,5 +1,5 @@
-// decisions-store.js — store unique pour la page Décisions
-// Pattern Atomic Templates · S6.10-bis-LIGHT
+// decisions-store.js — store unique pour la page Decisions
+// Pattern Atomic Templates - S6.10-bis-LIGHT + S6.10-EE parite Claude Design
 import { Store } from '../shared/store.js';
 import { ComponentLoader } from '../shared/component-loader.js';
 
@@ -8,6 +8,7 @@ class DecisionsStore extends Store {
     super({
       decisions: [],
       filter: 'Toutes',
+      horizon: 'all',
       query: '',
       loading: false,
       error: null
@@ -29,83 +30,113 @@ class DecisionsStore extends Store {
   }
 
   setFilter(f) { this.setState({ filter: f }); }
+  setHorizon(h) { this.setState({ horizon: h }); }
   setQuery(q) { this.setState({ query: q }); }
 
-  // Décisions filtrées
   visible() {
-    const { decisions, filter, query } = this.state;
+    const { decisions, filter, query, horizon } = this.state;
     let list = decisions;
+
     if (filter && filter !== 'Toutes') {
       const map = {
-        'À trancher': d => /^(open|pending|à_trancher|a_trancher)$/i.test(d.status || ''),
-        'Tranchées':  d => /^(decided|tranch|done|fait)/i.test(d.status || ''),
-        'Reportées':  d => /^(reportee|reportée|deferred)$/i.test(d.status || ''),
-        'Gelées':     d => /^(frozen|gelee|gelée)$/i.test(d.status || '')
+        'Strategiques':   d => /strateg/i.test(d.type || ''),
+        'Operationnelles':d => /operation/i.test(d.type || ''),
+        'Posture':        d => /posture/i.test(d.type || '')
       };
       const fn = map[filter];
       if (fn) list = list.filter(fn);
     }
+
+    if (horizon && horizon !== 'all') {
+      const days = parseInt(horizon, 10);
+      if (!isNaN(days) && days > 0) {
+        const cutoff = Date.now() - days * 86400000;
+        list = list.filter(d => {
+          const t = d.created_at || d.updated_at || d.date;
+          if (!t) return true;
+          const ts = new Date(t).getTime();
+          return !isNaN(ts) && ts >= cutoff;
+        });
+      }
+    }
+
     if (query) {
       const q = query.toLowerCase();
       list = list.filter(d =>
         (d.title || '').toLowerCase().includes(q) ||
         (d.context || '').toLowerCase().includes(q) ||
-        (d.description || '').toLowerCase().includes(q)
+        (d.description || '').toLowerCase().includes(q) ||
+        (d.project_name || d.project || '').toLowerCase().includes(q)
       );
     }
+
+    list = list.slice().sort((a, b) => {
+      const ta = new Date(a.created_at || a.updated_at || 0).getTime();
+      const tb = new Date(b.created_at || b.updated_at || 0).getTime();
+      return tb - ta;
+    });
+
     return list;
   }
 
   computeKpis() {
     const all = this.state.decisions;
-    const isOpen = d => /^(open|pending)$/i.test(d.status || '');
-    const isDone = d => /^(decided|tranch|done)/i.test(d.status || '');
-    const isFrozen = d => /^(frozen|gelee|gelée)$/i.test(d.status || '');
-    const isReported = d => /^(reportee|reportée|deferred)$/i.test(d.status || '');
+    const isOpen = d => /^(open|pending|active)$/i.test(d.status || '');
+    const isDecided = d => /^(decided|tranch|done|validated)/i.test(d.status || '');
+    const isInfirmed = d => Boolean(d.infirmed) || /^(infirmee|infirmed)$/i.test(d.status || '');
+    const now = Date.now();
+    const sixtyDaysAgo = now - 60 * 86400000;
+    const toRevisit = d => {
+      const t = new Date(d.created_at || d.updated_at || 0).getTime();
+      return isOpen(d) && (d.review_when || (t > 0 && t < sixtyDaysAgo));
+    };
     return {
-      total: all.length,
-      open: all.filter(isOpen).length,
-      done: all.filter(isDone).length,
-      frozen: all.filter(isFrozen).length + all.filter(isReported).length
+      total:    all.length,
+      decided:  all.filter(isDecided).length,
+      pending:  all.filter(isOpen).length,
+      infirmed: all.filter(isInfirmed).length,
+      revisit:  all.filter(toRevisit).length
     };
   }
 }
 
 const store = new DecisionsStore();
-
-// Render orchestré
-function escapeJson(s) { return String(s).replace(/'/g, '&#39;'); }
+function escapeJsonAttr(s) { return String(s).replace(/'/g, '&#39;'); }
 
 async function render(state) {
-  // KPIs
   const kpis = store.computeKpis();
   const kpiRegion = document.querySelector('[data-region="kpis"]');
   if (kpiRegion) {
     kpiRegion.innerHTML = [
-      { label: 'Total', value: kpis.total, tone: '' },
-      { label: 'À trancher', value: kpis.open, tone: 'warning' },
-      { label: 'Tranchées', value: kpis.done, tone: 'success' },
-      { label: 'Gelées / reportées', value: kpis.frozen, tone: '' }
-    ].map(k => `<div data-component="kpi-tile" data-props='${escapeJson(JSON.stringify(k))}'></div>`).join('');
+      { label: 'Decisions tranchees',         value: kpis.decided,  tone: '' },
+      { label: "En attente d'effet",          value: kpis.pending,  tone: 'warning' },
+      { label: 'Infirmees retrospectivement', value: kpis.infirmed, tone: '' },
+      { label: 'A revisiter sous 30 j',       value: kpis.revisit,  tone: '' }
+    ].map(k => `<div data-component="kpi-tile" data-props='${escapeJsonAttr(JSON.stringify(k))}'></div>`).join('');
     await ComponentLoader.refresh(kpiRegion);
   }
 
-  // Timeline
   const timeline = document.querySelector('[data-region="timeline"]');
   const empty = document.querySelector('[data-region="empty"]');
+  const meta = document.querySelector('[data-region="filter-meta"]');
   const list = store.visible();
+
+  if (meta) {
+    meta.innerHTML = `<strong>${list.length}</strong> resultat${list.length > 1 ? 's' : ''} - les plus recentes en haut`;
+  }
 
   if (timeline) {
     if (state.loading) {
-      timeline.innerHTML = `<div class="loading-state">Chargement…</div>`;
+      timeline.innerHTML = `<div class="loading-state">Chargement des decisions...</div>`;
     } else if (state.error) {
       timeline.innerHTML = `<div class="error-state">Erreur : ${state.error}</div>`;
     } else if (list.length === 0) {
       timeline.innerHTML = '';
     } else {
-      timeline.innerHTML = list.map(d =>
-        `<div data-component="card-decision" data-props='${escapeJson(JSON.stringify(d))}'></div>`
-      ).join('');
+      timeline.innerHTML = list.map((d, i) => {
+        const delay = Math.min(i * 30, 600);
+        return `<div data-component="card-decision" data-props='${escapeJsonAttr(JSON.stringify(d))}' style="animation-delay:${delay}ms"></div>`;
+      }).join('');
       await ComponentLoader.refresh(timeline);
     }
   }
@@ -116,15 +147,16 @@ async function render(state) {
 
 store.on('change', render);
 
-// Wiring événements globaux (filter + search)
 document.addEventListener('seg:change', (e) => {
   if (e.detail && e.detail.id === 'type') store.setFilter(e.detail.value);
+});
+document.addEventListener('time:change', (e) => {
+  if (e.detail && e.detail.id === 'horizon') store.setHorizon(e.detail.value);
 });
 document.addEventListener('search:change', (e) => {
   store.setQuery((e.detail && e.detail.query) || '');
 });
 
-// Lance le chargement après le mount des composants
 window.addEventListener('load', () => store.load());
 
 export default store;

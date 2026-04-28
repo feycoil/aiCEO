@@ -1,9 +1,23 @@
-<nav class="ds" aria-label="Navigation principale">
+<nav class="ds" aria-label="Navigation principale" data-region="ds-root">
   <div class="ds-brand">
     <span class="ds-brand-mark">aiCEO</span>
+    <span class="ds-version" data-region="ds-version">v0.7</span>
   </div>
-  <ul class="ds-list" data-region="ds-items"></ul>
-  <div class="ds-footer">
-    <span class="ds-version">v07 · Atomic</span>
+  <div class="ds-tenant" data-region="ds-tenant">
+    <span class="ds-tenant-avatar" aria-hidden="true">M</span>
+    <span class="ds-tenant-label">Mon espace</span>
   </div>
+  <div class="ds-sections" data-region="ds-sections"></div>
+  <div class="ds-footer" data-region="ds-footer">
+    <div class="ds-user">
+      <span class="ds-user-avatar" data-region="ds-user-avatar" aria-hidden="true">U</span>
+      <div class="ds-user-meta">
+        <span class="ds-user-name" data-region="ds-user-name">Utilisateur</span>
+        <span class="ds-user-role" data-region="ds-user-role">CEO</span>
+      </div>
+    </div>
+  </div>
+  <button class="ds-toggle" type="button" aria-label="Replier la navigation" data-action="toggle">
+    <span class="ds-toggle-icon" aria-hidden="true">‹</span>
+  </button>
 </nav>

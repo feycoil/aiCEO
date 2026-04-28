@@ -1517,6 +1517,100 @@ Format :
 
 
 
+## 2026-04-28 v16 · Phase 0 Lean ADD-AI clôturée + S6.10-EE parité visuelle livrée + SPIKE Option C actée
+
+**Statut** : Acté par Claude (en autonomie sous mandat option A) · **Origine** : retour CEO 28/04 nuit après recette visuelle v07/decisions : *« je suis satisfait de la rapidité, mais ergonomie, le design et le style et layout n'est pas repris »* + *« met à jour la roadmap si nécessaire et enregistre la decision »*.
+
+**3 décisions tranchées par Claude** (sous mandat carte blanche CEO) :
+
+### D1 — SPIKE-VALIDATION : Option C (hybride) actée
+**Justification** : score MIXED 2GO/2NO-GO du SPIKE Phase 0 est inconcluant par construction (scope création vs refactor incomparable). Option C diffère le verdict définitif au vrai test : **S6.11-EE migration des 17 pages câblées** où la valeur des subagents Lean ADD-AI sera testée sur du code complexe avec mount Windows piège.
+
+**Conséquences** :
+- Continuation Lean ADD-AI sur Phase 1 (6 sprints S6.11 → S6.15)
+- SPIKE-VALIDATION-2 prévu fin Phase 1 (post-S6.11-EE)
+- Si NO-GO confirmé : ADR `2026-XX-XX · v17 · Bascule méthode classique post-Phase 1` + archivage `.cowork/`
+- À ajouter en S6.11 : middleware d'instrumentation tokens dans `data/sprint-metrics.db` pour SPIKE futurs sans extrapolation
+
+### D2 — Parité visuelle v07/decisions livrée (S6.10-EE)
+**Justification** : sans parité visuelle, le SPIKE-VALIDATION-2 sera biaisé (PoC technique vs produit fini incomparable). Investissement de ~2h Claude (~$3) débloque la décision méthodologique de manière rigoureuse.
+
+**Périmètre livré** :
+
+1. **4 nouveaux composants atomiques v07** (triplet html+js+css) :
+   - `pill-project` — pill projet avec dot couleur déterministe (hash → palette 6 couleurs)
+   - `pill-type` — pill type décision (Stratégique / Opérationnelle / Posture) avec couleurs sémantiques
+   - `pill-status` — pill status (ACTIVE / VALIDÉE / GELÉE / REPORTÉE / ÉPINGLÉE) avec data-tone
+   - `time-filter` — filtre horizon temporel (Tout horizon / 30 J / 90 J / 1 an)
+2. **3 composants atomiques refondus** :
+   - `card-decision` : refonte parité Claude Design (rail vertical coloré + time column + meta row 3 pills + grid 2-col EFFET PROJETÉ/À REVISITER + source link + animation fadeUp staggered)
+   - `drawer-sidebar` : 3 sections PILOTAGE/TRAVAIL/CAPITAL + tenant chip "Mon espace" + version "v0.7" + footer user avec avatar + chevron collapsible avec persistance `localStorage 'aiCEO.uiPrefs.drawer-collapsed'` (S2.00 conformité)
+   - `header-topbar` : breadcrumb + titre Crimson Pro + zone tools (search) + zone actions (boutons)
+3. **Page `decisions.html` refondue** :
+   - Bandeau v07 ATOMIC primary-50 avec lien comparaison v06
+   - Header avec breadcrumb (Cockpit / Décisions) + titre + search + 2 boutons (Nouvelle décision primary + Exporter secondary)
+   - 4 KPIs paritaires (Décisions tranchées / En attente d'effet / Infirmées rétrospectivement / À revisiter sous 30 j)
+   - Filtres dual : type seg-filter + horizon time-filter + meta "X résultats - les plus récentes en haut"
+   - Timeline cards avec stagger animation
+4. **decisions-store enrichi** : filtre horizon temporel ajouté + KPIs computeKpis (decided/pending/infirmed/revisit) + tri par date desc
+5. **Tests v07-atomic.test.js** : passé de 7 → 9 tests (12 composants + drawer 3 sections + card rail/grid/source) — **9/9 verts**
+
+**Effort réel** : ~2h Claude actif. Total Phase 0 + S6.10-EE : ~4h pour 5 sprints (vs 3 j-binôme cadré = ~24h ETP). **Vélocité ×6** sur l'ensemble.
+
+**Pièges rencontrés** :
+- 🔴 **Mount Windows piège #2 récurrent** : 5 fichiers tronqués cette session (system.js, header-topbar.js, card-decision.js, drawer-sidebar.js, decisions-store.js, decisions.html, card-decision.html). Restauration systématique via Python atomic write.
+- 📝 À ajouter en règle dans `.cowork/memory/tech/pieges-connus.md` : **TOUJOURS Python atomic write pour fichiers > 50 lignes en première écriture sur mount Windows**, pas seulement pour les patches d'existants.
+
+### D3 — Suite immédiate : pause recette CEO
+**Justification** : 5 sprints livrés en ~4h chrono, le CEO doit digérer le livré et faire la recette visuelle avant de démarrer Phase 1. Phase 1 démarrera demain matin avec un cerveau frais.
+
+**Action CEO requise** :
+1. Restart serveur : `pwsh tools\restart-server.ps1`
+2. Hard refresh sur 3 onglets pour comparaison visuelle :
+   - `localhost:4747/v07/pages/decisions.html` (Atomic + Editorial Executive)
+   - `localhost:4747/v06/decisions.html` (DS Twisty actuel)
+   - Maquette Claude Design (référence)
+3. Validation A/B/C SPIKE (ma reco actée : C, mais le CEO peut overrider)
+4. Push 22 commits locaux (16 précédents + S6.9 + S6.10 + SPIKE + S6.11 + S6.10-EE) :
+   ```powershell
+   cd C:\_workarea_local\aiCEO
+   pwsh -File .cowork\hooks\install-hooks.ps1
+   git add -A
+   git commit -m "feat(phase0-lean-add-ai): 5 sprints livrés autonomie · S6.9 + S6.10 + SPIKE + S6.11 + S6.10-EE · ADR v12-v16"
+   git push origin main
+   git tag phase0-lean-add-ai
+   git push origin phase0-lean-add-ai
+   ```
+
+**Conséquences globales** :
+
+*Court terme* :
+- Phase 0 Lean ADD-AI **complètement livrée** (5 sprints sur 4 cadrés + 1 bonus parité visuelle).
+- ROADMAP V2.2 en vigueur : Phase 1 démarrable immédiatement (S6.11 + S6.11-EE migration combinée Editorial Executive + Atomic Templates sur 17 pages, 2 j-binôme).
+- Le CEO peut **maintenant juger objectivement** Atomic Templates sur un rendu fidèle vs maquette.
+
+*Long terme* :
+- Si recette CEO valide la parité visuelle v07/decisions, le pattern S6.10-EE devient le référent pour **migrer les 16 autres pages v06 → v07** en S6.11-EE (au lieu de juste appliquer les tokens DS sur v06).
+- Le SPIKE-VALIDATION-2 final décidera de la méthode pour Phase 2-3.
+- Si bascule méthode classique en milieu Phase 1 : `.cowork/` archivé, framework Atomic + Editorial Executive **conservés** (artefacts produit, pas méthode).
+
+*Risques résiduels* :
+- R1 — La recette CEO peut révéler des écarts visuels mineurs vs maquette Claude Design (icônes lettres au lieu de glyphes Twisty pour éviter risque mount Windows). Mitigation : sprite SVG en S6.11.
+- R2 — Le drawer collapsible n'est pas testé en JSDOM (pas de localStorage en sandbox). Mitigation : test E2E Playwright en Phase 1 sur Windows.
+- R3 — La page decisions.html v07 ne fonctionne **que serveur Express tournant** (ES modules + fetch CORS). Vérifier : `localhost:4747/v07/pages/decisions.html` après restart.
+
+**Sources** :
+- ADR v9 Lean ADD-AI · v11 Editorial Executive · v12 S6.9 · v13 S6.10 · v14 SPIKE · v15 S6.11
+- DOSSIER-SPRINT-S6.10-bis.md (cadrage Atomic Templates)
+- DIRECTION-ARTISTIQUE.md (manifeste Editorial Executive)
+- Maquette Claude Design (claude.ai/design/p/02019a1c-8138...)
+- Tests `03_mvp/tests/v07-atomic.test.js` (9/9 verts en sandbox Linux)
+- Mandat CEO 28/04 nuit : *« oui avec tes décisions. met à jour la roadmap si nécessaire et enregistre la decision »*
+
+**Prochaine étape** : recette CEO sur le livré (estimation 15 min) → décision GO/NO-GO Phase 1. Pas d'autre sprint cette session pour rester sous le budget $15.
+
+---
+
 ## 2026-04-28 v15 · Sprint S6.11-bis-LIGHT livré — Pilotage v1.5 (Cmd+K + bouton Régénérer)
 
 **Statut** : Acté · **Origine** : Phase 0 Lean ADD-AI suite (mandat CEO 28/04 soir option A, 4 sprints autonomes).
