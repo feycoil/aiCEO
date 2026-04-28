@@ -456,6 +456,103 @@ body {
 .sprint-mini-num { font-weight: 700; color: var(--text); }
 .sprint-mini-desc { color: var(--text-3); font-size: 11px; margin-top: 2px; }
 
+/* === MD Viewer drawer === */
+.md-viewer-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(20,18,16,0.4);
+  z-index: 200;
+  animation: aiceoFadeIn .15s ease-out;
+}
+.md-viewer-overlay.open { display: flex; justify-content: flex-end; }
+.md-viewer-panel {
+  width: min(960px, 92vw);
+  height: 100vh;
+  background: var(--surface-1);
+  border-left: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  box-shadow: -12px 0 40px rgba(0,0,0,0.18);
+  animation: aiceoSlideLeft .25s ease-out;
+}
+@keyframes aiceoFadeIn { from { opacity: 0 } to { opacity: 1 } }
+@keyframes aiceoSlideLeft { from { transform: translateX(100%) } to { transform: translateX(0) } }
+.md-viewer-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 16px; padding: 20px 28px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.md-viewer-eyebrow {
+  display: inline-block;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--violet-800);
+  padding: 2px 8px; background: var(--violet-50); border-radius: 99px;
+  margin-bottom: 4px;
+}
+.md-viewer-header h2 { margin: 0 0 4px; font-size: 18px; font-weight: 600; }
+.md-viewer-path { margin: 0; font-size: 11px; font-family: ui-monospace, "Cascadia Code", monospace; color: var(--text-3); }
+.md-viewer-actions { display: flex; gap: 6px; }
+.md-viewer-actions a, .md-viewer-actions button {
+  width: 32px; height: 32px; border: 0; border-radius: 8px;
+  background: transparent; cursor: pointer; font-size: 18px;
+  color: var(--text-3); display: flex; align-items: center; justify-content: center;
+  text-decoration: none; transition: background .15s, color .15s;
+}
+.md-viewer-actions a:hover, .md-viewer-actions button:hover { background: var(--surface-3); color: var(--text); }
+.md-viewer-body {
+  flex: 1; overflow-y: auto; padding: 28px 32px 60px;
+  font-size: 14px; line-height: 1.7; color: var(--text);
+}
+.md-viewer-foot {
+  display: flex; justify-content: space-between;
+  padding: 10px 28px; border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--text-3); background: var(--surface-2);
+}
+
+/* === Markdown rendering === */
+.md-viewer-body h1 { font-size: 26px; font-weight: 700; margin: 0 0 16px; padding-bottom: 12px; border-bottom: 2px solid var(--border); }
+.md-viewer-body h2 { font-size: 20px; font-weight: 700; margin: 28px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.md-viewer-body h3 { font-size: 16px; font-weight: 600; margin: 24px 0 10px; color: var(--text); }
+.md-viewer-body h4 { font-size: 14px; font-weight: 600; margin: 20px 0 8px; color: var(--text-2); }
+.md-viewer-body h5 { font-size: 13px; font-weight: 600; margin: 16px 0 6px; color: var(--text-2); }
+.md-viewer-body h6 { font-size: 12px; font-weight: 600; margin: 12px 0 6px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.04em; }
+.md-viewer-body p { margin: 0 0 14px; }
+.md-viewer-body strong { font-weight: 600; color: var(--text); }
+.md-viewer-body em { font-style: italic; color: var(--text-2); }
+.md-viewer-body code {
+  background: var(--surface-3); padding: 1px 6px; border-radius: 4px;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.88em; color: var(--rose-700);
+}
+.md-viewer-body pre {
+  background: var(--surface-3); padding: 14px 16px; border-radius: 8px;
+  overflow-x: auto; margin: 0 0 16px; font-size: 12px; line-height: 1.5;
+}
+.md-viewer-body pre code { background: transparent; padding: 0; color: var(--text); }
+.md-viewer-body blockquote {
+  border-left: 3px solid var(--violet-800); padding: 4px 16px;
+  margin: 0 0 16px; color: var(--text-2); font-style: italic;
+  background: var(--violet-50); border-radius: 0 6px 6px 0;
+}
+.md-viewer-body ul, .md-viewer-body ol { margin: 0 0 16px; padding-left: 24px; }
+.md-viewer-body li { margin-bottom: 4px; }
+.md-viewer-body a { color: var(--violet-800); text-decoration: none; font-weight: 500; border-bottom: 1px solid transparent; transition: border-color .15s; }
+.md-viewer-body a:hover { border-bottom-color: var(--violet-800); }
+.md-viewer-body hr { border: 0; border-top: 1px solid var(--border); margin: 24px 0; }
+.md-viewer-body table {
+  width: 100%; border-collapse: collapse; margin: 0 0 18px;
+  font-size: 13px;
+}
+.md-viewer-body th {
+  text-align: left; padding: 8px 12px; font-weight: 600;
+  background: var(--surface-3); border-bottom: 2px solid var(--border);
+}
+.md-viewer-body td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+.md-viewer-body tr:hover td { background: var(--surface-2); }
+
+/* Indicateur cliquable sur les liens .md */
+.md-link { cursor: pointer; }
+
 /* === Modal === */
 .modal-overlay {
   display: none;
@@ -899,6 +996,30 @@ body {
   </main>
 </div>
 
+<!-- MD Viewer drawer -->
+<div class="md-viewer-overlay" id="md-viewer">
+  <div class="md-viewer-panel">
+    <header class="md-viewer-header">
+      <div>
+        <span class="md-viewer-eyebrow" id="md-viewer-cat">document</span>
+        <h2 id="md-viewer-title">—</h2>
+        <p class="md-viewer-path" id="md-viewer-path">—</p>
+      </div>
+      <div class="md-viewer-actions">
+        <a id="md-viewer-external" href="#" target="_blank" title="Ouvrir dans nouvel onglet">↗</a>
+        <button id="md-viewer-close" title="Fermer (Esc)">×</button>
+      </div>
+    </header>
+    <div class="md-viewer-body" id="md-viewer-body">
+      <div style="padding:60px 24px;text-align:center;color:var(--text-3)">Chargement...</div>
+    </div>
+    <footer class="md-viewer-foot">
+      <span id="md-viewer-meta">—</span>
+      <span style="opacity:.5">⌘K · Esc · ↑↓ · clic-droit pour ouvrir dans onglet</span>
+    </footer>
+  </div>
+</div>
+
 <!-- Modal détail -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
@@ -1332,6 +1453,210 @@ function showAdrModal(key) {
 
 document.getElementById('modal').addEventListener('click', e => {
   if (e.target.id === 'modal') e.target.classList.remove('open');
+});
+
+// === Mini parser markdown vanilla ===
+function mdParse(md) {
+  // Pre-process: tables (avant tout) — pattern |x|y|\n|---|---|\n|a|b|
+  md = md.replace(/(^\|.+\|$\n^\|[\s|:-]+\|$\n(^\|.+\|$\n?)+)/gm, function (block) {
+    var lines = block.trim().split('\n');
+    if (lines.length < 2) return block;
+    var headerCells = lines[0].slice(1, -1).split('|').map(function (c) { return c.trim(); });
+    var bodyLines = lines.slice(2);
+    var html = '<table><thead><tr>' + headerCells.map(function (h) { return '<th>' + h + '</th>'; }).join('') + '</tr></thead><tbody>';
+    bodyLines.forEach(function (line) {
+      var cells = line.slice(1, -1).split('|').map(function (c) { return c.trim(); });
+      html += '<tr>' + cells.map(function (c) { return '<td>' + c + '</td>'; }).join('') + '</tr>';
+    });
+    html += '</tbody></table>';
+    return '\n\n' + html + '\n\n';
+  });
+
+  // Code blocks ``` (avant escape pour preserve)
+  var codeBlocks = [];
+  md = md.replace(/```([\s\S]*?)```/g, function (m, code) {
+    codeBlocks.push('<pre><code>' + escHtml(code.trim()) + '</code></pre>');
+    return '\u0000CODEBLOCK_' + (codeBlocks.length - 1) + '\u0000';
+  });
+
+  // Escape HTML pour le reste
+  md = md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  // Headers
+  md = md.replace(/^###### (.+)$/gm, '<h6>$1</h6>');
+  md = md.replace(/^##### (.+)$/gm, '<h5>$1</h5>');
+  md = md.replace(/^#### (.+)$/gm, '<h4>$1</h4>');
+  md = md.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  md = md.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  md = md.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+  // HR
+  md = md.replace(/^---+$/gm, '<hr>');
+
+  // Inline code
+  md = md.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+
+  // Bold + italic (bold avant italic pour eviter conflict)
+  md = md.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+  md = md.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+
+  // Links [text](url)
+  md = md.replace(/\[([^\]]+)\]\(([^)]+)\)/g, function (m, txt, url) {
+    var isMd = /\.md(?:#.*)?$/i.test(url);
+    var cls = isMd ? ' class="md-link"' : '';
+    var target = isMd ? '' : ' target="_blank"';
+    return '<a href="' + url + '"' + cls + target + '>' + txt + '</a>';
+  });
+
+  // Quotes
+  md = md.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+  // Merge consecutive blockquotes
+  md = md.replace(/(<\/blockquote>\n<blockquote>)/g, '<br>');
+
+  // Lists - ordered
+  md = md.replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>');
+  md = md.replace(/(<li>.+<\/li>\n)+/g, function (m) {
+    return '<ol>' + m + '</ol>';
+  });
+  // Lists - unordered (- or *)
+  md = md.replace(/^[\-*] (.+)$/gm, '<liu>$1</liu>');
+  md = md.replace(/(<liu>.+<\/liu>\n?)+/g, function (m) {
+    return '<ul>' + m.replace(/<liu>/g, '<li>').replace(/<\/liu>/g, '</li>') + '</ul>';
+  });
+
+  // Paragraphs (split sur double newlines, exclure ce qui commence deja par balise)
+  var blocks = md.split(/\n\n+/);
+  md = blocks.map(function (b) {
+    b = b.trim();
+    if (!b) return '';
+    if (/^<(h[1-6]|ul|ol|li|pre|blockquote|hr|table|p|div)/.test(b)) return b;
+    return '<p>' + b + '</p>';
+  }).join('\n\n');
+
+  // Restore code blocks
+  md = md.replace(/\u0000CODEBLOCK_(\d+)\u0000/g, function (m, idx) {
+    return codeBlocks[parseInt(idx, 10)];
+  });
+
+  return md;
+}
+
+// === MD Viewer (drawer) ===
+function categorizeDoc(path) {
+  if (/^00_BOUSSOLE\//.test(path)) return 'gouvernance';
+  if (/audit/i.test(path)) return 'audit';
+  if (/methode|method/i.test(path)) return 'methode';
+  if (/release-notes/i.test(path)) return 'release';
+  if (/sprint/i.test(path)) return 'sprint';
+  if (/api\//.test(path)) return 'api';
+  if (/recette|onboarding/i.test(path)) return 'recette';
+  if (/^04_docs\//.test(path)) return 'doc';
+  if (/03_mvp\//.test(path)) return 'tech';
+  if (/CLAUDE|README/.test(path)) return 'racine';
+  return 'document';
+}
+
+function openMdViewer(rawPath) {
+  var path = rawPath.replace(/^\.\//, '').replace(/^\.\.\//, '');
+  // Normalize : pilotage est dans 04_docs/, donc paths relatifs sont depuis 04_docs/
+  // Si lien commence par "_release-notes/" ou "00_methode/", c'est local 04_docs
+  // Si lien commence par "../", c'est remonté à racine
+  var fullPath;
+  if (rawPath.startsWith('../')) {
+    fullPath = rawPath.replace(/^\.\.\//, '');
+  } else if (rawPath.startsWith('04_docs/')) {
+    fullPath = rawPath;
+  } else {
+    fullPath = '04_docs/' + rawPath;
+  }
+
+  // Cherche dans essential_docs
+  var content = (DATA.essential_docs && DATA.essential_docs[fullPath]) || null;
+
+  // Si non trouvé, essaie variantes courantes
+  if (!content && DATA.essential_docs) {
+    var alt = Object.keys(DATA.essential_docs).find(function (k) {
+      return k.endsWith('/' + rawPath.split('/').pop()) || k === rawPath;
+    });
+    if (alt) { content = DATA.essential_docs[alt]; fullPath = alt; }
+  }
+
+  // Doc info
+  var doc = (DATA.docs || []).find(function (d) { return d.path === fullPath || d.path.endsWith('/' + rawPath.split('/').pop()); });
+
+  var overlay = $('#md-viewer');
+  var titleEl = $('#md-viewer-title');
+  var pathEl = $('#md-viewer-path');
+  var catEl = $('#md-viewer-cat');
+  var bodyEl = $('#md-viewer-body');
+  var metaEl = $('#md-viewer-meta');
+  var extEl = $('#md-viewer-external');
+
+  catEl.textContent = categorizeDoc(fullPath);
+  pathEl.textContent = fullPath;
+  extEl.href = '../' + fullPath;
+
+  if (content) {
+    var titleMatch = content.match(/^#\s+(.+)$/m);
+    titleEl.textContent = titleMatch ? titleMatch[1].trim() : fullPath.split('/').pop();
+    bodyEl.innerHTML = mdParse(content);
+    metaEl.textContent = (doc ? new Date(doc.mtime).toLocaleString('fr-FR') + ' · ' : '') + (content.length > 1024 ? Math.round(content.length / 1024) + ' KB' : content.length + ' chars');
+    overlay.classList.add('open');
+    bodyEl.scrollTop = 0;
+  } else {
+    // Fallback : tenter fetch (ne marche que si servi via http, pas file://)
+    titleEl.textContent = fullPath.split('/').pop();
+    bodyEl.innerHTML = '<div style="padding:24px;background:var(--amber-50);border-radius:8px;font-size:13px;color:var(--amber-800)">⚠ Document non embarqué dans le pilotage. Tentative de chargement HTTP...</div>';
+    metaEl.textContent = 'fetch en cours...';
+    overlay.classList.add('open');
+    fetch('../' + fullPath).then(function (r) { return r.ok ? r.text() : null; }).then(function (text) {
+      if (text) {
+        var titleMatch = text.match(/^#\s+(.+)$/m);
+        titleEl.textContent = titleMatch ? titleMatch[1].trim() : fullPath.split('/').pop();
+        bodyEl.innerHTML = mdParse(text);
+        metaEl.textContent = 'chargé via HTTP · ' + Math.round(text.length / 1024) + ' KB';
+      } else {
+        bodyEl.innerHTML = '<div style="padding:24px;background:var(--rose-50);border-radius:8px;color:var(--rose-700);font-size:13px">' +
+          '❌ Impossible de charger ' + escHtml(fullPath) + '<br><br>' +
+          'Le pilotage doit être servi via HTTP (Express localhost:4747) pour les docs non embarqués.<br>' +
+          'Sinon, ouvrir directement dans un onglet via le bouton ↗.</div>';
+        metaEl.textContent = 'erreur';
+      }
+    }).catch(function () {
+      bodyEl.innerHTML = '<div style="padding:24px;background:var(--rose-50);border-radius:8px;color:var(--rose-700);font-size:13px">❌ Document inaccessible. Ouvrir dans un onglet via ↗.</div>';
+    });
+  }
+}
+
+function closeMdViewer() {
+  $('#md-viewer').classList.remove('open');
+}
+
+// Bind global
+document.addEventListener('click', function (e) {
+  // Intercepter tous les clics sur liens .md
+  var a = e.target.closest('a[href]');
+  if (!a) return;
+  var href = a.getAttribute('href');
+  if (!href || !/\.md(?:#.*)?$/i.test(href)) return;
+  if (href.startsWith('http://') || href.startsWith('https://')) return;
+  // Si Ctrl/Meta enfoncé, laisser ouvrir dans nouvel onglet (comportement standard)
+  if (e.ctrlKey || e.metaKey || e.shiftKey) return;
+  e.preventDefault();
+  openMdViewer(href);
+});
+
+// Esc pour fermer
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape' && $('#md-viewer').classList.contains('open')) {
+    closeMdViewer();
+  }
+});
+
+// Bouton fermer + click overlay
+$('#md-viewer-close').addEventListener('click', closeMdViewer);
+$('#md-viewer').addEventListener('click', function (e) {
+  if (e.target.id === 'md-viewer') closeMdViewer();
 });
 
 init();

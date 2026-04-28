@@ -152,6 +152,49 @@ function githubState() {
   return snapshot;
 }
 
+// Embarque le contenu complet des .md essentiels pour viewer integre
+// (evite fetch CORS sur file://). Limite raisonnable : ~300 KB total.
+function loadEssentialDocs() {
+  const essentials = {};
+  const patterns = [
+    /^00_BOUSSOLE\//,
+    /^04_docs\/00_methode\//,
+    /^04_docs\/_release-notes\//,
+    /^04_docs\/_sprints\//,
+    /^04_docs\/audits\//,
+    /^04_docs\/03_roadmap\//,
+    /^04_docs\/api\//,
+    /^CLAUDE\.md$/,
+    /^README\.md$/,
+    /^04_docs\/0[0-9].*\.md$/  // 00-README, 01-vision, etc.
+  ];
+  function scan(dir, base) {
+    base = base || PROJECT_ROOT;
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const e of entries) {
+      const full = path.join(dir, e.name);
+      const rel = path.relative(base, full).replace(/\\/g, '/');
+      if (e.isDirectory()) {
+        if (['.git', 'node_modules', '_archive', '.claude'].includes(e.name)) continue;
+        scan(full, base);
+      } else if (e.isFile() && e.name.endsWith('.md')) {
+        const matchEssential = patterns.some(p => p.test(rel));
+        if (matchEssential) {
+          try {
+            const content = fs.readFileSync(full, 'utf-8');
+            // Cap a 60 KB par fichier pour eviter explosion
+            essentials[rel] = content.slice(0, 60000);
+          } catch (e) { /* skip */ }
+        }
+      }
+    }
+  }
+  scan(PROJECT_ROOT);
+  const totalSize = Object.values(essentials).reduce((s, c) => s + c.length, 0);
+  console.log('  Embedded ' + Object.keys(essentials).length + ' essential docs (' + Math.round(totalSize/1024) + ' KB)');
+  return essentials;
+}
+
 function parseReleases() {
   const dir = path.join(PROJECT_ROOT, '04_docs', '_release-notes');
   if (!fs.existsSync(dir)) return [];
@@ -212,6 +255,9 @@ function generate() {
   console.log('Parsing release notes...');
   const releases = parseReleases();
   console.log('  Found ' + releases.length + ' releases');
+
+  console.log('Loading essential .md content for embedded viewer...');
+  const essentialDocs = loadEssentialDocs();
   console.log('  ' + ghState.milestones.length + ' milestones, ' + ghState.issues_open + ' open issues');
 
   const data = {
@@ -223,7 +269,8 @@ function generate() {
     consistence,
     tree,
     github: ghState,
-    releases
+    releases,
+    essential_docs: essentialDocs
   };
 
   if (!fs.existsSync(TEMPLATE)) {
