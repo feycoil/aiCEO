@@ -1,6 +1,6 @@
 {
   "name": "aiceo-mvp",
-  "version": "0.6.0-s6.1",
+  "version": "0.6.0-s6.4",
   "description": "aiCEO v0.6 - Interface finalisee (DS atomic + 27 composants + microcopy + a11y + coaching legers)",
   "type": "commonjs",
   "private": true,

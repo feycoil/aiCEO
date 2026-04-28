@@ -2,7 +2,7 @@
 
 > **Lis ce fichier en premier** quand tu démarres une nouvelle session sur ce projet. Il consolide le contexte, les conventions, les pièges connus et les workflows types pour t'éviter de tout redécouvrir.
 
-**Version** : 28/04/2026 PM (post-S6.4 — câblage v0.6 réel sur SQLite + sync Outlook emails)
+**Version** : 28/04/2026 PM v2 (post-S6.4 — câblage v0.6 réel + onglets Logs/Releases settings + restauration scripts)
 **À jour à chaque clôture de sprint** ou décision structurante (cf. § 8 Maintenance).
 
 ---
@@ -11,7 +11,7 @@
 
 **aiCEO** = copilote IA exécutif local pour CEO. Cockpit + arbitrage matin + bilan soir + revue hebdo + assistant chat live (Claude streaming SSE) + portefeuille (groupes/projets/contacts/décisions). 100 % local, SQLite mono-instance, zéro cloud applicatif. Intégrations : Outlook (sync 2h via schtasks), Anthropic Claude API, GitHub.
 
-**Trajectoire (ROADMAP v3.2)** : v0.4 (app statique) → v0.5 (internalisée fonctionnelle ✅) → **v0.6 (Interface finalisée selon bundle Claude Design v3.1, ~8 k€ binôme, ~2-3 sem)** → V1 (SaaS + équipes + mobile, ~46 k€ binôme/6 mois) → V2 (commercial intl + i18n + SOC 2, 800 k€) → V3 (coach + offline + multi-CEO, 600 k€).
+**Trajectoire (ROADMAP v3.3 — restructuration 28/04 PM)** : v0.4 (app statique) → v0.5 (internalisée fonctionnelle ✅) → **v0.6 (Interface finalisée + câblage réel S6.4 ✅, ~8 k€ binôme)** → **v0.7 (LLM 4 surfaces UX + sync events Outlook + finalisation gaps CR-GAP, ~5 k€ binôme, ~3-4 sessions S6.5/S6.6/S6.7)** → V1 (SaaS + équipes + mobile, ~41 k€ binôme/6 mois — réduit de -5 k€ vs v3.2) → V2 (commercial intl + i18n + SOC 2, 800 k€) → V3 (coach + offline + multi-CEO, 600 k€). **Total inchangé : 1.56 M€** sur 18 mois.
 
 **Statut au 28/04/2026 (PM)** :
 - **v0.5 internalisée TERMINÉE** : 5 sprints livrés. Tag `v0.5` posé. **110 k€ engagés / 97,4 k€ dépensés (88,5%) / 12,6 k€ provision V1**.
@@ -24,9 +24,17 @@
   - **13/17 pages frontend câblées sur API** : cockpit (KPIs + Cap stratégique + dot-chart 7j + projects-houses + Top3), arbitrage (file emails + focus + board kanban drag-drop SQL), projets (auto-status alerte/à-surveiller/sain heuristique), équipe (avatars uniformes + recence), décisions (liste + tri + summary), tâches (buckets temporels + chips filtres dynamiques + tri + toggle done), revues (CTA "Démarrer la revue"), evening, settings, onboarding, projet, hub, components.
   - **3 pages preview annoncées** : assistant.html (v0.7), connaissance.html (v0.7), coaching.html (v0.8) — banners ambres, démo masquée.
   - **Auto-suggestions aiCEO rule-based** : projet status (volume emails 30j + récence), arbitrage scoring SQL, KPIs cockpit. **LLM Anthropic disponible côté serveur (4 routes SSE) mais non branché en UI v0.6** — décision délibérée : nécessite validation `ANTHROPIC_API_KEY` en prod.
-- **Tags Git** : `v0.5` (final v0.5), `v0.6-s6.1` (DS atomic archivé). À poser : `v0.6-s6.4` post-recette.
+- **Tags Git** : `v0.5` (final v0.5), `v0.6-s6.1` (DS atomic archivé). **`v0.6-s6.4` posé 28/04 PM** (HEAD = `12abe7d feat(s6.4): câblage v0.6 réel + ingestion emails SQLite + bootstrap`).
 
 **Prochaine étape** : recette CEO + ExCom → GO câblage v0.7 LLM (coaching + auto-draft + decision-recommend) + sync events Outlook + tag `v0.6-s6.4`.
+
+**Ajouts S6.4 v2 (28/04 PM late)** :
+- **Onglet Logs** dans Réglages : `GET /api/system/logs` (lecture `data/*.log` + tail 200 lignes), bouton "Charger les logs" manuel + spinner, console dark theme avec coloration syntaxique (rouge=error, ambre=warn, vert=OK), bandeau ambre d'aide pédagogique, métadonnées (size/lignes/mtime).
+- **Onglet Releases** dans Réglages : `GET /api/system/releases` (4 livrées + 4 upcoming), skeleton loader pendant fetch, cartes avec border-left coloré (emerald livrée, accent courante, ambre à venir), pills statut, mention "Bloqué par" pour upcoming.
+- **Pattern globals theme.js renforcé** : `window.aiceoSettingsTab(event, target)` pour résister aux handlers globaux. `onclick` HTML inline injecté sur chaque tab via JS.
+- **Pattern fix critique** : `settings.html` avait perdu **19/20 scripts** (seul `theme.js` restait). Restauration via Python atomic write — vérifier régulièrement la section `<script src=...>` à la fin de chaque page.
+
+**Cache busting** : `?v=98` (428 occurrences sur 18 fichiers HTML).
 
 ---
 
@@ -164,6 +172,7 @@ Archive de référence pour V2/V3 (DS BEM strict + ITCSS 7 couches + 27 composan
 | `gh issue create` échoue `label not found` | Labels GH manquants | `pwsh -File fix-labels.ps1` (idempotent) |
 | `gh release create` echec `Release.tag_name already exists` | Release existe déjà (en draft ou public) | `pwsh -File fix-consistence-v2.ps1 -Apply` (publie drafts + crée manquantes) |
 | Doublons d'issues sur GitHub | Script `gh-create-issues-sX.ps1` lancé 2× | `pwsh -File cleanup-issues.ps1 -Apply` (audit ciblé) |
+| **Page HTML qui perd ses `<script>` en bas** (drawer non stylé, tabs cassés, badges absents) | Mount Windows tronque silencieusement la fin du HTML (28/04 PM : settings.html avait perdu 19/20 scripts) | Vérifier avec `grep -c "<script src" page.html` (doit être ≥15 sur les pages câblées). Restaurer via Python atomic write en copiant la section `<script src="_shared/...">` d'une page voisine (ex: arbitrage.html → settings.html). |
 | `git status` montre fichiers non modifiés comme "modifiés" | OneDrive (résolu) ou CRLF | `git checkout --` ciblé |
 | Copier-coller en français change `xxx.md` en `[xxx.md](http://xxx.md)` | App du CEO transforme noms ressemblant URL | **Toujours générer un script .ps1** plutôt que demander de coller des commandes |
 | Issues fermées par `gh-create-issues-sX.ps1` mais milestone open | Le commit `feat(sX)` n'a pas de `Closes #YYY` car les numéros sont créés APRÈS | Fermer manuellement avec `gh issue close --reason completed` puis fermer milestone |
@@ -233,6 +242,9 @@ Quand tu cherches…
 | ROADMAP officielle versionnée | `04_docs/08-roadmap.md` v3.2 (réalignement modèle binôme + insertion v0.6) |
 | Comment onboarder un CEO pair | `04_docs/ONBOARDING-CEO-PAIR.md` (7 sections, apprentissages réels v0.5) |
 | Comment passer la recette CEO post-install | `04_docs/RECETTE-CEO-v0.5-s4.md` (8 sections, 25 minutes, 6/6 critères pour GO) |
+| Roadmap v3.3 détaillée (post-S6.4 + insertion v0.7) | `04_docs/08-roadmap.md` v3.3 + `00_BOUSSOLE/ROADMAP.md` |
+| Synchroniser GitHub milestones avec ROADMAP v3.3 | `fix-milestones-v0.7.ps1` (DRY-RUN par défaut, `-Apply` pour exécuter — crée v0.7 + S6.5/6/7 + 17 issues) |
+| CR Gap backend ↔ frontend post-S6.4 | `04_docs/CR-GAP-v06-cablage.md` (4 sections : audit backend, 17 pages, gap fonctionnel, synthèse) |
 | Comment présenter à l'ExCom | `04_docs/RECETTE-EXCOM-v0.5.md` (scénario démo 30 min, Q&R 8 questions, décision GO V1) |
 | Doc API curl examples | `04_docs/api/S4.md` (assistant + groupes + projets + contacts + décisions) |
 | État GitHub vs roadmap | `consistence-dump.json` (généré par script) + comparaison roadmap-map.html |
