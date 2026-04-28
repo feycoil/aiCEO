@@ -1517,6 +1517,40 @@ Format :
 
 
 
+## 2026-04-28 v8 · Adoption méthode ADD-AI (AI-Driven Development) pour aiCEO
+
+**Statut** : Proposé · **Origine** : mandat CEO 28/04 PM late « logiciel fully developped by ai, projet fully managed by ai ».
+
+**Décision** : adopter une méthode formalisée de développement entièrement piloté par IA pour le projet aiCEO :
+
+- **Plugin Cowork `aiceo-dev`** à créer (10 skills, 13 slash commands, 8 subagents experts, hooks, MCP custom, scheduled tasks)
+- **Méthode ADD-AI** : 5 principes (Continuité, Multi-rôle, Auto-vérification, Coût-conscient, Méta-amélioration) + 7 phases sprint + 4 niveaux check + 3 boucles amélioration
+- **Architecture produit refactorée** : découplage `domain/` / `infrastructure/` / `presentation/`
+- **Mémoire Cowork structurée** : `memory/product`, `memory/tech`, `memory/retex`, `memory/ceo-context`
+- **Dashboard métriques** : vélocité + qualité + coût + friction CEO
+- **Boucle méta-amélioration mensuelle** : Claude s'améliore lui-même via retex agrégés
+
+**Plan de conversion** : 3 sprints (S6.9-bis Setup, S6.10-bis Refactor architecture, S6.11-bis Dashboard+hooks) ≈ 3.5 j-binôme. Puis reprise du plan de réalignement Phase 1-2-3 en mode ADD-AI.
+
+**ROI projeté** :
+- Vélocité ×1.5 à ×2 (effet cumulatif d'apprentissage)
+- Coût tokens −40% (batch + cache + délégation subagents)
+- Erreurs −80% (hooks + qa-engineer subagent)
+- Continuité parfaite cross-sessions
+
+**Conséquences** :
+- aiCEO devient le 1er produit *fully built by AI* du portefeuille ETIC
+- Méthode reproductible pour futurs produits
+- Risque : dépendance forte à Cowork + Anthropic — mitigation via abstraction tool layer (cf. ADR R2)
+
+**Validation** : à acter par CEO J+0. Démarrage S6.9-bis J+1.
+
+**Sources** :
+- `04_docs/00_methode/METHODE-ADD-AI-aiCEO.md` (note descriptive complète)
+- ADR v6 (S6.8 livré) + v7 (Plan réalignement)
+
+---
+
 ## 2026-04-28 v7 · Audit UX/UI complet + plan de réalignement Phase 1-2-3 (proposé)
 
 **Statut** : Proposé · **Audience** : CEO + binôme · **Origine** : audit UX/UI sans concession demandé par CEO post-S6.8.
