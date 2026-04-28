@@ -24,12 +24,17 @@
 
   // Pages "preview" — visuel statique, données simulées
   // Ces hrefs seront grisés dans le drawer (badge "preview")
-  const PREVIEW_HREFS = {
-    'connaissance.html': 'Données simulées · branchement V1',
-    'coaching.html':     'Données simulées · branchement V1',
-    'assistant.html':    'Chat IA simulé · SSE complet en V0.7'
+  // S6.8.1 (28/04 PM late) : Connaissance + Coaching + Assistant ACTIVÉES sous mandat plein CEO.
+  //   Migrées vers NEW_HREFS / NEW_ROUTES (badge vert "NEW", pas de grisé, pas de banner ambre).
+  const PREVIEW_HREFS = {};
+  const PREVIEW_ROUTES = new Set();
+
+  // Pages activées en v0.7 — badge "NEW" emerald, pas de grisé, pas de banner ambre.
+  const NEW_HREFS = {
+    'connaissance.html': 'Nouveau v0.7 — base de connaissance personnelle',
+    'coaching.html':     'Nouveau v0.7 — sessions de coaching hebdo',
+    'assistant.html':    'Nouveau v0.7 — chat IA Claude live'
   };
-  const PREVIEW_ROUTES = new Set(['connaissance', 'coaching', 'assistant']);
 
   function markActive() {
     const route = document.body.dataset.route || '';
@@ -77,6 +82,26 @@
           b.textContent = getVersionLabel(href, a);
           a.appendChild(b);
         }
+      }
+    });
+  }
+
+  // S6.8.1 : marquer les pages activées en v0.7 avec un badge "NEW" emerald (pas de grisé)
+  function markNew() {
+    $$('.drawer-item').forEach(a => {
+      const href = (a.getAttribute('href') || '').replace(/^.*\//, '');
+      const tip = NEW_HREFS[href];
+      if (!tip) return;
+      // Cleanup ancienne classe is-preview ajoutée par d'autres passes
+      a.classList.remove('is-preview');
+      const oldBadge = a.querySelector('.badge-preview');
+      if (oldBadge) oldBadge.remove();
+      a.setAttribute('title', tip);
+      if (!a.querySelector('.badge-new')) {
+        const b = document.createElement('span');
+        b.className = 'badge-new';
+        b.textContent = 'NEW';
+        a.appendChild(b);
       }
     });
   }
@@ -144,12 +169,24 @@
       '.drawer-item.is-active{background:var(--surface-3,#e7e3d9);font-weight:600}',
       '.drawer-item.is-preview{opacity:.7}',
       '.drawer-item.is-preview:hover{opacity:1}',
-      '.badge-soon, .badge-preview{margin-left:auto;font-size:9px;text-transform:uppercase;',
-        'letter-spacing:.05em;padding:2px 6px;border-radius:99px;',
-        'font-weight:600;line-height:1;align-self:center}',
-      '.badge-soon{background:var(--surface-3,#eee);color:var(--text-3,#888)}',
-      '.badge-preview{background:var(--amber-50,#f5e8d6);color:var(--amber-800,#6d4816);',
-        'border:1px solid var(--amber,#b88237)}',
+      // S6.8.1 fix taille — badges informatifs (NEW, preview, soon) alignes sur le style
+      // des puces chiffrees (.drawer-item .badge defini dans app.css l.263). Pas de bordure.
+      '.drawer-item .badge-new, .drawer-item .badge-preview, .drawer-item .badge-soon,',
+      '.drawer-locale .badge-new, .drawer-locale .badge-preview, .drawer-locale .badge-soon{',
+        'margin-inline-start:auto;',
+        'font-size:var(--fs-tiny);font-weight:var(--fw-bold);',
+        'padding:1px 7px;border-radius:var(--radius-pill);border:0 !important;',
+        'line-height:1.4;text-transform:none;letter-spacing:0;',
+        'font-variant-numeric:tabular-nums}',
+      '.drawer-item .badge-new, .drawer-locale .badge-new{',
+        'background:var(--emerald-50,#d3f1e1);color:var(--emerald-800,#1e6e3a)}',
+      '.drawer-item .badge-preview, .drawer-locale .badge-preview{',
+        'background:var(--surface-3,#ebe7df);color:var(--text-3,#888)}',
+      '.drawer-item .badge-soon, .drawer-locale .badge-soon{',
+        'background:var(--surface-3,#ebe7df);color:var(--text-3,#888)}',
+      '.app[data-drawer="collapsed"] .drawer-item .badge-new,',
+      '.app[data-drawer="collapsed"] .drawer-item .badge-preview,',
+      '.app[data-drawer="collapsed"] .drawer-item .badge-soon{display:none}',
 
       // ── Toggle Jour/Semaine/Mois (.seg) ──
       '.seg{display:inline-flex;background:var(--surface-3,#eeebe4);border-radius:8px;padding:3px;gap:2px}',
@@ -586,6 +623,7 @@
     markActive();
     bindTabs();
     markPreview();
+    markNew();
     applyUserContext();
     // Re-applique quand les vraies prefs user arrivent (async)
     document.addEventListener('aiceo:user-loaded', applyUserContext);

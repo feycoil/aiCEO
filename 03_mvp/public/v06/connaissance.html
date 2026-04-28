@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>aiCEO — Connaissance · 142 entrées</title>
-<link rel="stylesheet" href="_shared/colors_and_type.css?v=99">
-<link rel="stylesheet" href="_shared/app.css?v=99">
-<link rel="stylesheet" href="_shared/tweaks.css?v=99">
-<script src="_shared/theme.js?v=99"></script>
+<link rel="stylesheet" href="_shared/colors_and_type.css?v=113">
+<link rel="stylesheet" href="_shared/app.css?v=113">
+<link rel="stylesheet" href="_shared/tweaks.css?v=113">
+<script src="_shared/theme.js?v=113"></script>
 </head>
 <body data-route="connaissance">
 <script>
@@ -298,32 +298,23 @@
         <h1 class="section-title">Le cerveau de l'entreprise</h1>
       </div>
       <div class="topbar-cluster u-hidden-mobile">
-        <div class="search-pill"><svg class="ico ico-s" width="16" height="16"><use href="#i-search"/></svg><input type="search" placeholder="Chercher dans 142 entrées…" aria-label="Recherche"></div>
+        <div class="search-pill"><svg class="ico ico-s" width="16" height="16"><use href="#i-search"/></svg><input type="search" id="kn-search" placeholder="Rechercher dans la base…" aria-label="Recherche"></div>
         <button class="btn primary"><svg class="ico" width="14" height="14"><use href="#i-plus"/></svg>Nouvelle note</button>
       </div>
     </header>
 
     <div class="kn-shell">
-      <!-- Sidebar -->
-      <aside class="kn-side">
+      <!-- Sidebar : compteurs cables dynamiquement par bind-connaissance.js -->
+      <!-- "Par maison" retiree (pas de FK group_id sur knowledge_pins -- v0.8+) -->
+      <aside class="kn-side" id="kn-sidebar">
         <section class="kn-side-section">
           <div class="kn-side-title">Par type</div>
           <ul class="kn-side-list" role="list">
-            <li class="kn-side-item is-active"><svg class="ico" width="14" height="14"><use href="#i-knowledge"/></svg><span>Tout</span><span class="kn-side-count">142</span></li>
-            <li class="kn-side-item"><svg class="ico" width="14" height="14"><use href="#i-target"/></svg><span>Critères</span><span class="kn-side-count">12</span></li>
-            <li class="kn-side-item"><svg class="ico" width="14" height="14"><use href="#i-file"/></svg><span>Notes</span><span class="kn-side-count">68</span></li>
-            <li class="kn-side-item"><svg class="ico" width="14" height="14"><use href="#i-archive"/></svg><span>Documents</span><span class="kn-side-count">31</span></li>
-            <li class="kn-side-item"><svg class="ico" width="14" height="14"><use href="#i-mic"/></svg><span>Captures vocales</span><span class="kn-side-count">23</span></li>
-            <li class="kn-side-item"><svg class="ico" width="14" height="14"><use href="#i-people"/></svg><span>Citations 1‑à‑1</span><span class="kn-side-count">8</span></li>
-          </ul>
-        </section>
-        <section class="kn-side-section">
-          <div class="kn-side-title">Par maison</div>
-          <ul class="kn-side-list" role="list">
-            <li class="kn-side-item"><span class="dot" style="background:var(--house-northwind)"></span><span>Northwind</span><span class="kn-side-count">58</span></li>
-            <li class="kn-side-item"><span class="dot" style="background:var(--house-solstice)"></span><span>Solstice</span><span class="kn-side-count">34</span></li>
-            <li class="kn-side-item"><span class="dot" style="background:var(--house-helix)"></span><span>Helix</span><span class="kn-side-count">29</span></li>
-            <li class="kn-side-item"><span class="dot" style="background:var(--text-3)"></span><span>Transverse</span><span class="kn-side-count">21</span></li>
+            <li class="kn-side-item is-active" data-kind="all"><svg class="ico" width="14" height="14"><use href="#i-knowledge"/></svg><span>Tout</span><span class="kn-side-count" data-count-kind="all">0</span></li>
+            <li class="kn-side-item" data-kind="decision"><svg class="ico" width="14" height="14"><use href="#i-target"/></svg><span>Decisions</span><span class="kn-side-count" data-count-kind="decision">0</span></li>
+            <li class="kn-side-item" data-kind="criterion"><svg class="ico" width="14" height="14"><use href="#i-target"/></svg><span>Criteres</span><span class="kn-side-count" data-count-kind="criterion">0</span></li>
+            <li class="kn-side-item" data-kind="principle"><svg class="ico" width="14" height="14"><use href="#i-knowledge"/></svg><span>Principes</span><span class="kn-side-count" data-count-kind="principle">0</span></li>
+            <li class="kn-side-item" data-kind="note"><svg class="ico" width="14" height="14"><use href="#i-file"/></svg><span>Notes</span><span class="kn-side-count" data-count-kind="note">0</span></li>
           </ul>
         </section>
       </aside>
@@ -331,96 +322,23 @@
       <!-- Main -->
       <div class="kn-main">
 
-        <!-- Featured: pinned -->
-        <section class="kn-featured">
-          <header class="kn-featured-head"><h2 class="card-title" style="font-size:var(--fs-h4)">Épinglés</h2><span class="u-text-3 small">3 références qui reviennent souvent</span></header>
-          <div class="kn-pinned-grid">
-            <article class="kn-pinned-card" data-house="northwind">
-              <div class="kn-pinned-eyebrow"><svg class="ico" width="12" height="12"><use href="#i-target"/></svg>Critères · Northwind</div>
-              <h3 class="kn-pinned-title">RFP Northwind — 3 critères</h3>
-              <ol class="kn-pinned-list">
-                <li>Réutilisabilité technique ≥ 80 %</li>
-                <li>Sponsor interne aligné</li>
-                <li>Marge ≥ 35 %</li>
-              </ol>
-              <span class="u-text-3 xs">Créé ce matin · cité 3 fois aujourd'hui</span>
-            </article>
-            <article class="kn-pinned-card">
-              <div class="kn-pinned-eyebrow"><svg class="ico" width="12" height="12"><use href="#i-people"/></svg>Citation · Mentor</div>
-              <h3 class="kn-pinned-title">Camille — sur les RFP publics</h3>
-              <p class="u-text-2 small kn-pinned-quote">« Sur le secteur public, ne signez que si vous avez quelqu'un qui pousse en interne côté client. »</p>
-              <span class="u-text-3 xs">14 mars · cité 2 fois cette semaine</span>
-            </article>
-            <article class="kn-pinned-card" data-house="solstice">
-              <div class="kn-pinned-eyebrow"><svg class="ico" width="12" height="12"><use href="#i-target"/></svg>Posture · Solstice</div>
-              <h3 class="kn-pinned-title">Ne pas négocier la valuation à la baisse en round 3</h3>
-              <p class="u-text-2 small">Tranché le 22 mars après une nuit de doute. Reste valable.</p>
-              <span class="u-text-3 xs">22 mars · jamais infirmé</span>
-            </article>
+        <!-- Featured: pinned (cable par bind-connaissance.js) -->
+        <section class="kn-featured" id="kn-featured-section">
+          <header class="kn-featured-head"><h2 class="card-title" style="font-size:var(--fs-h4)">Epingles</h2><span class="u-text-3 small" id="kn-featured-subtitle"></span></header>
+          <div class="kn-pinned-list" id="kn-pinned-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px">
           </div>
         </section>
 
-        <!-- Recent -->
-        <section class="kn-recent">
+        <!-- Recent (cable par bind-connaissance.js) -->
+        <section class="kn-recent" id="kn-recent-section">
           <header class="kn-recent-head">
-            <h2 class="card-title" style="font-size:var(--fs-h4)">Récent</h2>
+            <h2 class="card-title" style="font-size:var(--fs-h4)">Recent</h2>
             <div class="seg" role="tablist">
-              <button class="seg-btn is-active">Liste</button>
-              <button class="seg-btn">Frise</button>
+              <button class="seg-btn is-active" data-view="list">Liste</button>
+              <button class="seg-btn" data-view="timeline">Frise</button>
             </div>
           </header>
-          <ul class="kn-list" role="list">
-            <li class="kn-row" data-house="northwind">
-              <span class="kn-row-time">Aujourd'hui · 10:19</span>
-              <span class="kn-row-type"><svg class="ico" width="12" height="12"><use href="#i-target"/></svg>Critère</span>
-              <h3 class="kn-row-title">3 critères pour les RFP Northwind</h3>
-              <span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span>
-              <span class="kn-row-source">Conversation Assistant</span>
-            </li>
-            <li class="kn-row" data-house="northwind">
-              <span class="kn-row-time">Hier · 17:42</span>
-              <span class="kn-row-type"><svg class="ico" width="12" height="12"><use href="#i-mic"/></svg>Capture</span>
-              <h3 class="kn-row-title">« J'ai tranché la spec sans demander 4 avis. »</h3>
-              <span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span>
-              <span class="kn-row-source">Soirée du lundi</span>
-            </li>
-            <li class="kn-row" data-house="helix">
-              <span class="kn-row-time">Lundi · 14:08</span>
-              <span class="kn-row-type"><svg class="ico" width="12" height="12"><use href="#i-file"/></svg>Note</span>
-              <h3 class="kn-row-title">Synthèse 3 entretiens utilisateur — segment B plus mûr</h3>
-              <span class="pill house" data-house="helix"><span class="dot"></span>Helix</span>
-              <span class="kn-row-source">Discovery</span>
-            </li>
-            <li class="kn-row" data-house="solstice">
-              <span class="kn-row-time">25 avr · 11:00</span>
-              <span class="kn-row-type"><svg class="ico" width="12" height="12"><use href="#i-archive"/></svg>Document</span>
-              <h3 class="kn-row-title">Term sheet Solstice round 2 — version finale</h3>
-              <span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span>
-              <span class="kn-row-source">Levée Series A</span>
-            </li>
-            <li class="kn-row">
-              <span class="kn-row-time">22 avr · 16:30</span>
-              <span class="kn-row-type"><svg class="ico" width="12" height="12"><use href="#i-people"/></svg>Citation</span>
-              <h3 class="kn-row-title">Nora K. — sur le timing des recrutements senior</h3>
-              <span class="pill"><span class="dot" style="background:var(--text-3)"></span>Transverse</span>
-              <span class="kn-row-source">Sparring CEO</span>
-            </li>
-            <li class="kn-row" data-house="northwind">
-              <span class="kn-row-time">22 avr · 09:14</span>
-              <span class="kn-row-type"><svg class="ico" width="12" height="12"><use href="#i-file"/></svg>Note</span>
-              <h3 class="kn-row-title">RFC v0.1 — Spec moteur v3</h3>
-              <span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span>
-              <span class="kn-row-source">Spec moteur v3</span>
-            </li>
-            <li class="kn-row" data-house="helix">
-              <span class="kn-row-time">18 avr · 10:42</span>
-              <span class="kn-row-type"><svg class="ico" width="12" height="12"><use href="#i-mic"/></svg>Capture</span>
-              <h3 class="kn-row-title">« Helix, c'est plus une posture qu'un produit. »</h3>
-              <span class="pill house" data-house="helix"><span class="dot"></span>Helix</span>
-              <span class="kn-row-source">Naming</span>
-            </li>
-          </ul>
-          <button class="btn ghost small" style="margin-block-start: var(--space-3)">Voir 135 entrées plus anciennes →</button>
+          <ul class="kn-list" id="kn-list" role="list"></ul>
         </section>
 
       </div>
@@ -428,7 +346,7 @@
 
     <footer class="app-footer">
       <p class="strategic-q">Une entreprise se construit autant par ce qu'elle écrit que par ce qu'elle fait.</p>
-      <div class="footer-meta"><span>aiCEO v0.5</span><span>·</span><span>Connaissance</span></div>
+      <div class="footer-meta"><span>aiCEO v0.7</span><span>·</span><span>Connaissance</span></div>
     </footer>
   </main>
 </div>
@@ -504,24 +422,24 @@
 fetch('_shared/icons.svg.html').then(r => r.text()).then(t => document.getElementById('icons-host').innerHTML = t);
 </script>
 <!-- aiCEO Convergence v0.6 (S6.2) -->
-<script src="_shared/shell.js?v=99" defer></script>
-<script src="_shared/clear-demo.js?v=99" defer></script>
-<script src="_shared/command-palette.js?v=99" defer></script>
-<script src="_shared/mobile.js?v=99" defer></script>
-<script src="_shared/polish.js?v=99" defer></script>
-<script src="_shared/states.js?v=99" defer></script>
-<script src="_shared/a11y.js?v=99" defer></script>
-<script src="_shared/filters.js?v=99" defer></script>
-<script src="_shared/bulk-actions.js?v=99" defer></script>
-<script src="_shared/breadcrumbs.js?v=99" defer></script>
-<script src="_shared/bind-drawer-extras.js?v=99" defer></script>
-  <script src="_shared/bind-active-nav.js?v=99" defer></script>
-  <script src="_shared/bind-drawer-badges.js?v=99" defer></script>
-  <script src="_shared/bind-connaissance.js?v=99" defer></script>
-<script src="_shared/responsive-mobile.js?v=99" defer></script>
-<script src="_shared/microcopy.js?v=99" defer></script>
-<script src="_shared/settings-actions.js?v=99" defer></script>
-<script src="_shared/profile-menu.js?v=99" defer></script>
-<script src="_shared/modal.js?v=99" defer></script>
-<script src="_shared/crud-modals.js?v=99" defer></script>
+<script src="_shared/shell.js?v=113" defer></script>
+<script src="_shared/clear-demo.js?v=113" defer></script>
+<script src="_shared/command-palette.js?v=113" defer></script>
+<script src="_shared/mobile.js?v=113" defer></script>
+<script src="_shared/polish.js?v=113" defer></script>
+<script src="_shared/states.js?v=113" defer></script>
+<script src="_shared/a11y.js?v=113" defer></script>
+<script src="_shared/filters.js?v=113" defer></script>
+<script src="_shared/bulk-actions.js?v=113" defer></script>
+<script src="_shared/breadcrumbs.js?v=113" defer></script>
+<script src="_shared/bind-drawer-extras.js?v=113" defer></script>
+  <script src="_shared/bind-active-nav.js?v=113" defer></script>
+  <script src="_shared/bind-drawer-badges.js?v=113" defer></script>
+  <script src="_shared/bind-connaissance.js?v=113" defer></script>
+<script src="_shared/responsive-mobile.js?v=113" defer></script>
+<script src="_shared/microcopy.js?v=113" defer></script>
+<script src="_shared/settings-actions.js?v=113" defer></script>
+<script src="_shared/profile-menu.js?v=113" defer></script>
+<script src="_shared/modal.js?v=113" defer></script>
+<script src="_shared/crud-modals.js?v=113" defer></script>
 <scri

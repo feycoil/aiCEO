@@ -142,6 +142,27 @@
     ]);
   }
 
+  // S6.8.1 — Bind bouton "Discuter cette lecture" → assistant avec contexte coaching-posture
+  function bindDiscussButton() {
+    var buttons = document.querySelectorAll('.coach-posture .btn, .coach-posture-foot button, .coach-posture button');
+    buttons.forEach(function (btn) {
+      var txt = (btn.textContent || '').trim().toLowerCase();
+      if (!/discuter|cette lecture|cette posture/i.test(txt)) return;
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = '1';
+      btn.style.cursor = 'pointer';
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        location.href = '/v06/assistant.html?context=coaching-posture';
+      });
+    });
+  }
+
+  // Bind apres init (le HTML statique est deja la)
+  document.addEventListener('DOMContentLoaded', bindDiscussButton);
+  setTimeout(bindDiscussButton, 200);
+  setTimeout(bindDiscussButton, 800);
+
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();

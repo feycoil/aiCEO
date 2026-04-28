@@ -2,7 +2,7 @@
 
 > **Lis ce fichier en premier** quand tu démarres une nouvelle session sur ce projet. Il consolide le contexte, les conventions, les pièges connus et les workflows types pour t'éviter de tout redécouvrir.
 
-**Version** : 28/04/2026 PM v4 (**v0.7 LIVRÉE** sous mandat plein CEO — sprints S6.5/S6.6/S6.7 v0.7 RÉELS livrés en parallèle, code 13/13 `node --check` verts, prêt à tag)
+**Version** : 28/04/2026 soir v6 (**v0.7 LIVRÉE** taggée `b7e9125` · **v0.8 EN COURS** dans session parallèle "aiCEO Prototype" — Sprint S6.8.1 sidebar polish + ANTHROPIC_API_KEY setté → LLM live activé · Phase 2 câblage Coaching+Assistant ~2h)
 **À jour à chaque clôture de sprint** ou décision structurante (cf. § 8 Maintenance).
 
 ---
@@ -14,49 +14,36 @@
 **Trajectoire (ROADMAP v3.3 — restructuration 28/04 PM)** : v0.4 (app statique) → v0.5 (internalisée fonctionnelle ✅) → **v0.6 (Interface finalisée + câblage réel S6.4 ✅, ~8 k€ binôme)** → **v0.7 (LLM 4 surfaces UX + sync events Outlook + finalisation gaps CR-GAP, ~5 k€ binôme, ~3-4 sessions S6.5/S6.6/S6.7)** → V1 (SaaS + équipes + mobile, ~41 k€ binôme/6 mois — réduit de -5 k€ vs v3.2) → V2 (commercial intl + i18n + SOC 2, 800 k€) → V3 (coach + offline + multi-CEO, 600 k€). **Total inchangé : 1.56 M€** sur 18 mois.
 
 **Statut au 28/04/2026 (PM)** :
-- **v0.5 internalisée TERMINÉE** : 5 sprints livrés. Tag `v0.5` posé. **110 k€ engagés / 97,4 k€ dépensés (88,5%) / 12,6 k€ provision V1**.
-- **v0.6 Phase A (DS Claude Design)** : maquette 17 écrans déployée dans `03_mvp/public/v06/`. Pages v0.5 historiques toujours présentes.
-- **v0.6 Phase B — Câblage réel (S6.4 LIVRÉ 28/04 PM)** :
-  - **Backend 100% SQLite** : 14 routes API REST, 20 tables, 4 migrations (init + s4-assistant + s6-preferences + **2026-04-28-emails**).
-  - **Sync Outlook → SQLite** : table `emails` (id Outlook PK + 14 colonnes), `scripts/normalize-emails.js` patché (ingestion DB + JSON rétro-compat), `scripts/ingest-emails.js` (rattrapage standalone). 1052 emails ingérés en DB.
-  - **Bootstrap auto** : `scripts/bootstrap-from-emails.js` crée 13 projets (depuis `inferred_project` distincts) + 77 contacts (top expéditeurs ≥3 emails). Idempotent. Endpoint `POST /api/arbitrage/bootstrap-from-emails` exposé.
-  - **Route `POST /api/arbitrage/analyze-emails`** réécrite SQL : scoring `flagged*100 + unread*30 + has_attach*5 + recence_bonus`, top 8 propositions.
-  - **13/17 pages frontend câblées sur API** : cockpit (KPIs + Cap stratégique + dot-chart 7j + projects-houses + Top3), arbitrage (file emails + focus + board kanban drag-drop SQL), projets (auto-status alerte/à-surveiller/sain heuristique), équipe (avatars uniformes + recence), décisions (liste + tri + summary), tâches (buckets temporels + chips filtres dynamiques + tri + toggle done), revues (CTA "Démarrer la revue"), evening, settings, onboarding, projet, hub, components.
-  - **3 pages preview annoncées** : assistant.html (v0.7), connaissance.html (v0.7), coaching.html (v0.8) — banners ambres, démo masquée.
-  - **Auto-suggestions aiCEO rule-based** : projet status (volume emails 30j + récence), arbitrage scoring SQL, KPIs cockpit. **LLM Anthropic disponible côté serveur (4 routes SSE) mais non branché en UI v0.6** — décision délibérée : nécessite validation `ANTHROPIC_API_KEY` en prod.
-- **Tags Git** : `v0.5` (final v0.5), `v0.6-s6.1` (DS atomic archivé), `v0.6-s6.4` (câblage réel S6.4). **`v0.6` finalisée 28/04 PM** sous mandat plein CEO (sprints S6.5/S6.6/S6.7 auto-décidés Claude). À poser : `git tag -a v0.6` post-recette.
-- **v0.6 finalisation accélérée 28/04 PM** (mandat plein CEO) :
-  - **S6.5** : security headers HTTP (X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, CSP) + router `/api/knowledge` + page `connaissance.html` câblée
-  - **S6.6** : 6 console.log debug bind-settings.js wrappés dans `if (window.DEBUG_AICEO)` (production silencieuse)
-  - **S6.7** : a11y P0/P1 fixes (4 chips taches.html aria-label + decisions.html search aria-label) + strip NUL bytes bind-connaissance.js (piège #1 mount Windows résolu)
-  - **35/35 fichiers JS** `node --check` verts · A11y 18/18 pages conformes · 0 usage applicatif localStorage non-`aiCEO.uiPrefs.*`
-  - **27 ADRs datés** dans DECISIONS.md (incl. ADR `v3 · v0.6 finalisée par mandat plein CEO`)
+- **v0.7 LIVRÉE et taggée 28/04 PM late** (commit `b7e9125` + tag `v0.7` posé+pushed origin) :
+  - 5 routes LLM mode dégradé activable (`coaching-question`, `decision-recommend`, `auto-draft-review`, `effects-propagation`, `llm-status`) + helper `llmReady()` détecte `ANTHROPIC_API_KEY`.
+  - 3 migrations SQL appliquées : `events-extend` (organizer/status/body_preview/ingested_at), `decisions-reportee` (recreate 3-étapes pour CHECK), `emails-fk-projects` (FK + table `knowledge_pins`).
+  - Scripts Outlook events (`fetch-outlook-events.ps1` COM J-15→J+30 + `normalize-events.js` ingestion idempotente).
+  - 8 binds frontend câblés : `bind-coaching` (signaux faibles + 4 questions LLM), `bind-connaissance` (CRUD pins), `bind-arbitrage-focus` v4 (recommandations A/B/C + effects-propagation hover), `bind-arbitrage-board` v2 (`reportee` persistant DB), `bind-arbitrage-queue` v4 (auto-link email→projet), `bind-revues` v5 (auto-draft), `bind-assistant` v4 (banner LLM live/dégradé), `bind-agenda` v2.
+  - 18 HTML cache busted `?v=99` (446 occurrences).
+  - 5 décisions Claude D1-D5 documentées dans `04_docs/_sprint-v0.7/JOURNAL.md`.
 
-- **v0.7 LIVRÉE 28/04 PM late (mandat plein CEO carte blanche)** :
-  - **S6.5 — LLM 4 surfaces UX (mode dégradé activable)** :
-    - 5 routes ajoutées dans `src/routes/assistant.js` : `coaching-question` · `decision-recommend` · `auto-draft-review` · `effects-propagation` · `llm-status`.
-    - Helper `llmReady()` détecte `process.env.ANTHROPIC_API_KEY` → bascule LLM live (Claude Sonnet) / rule-based heuristique automatiquement.
-    - Frontend : `bind-arbitrage-focus.js` v4 (recommandations A/B/C + "Si vous tranchez X" hover) · `bind-revues.js` v5 (auto-draft sur démarrage revue) · `bind-coaching.js` neuf (signaux faibles + 4 questions LLM) · `bind-assistant.js` v4 (bandeau Claude live vert / mode dégradé ambre).
-  - **S6.6 — Outlook events sync + status `reportee` persistant** :
-    - Migration `2026-04-28-events-extend.sql` : organizer/status/body_preview/ingested_at + 3 index.
-    - Migration `2026-04-28-decisions-reportee.sql` : recreate 3-étapes (rename → recreate avec nouveau CHECK incluant `reportee` → INSERT SELECT → DROP) — contournement standard SQLite ALTER TABLE CHECK.
-    - `scripts/fetch-outlook-events.ps1` : COM Outlook GetDefaultFolder(9) avec `IncludeRecurrences=$true`, fenêtre J-15 → J+30.
-    - `scripts/normalize-events.js` : ingestion SQLite idempotente (INSERT OR REPLACE sur PK Outlook EntryID).
-    - `bind-arbitrage-board.js` v2 : status `reportee` persistant DB (vs sessionStorage volatile précédent). `bind-agenda.js` v2 grille hebdo.
-  - **S6.7 — FK emails→projects + 3 pages preview câblées + tag** :
-    - Migration `2026-04-28-emails-fk-projects.sql` : `emails.project_id` FK + table `knowledge_pins` (kind decision/criterion/principle/note + tags + soft delete).
-    - `src/routes/knowledge.js` neuf : 5 endpoints CRUD pins (`GET/POST/PATCH/DELETE` + `from-decision/:decId`).
-    - 2 routes dans `arbitrage.js` : `POST /api/emails/:id/link-project` + `GET /api/emails/suggest-project?email_id=X` (heuristique 3 niveaux).
-    - `bind-arbitrage-queue.js` v4 : auto-link email→projet sur Accept (zero-friction, vs dropdown manuel).
-    - `bind-connaissance.js` neuf : render pins KIND_LABEL + archive + add via prompt(). Empty state propre avec bouton "+ Première note".
-    - 17 HTML : bump cache `v=98 → v=99` (446 occurrences).
-- **5 décisions Claude carte blanche** documentées dans `04_docs/_sprint-v0.7/JOURNAL.md` : D1 mode dégradé activable, D2 status `reportee` 3-étapes, D3 events fenêtre J-15→J+30, D4 auto-link projet, D5 pas d'Opus en v0.7 (Sonnet only).
-- **Tags Git** : `v0.5` · `v0.6-s6.1` · `v0.6-s6.4` · **`v0.6`**. **`v0.7` à poser** post `push-v0.7.ps1` (script généré, à exécuter par CEO).
-- **28 ADRs datés** dans DECISIONS.md (ajout ADR `v4 · v0.7 livrée` ligne 1681).
+- **Sprint S6.8 v0.7-polish-phase-2 BACKLOGGÉ** (auto-décidée Claude ADR `v5 · Revue maquette`) — 12 issues totalisant ~4 j-binôme :
+  - Audit révèle scope >mandat session (~62 % données démo hardcodées, ~20 % câblage LLM frontend effectif).
+  - Décision : pas de patch massif HTML cette session (zéro régression). Démo CEO reste fonctionnelle.
+  - Auto-livré : `bind-counts.js` neuf (pattern `data-count="route:field"` générique avec fallback démo) + pattern `.empty-state-*` ajouté à `tweaks.css`.
+  - Backlog S6.8 : 4 adoptions `data-count` (taches/decisions/equipe/index) · 4 câblages LLM frontend (arbitrage A/B/C SSE, revues auto-draft, decisions Recommander, cockpit banner llm-status) · 6 empty states · audit 161 hex hardcodés → tokens · tests E2E LLM · recette CEO + ADR finalisée.
+  - À créer côté Windows via `pwsh fix-milestones-v0.7.ps1 -Apply`.
 
-**Prochaine étape** : exécuter `push-v0.7.ps1` (commit + tag `v0.7` + Release GitHub) côté Windows. Lancer migrations SQL via `node 03_mvp/scripts/init-db.js` (les 3 nouvelles `2026-04-28-*.sql` détectées par `schema_migrations`). Recette CEO 25 min.
+- **v0.8 EN COURS — session parallèle "aiCEO Prototype"** (28/04/2026 soir, mandat carte blanche CEO actif) :
+  - Activation LLM live : `ANTHROPIC_API_KEY` setté en variable Windows → bandeau assistant `● Claude live` actif, fallback rule-based désactivé.
+  - **S6.8.1 livré en parallèle** : sidebar drawer activée pour Assistant/Connaissance/Coaching (suppression visuel grisé + clic possible), badge "NEW" violet (DS Twisty `--violet-50/--violet-800`), 9px taille alignée sur puces chiffrées, suppression banners ambres preview sur 3 pages, fix double empty state Connaissance (`clear-demo.js` exclusion list + ajout `connaissance/coaching/assistant/knowledge` dans `ROUTES_WITH_BIND`).
+  - **Connaissance.html en cours câblage complet (S6.8.2)** : analyse UX/UI + suppression données démo + empty state custom ("Votre base de connaissance est vide. Les décisions épinglées et critères créés par l'assistant apparaîtront ici.") + bouton remplacé par action vers Assistant (création de pin par dialogue LLM vs prompt manuel).
+  - Cache CSS bumpé `v=99 → v=103` (446 occurrences sur 18 HTML, en cours).
+  - **Phase 2 prévue** : câblage Coaching (signaux faibles + 4 questions) + Assistant (chat live SSE complet) ~2h cumulées avec LLM live, plus rule-based fallback.
+  - Coordination : la session parallèle gère ses propres commits/ADR. Cette session se contente de documenter l'avancement sans interférer.
 
-**Cache busting** : `?v=99` (446 occurrences sur 18 fichiers HTML).
+- **29 ADRs datés** dans `00_BOUSSOLE/DECISIONS.md` (3 nouveaux 28/04 : v3 v0.6 finalisée · v4 v0.7 livrée · v5 Revue maquette + S6.8 backloggé).
+- **Tags Git posés** : `v0.5`, `v0.5-s1..s4`, `v0.6-s6.1`, `v0.6-s6.4`, `v0.6`, **`v0.7` (commit b7e9125, sur origin)**.
+- **Trajectoire (ROADMAP v3.3)** : v0.4 ✅ → v0.5 ✅ → v0.6 ✅ → **v0.7 ✅** (LIVRÉE) → S6.8 polish phase 2 (backloggé) → V1 (T3-T4 2026 binôme, ~41 k€) → V2 → V3.
+
+
+
+**Prochaine étape** : laisser la session parallèle finaliser v0.8 (S6.8.2 connaissance.html câblée + Phase 2 coaching/assistant). Une fois v0.8 livrée et taggée par session parallèle, aligner CLAUDE.md + roadmap-map.html avec leur ADR final. **Cette session reste en stand-by sur les modifs critiques pour ne pas créer de conflit Git** (working tree partagé, lock potentiel sur `.git/index.lock`).
 
 ---
 

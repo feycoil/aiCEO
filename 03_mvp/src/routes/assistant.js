@@ -21,9 +21,51 @@ const router = express.Router();
 
 const SYSTEM_PROMPT_ASSISTANT = `Tu es l'assistant copilote du CEO d'aiCEO. Ton rôle : aider le CEO à clarifier ses décisions, formuler des contre-arguments, et préparer ses arbitrages quotidiens.
 
-Style : direct, factuel, sans flatterie. Réponses concises (200 mots max sauf demande explicite). Cite des sources concrètes quand possible (issues GitHub, ADRs, fichiers du repo). Si tu ne sais pas, dis-le.`;
+Style : direct, factuel, sans flatterie. Réponses concises (200 mots max sauf demande explicite). Cite des sources concrètes quand possible (issues GitHub, ADRs, fichiers du repo). Si tu ne sais pas, dis-le.
+
+OUTIL DISPONIBLE — pin_to_knowledge :
+Tu peux épingler des éléments dans la base de connaissance du CEO. Utilise cet outil quand tu détectes que le CEO formule explicitement :
+- un critère de décision récurrent (ex: "marge ≥ 35%", "sponsor interne aligné")
+- une décision tranchée (ex: "OK, je vais à Hôpital Sud", "non, on ne fait pas de discount")
+- un principe ou posture stratégique (ex: "ne jamais signer sans pousseur interne")
+- une note importante à conserver dans sa mémoire long-terme
+
+Cela construit sa base de connaissance. Ne l'utilise PAS pour des reformulations, questions ou réflexions ouvertes — seulement pour des éléments cristallisés que le CEO voudra retrouver plus tard.
+
+Tu peux appeler le tool plusieurs fois dans la même réponse si plusieurs éléments cristallisés émergent.`;
 
 const MAX_TOKENS = 1500;
+
+// S6.8.1 (28/04 PM late) — Tool pin_to_knowledge pour epinglage automatique Connaissance
+const TOOLS_ASSISTANT = [
+  {
+    name: 'pin_to_knowledge',
+    description: "Épingle un élément important dans la base de connaissance du CEO (table knowledge_pins). À utiliser quand un critère, décision, principe ou note cristallisée apparaît dans la conversation.",
+    input_schema: {
+      type: 'object',
+      properties: {
+        kind: {
+          type: 'string',
+          enum: ['decision', 'criterion', 'principle', 'note'],
+          description: 'Type : decision (tranchée), criterion (critère réutilisable), principle (posture/règle), note (autre)'
+        },
+        title: {
+          type: 'string',
+          description: 'Titre court de 5-100 caractères (visible dans la base)'
+        },
+        content: {
+          type: 'string',
+          description: 'Contenu détaillé / formulation complète (max 1000 chars)'
+        },
+        reason: {
+          type: 'string',
+          description: 'Une phrase explicative montrée au CEO pour justifier l\'épinglage'
+        }
+      },
+      required: ['kind', 'title']
+    }
+  }
+];
 
 // ── GET conversations ─────────────────────────────────────────────────
 router.get('/conversations', (req, res) => {
@@ -55,6 +97,49 @@ router.delete('/conversations/:id', (req, res) => {
     if (!conv) return res.status(404).json({ error: 'conversation introuvable' });
     conversations.remove(req.params.id);
     res.json({ ok: true, removed: req.params.id });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ── GET /conversations/:id/context — éléments contextuels rattachés à la conversation
+//    S6.8.1 : retourne les pins épinglés dans cette conversation + projets mentionnés.
+router.get('/conversations/:id/context', (req, res) => {
+  try {
+    const conv = conversations.get(req.params.id);
+    if (!conv) return res.json({ context: [] });
+    const db = getDb();
+    let pins = [];
+    try {
+      pins = db.prepare("SELECT id, kind, title, pinned_at FROM knowledge_pins WHERE source_type='assistant' AND source_id = ? AND archived_at IS NULL ORDER BY pinned_at DESC").all(req.params.id);
+    } catch (e) { /* table absente */ }
+    const context = pins.map((p) => ({
+      kind: 'knowledge',
+      title: p.title,
+      meta: 'Connaissance · ' + (p.kind || 'note'),
+      ref_id: p.id,
+    }));
+    res.json({ context, count: context.length });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ── GET /conversations/:id/effects — effets propagés (pins créés via cette conv)
+router.get('/conversations/:id/effects', (req, res) => {
+  try {
+    const db = getDb();
+    let pins = [];
+    try {
+      pins = db.prepare("SELECT id, kind, title, content, pinned_at FROM knowledge_pins WHERE source_type='assistant' AND source_id = ? AND archived_at IS NULL ORDER BY pinned_at DESC").all(req.params.id);
+    } catch (e) { /* table absente */ }
+    const effects = pins.map((p) => ({
+      id: p.id,
+      marker: p.kind === 'decision' ? '!' : '+',
+      title: p.title || '(sans titre)',
+      meta: 'Connaissance · ' + (p.kind || 'note'),
+    }));
+    res.json({ effects, count: effects.length });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
@@ -123,7 +208,7 @@ router.post('/messages', async (req, res) => {
         await new Promise((r) => setTimeout(r, 10));
       }
     } else {
-      // Streaming Claude réel
+      // Streaming Claude réel avec tool_use pin_to_knowledge (S6.8.1)
       const client = createAnthropicClient();
       const claudeMessages = history.map((m) => ({
         role: m.role,
@@ -134,6 +219,7 @@ router.post('/messages', async (req, res) => {
           model,
           max_tokens: MAX_TOKENS,
           system: SYSTEM_PROMPT_ASSISTANT,
+          tools: TOOLS_ASSISTANT,
           messages: claudeMessages,
         });
         for await (const chunk of stream) {
@@ -145,6 +231,35 @@ router.post('/messages', async (req, res) => {
         }
         const final = await stream.finalMessage();
         usage = final.usage || null;
+
+        // S6.8.1 — Capture tool_use blocks (pin_to_knowledge) et insert + emit SSE
+        const toolUses = (final.content || []).filter((b) => b.type === 'tool_use');
+        for (const tu of toolUses) {
+          if (tu.name !== 'pin_to_knowledge') continue;
+          const input = tu.input || {};
+          const kind = ['decision', 'criterion', 'principle', 'note'].includes(input.kind) ? input.kind : 'note';
+          const title = String(input.title || '').slice(0, 200) || '(sans titre)';
+          const content2 = input.content ? String(input.content).slice(0, 2000) : null;
+          const reason = String(input.reason || '').slice(0, 300);
+          try {
+            const db = getDb();
+            const pinId = uuid7();
+            db.prepare(`
+              INSERT INTO knowledge_pins (id, kind, title, content, source_type, source_id, created_at, updated_at, pinned_at)
+              VALUES (?, ?, ?, ?, 'assistant', ?, datetime('now'), datetime('now'), datetime('now'))
+            `).run(pinId, kind, title, content2, convId);
+            res.write(`event: knowledge-created\ndata: ${JSON.stringify({
+              pin_id: pinId,
+              kind,
+              title,
+              content: content2,
+              reason
+            })}\n\n`);
+          } catch (errPin) {
+            // Silencieux : si knowledge_pins n'existe pas, on continue sans crasher la conversation
+            console.warn('[assistant] pin_to_knowledge insert failed:', errPin.message);
+          }
+        }
       } catch (e) {
         // Si Claude crashe en cours de stream, écrire une fin propre
         const errMsg = `\n\n_(Erreur Claude pendant streaming : ${e.message}. Fin de réponse.)_`;

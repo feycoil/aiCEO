@@ -262,9 +262,13 @@
   // Sur ces routes, wipeRoute serait contre-productif (efface le DOM
   // avant que bind-* n'ait fetche), donc on ne fait que clearLists qui
   // pose des empty states doux (innerHTML uniquement, pas de display:none).
+  // S6.8.1 (28/04 PM late) : connaissance + coaching + assistant ajoutees aux routes
+  // gerees par bind-*.js. clear-demo.js ne doit plus injecter d'empty state sur ces pages
+  // (sinon double affichage avec bind-connaissance.js renderEmpty etc.).
   const ROUTES_WITH_BIND = new Set([
     'home', 'projets', 'projet', 'equipe', 'decisions', 'taches',
-    'revues', 'agenda', 'evening', 'arbitrage'
+    'revues', 'agenda', 'evening', 'arbitrage',
+    'connaissance', 'coaching', 'assistant', 'knowledge'
   ]);
 
   function wipeRoute() {

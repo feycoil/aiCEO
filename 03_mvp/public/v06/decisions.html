@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>aiCEO — Décisions · Historique</title>
-<link rel="stylesheet" href="_shared/colors_and_type.css?v=99">
-<link rel="stylesheet" href="_shared/app.css?v=99">
-<link rel="stylesheet" href="_shared/tweaks.css?v=99">
-<script src="_shared/theme.js?v=99"></script>
+<link rel="stylesheet" href="_shared/colors_and_type.css?v=113">
+<link rel="stylesheet" href="_shared/app.css?v=113">
+<link rel="stylesheet" href="_shared/tweaks.css?v=113">
+<script src="_shared/theme.js?v=113"></script>
 </head>
 <body data-route="decisions">
 <script>
@@ -294,129 +294,43 @@
   <main class="app-main" id="main-content">
     <header class="topbar">
       <div class="topbar-title-block">
-        <div class="topbar-title-eyebrow">Décisions · 47 tranchées</div>
+        <div class="topbar-title-eyebrow" id="dec-eyebrow">Décisions</div>
         <h1 class="section-title">Ce que vous avez choisi de faire — et de ne pas faire</h1>
       </div>
       <div class="topbar-cluster u-hidden-mobile">
-        <div class="search-pill"><svg class="ico ico-s" width="16" height="16"><use href="#i-search"/></svg><input type="search" placeholder="Chercher une décision…" aria-label="Chercher une décision"></div>
-        <button class="btn ghost"><svg class="ico" width="14" height="14"><use href="#i-archive"/></svg>Exporter</button>
+        <div class="search-pill"><svg class="ico ico-s" width="16" height="16"><use href="#i-search"/></svg><input type="search" id="dec-search" data-bound="1" placeholder="Chercher une décision…" aria-label="Chercher une décision"></div>
+        <button class="btn ghost" id="dec-export-btn" data-bound="1"><svg class="ico" width="14" height="14"><use href="#i-archive"/></svg>Exporter</button>
       </div>
     </header>
 
     <section class="dec-pulse">
-      <div class="dec-pulse-card"><span class="dec-pulse-num">47</span><span class="dec-pulse-lbl">décisions tranchées</span></div>
-      <div class="dec-pulse-card"><span class="dec-pulse-num">8</span><span class="dec-pulse-lbl">en attente d'effet</span></div>
-      <div class="dec-pulse-card"><span class="dec-pulse-num">3</span><span class="dec-pulse-lbl">infirmées rétrospectivement</span></div>
-      <div class="dec-pulse-card"><span class="dec-pulse-num">12</span><span class="dec-pulse-lbl">à revisiter sous 30 j</span></div>
+      <div class="dec-pulse-card"><span class="dec-pulse-num" id="dec-pulse-tranchees">0</span><span class="dec-pulse-lbl">décisions tranchées</span></div>
+      <div class="dec-pulse-card"><span class="dec-pulse-num" id="dec-pulse-attente">0</span><span class="dec-pulse-lbl">en attente d'effet</span></div>
+      <div class="dec-pulse-card"><span class="dec-pulse-num" id="dec-pulse-infirmees">0</span><span class="dec-pulse-lbl">infirmées rétrospectivement</span></div>
+      <div class="dec-pulse-card"><span class="dec-pulse-num" id="dec-pulse-revisiter">0</span><span class="dec-pulse-lbl">à revisiter sous 30 j</span></div>
     </section>
 
     <section class="dec-filters">
-      <div class="seg" role="tablist">
-        <button class="seg-btn is-active">Toutes</button>
-        <button class="seg-btn">Stratégiques</button>
-        <button class="seg-btn">Opérationnelles</button>
-        <button class="seg-btn">Posture</button>
+      <div class="seg" role="tablist" id="dec-filter-type">
+        <button class="seg-btn is-active" data-filter="all" data-bound="1">Toutes</button>
+        <button class="seg-btn" data-filter="strategic" data-bound="1">Stratégiques</button>
+        <button class="seg-btn" data-filter="operational" data-bound="1">Opérationnelles</button>
+        <button class="seg-btn" data-filter="posture" data-bound="1">Posture</button>
       </div>
-      <div class="seg" role="tablist">
-        <button class="seg-btn is-active">Tout horizon</button>
-        <button class="seg-btn">30 j</button>
-        <button class="seg-btn">90 j</button>
-        <button class="seg-btn">1 an</button>
+      <div class="seg" role="tablist" id="dec-filter-horizon">
+        <button class="seg-btn is-active" data-horizon="all" data-bound="1">Tout horizon</button>
+        <button class="seg-btn" data-horizon="30" data-bound="1">30 j</button>
+        <button class="seg-btn" data-horizon="90" data-bound="1">90 j</button>
+        <button class="seg-btn" data-horizon="365" data-bound="1">1 an</button>
       </div>
-      <span class="dec-filter-meta u-text-3 small">Triées par date · les plus récentes en haut</span>
+      <span class="dec-filter-meta u-text-3 small" id="dec-filter-meta">Triées par date · les plus récentes en haut</span>
     </section>
 
-    <section class="dec-timeline">
-      <article class="dec-card" data-house="northwind" data-status="active">
-        <div class="dec-card-rail"><span class="dec-card-date">Aujourd'hui</span><span class="dec-card-time">10:19</span></div>
-        <div class="dec-card-body">
-          <header class="dec-card-head"><span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span><span class="pill type">Stratégique</span><span class="pill status active">Active</span></header>
-          <h3 class="dec-card-title">3 critères pour qualifier les RFP publics avant proposition</h3>
-          <p class="dec-card-rationale">Tranché ce matin avec l'Assistant après une question d'arbitrage. <strong>Réutilisabilité ≥ 80 %, sponsor interne aligné, marge ≥ 35 %.</strong> Permet de répondre en 2 jours au lieu de 5.</p>
-          <div class="dec-card-effects">
-            <div class="dec-effect"><span class="dec-effect-lbl">Effet projeté</span><span class="dec-effect-val">−40 % temps RFP · gain 0,5 j/sem</span></div>
-            <div class="dec-effect"><span class="dec-effect-lbl">À revisiter</span><span class="dec-effect-val">Dans 90 j · ou si 2 RFP perdus</span></div>
-          </div>
-          <footer class="dec-card-foot"><span class="dec-card-source">Source : <a href="arbitrage.html">Arbitrage du 28 avril</a></span><button class="btn ghost xs">Ouvrir →</button></footer>
-        </div>
-      </article>
-
-      <article class="dec-card" data-house="solstice" data-status="active">
-        <div class="dec-card-rail"><span class="dec-card-date">22 avr</span><span class="dec-card-time">23:14</span></div>
-        <div class="dec-card-body">
-          <header class="dec-card-head"><span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span><span class="pill type">Stratégique</span><span class="pill status active">Active</span><span class="pill pinned"><svg class="ico" width="11" height="11"><use href="#i-pin"/></svg>Épinglée</span></header>
-          <h3 class="dec-card-title">Ne pas négocier la valuation à la baisse en round 3</h3>
-          <p class="dec-card-rationale">Tranché le 22 mars après une nuit de doute. <strong>Tenir la posture</strong> : si l'investisseur insiste, on cherche un autre lead. Re‑confirmé le 22 avril.</p>
-          <div class="dec-card-effects">
-            <div class="dec-effect"><span class="dec-effect-lbl">Validée</span><span class="dec-effect-val">3 fois depuis le 22 mars</span></div>
-            <div class="dec-effect"><span class="dec-effect-lbl">Risque résiduel</span><span class="dec-effect-val">Round décalé de 4 à 6 sem</span></div>
-          </div>
-          <footer class="dec-card-foot"><span class="dec-card-source">Source : Soirée du 22 mars · Coaching</span><button class="btn ghost xs">Ouvrir →</button></footer>
-        </div>
-      </article>
-
-      <article class="dec-card" data-house="helix" data-status="active">
-        <div class="dec-card-rail"><span class="dec-card-date">18 avr</span><span class="dec-card-time">14:30</span></div>
-        <div class="dec-card-body">
-          <header class="dec-card-head"><span class="pill house" data-house="helix"><span class="dot"></span>Helix</span><span class="pill type">Opérationnelle</span><span class="pill status active">Active</span></header>
-          <h3 class="dec-card-title">Geler le segment A pendant 6 semaines, focus segment B</h3>
-          <p class="dec-card-rationale">Après 3 entretiens utilisateur, segment B 2,5× plus mûr. <strong>Pas de pivot</strong> — juste un focus temporaire sur B pour tester la traction.</p>
-          <div class="dec-card-effects">
-            <div class="dec-effect"><span class="dec-effect-lbl">Effet observé</span><span class="dec-effect-val">Demo→signup 12 % → 28 %</span></div>
-            <div class="dec-effect"><span class="dec-effect-lbl">Échéance</span><span class="dec-effect-val">Revisiter le 30 mai</span></div>
-          </div>
-          <footer class="dec-card-foot"><span class="dec-card-source">Source : Discovery + Revue hebdo</span><button class="btn ghost xs">Ouvrir →</button></footer>
-        </div>
-      </article>
-
-      <article class="dec-card" data-status="reverted">
-        <div class="dec-card-rail"><span class="dec-card-date">02 avr</span><span class="dec-card-time">09:00</span></div>
-        <div class="dec-card-body">
-          <header class="dec-card-head"><span class="pill"><span class="dot" style="background:var(--text-3)"></span>Transverse</span><span class="pill type">Posture</span><span class="pill status reverted">Infirmée</span></header>
-          <h3 class="dec-card-title">Plus de réunions internes avant 11 h pendant 30 jours</h3>
-          <p class="dec-card-rationale">Tenu 11 jours sur 30. <strong>Infirmée le 22 avril</strong> : trop rigide avec un comex en levée. Remplacée par « pas de réunion &lt; 30 min avant 11 h ».</p>
-          <div class="dec-card-effects">
-            <div class="dec-effect"><span class="dec-effect-lbl">Apprentissage</span><span class="dec-effect-val">Posture → règle souple, pas absolue</span></div>
-            <div class="dec-effect"><span class="dec-effect-lbl">Remplacée par</span><span class="dec-effect-val"><a href="#">Décision #44</a></span></div>
-          </div>
-          <footer class="dec-card-foot"><span class="dec-card-source">Source : Soirée du 1ᵉʳ avril</span><button class="btn ghost xs">Ouvrir →</button></footer>
-        </div>
-      </article>
-
-      <article class="dec-card" data-house="northwind" data-status="active">
-        <div class="dec-card-rail"><span class="dec-card-date">28 mar</span><span class="dec-card-time">17:42</span></div>
-        <div class="dec-card-body">
-          <header class="dec-card-head"><span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span><span class="pill type">Opérationnelle</span><span class="pill status active">Active</span></header>
-          <h3 class="dec-card-title">Recruter un Lead BD plutôt qu'un VP Sales</h3>
-          <p class="dec-card-rationale">Le marché public exige du sur-mesure, pas du process scalable. <strong>Senior individual contributor</strong>, pas un manager d'équipe — on n'a pas l'équipe à manager.</p>
-          <div class="dec-card-effects">
-            <div class="dec-effect"><span class="dec-effect-lbl">Effet observé</span><span class="dec-effect-val">2 finalistes sourcés en 4 sem</span></div>
-            <div class="dec-effect"><span class="dec-effect-lbl">À revisiter</span><span class="dec-effect-val">Quand 3 BD en place</span></div>
-          </div>
-          <footer class="dec-card-foot"><span class="dec-card-source">Source : Sparring Nora K. · 26 mars</span><button class="btn ghost xs">Ouvrir →</button></footer>
-        </div>
-      </article>
-
-      <article class="dec-card" data-house="solstice" data-status="frozen">
-        <div class="dec-card-rail"><span class="dec-card-date">14 mar</span><span class="dec-card-time">11:08</span></div>
-        <div class="dec-card-body">
-          <header class="dec-card-head"><span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span><span class="pill type">Stratégique</span><span class="pill status frozen">Gelée</span></header>
-          <h3 class="dec-card-title">Pas d'expansion EU avant la Series B</h3>
-          <p class="dec-card-rationale">Décision tactique : le focus sur la Series A passe avant l'expansion géographique. Gelée jusqu'à closing.</p>
-          <div class="dec-card-effects">
-            <div class="dec-effect"><span class="dec-effect-lbl">Statut</span><span class="dec-effect-val">Active jusqu'à closing Series A</span></div>
-            <div class="dec-effect"><span class="dec-effect-lbl">Réveil prévu</span><span class="dec-effect-val">Q3 — post-closing</span></div>
-          </div>
-          <footer class="dec-card-foot"><span class="dec-card-source">Source : Comex du 12 mars</span><button class="btn ghost xs">Ouvrir →</button></footer>
-        </div>
-      </article>
-
-      <button class="btn ghost small" style="align-self: center; margin-block-start: var(--space-3)">Voir 41 décisions plus anciennes →</button>
-    </section>
+    <section class="dec-timeline" id="dec-timeline"></section>
 
     <footer class="app-footer">
       <p class="strategic-q">Une décision claire, c'est une décision qu'on peut citer trois mois plus tard sans rougir.</p>
-      <div class="footer-meta"><span>aiCEO v0.5</span><span>·</span><span>Décisions</span></div>
+      <div class="footer-meta"><span>aiCEO v0.7</span><span>·</span><span>Décisions</span></div>
     </footer>
   </main>
 </div>
@@ -483,26 +397,26 @@
 
 <script src="_shared/app.js"></script>
 <!-- aiCEO Convergence v0.6 (S6.2) -->
-<script src="_shared/shell.js?v=99" defer></script>
-<script src="_shared/clear-demo.js?v=99" defer></script>
-<script src="_shared/command-palette.js?v=99" defer></script>
-<script src="_shared/mobile.js?v=99" defer></script>
-<script src="_shared/polish.js?v=99" defer></script>
-<script src="_shared/states.js?v=99" defer></script>
-<script src="_shared/a11y.js?v=99" defer></script>
-<script src="_shared/filters.js?v=99" defer></script>
-<script src="_shared/bulk-actions.js?v=99" defer></script>
-<script src="_shared/breadcrumbs.js?v=99" defer></script>
-<script src="_shared/bind-drawer-extras.js?v=99" defer></script>
-  <script src="_shared/bind-active-nav.js?v=99" defer></script>
-  <script src="_shared/bind-drawer-badges.js?v=99" defer></script>
-<script src="_shared/responsive-mobile.js?v=99" defer></script>
-<script src="_shared/microcopy.js?v=99" defer></script>
-<script src="_shared/settings-actions.js?v=99" defer></script>
-<script src="_shared/profile-menu.js?v=99" defer></script>
-<script src="_shared/modal.js?v=99" defer></script>
-<script src="_shared/crud-modals.js?v=99" defer></script>
-<script src="_shared/workflow.js?v=99" defer></script>
-<script src="_shared/bind-decisions.js?v=99" defer></script>
+<script src="_shared/shell.js?v=113" defer></script>
+<script src="_shared/clear-demo.js?v=113" defer></script>
+<script src="_shared/command-palette.js?v=113" defer></script>
+<script src="_shared/mobile.js?v=113" defer></script>
+<script src="_shared/polish.js?v=113" defer></script>
+<script src="_shared/states.js?v=113" defer></script>
+<script src="_shared/a11y.js?v=113" defer></script>
+<script src="_shared/filters.js?v=113" defer></script>
+<script src="_shared/bulk-actions.js?v=113" defer></script>
+<script src="_shared/breadcrumbs.js?v=113" defer></script>
+<script src="_shared/bind-drawer-extras.js?v=113" defer></script>
+  <script src="_shared/bind-active-nav.js?v=113" defer></script>
+  <script src="_shared/bind-drawer-badges.js?v=113" defer></script>
+<script src="_shared/responsive-mobile.js?v=113" defer></script>
+<script src="_shared/microcopy.js?v=113" defer></script>
+<script src="_shared/settings-actions.js?v=113" defer></script>
+<script src="_shared/profile-menu.js?v=113" defer></script>
+<script src="_shared/modal.js?v=113" defer></script>
+<script src="_shared/crud-modals.js?v=113" defer></script>
+<script src="_shared/workflow.js?v=113" defer></script>
+<script src="_shared/bind-decisions.js?v=113" defer></script>
 </body>
 </html>

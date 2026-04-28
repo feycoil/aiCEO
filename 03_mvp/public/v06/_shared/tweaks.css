@@ -1644,31 +1644,53 @@ a.drawer-locale {
    - hero rebalance : Cap stratégique 1.2fr (dominante)
    ════════════════════════════════════════════════════════════════ */
 
-/* 1. badge-preview : compact partout, ultra-compact en collapsed */
+/* 1. badge-preview + badge-new : taille minimale (9px adaptee au texte)
+      Pas de min-width fixe (largeur = taille du texte). Pas de bordure.
+      Couleur NEW : violet. Couleur preview : gris discret.
+      (S6.8.1 - 28/04 PM late) */
 .drawer .drawer-item .badge-preview,
-.drawer .drawer-locale .badge-preview {
-  font-size: 9px !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.02em !important;
-  padding: 1px 4px !important;
-  min-width: 22px !important;
-  max-width: 32px !important;
+.drawer .drawer-item .badge-new,
+.drawer .drawer-locale .badge-preview,
+.drawer .drawer-locale .badge-new {
+  font-size: 8px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+  padding: 1px 5px !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  width: auto !important;
+  height: auto !important;
   text-align: center !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  line-height: 1.1 !important;
+  line-height: 1.3 !important;
   border-radius: 99px !important;
+  border: 0 !important;
   flex-shrink: 0 !important;
+  text-transform: uppercase !important;
+}
+
+/* Couleurs distinctes par type */
+.drawer .drawer-item .badge-new,
+.drawer .drawer-locale .badge-new {
+  background: var(--violet-50, #ece7f0) !important;
+  color: var(--violet-800, #463a54) !important;
+}
+.drawer .drawer-item .badge-preview,
+.drawer .drawer-locale .badge-preview {
+  background: var(--surface-3, #ebe7df) !important;
+  color: var(--text-3, #888) !important;
 }
 
 .app[data-drawer="collapsed"] .drawer .drawer-item .badge-preview,
-.app[data-drawer="collapsed"] .drawer .drawer-locale .badge-preview {
-  font-size: 7px !important;
-  padding: 0px 3px !important;
-  min-width: 16px !important;
-  max-width: 22px !important;
-  height: 13px !important;
+.app[data-drawer="collapsed"] .drawer .drawer-item .badge-new,
+.app[data-drawer="collapsed"] .drawer .drawer-locale .badge-preview,
+.app[data-drawer="collapsed"] .drawer .drawer-locale .badge-new {
+  font-size: 8px !important;
+  padding: 1px 4px !important;
+  min-width: 0 !important;
+  height: auto !important;
   letter-spacing: 0 !important;
 }
 
