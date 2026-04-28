@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>aiCEO — Pilotage projet</title>
+<style>
+:root {
+  --bg: #f5f3ef;
+  --surface-1: #fafaf7;
+  --surface-2: #fff;
+  --surface-3: #ebe7df;
+  --text: #1a1a1a;
+  --text-2: #555;
+  --text-3: #888;
+  --border: #e5e0d6;
+  --violet-50: #ece7f0;
+  --violet-800: #463a54;
+  --rose-50: #fde6e3;
+  --rose-700: #9c2920;
+  --emerald-50: #d6f3e6;
+  --emerald-700: #115e3c;
+  --amber-50: #fef3c7;
+  --amber-800: #92400e;
+  --sky-50: #dceaf5;
+  --sky-700: #1e5f9c;
+  --shadow-1: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-2: 0 4px 12px rgba(0,0,0,0.06);
+  --radius: 12px;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* === Layout === */
+.app {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+.sidebar {
+  background: var(--surface-2);
+  border-right: 1px solid var(--border);
+  padding: 24px 16px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.sidebar h1 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  letter-spacing: -0.01em;
+}
+.sidebar .subtitle {
+  font-size: 11px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 22px;
+}
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 24px;
+}
+.nav-section {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+  margin: 16px 8px 6px;
+}
+.nav-item {
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background .15s;
+}
+.nav-item:hover { background: var(--surface-3); color: var(--text); }
+.nav-item.active {
+  background: var(--text);
+  color: #fff;
+  font-weight: 600;
+}
+.nav-item .badge {
+  margin-left: auto;
+  background: var(--surface-3);
+  color: var(--text-3);
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+.nav-item.active .badge { background: rgba(255,255,255,0.15); color: #fff; }
+
+.main {
+  padding: 24px 32px;
+  max-width: 1400px;
+  width: 100%;
+}
+
+/* === Header KPIs === */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.header-title h2 { margin: 0 0 4px; font-size: 22px; font-weight: 600; }
+.header-title p { margin: 0; color: var(--text-3); font-size: 12px; }
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.kpi {
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-1);
+}
+.kpi .lbl {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+.kpi .val {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+}
+.kpi .val .small { font-size: 13px; font-weight: 500; color: var(--text-3); }
+.kpi .meta { font-size: 11px; color: var(--text-3); margin-top: 4px; }
+
+/* === Sections === */
+.section { display: none; }
+.section.active { display: block; }
+.card {
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow-1);
+  margin-bottom: 20px;
+}
+.card-title {
+  margin: 0 0 14px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.card-subtitle {
+  margin: -10px 0 14px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+/* === Timeline === */
+.timeline {
+  position: relative;
+  padding-left: 28px;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: var(--border);
+}
+.tl-item {
+  position: relative;
+  padding-bottom: 18px;
+}
+.tl-item::before {
+  content: "";
+  position: absolute;
+  left: -27px;
+  top: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 3px solid var(--border);
+}
+.tl-item.tag::before { border-color: var(--emerald-700); background: var(--emerald-50); }
+.tl-item.adr::before { border-color: var(--violet-800); background: var(--violet-50); }
+.tl-item.commit::before { border-color: var(--text-3); background: var(--surface-2); }
+.tl-item.milestone::before { border-color: var(--rose-700); background: var(--rose-50); width: 18px; height: 18px; left: -29px; }
+.tl-date {
+  font-size: 11px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.tl-title {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.tl-meta {
+  font-size: 12px;
+  color: var(--text-3);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 99px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.pill.tag { background: var(--emerald-50); color: var(--emerald-700); }
+.pill.adr { background: var(--violet-50); color: var(--violet-800); }
+.pill.commit { background: var(--surface-3); color: var(--text-2); }
+.pill.milestone { background: var(--rose-50); color: var(--rose-700); }
+
+/* === ADRs === */
+.adr-list { display: flex; flex-direction: column; gap: 10px; }
+.adr {
+  background: var(--surface-2);
+  border-left: 3px solid var(--violet-800);
+  border-radius: 8px;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.adr:hover { box-shadow: var(--shadow-2); transform: translateX(2px); }
+.adr-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+.adr-date {
+  font-size: 11px;
+  color: var(--text-3);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.adr-version { color: var(--violet-800); font-weight: 700; }
+.adr-statut {
+  margin-left: auto;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: var(--emerald-50);
+  color: var(--emerald-700);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.adr-statut.proposed { background: var(--amber-50); color: var(--amber-800); }
+.adr-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+}
+.adr-summary {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.5;
+}
+
+/* === Documentation index === */
+.doc-search {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.doc-search input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-2);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+}
+.doc-search input:focus { border-color: var(--violet-800); }
+.cat-filter {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.cat-btn {
+  padding: 5px 12px;
+  border-radius: 99px;
+  background: var(--surface-3);
+  border: 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-2);
+  cursor: pointer;
+  font-family: inherit;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.cat-btn.active { background: var(--text); color: #fff; }
+.doc-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 10px;
+}
+.doc-card {
+  background: var(--surface-2);
+  border-radius: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all .15s;
+}
+.doc-card:hover { box-shadow: var(--shadow-1); transform: translateY(-1px); }
+.doc-cat {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+  color: var(--text-3);
+}
+.doc-title {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.doc-path {
+  margin: 0;
+  font-size: 10px;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  color: var(--text-3);
+}
+.doc-excerpt {
+  margin: 8px 0 0;
+  font-size: 11px;
+  color: var(--text-3);
+  line-height: 1.5;
+  max-height: 4.5em;
+  overflow: hidden;
+}
+
+/* === Velocity chart === */
+.velocity-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 80px;
+  padding: 0 4px;
+}
+.vel-bar {
+  flex: 1;
+  background: var(--violet-800);
+  border-radius: 2px 2px 0 0;
+  min-height: 2px;
+  position: relative;
+}
+.vel-bar:hover::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text);
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  margin-bottom: 4px;
+}
+
+/* === Roadmap phases === */
+.phase {
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  border-left: 4px solid var(--text-3);
+}
+.phase.done { border-left-color: var(--emerald-700); }
+.phase.active { border-left-color: var(--violet-800); background: linear-gradient(90deg, var(--violet-50) 0%, var(--surface-2) 30%); }
+.phase.pending { border-left-color: var(--amber-800); }
+.phase-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.phase-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+.phase.done .phase-num { background: var(--emerald-50); color: var(--emerald-700); }
+.phase.active .phase-num { background: var(--violet-50); color: var(--violet-800); }
+.phase.pending .phase-num { background: var(--amber-50); color: var(--amber-800); }
+.phase-title { margin: 0; font-size: 16px; font-weight: 600; flex: 1; }
+.phase-status { font-size: 10px; padding: 2px 8px; border-radius: 99px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.phase-status.done { background: var(--emerald-50); color: var(--emerald-700); }
+.phase-status.active { background: var(--violet-50); color: var(--violet-800); }
+.phase-status.pending { background: var(--amber-50); color: var(--amber-800); }
+.phase-sprints {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+.sprint-mini {
+  padding: 8px 12px;
+  background: var(--surface-3);
+  border-radius: 6px;
+  font-size: 12px;
+}
+.sprint-mini.done { background: var(--emerald-50); }
+.sprint-mini-num { font-weight: 700; color: var(--text); }
+.sprint-mini-desc { color: var(--text-3); font-size: 11px; margin-top: 2px; }
+
+/* === Modal === */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(20,18,16,0.55);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface-1);
+  border-radius: 16px;
+  padding: 28px 32px;
+  width: 720px;
+  max-width: 92vw;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+}
+.modal h3 { margin: 0 0 8px; font-size: 18px; }
+.modal-close {
+  float: right;
+  background: transparent;
+  border: 0;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--text-3);
+}
+
+/* === Footer === */
+.footer {
+  margin-top: 32px;
+  padding: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text-3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <h1>aiCEO</h1>
+    <p class="subtitle">Pilotage projet</p>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Vue d'ensemble</div>
+      <div class="nav-item active" data-section="dashboard">📊 Tableau de bord</div>
+      <div class="nav-item" data-section="timeline">🕐 Timeline</div>
+      <div class="nav-item" data-section="roadmap">🗺️ Roadmap ADD-AI</div>
+
+      <div class="nav-section">Suivi</div>
+      <div class="nav-item" data-section="adrs">⚖️ Décisions <span class="badge" id="adr-count">0</span></div>
+      <div class="nav-item" data-section="commits">💻 Commits <span class="badge" id="commit-count">0</span></div>
+      <div class="nav-item" data-section="velocity">📈 Vélocité 30j</div>
+
+      <div class="nav-section">Documentation</div>
+      <div class="nav-item" data-section="docs">📚 Index docs <span class="badge" id="doc-count">0</span></div>
+      <div class="nav-item" data-section="audits">🔍 Audits & rapports</div>
+
+      <div class="nav-section">Méthode</div>
+      <div class="nav-item" data-section="method">⚡ ADD-AI</div>
+      <div class="nav-item" data-section="ceo-actions">👤 Actions CEO</div>
+    </nav>
+    <div style="margin-top:auto;padding-top:20px;border-top:1px solid var(--border);font-size:10px;color:var(--text-3)">
+      Généré le <span id="gen-date">—</span><br>
+      Owner: Major Fey<br>
+      Builder: Claude (Cowork)
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="header">
+      <div class="header-title">
+        <h2 id="page-title">Tableau de bord</h2>
+        <p id="page-subtitle">Vue d'ensemble du projet aiCEO</p>
+      </div>
+    </header>
+
+    <!-- Section Dashboard -->
+    <section class="section active" id="section-dashboard">
+      <div class="kpi-row">
+        <div class="kpi">
+          <div class="lbl">Version actuelle</div>
+          <div class="val" id="kpi-version">—</div>
+          <div class="meta" id="kpi-version-meta">—</div>
+        </div>
+        <div class="kpi">
+          <div class="lbl">Commits 7j</div>
+          <div class="val" id="kpi-commits-7j">0</div>
+          <div class="meta" id="kpi-commits-trend">—</div>
+        </div>
+        <div class="kpi">
+          <div class="lbl">ADRs total</div>
+          <div class="val" id="kpi-adrs">0</div>
+          <div class="meta" id="kpi-adrs-recent">—</div>
+        </div>
+        <div class="kpi">
+          <div class="lbl">Documents</div>
+          <div class="val" id="kpi-docs">0</div>
+          <div class="meta">indexés automatiquement</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">📌 Activité récente (10 derniers commits)</h3>
+        <div class="timeline" id="recent-activity"></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div class="card">
+          <h3 class="card-title">⚖️ 5 dernières décisions</h3>
+          <div class="adr-list" id="recent-adrs"></div>
+        </div>
+        <div class="card">
+          <h3 class="card-title">📈 Vélocité 30 jours</h3>
+          <div class="velocity-chart" id="vel-chart"></div>
+          <p class="card-subtitle" style="margin-top:8px">Commits par jour (30 derniers)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Timeline -->
+    <section class="section" id="section-timeline">
+      <div class="card">
+        <h3 class="card-title">Jalons & événements</h3>
+        <p class="card-subtitle">Tags Git (releases) + ADRs + commits importants</p>
+        <div class="timeline" id="full-timeline"></div>
+      </div>
+    </section>
+
+    <!-- Section Roadmap -->
+    <section class="section" id="section-roadmap">
+      <div class="card">
+        <h3 class="card-title">🗺️ Trajectoire ADD-AI Phase 1-2-3</h3>
+        <p class="card-subtitle">Plan de réalignement aiCEO sur 12 semaines pré-V1</p>
+        <div id="roadmap-phases"></div>
+      </div>
+    </section>
+
+    <!-- Section ADRs -->
+    <section class="section" id="section-adrs">
+      <div class="card">
+        <h3 class="card-title">⚖️ Toutes les décisions architecturales (ADRs)</h3>
+        <div class="doc-search">
+          <input type="search" id="adr-search" placeholder="Rechercher dans les ADRs...">
+        </div>
+        <div class="adr-list" id="all-adrs"></div>
+      </div>
+    </section>
+
+    <!-- Section Commits -->
+    <section class="section" id="section-commits">
+      <div class="card">
+        <h3 class="card-title">💻 Historique des commits (100 derniers)</h3>
+        <div class="timeline" id="all-commits"></div>
+      </div>
+    </section>
+
+    <!-- Section Vélocité -->
+    <section class="section" id="section-velocity">
+      <div class="card">
+        <h3 class="card-title">📈 Vélocité détaillée 30 jours</h3>
+        <div class="velocity-chart" id="vel-chart-full" style="height:160px"></div>
+      </div>
+      <div class="card">
+        <h3 class="card-title">Stats agrégées</h3>
+        <div id="vel-stats"></div>
+      </div>
+    </section>
+
+    <!-- Section Documentation -->
+    <section class="section" id="section-docs">
+      <div class="card">
+        <h3 class="card-title">📚 Index de la documentation</h3>
+        <p class="card-subtitle">Tous les .md du projet, scannés automatiquement</p>
+        <div class="doc-search">
+          <input type="search" id="doc-search-input" placeholder="Rechercher dans tous les docs...">
+        </div>
+        <div class="cat-filter" id="cat-filters"></div>
+        <div class="doc-list" id="doc-list"></div>
+      </div>
+    </section>
+
+    <!-- Section Audits -->
+    <section class="section" id="section-audits">
+      <div class="card">
+        <h3 class="card-title">🔍 Audits & rapports d'analyse</h3>
+        <div class="doc-list" id="audits-list"></div>
+      </div>
+    </section>
+
+    <!-- Section Methode -->
+    <section class="section" id="section-method">
+      <div class="card">
+        <h3 class="card-title">⚡ Méthode ADD-AI (AI-Driven Development)</h3>
+        <p class="card-subtitle">Méthode formalisée pour développer aiCEO entièrement par IA</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:16px">
+          <div class="phase done"><div class="phase-head"><div class="phase-num">1</div><h4 class="phase-title">Continuité</h4></div><p style="margin:0;font-size:12px;color:var(--text-3)">Mémoire structurée cross-sessions via CLAUDE.md + memory/ + ADRs</p></div>
+          <div class="phase done"><div class="phase-head"><div class="phase-num">2</div><h4 class="phase-title">Multi-rôle</h4></div><p style="margin:0;font-size:12px;color:var(--text-3)">8 subagents experts (architect, dev, designer, QA, security, etc.)</p></div>
+          <div class="phase active"><div class="phase-head"><div class="phase-num">3</div><h4 class="phase-title">Auto-vérification</h4></div><p style="margin:0;font-size:12px;color:var(--text-3)">4 niveaux check obligatoires : syntax / smoke / visuel / a11y</p></div>
+          <div class="phase pending"><div class="phase-head"><div class="phase-num">4</div><h4 class="phase-title">Coût-conscient</h4></div><p style="margin:0;font-size:12px;color:var(--text-3)">Budget tokens cible par sprint, batch LLM, cache</p></div>
+          <div class="phase pending"><div class="phase-head"><div class="phase-num">5</div><h4 class="phase-title">Méta-amélioration</h4></div><p style="margin:0;font-size:12px;color:var(--text-3)">Chaque sprint produit un retex qui améliore Claude lui-même</p></div>
+        </div>
+        <p style="margin-top:18px"><a href="00_methode/METHODE-ADD-AI-aiCEO.md" style="color:var(--violet-800);font-weight:600">📖 Lire la note descriptive complète →</a></p>
+      </div>
+    </section>
+
+    <!-- Section CEO actions -->
+    <section class="section" id="section-ceo-actions">
+      <div class="card">
+        <h3 class="card-title">👤 Actions à exécuter côté CEO (Windows)</h3>
+        <p class="card-subtitle">Tâches que Claude ne peut pas faire et qui requièrent ton intervention</p>
+        <ol style="line-height:1.9">
+          <li><strong>Push vers origin :</strong><br><code>git push origin main</code> — pousse les commits S6.8 + audit + méthode</li>
+          <li><strong>Lancer la routine de mise à jour pilotage :</strong><br><code>pwsh -File update-pilotage.ps1</code> — régénère ce dashboard à la demande</li>
+          <li><strong>Configurer le hook git post-commit auto :</strong><br><code>pwsh -File update-pilotage.ps1 -InstallHook</code> — pilotage régénéré à chaque commit</li>
+          <li><strong>Restart serveur après tout patch backend :</strong><br><code>pwsh -File restart-server.ps1</code></li>
+          <li><strong>Valider l'ADR v8 ADD-AI</strong> dans <code>DECISIONS.md</code> (changer Statut "Proposé" → "Acté")</li>
+          <li><strong>Créer milestone GitHub Phase-1-Fondations</strong> + 5 issues S6.9 à S6.13</li>
+        </ol>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span>aiCEO Pilotage · v1.0 · auto-généré</span>
+      <span>Régénérer : <code>node scripts/generate-pilotage.js</code></span>
+    </footer>
+  </main>
+</div>
+
+<!-- Modal détail -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">×</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script type="application/json" id="pilotage-data">
+/*PILOTAGE_DATA*/
+</script>
+
+<script>
+const DATA = JSON.parse(document.getElementById('pilotage-data').textContent);
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => Array.from(document.querySelectorAll(s));
+const escHtml = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+// === Init ===
+function init() {
+  $('#gen-date').textContent = new Date(DATA.generated_at).toLocaleString('fr-FR');
+  $('#adr-count').textContent = DATA.adrs.length;
+  $('#commit-count').textContent = DATA.commits.length;
+  $('#doc-count').textContent = DATA.docs.length;
+
+  // KPIs
+  const lastTag = DATA.tags[0];
+  $('#kpi-version').textContent = lastTag ? lastTag.tag : '—';
+  $('#kpi-version-meta').textContent = lastTag ? `Posé le ${lastTag.date}` : '';
+  const today = new Date().toISOString().slice(0,10);
+  const sevenDaysAgo = new Date(Date.now() - 7*86400000).toISOString().slice(0,10);
+  const c7 = DATA.commits.filter(c => c.date >= sevenDaysAgo).length;
+  $('#kpi-commits-7j').textContent = c7;
+  $('#kpi-commits-trend').textContent = c7 > 0 ? '↑ activité soutenue' : 'pause';
+  $('#kpi-adrs').textContent = DATA.adrs.length;
+  const recentAdr = DATA.adrs[0];
+  $('#kpi-adrs-recent').textContent = recentAdr ? `Dernière : ${recentAdr.date}` : '';
+  $('#kpi-docs').textContent = DATA.docs.length;
+
+  renderRecentActivity();
+  renderRecentAdrs();
+  renderVelocityChart('#vel-chart', DATA.velocity_30j);
+  renderVelocityChart('#vel-chart-full', DATA.velocity_30j);
+  renderFullTimeline();
+  renderRoadmap();
+  renderAllAdrs();
+  renderAllCommits();
+  renderVelStats();
+  renderDocs();
+  renderAudits();
+
+  bindNav();
+  bindAdrSearch();
+  bindDocSearch();
+}
+
+function bindNav() {
+  $$('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      $$('.nav-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      const id = item.dataset.section;
+      $$('.section').forEach(s => s.classList.remove('active'));
+      $('#section-' + id).classList.add('active');
+      const titles = {
+        dashboard: ['Tableau de bord', 'Vue d\'ensemble du projet aiCEO'],
+        timeline: ['Timeline', 'Jalons et événements depuis le début du projet'],
+        roadmap: ['Roadmap ADD-AI', 'Plan de réalignement Phase 1-2-3'],
+        adrs: ['Décisions architecturales', 'Toutes les ADRs documentées'],
+        commits: ['Commits', '100 derniers commits Git'],
+        velocity: ['Vélocité', 'Activité 30 derniers jours'],
+        docs: ['Documentation', 'Index complet des .md du projet'],
+        audits: ['Audits & rapports', 'Tous les audits produits'],
+        method: ['Méthode ADD-AI', 'AI-Driven Development pour aiCEO'],
+        'ceo-actions': ['Actions CEO', 'Tâches qui requièrent ton intervention Windows']
+      };
+      const t = titles[id];
+      if (t) { $('#page-title').textContent = t[0]; $('#page-subtitle').textContent = t[1]; }
+    });
+  });
+}
+
+function commitTypePill(msg) {
+  const m = msg.match(/^(\w+)(?:\([^)]+\))?\s*:/);
+  if (!m) return '';
+  const type = m[1];
+  const colors = { feat: 'tag', fix: 'milestone', docs: 'adr', refactor: 'commit', test: 'commit', chore: 'commit' };
+  return '<span class="pill ' + (colors[type] || 'commit') + '">' + type + '</span>';
+}
+
+function renderRecentActivity() {
+  const items = DATA.commits.slice(0, 10);
+  $('#recent-activity').innerHTML = items.map(c => {
+    const tag = DATA.tags.find(t => t.sha === c.short);
+    return '<div class="tl-item ' + (tag ? 'tag' : 'commit') + '">' +
+      '<div class="tl-date">' + c.date + (tag ? ' · TAG ' + tag.tag : '') + '</div>' +
+      '<h4 class="tl-title">' + escHtml(c.message) + '</h4>' +
+      '<div class="tl-meta">' + commitTypePill(c.message) + '<span class="pill commit">' + c.short + '</span><span>' + escHtml(c.author) + '</span></div>' +
+    '</div>';
+  }).join('');
+}
+
+function renderRecentAdrs() {
+  $('#recent-adrs').innerHTML = DATA.adrs.slice(0, 5).map(adr => renderAdrCard(adr)).join('');
+}
+
+function renderAdrCard(adr) {
+  const statutClass = /propos/i.test(adr.statut) ? 'proposed' : '';
+  return '<div class="adr" onclick="showAdrModal(' + JSON.stringify(adr.date + (adr.version ? '-v' + adr.version : '')).replace(/"/g, '&quot;') + ')">' +
+    '<div class="adr-head">' +
+      '<span class="adr-date">' + adr.date + (adr.version ? ' · <span class="adr-version">v' + adr.version + '</span>' : '') + '</span>' +
+      '<span class="adr-statut ' + statutClass + '">' + escHtml(adr.statut) + '</span>' +
+    '</div>' +
+    '<h4 class="adr-title">' + escHtml(adr.title) + '</h4>' +
+    '<p class="adr-summary">' + escHtml(adr.summary) + '...</p>' +
+  '</div>';
+}
+
+function renderVelocityChart(sel, data) {
+  const max = Math.max(...data.map(d => d.count), 1);
+  $(sel).innerHTML = data.map(d => {
+    const h = (d.count / max) * 100;
+    return '<div class="vel-bar" style="height:' + h + '%" data-tip="' + d.date + ' : ' + d.count + ' commit' + (d.count > 1 ? 's' : '') + '"></div>';
+  }).join('');
+}
+
+function renderFullTimeline() {
+  // Mix tags + ADRs + commits importants (feat/fix/docs)
+  const items = [];
+  DATA.tags.forEach(t => items.push({ kind: 'tag', date: t.date, title: 'Release ' + t.tag, sha: t.sha, sort: t.date }));
+  DATA.adrs.forEach(a => items.push({ kind: 'adr', date: a.date, title: a.title, version: a.version, sort: a.date + '-z' }));
+  // Commits "feat" significatifs
+  DATA.commits.filter(c => /^feat/.test(c.message)).slice(0, 30).forEach(c => {
+    items.push({ kind: 'commit', date: c.date, title: c.message, sha: c.short, sort: c.date });
+  });
+  items.sort((a, b) => b.sort.localeCompare(a.sort));
+  $('#full-timeline').innerHTML = items.slice(0, 50).map(i => {
+    return '<div class="tl-item ' + i.kind + '">' +
+      '<div class="tl-date">' + i.date + '</div>' +
+      '<h4 class="tl-title">' + escHtml(i.title) + (i.version ? ' <em>(v' + i.version + ')</em>' : '') + '</h4>' +
+      '<div class="tl-meta"><span class="pill ' + i.kind + '">' + i.kind + '</span>' + (i.sha ? '<span class="pill commit">' + i.sha + '</span>' : '') + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function renderRoadmap() {
+  const phases = [
+    { num: 1, title: 'FONDATIONS', status: 'pending', subtitle: 'Solidifier le DS et la vitesse · ~5.5 j-binôme', sprints: [
+      { id: 'S6.9', desc: 'DS consolidation' },
+      { id: 'S6.10', desc: 'Keyboard-first arbitrage' },
+      { id: 'S6.11', desc: 'Cmd+K palette + FTS5' },
+      { id: 'S6.12', desc: 'Contexte LLM enrichi' },
+      { id: 'S6.13', desc: 'Revues hebdo refondue' }
+    ], cible: 'Note 6.3 → 8.0' },
+    { num: 2, title: 'INTELLIGENCE', status: 'pending', subtitle: 'L\'IA devient un binôme contextualisé · ~6 j-binôme', sprints: [
+      { id: 'S7.1', desc: 'Mémoire inter-fils LLM' },
+      { id: 'S7.2', desc: 'Batch LLM operations' },
+      { id: 'S7.3', desc: 'Capture audio + Whisper' },
+      { id: 'S7.4', desc: 'Backlinks bidirectionnels' },
+      { id: 'S7.5', desc: 'Skeleton loading + perf' },
+      { id: 'S7.6', desc: 'Mobile responsive' }
+    ], cible: 'Note 8.0 → 9.0' },
+    { num: 3, title: 'RITUALISATION', status: 'pending', subtitle: 'Compagnon quotidien indispensable · ~5.5 j-binôme', sprints: [
+      { id: 'S7.7', desc: 'Daily digest matin' },
+      { id: 'S7.8', desc: 'Bilan soir augmenté' },
+      { id: 'S7.9', desc: 'Onboarding CEO pair' },
+      { id: 'S7.10', desc: 'Notifications PWA' },
+      { id: 'S7.11', desc: 'Light/dark mode' }
+    ], cible: 'Note 9.0 → 9.5' }
+  ];
+  $('#roadmap-phases').innerHTML = phases.map(p => {
+    return '<div class="phase ' + p.status + '">' +
+      '<div class="phase-head">' +
+        '<div class="phase-num">' + p.num + '</div>' +
+        '<h3 class="phase-title">Phase ' + p.num + ' — ' + p.title + '</h3>' +
+        '<span class="phase-status ' + p.status + '">' + p.status + '</span>' +
+      '</div>' +
+      '<p style="margin:4px 0 0;color:var(--text-3);font-size:12px">' + p.subtitle + ' · cible : <strong>' + p.cible + '</strong></p>' +
+      '<div class="phase-sprints">' + p.sprints.map(s => {
+        return '<div class="sprint-mini"><div class="sprint-mini-num">' + s.id + '</div><div class="sprint-mini-desc">' + s.desc + '</div></div>';
+      }).join('') + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function renderAllAdrs() {
+  $('#all-adrs').innerHTML = DATA.adrs.map(a => renderAdrCard(a)).join('');
+}
+
+function renderAllCommits() {
+  $('#all-commits').innerHTML = DATA.commits.map(c => {
+    const tag = DATA.tags.find(t => t.sha === c.short);
+    return '<div class="tl-item ' + (tag ? 'tag' : 'commit') + '">' +
+      '<div class="tl-date">' + c.date + (tag ? ' · TAG ' + tag.tag : '') + '</div>' +
+      '<h4 class="tl-title">' + escHtml(c.message) + '</h4>' +
+      '<div class="tl-meta">' + commitTypePill(c.message) + '<span class="pill commit">' + c.short + '</span><span>' + escHtml(c.author) + '</span></div>' +
+    '</div>';
+  }).join('');
+}
+
+function renderVelStats() {
+  const total = DATA.velocity_30j.reduce((s, d) => s + d.count, 0);
+  const days = DATA.velocity_30j.filter(d => d.count > 0).length;
+  const avg = days > 0 ? (total / days).toFixed(1) : 0;
+  const peak = Math.max(...DATA.velocity_30j.map(d => d.count));
+  $('#vel-stats').innerHTML = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">' +
+    '<div class="kpi"><div class="lbl">Total 30j</div><div class="val">' + total + '</div><div class="meta">commits</div></div>' +
+    '<div class="kpi"><div class="lbl">Jours actifs</div><div class="val">' + days + '<span class="small"> / 30</span></div><div class="meta">' + Math.round(days/30*100) + '% du temps</div></div>' +
+    '<div class="kpi"><div class="lbl">Moyenne / jour actif</div><div class="val">' + avg + '</div><div class="meta">commits</div></div>' +
+    '<div class="kpi"><div class="lbl">Pic</div><div class="val">' + peak + '</div><div class="meta">commits / jour</div></div>' +
+  '</div>';
+}
+
+let docFilter = 'all';
+let docSearchQ = '';
+
+function renderDocs() {
+  const cats = {};
+  DATA.docs.forEach(d => { cats[d.category] = (cats[d.category] || 0) + 1; });
+  const catLabels = {
+    all: 'Tout', gouvernance: 'Gouvernance', audit: 'Audits', methode: 'Méthode',
+    release: 'Releases', sprint: 'Sprints', api: 'API', recette: 'Recette',
+    doc: 'Doc générale', tech: 'Technique', racine: 'Racine', autre: 'Autre'
+  };
+  const filterButtons = ['all'].concat(Object.keys(cats));
+  $('#cat-filters').innerHTML = filterButtons.map(c => {
+    const count = c === 'all' ? DATA.docs.length : cats[c];
+    return '<button class="cat-btn ' + (c === docFilter ? 'active' : '') + '" data-cat="' + c + '">' + (catLabels[c] || c) + ' <span style="opacity:.6">' + count + '</span></button>';
+  }).join('');
+  $$('.cat-btn').forEach(b => {
+    b.addEventListener('click', () => { docFilter = b.dataset.cat; renderDocs(); });
+  });
+
+  const filtered = DATA.docs.filter(d => {
+    if (docFilter !== 'all' && d.category !== docFilter) return false;
+    if (docSearchQ && !((d.title + ' ' + d.path + ' ' + d.excerpt).toLowerCase().includes(docSearchQ.toLowerCase()))) return false;
+    return true;
+  });
+  filtered.sort((a, b) => new Date(b.mtime) - new Date(a.mtime));
+
+  $('#doc-list').innerHTML = filtered.length === 0
+    ? '<p style="grid-column:1/-1;color:var(--text-3);text-align:center;padding:32px">Aucun document trouvé.</p>'
+    : filtered.map(d => {
+        return '<a class="doc-card" href="../' + d.path + '" target="_blank" style="text-decoration:none;color:inherit;display:block">' +
+          '<div class="doc-cat">' + (catLabels[d.category] || d.category) + ' · ' + new Date(d.mtime).toLocaleDateString('fr-FR') + '</div>' +
+          '<h4 class="doc-title">' + escHtml(d.title) + '</h4>' +
+          '<p class="doc-path">' + escHtml(d.path) + '</p>' +
+          '<p class="doc-excerpt">' + escHtml(d.excerpt) + '</p>' +
+        '</a>';
+      }).join('');
+}
+
+function bindDocSearch() {
+  $('#doc-search-input').addEventListener('input', e => {
+    docSearchQ = e.target.value.trim();
+    renderDocs();
+  });
+}
+
+function renderAudits() {
+  const audits = DATA.docs.filter(d => d.category === 'audit');
+  audits.sort((a, b) => new Date(b.mtime) - new Date(a.mtime));
+  $('#audits-list').innerHTML = audits.map(d => {
+    return '<a class="doc-card" href="../' + d.path + '" target="_blank" style="text-decoration:none;color:inherit;display:block">' +
+      '<div class="doc-cat">Audit · ' + new Date(d.mtime).toLocaleDateString('fr-FR') + '</div>' +
+      '<h4 class="doc-title">' + escHtml(d.title) + '</h4>' +
+      '<p class="doc-path">' + escHtml(d.path) + '</p>' +
+      '<p class="doc-excerpt">' + escHtml(d.excerpt) + '</p>' +
+    '</a>';
+  }).join('');
+}
+
+function bindAdrSearch() {
+  $('#adr-search').addEventListener('input', e => {
+    const q = e.target.value.trim().toLowerCase();
+    const filtered = q ? DATA.adrs.filter(a => (a.title + ' ' + a.summary).toLowerCase().includes(q)) : DATA.adrs;
+    $('#all-adrs').innerHTML = filtered.map(a => renderAdrCard(a)).join('');
+  });
+}
+
+function showAdrModal(key) {
+  const adr = DATA.adrs.find(a => (a.date + (a.version ? '-v' + a.version : '')) === key);
+  if (!adr) return;
+  $('#modal-content').innerHTML =
+    '<div style="font-size:11px;color:var(--text-3);margin-bottom:6px">' + adr.date + (adr.version ? ' · v' + adr.version : '') + '</div>' +
+    '<h3 style="margin:0 0 12px">' + escHtml(adr.title) + '</h3>' +
+    '<span class="adr-statut ' + (/propos/i.test(adr.statut) ? 'proposed' : '') + '">' + escHtml(adr.statut) + '</span>' +
+    '<p style="margin-top:14px;line-height:1.6;color:var(--text-2);font-size:13px">' + escHtml(adr.summary) + '...</p>' +
+    '<p style="margin-top:18px;font-size:12px"><a href="../00_BOUSSOLE/DECISIONS.md" target="_blank" style="color:var(--violet-800);font-weight:600">Voir le détail complet dans DECISIONS.md →</a></p>';
+  $('#modal').classList.add('open');
+}
+
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target.id === 'modal') e.target.classList.remove('open');
+});
+
+init();
+</script>
+</body>
+</html>
