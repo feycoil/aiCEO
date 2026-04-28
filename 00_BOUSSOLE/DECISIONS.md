@@ -1517,6 +1517,35 @@ Format :
 
 
 
+## 2026-04-28 v7 · Audit UX/UI complet + plan de réalignement Phase 1-2-3 (proposé)
+
+**Statut** : Proposé · **Audience** : CEO + binôme · **Origine** : audit UX/UI sans concession demandé par CEO post-S6.8.
+
+**Contexte** : Après livraison S6.8 (5 commits), le CEO demande une analyse PMO + Designer expert sans concession. Verdict : note produit 6.3/10 (vs cible V1 = 8.5/10). Sur 4 moments CEO, seul le matin est partiellement narratif. 7 manques critiques vs concurrents (Reflect, Mem, Linear, Superhuman).
+
+**Décision** : structurer la suite en 3 phases pré-V1 :
+- **Phase 1 — FONDATIONS** (4 sem, ~5.5 j-binôme) : DS consolidation + keyboard-first arbitrage + Cmd+K palette + contexte LLM serveur + revues hebdo refondues. Cible : note 6.3 → 8.0.
+- **Phase 2 — INTELLIGENCE** (4 sem, ~6 j-binôme) : mémoire inter-fils + batch LLM + capture audio + backlinks + perf + mobile. Cible : 8.0 → 9.0.
+- **Phase 3 — RITUALISATION** (4 sem, ~5.5 j-binôme) : daily digest matin + bilan soir augmenté + onboarding CEO pair + notifications PWA + dark mode. Cible : 9.0 → 9.5.
+
+**Total** : ~17 j-binôme = ~6 semaines chrono CEO = ~12 semaines calendaire.
+
+**Conséquences** :
+- 5 sprints S6.9 → S6.13 (Phase 1) à kickoff dès J+1
+- 6 sprints S7.1 → S7.6 (Phase 2)
+- 5 sprints S7.7 → S7.11 (Phase 3)
+- 7 métriques produit à instrumenter (time-to-first-value, arbitrage velocity, streak médian, % décisions non-stale, coût LLM/CEO/mois, NPS interne, friction reports)
+- 10 analyses complémentaires à conduire (A1-A10) dont accessibilité, perf, sécurité, data model, étude utilisateur, benchmark, RGPD
+
+**Sources** :
+- `04_docs/audits/AUDIT-UXUI-2026-04-28.md` (audit complet)
+- `04_docs/audits/PLAN-REALIGNEMENT-PROMESSE-2026-04-28.md` (plan détaillé)
+- Mandat CEO 28/04 PM late "fait complete sans concession une analyse ux/ui"
+
+**Validation** : à acter par CEO en J1 pour démarrer Phase 1 dès J2.
+
+---
+
 ## 2026-04-28 v6 · Sprint S6.8 livré sous mandat plein CEO — refonte UX/UI complete + boucle Assistant↔Connaissance
 
 **Statut** : Acté · **Audience** : équipe binôme · **Démarrage** : 28/04/2026 PM late (post-tag v0.7)
