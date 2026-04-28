@@ -282,7 +282,10 @@ function generate() {
   // - </script> ferme le tag prematurement -> remplacer par <\/script>
   // - <!-- ouvre un commentaire HTML -> echaper aussi
   let payload = JSON.stringify(data);
-  payload = payload.replace(/<\//g, '<\\/').replace(/<!--/g, '<\\!--');
+  // Echaper les sequences qui fermeraient le <script type=application/json> :
+  // - </xxx> -> \u003C/xxx (valide JSON, equivalent a <)
+  // - <!-- -> \u003C!-- (valide JSON, equivalent a <)
+  payload = payload.replace(/<\//g, '\\u003C/').replace(/<!--/g, '\\u003C!--');
   html = html.replace('/*PILOTAGE_DATA*/', payload);
 
   fs.writeFileSync(OUTPUT, html, 'utf-8');
