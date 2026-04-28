@@ -278,7 +278,12 @@ function generate() {
     process.exit(1);
   }
   let html = fs.readFileSync(TEMPLATE, 'utf-8');
-  html = html.replace('/*PILOTAGE_DATA*/', JSON.stringify(data));
+  // Escape sequences qui casseraient le <script type="application/json">
+  // - </script> ferme le tag prematurement -> remplacer par <\/script>
+  // - <!-- ouvre un commentaire HTML -> echaper aussi
+  let payload = JSON.stringify(data);
+  payload = payload.replace(/<\//g, '<\\/').replace(/<!--/g, '<\\!--');
+  html = html.replace('/*PILOTAGE_DATA*/', payload);
 
   fs.writeFileSync(OUTPUT, html, 'utf-8');
   console.log('\nGenerated: ' + OUTPUT);
