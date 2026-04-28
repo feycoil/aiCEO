@@ -152,6 +152,28 @@ function githubState() {
   return snapshot;
 }
 
+function parseReleases() {
+  const dir = path.join(PROJECT_ROOT, '04_docs', '_release-notes');
+  if (!fs.existsSync(dir)) return [];
+  const files = fs.readdirSync(dir).filter(f => f.endsWith('.md'));
+  return files.map(f => {
+    const full = path.join(dir, f);
+    const content = fs.readFileSync(full, 'utf-8');
+    const titleMatch = content.match(/^#\s+(.+)$/m);
+    const stat = fs.statSync(full);
+    const version = f.replace('.md', '');
+    return {
+      version,
+      file: f,
+      title: titleMatch ? titleMatch[1].trim() : version,
+      mtime: stat.mtime.toISOString(),
+      size: stat.size,
+      summary: content.slice(0, 800).replace(/[#*]/g, '').replace(/\n+/g, ' ').trim().slice(0, 500),
+      path: '_release-notes/' + f
+    };
+  }).sort((a, b) => b.version.localeCompare(a.version));
+}
+
 function velocity(commits) {
   const byDay = {};
   const now = new Date();
@@ -186,6 +208,10 @@ function generate() {
 
   console.log('Loading GitHub state...');
   const ghState = githubState();
+
+  console.log('Parsing release notes...');
+  const releases = parseReleases();
+  console.log('  Found ' + releases.length + ' releases');
   console.log('  ' + ghState.milestones.length + ' milestones, ' + ghState.issues_open + ' open issues');
 
   const data = {
@@ -196,7 +222,8 @@ function generate() {
     velocity_30j: vel,
     consistence,
     tree,
-    github: ghState
+    github: ghState,
+    releases
   };
 
   if (!fs.existsSync(TEMPLATE)) {
