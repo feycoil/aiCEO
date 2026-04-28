@@ -1517,6 +1517,73 @@ Format :
 
 
 
+## 2026-04-28 v6 · Sprint S6.8 livré sous mandat plein CEO — refonte UX/UI complete + boucle Assistant↔Connaissance
+
+**Statut** : Acté · **Audience** : équipe binôme · **Démarrage** : 28/04/2026 PM late (post-tag v0.7)
+
+**Contexte** : Après livraison v0.7, le CEO constate plusieurs régressions visuelles et fonctionnelles vs maquette source Claude Design (cf. screenshots `04_docs/_design-v05-claude/claude_design/vague_1/design-v05/`) :
+- Sidebar avec 3 menus en preview grisé (Connaissance/Coaching/Assistant)
+- Assistant : chat avec données démo, pas de boucle de génération vers Connaissance
+- Connaissance : double empty state, modal noir sans style, sidebar PAR TYPE non câblée
+- Décisions : 4 KPIs hardcodés, pas de modal détail, pas de filtres câblés
+- Arbitrage : 1 bouton Accepter simple, pas de mode focus avec verdicts Eisenhower, pas de raccourcis clavier
+- Cockpit : pas d'intention narrative, pas de visualisation Big Rocks, pas d'alertes ni suggestions LLM
+- Pas de macro-scénarios (big blocks) sur la file d'arbitrage
+
+**Décision** : auto-décidée Claude sous mandat plein CEO le 28/04 PM late : livrer le Sprint S6.8 en 5 phases consécutives sans demander confirmation à chaque étape, en commitant à chaque phase.
+
+**Phases livrées** :
+
+1. **S6.8.1** (commit `bb8d208`) — Sidebar activation + Connaissance + Assistant + boucle pin_to_knowledge + Décisions enrichies
+   - Sidebar : badges NEW violet 8px sans bordure (au lieu de v0.7/v0.8 grisés)
+   - Connaissance : empty state propre centré + modal stylé + sidebar 4 kinds + filter+search+toggle Liste/Frise
+   - Assistant : cleanup démo total + sidebar dynamique + modal Historique + composer fond clair inner-shadow + bulles outer-shadow + fix bug streaming `data.text` (au lieu de `data.delta`)
+   - Tool `pin_to_knowledge` ajouté à `messages.stream` Anthropic SDK : capture `tool_use` blocks → INSERT `knowledge_pins` (source_type='assistant', source_id=convId) → emit SSE `knowledge-created` → frontend affiche card inline avec bouton Voir/Annuler
+   - Décisions : 4 KPIs dynamiques + filtres Type/Horizon + cards riches + modal détail Ouvrir + Demander à l'assistant + Export JSON
+   - Arbitrage : restauration flow original (serveur classifie, badge cliquable cycle task/decision/project, bouton Accepter unique)
+   - Boutons "Demander à l'assistant" : décisions + coaching → `assistant.html?context=...` avec applyContext() pre-fill
+   - Routes ajoutées : `GET /api/assistant/conversations/:id/{context,effects}`
+
+2. **S6.8.2** (commit `d39ee0e`) — Cœur arbitrage Eisenhower
+   - Route `POST /api/arbitrage/suggest-action` : suggestion verdict riche par email (heuristique fallback + LLM Claude si dispo)
+   - Frontend `bind-arbitrage-detail.js` : modal au click sur un row de la file
+   - 5 boutons verdict : Faire (1) / Déléguer (2) / Décaler (3) / Archiver (4) / Décliner (5)
+   - Suggestion aiCEO en banner violet (verdict, confiance %, source LLM ou rule, raison)
+   - Verdict suggéré mis en évidence (border + bg color)
+   - Raccourcis clavier 1-5 + ESC
+   - Action serveur selon verdict : POST /api/tasks avec préfixe Délégation/Reporté
+
+3. **S6.8.3** (commit `74f3d14`) — Big blocks macro-scénarios
+   - Route `POST /api/arbitrage/analyze-emails-grouped` : groupe les propositions par `inferred_project`
+   - Retourne `{ blocks: [{project, count, kinds: {task, decision, project}, proposals[], avg_score}], orphans: [...] }`
+   - Frontend `bind-arbitrage-blocks.js` : section au-dessus de la file simple
+   - Card par bloc : badge count + nom projet + summary `X tâches · Y décisions · Z projets`
+   - Bouton "Accepter le bloc" (crée tout en série) + toggle expand pour voir les items individuels
+
+4. **S6.8.4** (commit `8393762`) — Cockpit narratif
+   - 3 routes serveur : `/api/cockpit/intention` (synthèse LLM 12-mots verbe-action depuis Big Rocks), `/morning-alerts` (tâches retard / big rocks définis / sync stale / décisions stale), `/llm-suggestions` (3 cards Délégation/Recadrage/Reprise)
+   - Frontend `bind-cockpit-narrative.js` : hero "Bonjour [nom]" + intention + 3 Big Rocks avec barres de progression colorées + alertes pill par severity + 3 cards suggestions
+
+5. **S6.8.5** (ce commit) — Polish + ADR
+   - Animation slide-out + fade sur accept/ignore arbitrage queue
+   - Compteur "X/Y traitées" dynamique en header de la file
+   - Update DECISIONS.md (cet ADR) + CLAUDE.md §1 statut
+
+**Conséquences** :
+- 4 nouveaux fichiers JS frontend : `bind-arbitrage-detail.js`, `bind-arbitrage-blocks.js`, `bind-cockpit-narrative.js`, et refactor majeur de `bind-connaissance.js`, `bind-assistant.js`, `bind-decisions.js`
+- 6 nouvelles routes serveur : 2 sur arbitrage (`/suggest-action`, `/analyze-emails-grouped`), 3 sur cockpit (`/intention`, `/morning-alerts`, `/llm-suggestions`), 2 sur assistant (`/conversations/:id/{context,effects}`)
+- Tool `pin_to_knowledge` ajouté à l'API Anthropic (boucle Assistant→Connaissance enfin câblée)
+- Cache `?v=99 → ?v=117` (2300+ occurrences sur 18 HTML)
+- 5 commits enchaînés sans tag (S6.8 = sprint patches dans v0.7, pas nouvelle release)
+
+**Sources** : 
+- Mandat verbal CEO 28/04/2026 PM late via Cowork
+- Maquette source : screenshots cockpit + arbitrage v0.5 du design Claude vague_1
+- ADR `2026-04-28 v5 · Revue maquette` (qui plannifiait S6.8 backloggé) — finalement réalisé en mandat plein
+- 5 commits enchaînés : `bb8d208`, `d39ee0e`, `74f3d14`, `8393762`, et le commit S6.8.5
+
+---
+
 ## 2026-04-28 · Câblage v0.6 réel (S6.4) — Backend SQLite étendu + ingestion emails + UI 13/17 pages branchées
 
 

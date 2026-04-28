@@ -23,7 +23,7 @@
       '<header style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0;gap:12px">' +
         '<div>' +
           '<h2 style="margin:0;font-size:15px;font-weight:600">\uD83D\uDCE7 ' + queue.length + ' propositions depuis vos emails</h2>' +
-          '<p style="margin:2px 0 0;color:var(--text-3,#888);font-size:12px">Acceptez ou ignorez pour alimenter Actions / Decisions / Projets.</p>' +
+          '<p style="margin:2px 0 0;color:var(--text-3,#888);font-size:12px">Acceptez ou ignorez pour alimenter Actions / Decisions / Projets. <span data-arb-queue-counter data-processed="0" data-total="' + queue.length + '" style="margin-left:10px;padding:2px 8px;background:var(--surface-3,#ebe7df);border-radius:99px;font-size:11px;font-weight:600;color:var(--text-2,#555)">0/' + queue.length + ' traitees</span></p>' +
         '</div>' +
         '<button type="button" id="aiceo-arb-toggle" class="btn ghost sm" style="font-size:11px" onclick="return window.aiceoArbToggleQueue && window.aiceoArbToggleQueue(event)">Deplier \u25BE</button>' +
       '</header>';
@@ -98,10 +98,33 @@
         try {
           const r = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
           if (r.ok) {
+            // S6.8.5 — Animation slide-out + fade
             const row = acceptBtn.closest('div[style*="surface"]');
-            if (row) row.style.opacity = '0.4';
+            if (row) {
+              row.style.transition = 'all .35s cubic-bezier(.4,0,.2,1)';
+              row.style.transform = 'translateX(40px)';
+              row.style.opacity = '0';
+              setTimeout(function () {
+                row.style.maxHeight = row.offsetHeight + 'px';
+                row.style.transition = 'all .25s cubic-bezier(.4,0,.2,1)';
+                row.style.maxHeight = '0';
+                row.style.marginTop = '0';
+                row.style.marginBottom = '0';
+                row.style.paddingTop = '0';
+                row.style.paddingBottom = '0';
+              }, 200);
+              setTimeout(function () { if (row.parentElement) row.style.display = 'none'; }, 500);
+            }
             acceptBtn.disabled = true;
             if (ignoreBtn) ignoreBtn.disabled = true;
+            // Update compteur file (X/Y propose) si present
+            var counter = document.querySelector('[data-arb-queue-counter]');
+            if (counter) {
+              var current = parseInt(counter.dataset.processed || '0', 10) + 1;
+              counter.dataset.processed = String(current);
+              var total = parseInt(counter.dataset.total || '0', 10);
+              counter.textContent = current + '/' + total + ' traitee' + (current > 1 ? 's' : '');
+            }
             // v0.7 — auto-link email -> project si on vient de creer un projet
             if (acceptAs === 'project' && item.source_id) {
               try {
@@ -123,7 +146,19 @@
         }
       } else if (ignoreBtn) {
         const row = ignoreBtn.closest('div[style*="surface"]');
-        if (row) row.style.display = 'none';
+        if (row) {
+          row.style.transition = 'all .25s cubic-bezier(.4,0,.2,1)';
+          row.style.transform = 'translateX(-30px)';
+          row.style.opacity = '0';
+          setTimeout(function () { row.style.display = 'none'; }, 250);
+        }
+        var counter = document.querySelector('[data-arb-queue-counter]');
+        if (counter) {
+          var c = parseInt(counter.dataset.processed || '0', 10) + 1;
+          counter.dataset.processed = String(c);
+          var t = parseInt(counter.dataset.total || '0', 10);
+          counter.textContent = c + '/' + t + ' traitee' + (c > 1 ? 's' : '');
+        }
       }
     });
   }

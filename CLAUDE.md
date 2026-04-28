@@ -2,7 +2,7 @@
 
 > **Lis ce fichier en premier** quand tu démarres une nouvelle session sur ce projet. Il consolide le contexte, les conventions, les pièges connus et les workflows types pour t'éviter de tout redécouvrir.
 
-**Version** : 28/04/2026 soir v6 (**v0.7 LIVRÉE** taggée `b7e9125` · **v0.8 EN COURS** dans session parallèle "aiCEO Prototype" — Sprint S6.8.1 sidebar polish + ANTHROPIC_API_KEY setté → LLM live activé · Phase 2 câblage Coaching+Assistant ~2h)
+**Version** : 28/04/2026 soir v7 (**Sprint S6.8 LIVRÉ** en 5 commits enchaînés sous mandat plein CEO — sidebar activation + Connaissance/Assistant/Décisions cablées + boucle pin_to_knowledge + Eisenhower 5 verdicts arbitrage + macro-scénarios + cockpit narratif. Cache `?v=117`. **30 ADRs total** dans DECISIONS.md.)
 **À jour à chaque clôture de sprint** ou décision structurante (cf. § 8 Maintenance).
 
 ---
