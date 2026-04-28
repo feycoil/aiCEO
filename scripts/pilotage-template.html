@@ -602,9 +602,18 @@ body {
 
     <!-- Section Roadmap -->
     <section class="section" id="section-roadmap">
+      <div class="card" style="border-left:4px solid var(--violet-800);background:linear-gradient(90deg, var(--violet-50) 0%, var(--surface-2) 30%)">
+        <h3 class="card-title">📋 ROADMAP V2 — émise 28/04/2026 post-S6.8</h3>
+        <p class="card-subtitle">4 phases · 22 sprints · 22 j-binôme · 12 semaines · cible V1.0 produit dev-grade</p>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <a href="03_roadmap/ROADMAP-V2-2026-04-28.md" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:6px;background:var(--text);color:#fff;text-decoration:none;font-size:12px;font-weight:600">📖 Lire ROADMAP V2 complète →</a>
+          <a href="audits/PLAN-REALIGNEMENT-PROMESSE-2026-04-28.md" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:6px;background:var(--surface-2);border:1px solid var(--border);color:var(--text);text-decoration:none;font-size:12px;font-weight:600">📊 Plan de réalignement →</a>
+          <a href="00_methode/METHODE-ADD-AI-aiCEO.md" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:6px;background:var(--surface-2);border:1px solid var(--border);color:var(--text);text-decoration:none;font-size:12px;font-weight:600">⚡ Méthode ADD-AI →</a>
+        </div>
+      </div>
       <div class="card">
-        <h3 class="card-title">🗺️ Trajectoire ADD-AI Phase 1-2-3</h3>
-        <p class="card-subtitle">Plan de réalignement aiCEO sur 12 semaines pré-V1</p>
+        <h3 class="card-title">🗺️ Trajectoire détaillée par phase</h3>
+        <p class="card-subtitle">Cliquer sur un sprint pour ouvrir son dossier de cadrage</p>
         <div id="roadmap-phases"></div>
       </div>
     </section>
@@ -873,12 +882,17 @@ function renderFullTimeline() {
 
 function renderRoadmap() {
   const phases = [
+    { num: 0, title: 'SETUP ADD-AI + FONDATIONS', status: 'pending', subtitle: 'Preparer la fondation avant de construire · ~5 j-binome', sprints: [
+      { id: 'S6.9-bis', desc: 'Setup ADD-AI + restructuration', doc: '_sprints/S6.9-bis/DOSSIER-SPRINT-S6.9-bis.md' },
+      { id: 'S6.10-bis', desc: 'Atomic Templates frontend', doc: '_sprints/S6.10-bis/DOSSIER-SPRINT-S6.10-bis.md' },
+      { id: 'S6.11-bis', desc: 'Pilotage v2 temps reel', doc: '_sprints/S6.11-bis/DOSSIER-SPRINT-S6.11-bis.md' }
+    ], cible: '5 j-binome' },
     { num: 1, title: 'FONDATIONS', status: 'pending', subtitle: 'Solidifier le DS et la vitesse · ~5.5 j-binôme', sprints: [
-      { id: 'S6.9', desc: 'DS consolidation' },
-      { id: 'S6.10', desc: 'Keyboard-first arbitrage' },
-      { id: 'S6.11', desc: 'Cmd+K palette + FTS5' },
-      { id: 'S6.12', desc: 'Contexte LLM enrichi' },
-      { id: 'S6.13', desc: 'Revues hebdo refondue' }
+      { id: 'S6.11', desc: 'DS consolidation finale' },
+      { id: 'S6.12', desc: 'Keyboard-first arbitrage v07' },
+      { id: 'S6.13', desc: 'Cmd+K palette + FTS5' },
+      { id: 'S6.14', desc: 'Contexte LLM enrichi serveur' },
+      { id: 'S6.15', desc: 'Revues hebdo refondue v07' }
     ], cible: 'Note 6.3 → 8.0' },
     { num: 2, title: 'INTELLIGENCE', status: 'pending', subtitle: 'L\'IA devient un binôme contextualisé · ~6 j-binôme', sprints: [
       { id: 'S7.1', desc: 'Mémoire inter-fils LLM' },
@@ -905,7 +919,9 @@ function renderRoadmap() {
       '</div>' +
       '<p style="margin:4px 0 0;color:var(--text-3);font-size:12px">' + p.subtitle + ' · cible : <strong>' + p.cible + '</strong></p>' +
       '<div class="phase-sprints">' + p.sprints.map(s => {
-        return '<div class="sprint-mini"><div class="sprint-mini-num">' + s.id + '</div><div class="sprint-mini-desc">' + s.desc + '</div></div>';
+        var docLink = s.doc ? ('<a href="' + s.doc + '" target="_blank" style="text-decoration:none;color:inherit;display:block">') : '<div>';
+        var docClose = s.doc ? '</a>' : '</div>';
+        return docLink + '<div class="sprint-mini" style="' + (s.doc ? 'cursor:pointer' : '') + '"><div class="sprint-mini-num">' + s.id + (s.doc ? ' 📄' : '') + '</div><div class="sprint-mini-desc">' + s.desc + '</div></div>' + docClose;
       }).join('') + '</div>' +
     '</div>';
   }).join('');

@@ -640,4 +640,150 @@ Légende : ✅ livré · 🔜 sprint courant · 📋 backlog · 🔬 research
                         │
                         ▼
               Service Windows (S5)
-                     
+                        │
+                        ▼
+                 Scellement v0.5 (S6)
+                        │
+                        ▼
+          Migration SQLite → Postgres (V1 S1-S2)
+                        │
+                        ▼
+          Graph API OAuth (V1 S2-S4)
+                        │
+                        ▼
+          Inngest + sub-agents (V1 S5-S8)
+                        │
+                        ▼
+          Mémoire pgvector (V1 S9-S11)
+                        │
+                        ▼
+          SharePoint RAG (V1 S12)
+                        │
+                        ▼
+          Rituels auto-draftés + viz (V1 S13-S16)
+```
+
+Chemin critique **18 semaines** de maintenant à **V1 cœur** fonctionnelle (10 sem fusion v0.5 + 8 sem V1 cœur : migration Postgres + Graph API + Inngest + sub-agents). La **V1 complète** (F15 SharePoint RAG + F19 viz riches + F12 rituels auto-draftés + F11 mémoire pgvector outillée) couvre **8 sem supplémentaires** = **26 sem au total** pour atteindre le périmètre V1 (cohérent avec §4 : "V1 — 16 sem, 290 k€"). F17 SolidJS non bloquant (research). Réconciliation timing : ADR `2026-04-24 · Timing & budget v0.5 réconciliés`.
+
+---
+
+## 9. KPIs de pilotage PMO
+
+### Par sprint
+
+- **Velocity** (points livrés).
+- **Lead time** (temps d'une feature de backlog à prod).
+- **Bug ratio** (bugs introduits par feature livrée).
+- **Couverture tests** (viser 70% back, 50% front) — applicable dès sprint 1 fusion.
+
+### Par mois
+
+- **DAU Feycoil** (jours d'usage effectifs sur 30).
+- **Taux de propositions acceptées** (cible ≥ 60% flux matin).
+- **Temps CEO gagné déclaré** (sondage mensuel).
+- **Coût LLM quotidien** (baseline v0.4 ≈ 1,5 ct/jour, alerte si ×3).
+- **Burn financier** vs budget.
+- **Incidents P0/P1**.
+
+### Par trimestre
+
+- **Score NPS Feycoil**.
+- **Atteinte des jalons go/no-go**.
+- **Coût LLM par proposition acceptée** (doit baisser avec l'apprentissage).
+- **Conformité RGPD / SOC 2** (audit interne dès V2).
+
+---
+
+## 10. Rituels PMO
+
+- **Daily standup 15 min** (équipe dev) — 9h.
+- **Demo hebdo 30 min** (Feycoil + équipe) — vendredi 15h.
+- **Sprint review 1 h** (tous les 2 semaines).
+- **Sprint retro 45 min** (tous les 2 semaines).
+- **Product review mensuel 2 h** avec Feycoil — arbitrages backlog GitHub + priorisation.
+- **Board review trimestriel 3 h** — ExCom ETIC Services, bilan + cap.
+
+---
+
+## 11. Gestion des risques (top 9)
+
+| Risque | Proba | Impact | Score | Mitigation |
+|---|:-:|:-:|:-:|---|
+| Prompt injection via mail | Med | Haut | 6 | Prompt Shields (V1) + human-approval sur envoi, déjà en place MVP |
+| Dérive coûts LLM | Med | Moy | 4 | Budgets par agent + circuit breakers + F42 kill switch, baseline v0.4 ≈ 1,5 ct/jour |
+| Feycoil décroche (pas d'adoption fusion) | Low | Haut | 4 | Dogfood quotidien depuis v0.4, livraison fusion par vagues, rituels matin/soir déjà adoptés |
+| Migration one-shot perd des données | Med | Haut | 6 | Backup `localStorage` avant + `check-migration.js` + rollback simple |
+| Refus de l'équipe à V2 | Med | Haut | 6 | Implication AE + DG dès V1 preview, onboarding dédié |
+| Expiration tokens Graph API | Med | Moy | 4 | Refresh proactif msal-node, alertes, fallback COM pendant transition |
+| Régression UI pendant fusion | Med | Moy | 4 | Screenshots v4 avant migration + QA page par page + Playwright e2e |
+| Dépendance Anthropic / tarifs | Low | Haut | 4 | LiteLLM V1+ multi-provider, exports mémoire JSON standard |
+| Retard jalon v0.5 (> 4 sem) | Med | Haut | 6 | Spec figée, 4 vagues isolables, priorisation RICE stricte |
+
+---
+
+## 12. Gouvernance
+
+### Qui décide quoi
+
+- **Product vision** : Feycoil (CEO).
+- **Roadmap trimestrielle** : Product owner + Feycoil + CTO.
+- **Priorisation sprint** : Product owner (via milestones GitHub).
+- **Architecture technique** : CTO (trace dans `DECISIONS.md` pour les ADR).
+- **Design system** : Design lead (source : `02_design-system/` + projets Claude Design, voir `00_BOUSSOLE/GOUVERNANCE.md`).
+- **Budget / recrutement** : Feycoil (CEO).
+
+### Instance décisionnelle
+
+- **Hebdo** : Product review (Feycoil + PO + CTO) — 30 min.
+- **Bi-mensuel** : Sprint planning (équipe + Feycoil) — 1 h.
+- **Trimestriel** : Board review (ExCom ETIC Services) — 3 h.
+
+### Règles opérationnelles
+
+Voir `00_BOUSSOLE/GOUVERNANCE.md` : trois silos (Claude Design / Cowork / GitHub), règle de synchronisation Claude Design → `_drafts/` → `02_design-system/`, backlog sur GitHub Issues, archivage via stub de redirection.
+
+---
+
+## 13. Synthèse — le plan en une page (v3.2 insertion v0.6)
+
+```
+v0.4 MVP livré    v0.5 Fusion ✅    v0.6 UI finalisée   V1 SaaS+équipes+   V2 Commercial      V3 Coach+offline
+2026-04-24        26/04/2026        mai 2026            mobile             international      +multi-CEO
+                  16h chrono x30    binôme ~2-3 sem     T3 26-T1 27        T2-T4 27           T4 2027+
+                                    x15-x20             Binôme x10
+────────          ────────          ────────            ────────           ────────           ────────
+Rituel local      Unifié desktop    Refonte UI selon    SaaS multi-CEO     i18n FR+EN +       Coach Opus +
+solo dogfood      110 k€ effectif   bundle Claude       + équipes ETIC     SOC 2 + premier    offline +
+                  (4,6 k€ direct +  Design v3.1         + mobile PWA       client intl        post-mortem auto
+                  105 k€ provision) ~8 k€ absorbé       ~46 k€ / 6 mois    20 sem · 800 k€    16 sem · 600 k€
+                                    dans provision V1   binôme Feycoil
+                                                        + Claude
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Arbitrage matin   SQLite unifié     DS atomic 3 niv     Multi-tenant       Canvas IA collab   Coach Opus 4.6
+Délégation        13 pages /api SSE 16 composants UI    Supabase + RLS     Graphe Cytoscape   Mirror moments
+Boucle du soir    Cockpit live      Microcopy FR        Microsoft Entra    SOC 2 Type II      Score santé exec
+Outlook COM 30 j  Service Windows   WCAG AA cockpit     Équipes + délég E2E i18n FR/EN actif  Anti-burnout actif
+Chip sous press.  Tests Playwright  Patterns coaching   Teams/Notion/Slack RTL prep AR/HE     Boîte à outils psy
+Proxy corp        Bundle Claude     Onboarding simple   Mobile compagnon   API publique +     Offline ElectricSQL
+                  Design v3.1 ✅    Settings basique    Backup chiffré     extension browser  Multi-CEO écosystème
+                                    Components gallery  Logs + Langfuse
+                                    Audit a11y externe  Audit séc fin V1
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Dogfood Feycoil   Dogfood + bundle  Dogfood UI finale   Dogfood + 2 CEO    Premier client     Coach intégré
+                  design cible V1   1-2 mois validation pairs + équipe ETIC international     Multi-CEO réseau
+                                    avant V1            Lamiae suppléante
+```
+
+**Budget 18 mois total v3.2 ≈ 1,47 M€** (110 k€ v0.5 + 8 k€ v0.6 absorbés + 46 k€ V1 + 800 k€ V2 + 600 k€ V3).
+
+**v0.5 effectif** : binôme CEO+Claude, vélocité x30 (~4,6 k€ direct + 105 k€ provision).
+
+**v0.6 binôme** : Feycoil + Claude, ~2-3 sem, ~8 k€ absorbés dans provision V1. Refonte UI complète selon bundle Claude Design v3.1 sans scope fonctionnel nouveau. Cible mai 2026, démarrage post-ExCom 04/05.
+
+**V1 binôme** : Feycoil + Claude étendu, recrutement externe annulé, vélocité cible x10. Démarre **après v0.6** (T3 2026). Réallocation 254 k€ → anticipation V2 (marketing 80 k€ + success/sales junior 40 k€ + provision SOC 2 50 k€) + trésorerie 85 k€.
+
+**Bundle design Claude Design v3.1** : livré 26/04, cible visuelle V1 implémentée en v0.6 (voir `04_docs/_design-v05-claude/`).
+
+---
+
+*Documents liés : [`01-vision-produit.md`](01-vision-produit.md) · [`06-architecture.md`](06-architecture.md) · [`SPEC-FONCTIONNELLE-FUSION.md`](SPEC-FONCTIONNELLE-FUSION.md) · [`SPEC-TECHNIQUE-FUSION.md`](SPEC-TECHNIQUE-FUSION.md) · [`00_BOUSSOLE/ROADMAP.md`](../00_BOUSSOLE/ROADMAP.md) · Backlog : [`feycoil/aiCEO` GitHub Issues](https://github.com/feycoil/aiCEO/issues)*

@@ -286,4 +286,37 @@ Restart serveur. Le bandeau assistant et les fallback basculeront automatiquemen
 ### Recette CEO
 
 1. ``npm run db:init`` (applique les 3 migrations v0.7)
-2. ``pw
+2. ``pwsh scripts/fetch-outlook-events.ps1`` puis ``node scripts/normalize-events.js`` (ingestion calendrier)
+3. ``Cockpit aiCEO.lnk`` -> Ctrl+Shift+R
+4. Ouvrir Connaissance, Coaching, Assistant -> verifier rendu
+5. Arbitrage focus -> verifier banner coaching + options A/B/C dans card decision
+6. Revue -> ``Demarrer la revue`` -> verifier auto-draft pre-rempli
+
+Bonne route v0.7 -> V1.
+"@
+        try {
+            $tmpRn = Join-Path $env:TEMP "v0.7-release-notes.md"
+            $releaseBody | Out-File -FilePath $tmpRn -Encoding UTF8 -Force
+            gh release create v0.7 --title "v0.7 - LLM 4 surfaces UX + Outlook events + finalisation gaps" --notes-file $tmpRn
+            Remove-Item $tmpRn -Force -ErrorAction SilentlyContinue
+            Write-Host "  Release GitHub creee" -ForegroundColor Green
+        } catch {
+            Write-Warning "  Erreur Release : $_"
+        }
+    }
+} else {
+    Write-Host "[8/8] Release skippee (--SkipRelease)" -ForegroundColor DarkGray
+}
+
+Write-Host ""
+Write-Host "=========================================================" -ForegroundColor Green
+Write-Host "  v0.7 LIVREE et taggee !" -ForegroundColor Green
+Write-Host "=========================================================" -ForegroundColor Green
+Write-Host ""
+Write-Host "Etapes recette CEO :" -ForegroundColor Cyan
+Write-Host "  1. Ctrl+Shift+R sur Cockpit aiCEO"
+Write-Host "  2. Verifier les 3 pages preview (Assistant, Connaissance, Coaching)"
+Write-Host "  3. Tester arbitrage focus avec banner coaching + recommandations A/B/C"
+Write-Host "  4. Demarrer une revue hebdo -> verifier auto-draft pre-rempli"
+Write-Host "  5. Pour activer LLM live : setter ANTHROPIC_API_KEY + restart serveur"
+Write-Host ""

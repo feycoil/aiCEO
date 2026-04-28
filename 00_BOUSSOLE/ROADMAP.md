@@ -99,3 +99,18 @@ V3 recentrée sur la dimension coaching + offline + multi-CEO (mobile déjà liv
 ## Règle de mise à jour
 
 À chaque revue hebdomadaire :
+
+1. Mettre à jour `MILESTONES` dans `04_docs/11-roadmap-map.html` (statut `done` / `doing` / `todo`).
+2. Synchroniser ce fichier (table d'état + jalons clés).
+3. Vérifier que les milestones GitHub reflètent la même réalité (issues closes / ouvertes).
+4. Commit : `roadmap: update W<NN>`.
+
+## Liens utiles
+
+- Détail roadmap produit : [`04_docs/08-roadmap.md`](../04_docs/08-roadmap.md)
+- Architecture technique : [`04_docs/06-architecture.md`](../04_docs/06-architecture.md)
+- Specs fusion : [`SPEC-FONCTIONNELLE-FUSION.md`](../04_docs/SPEC-FONCTIONNELLE-FUSION.md) · [`SPEC-TECHNIQUE-FUSION.md`](../04_docs/SPEC-TECHNIQUE-FUSION.md)
+- ADR / décisions : [`DECISIONS.md`](DECISIONS.md)
+- Changelog : [`CHANGELOG.md`](CHANGELOG.md)
+- Gouvernance : [`GOUVERNANCE.md`](GOUVERNANCE.md)
+- Backlog : [`feycoil/aiCEO` GitHub Issues](https://github.com/feycoil/aiCEO/issues)

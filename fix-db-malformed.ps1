@@ -366,4 +366,57 @@ if ($Reinit) {
             Write-Host "    Re-ingestion emails..."
             node scripts\ingest-emails.js
             if ($LASTEXITCODE -eq 0) {
-                Write-OK "Emails re-ingere
+                Write-OK "Emails re-ingeres"
+                Write-Host "    Bootstrap projets + contacts..."
+                node scripts\bootstrap-from-emails.js
+                if ($LASTEXITCODE -eq 0) { Write-OK "Bootstrap OK" } else { Write-Warn "Bootstrap echoue" }
+            } else {
+                Write-Warn "Re-ingest echoue, lance manuellement : node scripts\ingest-emails.js"
+            }
+        } else {
+            Write-Warn "data\emails.json absent. Lance fetch-outlook + normalize-emails pour re-ingerer :"
+            Write-Host "        pwsh -File scripts\sync-outlook.ps1"
+        }
+    } catch {
+        Write-Err "Echec re-init : $_"
+        Write-Host "    Rollback : Copy-Item '$backup' '$dbPath' -Force"
+        Pop-Location
+        exit 4
+    }
+    Pop-Location
+}
+
+# ============================================================
+# ETAPE 5 : Validation finale
+# ============================================================
+Write-Step "Validation finale"
+$finalJs = Join-Path $env:TEMP "aiceo-final-$stamp.js"
+@'
+const { DatabaseSync } = require('node:sqlite');
+const db = new DatabaseSync(process.argv[2], { readOnly: true });
+const r = db.prepare('PRAGMA integrity_check').all();
+console.log('integrity_check:', JSON.stringify(r));
+const counts = {};
+for (const t of ['emails','projects','contacts','tasks','decisions','schema_migrations']) {
+  try { counts[t] = db.prepare('SELECT COUNT(*) AS c FROM ' + t).get().c; }
+  catch (e) { counts[t] = 'ERR'; }
+}
+console.log('counts:', JSON.stringify(counts));
+db.close();
+'@ | Out-File -FilePath $finalJs -Encoding UTF8
+
+Push-Location $mvpRoot
+$final = node $finalJs $dbPath 2>&1
+Pop-Location
+Remove-Item $finalJs -Force -ErrorAction SilentlyContinue
+$final | ForEach-Object { Write-Host "    $_" }
+
+Write-Step "Termine" "Green"
+Write-Host "    Relancer le serveur :"
+Write-Host "        cd $mvpRoot ; node server.js"
+Write-Host ""
+Write-Host "    Re-tester :"
+Write-Host "        pwsh -File scripts\smoke-all.ps1"
+Write-Host ""
+Write-Host "    Backup conserve : $backup"
+Write-Host ""

@@ -85,4 +85,36 @@ Aucun bloqueur connu pour lancer les 3 sprints. Tous les fichiers sont accessibl
 ## 📝 Activité chronologique (maintenue par Claude)
 
 - **20:00** — Démarrage mission v0.7. Audit état projet OK. Décisions D1-D5 actées.
-- **20:00–22:00** — Sprints S6.5 + S
+- **20:00–22:00** — Sprints S6.5 + S6.6 + S6.7 exécutés en parallèle. Backend (3 migrations + 7 routes + 2 scripts) + frontend (8 binds + 2 nouveaux + cache bust) livrés.
+- **22:30** — Reprise post-pause. État : code OK, restait finalisation docs.
+- **22:30–23:00** — Finalisation v0.7 :
+  - Étape 1 ✅ Bump cache `v=98 → v=99` global · 446 occurrences sur 18 HTML
+  - Étape 2 ✅ ADR `2026-04-28 v4 · v0.7 livrée` ajouté à `00_BOUSSOLE/DECISIONS.md` ligne 1681 (28 ADRs au total)
+  - Étape 3 ✅ `CLAUDE.md` Version v3 → v4 + section §1 mise à jour (sprints S6.5/S6.6/S6.7 v0.7 réels)
+  - Étape 4 ✅ Entry `v0.7 LIVRÉE` injectée en tête du JOURNAL `11-roadmap-map.html`
+  - Étape 5 ✅ Script `push-v0.7.ps1` créé (294 lignes, 8 étapes : pre-flight + migrations + auto-test 13 fichiers + tests + commit + tag + push + Release GH)
+- **23:00** — **Auto-test final 100 % vert** : 13/13 `node --check` OK · 0 résidus `v=98` · 446 `v=99` · 4 migrations présentes · 7 nouveaux fichiers untracked · ADR ligne 1681 · CLAUDE.md v4 · JOURNAL roadmap entry top.
+
+## ✅ Synthèse finale v0.7
+
+| Item | Statut |
+|---|---|
+| 3 migrations SQLite v0.7 | ✅ Code prêt · à exécuter Windows via `npm run db:init` |
+| 7 routes backend nouvelles (5 LLM + 2 emails link/suggest) | ✅ Live |
+| Router `knowledge.js` (5 endpoints CRUD pins) | ✅ Mounted |
+| Scripts Outlook events (PS + normalize Node) | ✅ Prêts |
+| 8 binds frontend câblés (3 neufs + 5 patches) | ✅ 13/13 `node --check` verts |
+| Cache busting v=98 → v=99 | ✅ 446 occurrences |
+| 5 décisions Claude D1-D5 | ✅ Documentées |
+| ADR v4 dans DECISIONS.md | ✅ Ligne 1681 |
+| CLAUDE.md v4 | ✅ §1 réécrit |
+| JOURNAL roadmap-map | ✅ Entry top |
+| Script `push-v0.7.ps1` | ✅ Prêt à lancer |
+
+**Bloqueur côté CEO** : aucun. Lancer simplement `pwsh -ExecutionPolicy Bypass -File push-v0.7.ps1` à la racine du repo.
+
+**Activation LLM live (optionnel post-tag)** :
+```powershell
+[Environment]::SetEnvironmentVariable('ANTHROPIC_API_KEY', 'sk-ant-...', 'User')
+# Restart serveur — bandeau assistant passera de "○ Mode dégradé" à "● Claude live"
+```

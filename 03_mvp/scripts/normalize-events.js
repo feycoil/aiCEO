@@ -105,4 +105,7 @@ const recent = db
   .get().c;
 
 console.log("✓ Ingere : " + n + " events (skipped " + skipped + ")");
-c
+console.log("  Total table events : " + total);
+console.log("  Sur 14j (J-7 a J+7) : " + recent);
+
+db.close();
