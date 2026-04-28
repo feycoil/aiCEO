@@ -1517,6 +1517,53 @@ Format :
 
 
 
+## 2026-04-28 v11 · Direction artistique "Editorial Executive" actée
+
+**Statut** : Acté · **Origine** : mandat CEO 28/04 PM late : *« theme ou style premium tres professionnel pour la direction artistique et l'ergonomie d'ensemble »*.
+
+**Décision** : adoption de la direction artistique **"Editorial Executive"** pour aiCEO.
+
+**Manifeste** : *« L'outil d'un CEO qui lit le Financial Times, pas d'un dev qui code la nuit. »*
+
+**Inspirations retenues** :
+- Reflect (reflect.app) — ivoire/cream + typographie premium + clarté absolue
+- Granola (granola.ai) — beige éditorial + IA discrète + cible exécutive
+- Linear (linear.app) — rigueur + Cmd+K + monochrome avec accent unique
+- Apple HIG — animations cubic-bezier(.16,1,.3,1) + spatial design
+
+**Anti-références** : Notion, Bloomberg, Slack, Trello, Discord.
+
+**7 principes** :
+1. Le mot avant l'icône (typographie > iconographie)
+2. L'espace comme luxe (padding hero 48px, cards 16-24px)
+3. La couleur comme accent (1 primaire violet + 4 sémantiques max)
+4. Le détail au pixel (radius 8/12/14/20, élévations 2 niveaux MAX)
+5. L'animation comme signature (120-400ms cubic-bezier(.16,1,.3,1))
+6. L'éditorial où c'est important (Crimson Pro titres + Inter corps + JetBrains Mono data)
+7. Pas d'emoji décoratifs (sauf catégorisation sémantique)
+
+**Tokens DS canoniques** : 11 sections (backgrounds, texte, accent, sémantiques, typo, échelle, espacement, élévations, radius, animations, icônes) — cf. `04_docs/00_methode/DIRECTION-ARTISTIQUE.md`.
+
+**Application** :
+- **Maintenant (1h chrono)** : 8 quick wins appliqués au pilotage HTML
+- **S7.5 Skeleton + perf (0.75 j)** : refonte profonde DS Twisty pour app aiCEO complète
+- **Phase 3 polish** : audit final cohérence
+
+**Conséquences** :
+- DS Twisty actuel évolue vers warm neutral (ivoire/cream) avec accent violet unique
+- Suppression du polychrome décoratif (rose/amber/emerald/sky séparés → palette sémantique 4 + neutre)
+- Typo Crimson Pro mise en avant pour H1/H2
+- 100% cohérence avec WCAG AA via le contraste warm grayscale
+- Premier produit ETIC avec direction artistique formalisée et documentée
+
+**Sources** :
+- DIRECTION-ARTISTIQUE.md (note de cadrage complète)
+- Audit UX/UI 28/04 (recommandation R8 hierarchy renforcée)
+- ADR v10 intégration recommandations R1-R12
+- Inspirations publiques : reflect.app, granola.ai, linear.app, Apple HIG
+
+---
+
 ## 2026-04-28 v10 · Intégration recommandations audit pilotage R1-R12 + glossaire CEO
 
 **Statut** : Acté · **Origine** : analyse UX/UI sans concession du pilotage 00-pilotage-projet.html (commit 2633d77).
