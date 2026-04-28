@@ -2,6 +2,7 @@
 
 Pour la carte cliquable : [`04_docs/11-roadmap-map.html`](../04_docs/11-roadmap-map.html).
 Pour le détail produit (jalons, équipe, budgets, KPIs) : [`04_docs/08-roadmap.md`](../04_docs/08-roadmap.md) (v3.3 — restructuration 28/04 post-S6.4).
+Pour la roadmap V2 ADD-AI post-S6.8 : [`04_docs/03_roadmap/ROADMAP-V2-2026-04-28.md`](../04_docs/03_roadmap/ROADMAP-V2-2026-04-28.md) (v2.1 — 28/04 soir, intègre ADR v11 Editorial Executive + S6.11-EE migration tokens DS sur 17 pages v06, total **25.5 j-binôme** sur 12 semaines).
 
 ## Où nous en sommes — 28/04/2026
 
@@ -40,6 +41,10 @@ Source unique de vérité opérationnelle : **GitHub Issues** sur [`feycoil/aiCE
 - **Re-mapping cadrage par version** : multi-tenant (ex-V2) → V1, mobile (ex-V3) → V1, équipes (ex-V2) → V1, i18n → V2, coach Opus + offline → V3.
 - **Modèle binôme CEO + Claude étendu à V1** (ADR `2026-04-26 · Modèle binôme CEO + Claude étendu à V1`) : tous les rôles techniques V1 (2 fullstack + mobile + AI + designer + DevSecOps + PMO) assurés par Claude. Recrutement externe annulé. Budget V1 passe de 300 k€ à 46 k€ (-254 k€). Vélocité cible x10 (vs x30 v0.5). CEO pair suppléant Lamiae à former mois 1 pour résilience binôme.
 - **Insertion v0.6 — Interface finalisée** (ADR `2026-04-26 · Insertion v0.6`) : palier UI dédié inséré entre v0.5 livré et V1, ~2-3 sem binôme, ~8 k€ absorbés dans provision V1. Refonte UI complète selon bundle Claude Design v3.1 (DS atomic 3 niveaux + 16 composants + microcopy FR unifié + WCAG AA + patterns coaching légers + onboarding simple + components gallery + audit a11y externe). Pas de scope fonctionnel nouveau. Démarrage post-ExCom 04/05.
+
+### Fait additionnel — 28/04/2026 (soir)
+
+- **Direction artistique Editorial Executive actée** (ADR `2026-04-28 v11 · Direction artistique Editorial Executive`) : hybride Reflect + Granola + Linear + Apple HIG. Tokens DS canoniques (`--ivory-50/100/200`, `--paper`, `--ink-900/700/500/300/100`, `--primary` violet, 5 sémantiques `--success/warning/danger/info/rare`), Crimson Pro serif (titres) + Inter sans (corps avec features `tnum/ss01`) + JetBrains Mono via Google Fonts, échelle modulaire 1.25, 8-grid spacing, 2 niveaux d'élévation, 5 rayons, animations 120/200/400ms `cubic-bezier(.16,1,.3,1)`. Appliqué d'abord au pilotage `00-pilotage-projet.html` (commit `b4909e5`). Migration des 17 pages v06 inscrite en sprint dédié **S6.11-EE** (1.5 j) en Phase 1 ROADMAP V2.1. Documentation : [`04_docs/00_methode/DIRECTION-ARTISTIQUE.md`](../04_docs/00_methode/DIRECTION-ARTISTIQUE.md).
 
 ### À démarrer (palier 1) — milestone `v0.6` (mai 2026, ~2-3 sem binôme, ~8 k€)
 
