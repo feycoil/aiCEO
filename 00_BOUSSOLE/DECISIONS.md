@@ -1517,6 +1517,84 @@ Format :
 
 
 
+## 2026-04-28 v19 · S6.10-EE finalisé · parité visuelle complète v06 + Claude Design
+
+**Statut** : Acté · **Origine** : itérations CEO 28/04 nuit, validation finale *« ca me va » + « tu peux y aller »*.
+
+**Décision** : v07/decisions.html clôt avec **parité visuelle stricte** vs v06 et maquette Claude Design. Le pattern Atomic Templates est validé.
+
+**Périmètre final livré (sur S6.10-EE + 7 fix successifs)** :
+
+1. **Framework Atomic Templates v07** stable :
+   - `shared/tokens.css` — tokens DS (sans cycle `--font-sans`), Aubrielle scopé `.signature-title` uniquement, palette v06 héritée
+   - `shared/tweaks.css` — app shell + bottom-tab + burger + footer + breakpoint 1023px parité v06
+   - `shared/store.js` + `shared/component-loader.js` (anti-race seq + debounce)
+   - 12 composants atomiques
+
+2. **Page `decisions.html` v07** avec parité v06 + Claude Design totale :
+   - Logo "aiCEO" (carré rose 28×28 + texte + chip v0.7) parité v06
+   - Drawer-sidebar 3 sections + tenant chevron + locale globe + footer user
+   - Drawer collapsed 60px parité v06 (icônes centrées, padding-inline 8px, scroll-x hidden)
+   - Bouton collapse au centre vertical (`position: fixed; top: 50%; z-index: 105`)
+   - Mobile : burger top-left + drawer slide 280px + backdrop blur + click-outside + Esc
+   - Bottom-tab nav 5 items + FAB Capter (parité v06 stricte)
+   - Header : breadcrumb + H1 Aubrielle 500 (font-weight) + search + actions SVG
+   - Cards decision : rail 3px coloré + time column + 3 pills (projet/type/status) + title + context + grid 2-col EFFET/REVISITER + source toujours affichée + bouton "Demander à l'assistant" violet (si ouverte) + bouton "Ouvrir →" SVG
+   - Footer "Une décision claire, c'est une décision qu'on peut citer trois mois plus tard sans rougir." + meta v0.7 (parité v06)
+
+3. **Anti-race load** : seq number + debounce 30ms + safety net 1s. Cards s'affichent au load sans toucher aux filtres.
+
+4. **Fonts cycliques fix critique** : retrait de `--font-sans: var(--font-sans, ...)` qui invalidait la valeur. Fira Sans hérité de v06 directement.
+
+**Budget consommé session** : ~$10-12 estimés sur les $15 (7 sprints + ~10 patches correctifs CEO). Sous le budget initial mais consommation supérieure à l'estimation Lean (×1.5) liée aux iterations parité visuelle.
+
+**Conséquences** :
+
+*Court terme* :
+- v07/decisions.html est **production-ready visuellement**.
+- 10/10 tests verts en sandbox Linux.
+- Le pattern de migration v06 → v07 est **documenté de fait** dans cette page-pilote.
+
+*Long terme* :
+- **S6.11-EE** (migration des 16 autres pages) est faisable en réutilisant le pattern : copier `decisions.html` comme squelette + adapter le store par page.
+- Effort estimé S6.11-EE : ~1.5 j-binôme (1 page mature / 6 pages-clones rapides) si méthode classique, ou ~3 j Lean ADD-AI si subagents.
+- **Recommandation explicite** : ne PAS lancer S6.11-EE en autonomie complète sur 16 pages. Procéder par lots de 4 pages avec recette CEO entre chaque lot pour éviter les bugs cumulés (parité visuelle, mount Windows pièges).
+
+*Risques résiduels* :
+- R1 — Le pattern n'est testé que sur `decisions.html` (CRUD simple). Pages plus complexes (arbitrage, cockpit, assistant chat) demanderont des stores enrichis. Mitigation : prévoir 3-5 j sur ces pages spécifiques.
+- R2 — Mount Windows piège #2 (truncation > 100 lignes) reste actif. Documenté en règle invariante : **toujours Python atomic write** pour les futurs sprints.
+- R3 — Aucun test E2E Playwright sur v07 (sandbox Linux ne supporte pas Chromium). À ajouter en S6.11-EE-2 sur Windows.
+
+**Sources** :
+- ADR v11 Editorial Executive · v13 S6.10-bis-LIGHT · v17 S6.10-EE-FIX · v18 typo fix + pilotage v1.6
+- Maquette Claude Design + v06 (claude.ai + `/v06/decisions.html`)
+- Mandat CEO 28/04 nuit (long retour itératif sur parité visuelle)
+- 10/10 tests `tests/v07-atomic.test.js`
+
+**Prochaine étape** : push 30+ commits locaux + recette CEO Windows. S6.11-EE planifié post-recette en lots.
+
+**Action CEO immédiate** :
+```powershell
+cd C:\_workarea_local\aiCEO
+git add -A
+git commit -m "feat(v07/decisions): parite v06 + Claude Design finalisee (S6.10-EE cloture)
+
+- Framework Atomic Templates stable (12 composants + store + component-loader anti-race)
+- Logo aiCEO carre rose 28x28 parite v06
+- Drawer 3 sections + collapsed 60px + mobile slide 280px + backdrop
+- Bouton collapse centre vertical fixed z-index 105
+- Bottom-tab nav 5 items + FAB Capter parite v06
+- Footer strategic-q + meta v0.7 parite v06
+- Fonts cycliques fix critique (Fira Sans correctement herite de v06)
+- Anti-race seq + debounce 30ms + safety net 1s
+- 10/10 tests verts
+
+ADR v19 - Mandat CEO 28/04 nuit"
+git push origin main
+```
+
+---
+
 ## 2026-04-28 v18 · S6.10-EE-FIX2 + Pilotage v1.6 livrés — Aubrielle scopée + 5 améliorations pilotage
 
 **Statut** : Acté · **Origine** : retour CEO 28/04 nuit après recette visuelle finale : *« polices [...] supprime tout ce qui ne sera pas retenu dans la maquette actuelle [...] dans la Roadmap ADD-AI [...] on ne distingue pas les sprint [...] »*.
