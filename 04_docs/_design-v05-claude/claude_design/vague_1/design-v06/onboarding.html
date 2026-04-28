@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="fr" data-locale="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>aiCEO — Onboarding · Étape 3/5</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css?v=2">
+<link rel="stylesheet" href="_shared/app.css?v=2">
+<link rel="stylesheet" href="_shared/tweaks.css?v=2">
+</head>
+<body data-route="onboarding">
+
+<div id="icons-host" hidden></div>
+
+<div class="ob-shell">
+
+  <!-- Top progress -->
+  <header class="ob-top">
+    <div class="ob-logo">
+      <span class="logo-mark">a</span>
+      <span class="logo-text">aiCEO</span>
+    </div>
+    <div class="ob-progress" aria-label="Progression : étape 3 sur 5">
+      <span class="ob-step is-done">1</span>
+      <span class="ob-line is-done"></span>
+      <span class="ob-step is-done">2</span>
+      <span class="ob-line is-done"></span>
+      <span class="ob-step is-current">3</span>
+      <span class="ob-line"></span>
+      <span class="ob-step">4</span>
+      <span class="ob-line"></span>
+      <span class="ob-step">5</span>
+    </div>
+    <button class="btn ghost sm">Quitter</button>
+  </header>
+
+  <main class="ob-main">
+
+    <!-- Left: prompt -->
+    <section class="ob-left">
+      <p class="eyebrow">Étape 3 — votre posture</p>
+      <h1 class="ob-title">
+        Comment <span class="ob-accent">décidez</span>‑vous, en vrai ?
+      </h1>
+      <p class="lead u-mt-4" style="max-width:46ch">
+        Pas de bonne réponse. On vous propose 3 cartes — choisissez celle qui ressemble
+        le plus à vous <em>cette année</em>. Vous pourrez ajuster à tout moment.
+      </p>
+
+      <aside class="ob-coach-aside u-mt-6">
+        <span class="coach-mark"><svg class="ico" width="16" height="16"><use href="#i-coaching"/></svg></span>
+        <p class="ob-coach-q">
+          Cette posture servira à calibrer le ton du coaching, le rythme des relances, et la quantité d'options qui vous sont proposées.
+        </p>
+      </aside>
+
+      <div class="ob-meta u-mt-6">
+        <span class="autosave"><span class="pulse"></span>Sauvegardé</span>
+        <span class="u-text-3">·</span>
+        <span class="u-text-3">~2 min restantes</span>
+      </div>
+    </section>
+
+    <!-- Right: 3 posture cards -->
+    <section class="ob-right">
+
+      <button class="posture-card ob-pc" data-posture="protect">
+        <header class="ob-pc-head">
+          <span class="ob-pc-glyph" aria-hidden="true">
+            <svg viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.6">
+              <circle cx="30" cy="30" r="20"/>
+              <path d="M20 30c4 6 16 6 20 0"/>
+              <path d="M22 22h.01M38 22h.01"/>
+            </svg>
+          </span>
+          <h3 class="ob-pc-name">La gardienne</h3>
+        </header>
+        <p class="ob-pc-tag">« Je tranche pour <em>protéger</em>. »</p>
+        <ul class="ob-pc-list">
+          <li>Je dis souvent non avant oui.</li>
+          <li>Je préfère décaler que mal livrer.</li>
+          <li>L'équipe sait sur quoi elle peut compter.</li>
+        </ul>
+        <footer class="ob-pc-foot">
+          <span class="pill outline sm">42 % des dirigeants</span>
+        </footer>
+      </button>
+
+      <button class="posture-card ob-pc is-suggested" data-posture="explore">
+        <header class="ob-pc-head">
+          <span class="ob-pc-glyph">
+            <svg viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M30 10v40M10 30h40M16 16l28 28M44 16L16 44"/>
+            </svg>
+          </span>
+          <h3 class="ob-pc-name">L'exploratrice</h3>
+        </header>
+        <p class="ob-pc-tag">« Je tranche pour <em>ouvrir</em>. »</p>
+        <ul class="ob-pc-list">
+          <li>Je teste vite, j'ajuste plus vite.</li>
+          <li>Le risque ne me fige pas.</li>
+          <li>Je clôture mal — c'est mon angle mort.</li>
+        </ul>
+        <footer class="ob-pc-foot">
+          <span class="pill status active">D'après vos réponses précédentes</span>
+        </footer>
+      </button>
+
+      <button class="posture-card ob-pc" data-posture="optimize">
+        <header class="ob-pc-head">
+          <span class="ob-pc-glyph">
+            <svg viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M10 50L30 20l20 30"/>
+              <circle cx="30" cy="20" r="3" fill="currentColor"/>
+            </svg>
+          </span>
+          <h3 class="ob-pc-name">L'architecte</h3>
+        </header>
+        <p class="ob-pc-tag">« Je tranche pour <em>optimiser</em>. »</p>
+        <ul class="ob-pc-list">
+          <li>Je modélise avant d'agir.</li>
+          <li>Je préfère 1 décision tenue à 3 testées.</li>
+          <li>Mon angle mort : la vitesse.</li>
+        </ul>
+        <footer class="ob-pc-foot">
+          <span class="pill outline sm">28 %</span>
+        </footer>
+      </button>
+
+      <p class="ob-extra u-mt-4">
+        Aucune ne correspond ? <button class="btn ghost sm">Décrire ma posture</button>
+      </p>
+    </section>
+  </main>
+
+  <!-- Bottom action bar -->
+  <footer class="ob-foot">
+    <button class="btn ghost lg">
+      <svg class="ico" width="14" height="14"><use href="#i-chevron-left"/></svg>
+      Précédent
+    </button>
+    <span class="ob-foot-meta u-tnum">3 / 5</span>
+    <button class="btn primary lg" id="next-btn" disabled>
+      Continuer
+      <svg class="ico" width="14" height="14"><use href="#i-chevron-right"/></svg>
+    </button>
+  </footer>
+</div>
+
+<style>
+:root {
+  --ob-max: 1100px;
+}
+body { background: linear-gradient(135deg, #fbf9f5 0%, #fff 60%, #f5f0e6 100%); min-height: 100dvh; }
+
+.ob-shell {
+  min-height: 100dvh;
+  display: flex; flex-direction: column;
+}
+.ob-top {
+  display: flex; align-items: center;
+  padding: var(--space-5) var(--space-6);
+  gap: var(--space-6);
+  border-block-end: 1px solid var(--border);
+  background: rgba(255,255,255,.6);
+  backdrop-filter: blur(8px);
+  position: sticky; top: 0; z-index: 10;
+}
+.ob-logo { display: flex; align-items: center; gap: 10px; }
+.ob-progress {
+  display: flex; align-items: center;
+  gap: 4px;
+  margin: 0 auto;
+}
+.ob-step {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  color: var(--text-3);
+  display: grid; place-items: center;
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  transition: all 200ms var(--ease-snap);
+}
+.ob-step.is-done { background: var(--emerald); color: #fff; }
+.ob-step.is-current {
+  background: var(--brand); color: #fff;
+  transform: scale(1.15);
+  box-shadow: 0 0 0 4px var(--brand-50);
+}
+.ob-line {
+  width: 32px; height: 2px;
+  background: var(--surface-3);
+  border-radius: 1px;
+}
+.ob-line.is-done { background: var(--emerald); }
+
+@media (max-width: 720px) {
+  .ob-top { padding: var(--space-3) var(--space-4); gap: var(--space-3); }
+  .ob-line { width: 16px; }
+  .ob-step { width: 22px; height: 22px; font-size: 10px; }
+}
+
+/* Main */
+.ob-main {
+  flex: 1;
+  max-width: var(--ob-max);
+  margin: 0 auto;
+  width: 100%;
+  padding: var(--space-8) var(--space-6);
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: var(--space-10);
+  align-items: start;
+}
+@media (max-width: 1023px) {
+  .ob-main { grid-template-columns: 1fr; gap: var(--space-6); padding: var(--space-6) var(--space-4); }
+}
+
+.ob-left { position: sticky; top: 100px; }
+@media (max-width: 1023px) { .ob-left { position: static; } }
+
+.ob-title {
+  font-family: var(--font-sans);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--tracking-display);
+  line-height: 1.05;
+  margin: 8px 0 0;
+  color: var(--text);
+  text-wrap: balance;
+}
+.ob-accent {
+  font-family: var(--font-script);
+  font-weight: var(--fw-regular);
+  color: var(--rose);
+  font-size: 1.15em;
+  letter-spacing: var(--tracking-script);
+  display: inline-block;
+  margin: 0 4px;
+  line-height: 0.9;
+}
+
+.ob-coach-aside {
+  display: flex; gap: 12px;
+  padding: var(--space-4);
+  background: var(--coaching-bg);
+  border-radius: var(--radius);
+  border-inline-start: 4px solid var(--coaching);
+}
+.ob-coach-aside .coach-mark {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--coaching);
+  color: #fff;
+  display: grid; place-items: center;
+  flex-shrink: 0;
+}
+.ob-coach-q {
+  font-size: var(--fs-sm);
+  margin: 0;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.ob-meta {
+  display: flex; gap: 8px; align-items: center;
+  font-size: var(--fs-xs);
+  color: var(--text-2);
+}
+
+/* Posture cards */
+.ob-right { display: flex; flex-direction: column; gap: var(--space-4); }
+.ob-pc {
+  background: var(--surface-2);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  text-align: start;
+  cursor: pointer;
+  transition: border-color .14s, transform .14s, box-shadow .14s;
+  font-family: inherit;
+  color: inherit;
+  display: flex; flex-direction: column;
+  gap: var(--space-3);
+}
+.ob-pc:hover { border-color: var(--text-3); transform: translateY(-2px); box-shadow: var(--shadow-card); }
+.ob-pc.is-selected {
+  border-color: var(--brand);
+  background: var(--brand-50);
+  box-shadow: var(--shadow-pop);
+}
+.ob-pc.is-suggested {
+  border-color: var(--emerald);
+  background: linear-gradient(135deg, var(--surface-2) 0%, var(--emerald-50) 100%);
+}
+
+.ob-pc-head { display: flex; align-items: center; gap: 14px; }
+.ob-pc-glyph {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  background: var(--surface-3);
+  color: var(--text-2);
+  display: grid; place-items: center;
+  flex-shrink: 0;
+}
+.ob-pc-glyph svg { width: 32px; height: 32px; }
+.ob-pc.is-selected .ob-pc-glyph { background: var(--brand); color: #fff; }
+.ob-pc.is-suggested .ob-pc-glyph { background: var(--emerald); color: #fff; }
+
+.ob-pc-name {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--tracking-card);
+  margin: 0;
+}
+.ob-pc-tag {
+  font-family: var(--font-script);
+  font-size: 28px;
+  color: var(--text-2);
+  margin: 0;
+  line-height: 1;
+  letter-spacing: var(--tracking-script);
+}
+.ob-pc-tag em { color: var(--rose); font-style: italic; }
+.ob-pc-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 4px;
+  font-size: var(--fs-sm);
+  color: var(--text-2);
+  line-height: 1.5;
+}
+.ob-pc-list li::before {
+  content: "—  ";
+  color: var(--text-3);
+}
+.ob-pc-foot { display: flex; }
+
+.ob-extra {
+  font-size: var(--fs-sm);
+  color: var(--text-3);
+  display: flex; align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Foot */
+.ob-foot {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-6);
+  border-block-start: 1px solid var(--border);
+  background: var(--surface-2);
+  position: sticky; bottom: 0;
+  gap: var(--space-3);
+}
+.ob-foot-meta {
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+  font-weight: var(--fw-bold);
+}
+@media (max-width: 720px) {
+  .ob-foot { padding: var(--space-3) var(--space-4); }
+  .ob-foot .btn.lg { padding: 10px 14px; font-size: var(--fs-sm); }
+}
+</style>
+
+<script src="_shared/app.js"></script>
+<script>
+fetch('_shared/icons.svg.html').then(r => r.text()).then(t => {
+  document.getElementById('icons-host').innerHTML = t;
+});
+
+let chosen = null;
+document.querySelectorAll('.ob-pc').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('.ob-pc').forEach(o => o.classList.remove('is-selected'));
+    c.classList.add('is-selected');
+    chosen = c.dataset.posture;
+    document.getElementById('next-btn').disabled = false;
+  });
+});
+
+document.getElementById('next-btn')?.addEventListener('click', () => {
+  App.toast('Posture enregistrée. Étape suivante : vos maisons.', { kind: 'success', duration: 2000 });
+});
+
+App.setupTweaks(
+  () => ({ locale: 'fr', step: 3, suggestion: true }),
+  {
+    render: (s) => `
+      <section class="tweaks-section">
+        <div class="tweaks-section-title">Étape</div>
+        <div class="tweak-row">
+          <label>Numéro</label>
+          <select data-tweak="step">
+            <option value="1" ${s.step==1?'selected':''}>1 — Bienvenue</option>
+            <option value="2" ${s.step==2?'selected':''}>2 — Connexions</option>
+            <option value="3" ${s.step==3?'selected':''}>3 — Posture</option>
+            <option value="4" ${s.step==4?'selected':''}>4 — Maisons</option>
+            <option value="5" ${s.step==5?'selected':''}>5 — Premier matin</option>
+          </select>
+        </div>
+      </section>
+      <section class="tweaks-section">
+        <div class="tweaks-section-title">Suggestion IA</div>
+        <div class="tweak-row">
+          <label>Pré‑sélectionner « Exploratrice »</label>
+          <input type="checkbox" data-tweak="suggestion" ${s.suggestion?'checked':''}>
+        </div>
+      </section>
+      <section class="tweaks-section">
+        <div class="tweaks-section-title">Langue</div>
+        <div class="tweak-row">
+          <label>Locale</label>
+          <select data-tweak="locale">
+            <option value="fr" ${s.locale==='fr'?'selected':''}>Français</option>
+            <option value="en" ${s.locale==='en'?'selected':''}>English</option>
+            <option value="ar" ${s.locale==='ar'?'selected':''}>العربية</option>
+          </select>
+        </div>
+      </section>
+      <div class="tweak-help">
+        Cette étape est la <em>plus douce</em> de l'onboarding. C'est là qu'on commence à connaître la personne, pas l'utilisatrice.
+      </div>
+    `,
+    apply: (s) => {
+      App.setLocale(s.locale);
+      const sug = document.querySelector('.ob-pc.is-suggested, .ob-pc[data-posture="explore"]');
+      if (s.suggestion) {
+        document.querySelector('[data-posture="explore"]').classList.add('is-suggested');
+      } else {
+        document.querySelector('[data-posture="explore"]').classList.remove('is-suggested');
+      }
+    }
+  }
+);
+</script>
+</body>
+</html>

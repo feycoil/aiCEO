@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="fr" data-locale="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>aiCEO — Assistant</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css?v=92">
+<link rel="stylesheet" href="_shared/app.css?v=92">
+<link rel="stylesheet" href="_shared/tweaks.css?v=92">
+<script src="_shared/theme.js?v=92"></script>
+</head>
+<body data-route="assistant">
+<script>
+/* Restore drawer state ASAP (avant defer scripts) — évite le flash */
+(function(){
+  try {
+    var p = localStorage.getItem('aiCEO.uiPrefs.drawerCollapsed');
+    if (p !== '1' && p !== '0') return;
+    /* Quand .app sera dans le DOM, appliquer l'état */
+    var apply = function(){
+      var a = document.querySelector('.app');
+      if (a) a.dataset.drawer = (p === '1') ? 'collapsed' : 'expanded';
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', apply, { once: true });
+    } else {
+      apply();
+    }
+  } catch(e){}
+})();
+</script>
+
+<div id="icons-host" hidden></div>
+<!-- icons sprite inlined (S6.2 fix) -->
+<!--
+  aiCEO v0.5 — ICONS SPRITE
+  Inline SVG sprite. Use via <svg class="ico"><use href="#i-X"/></svg>
+  Style stroke: currentColor, 1.6–2px, rounded, lucide-inspired.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 11l9-7 9 7v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2v-9z"/>
+    </symbol>
+    <symbol id="i-arbitrage" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M16 3l5 5-5 5"/><path d="M21 8H8a5 5 0 0 0-5 5v0"/>
+      <path d="M8 21l-5-5 5-5"/><path d="M3 16h13a5 5 0 0 0 5-5"/>
+    </symbol>
+    <symbol id="i-projects" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="4" width="18" height="16" rx="2"/>
+      <path d="M3 9h18"/><path d="M9 4v16"/>
+    </symbol>
+    <symbol id="i-actions" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 11l3 3L22 4"/>
+      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+    </symbol>
+    <symbol id="i-people" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    </symbol>
+    <symbol id="i-evening" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </symbol>
+    <symbol id="i-knowledge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+    </symbol>
+    <symbol id="i-coaching" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2l2.39 4.84L20 8l-4 3.91.94 5.5L12 14.77l-4.94 2.64L8 11.91 4 8l5.61-1.16z"/>
+    </symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </symbol>
+    <symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+    </symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+    </symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 5v14M5 12h14"/>
+    </symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 12h14M13 5l7 7-7 7"/>
+    </symbol>
+    <symbol id="i-arrow-up-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M7 17L17 7"/><path d="M7 7h10v10"/>
+    </symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 9l6 6 6-6"/>
+    </symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 6l6 6-6 6"/>
+    </symbol>
+    <symbol id="i-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 6l-6 6 6 6"/>
+    </symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 6L6 18M6 6l12 12"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 12l5 5L20 7"/>
+    </symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+    </symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+    </symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="9" y="2" width="6" height="12" rx="3"/>
+      <path d="M19 10a7 7 0 0 1-14 0"/>
+      <path d="M12 19v3"/>
+    </symbol>
+    <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+    </symbol>
+    <symbol id="i-trending-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/>
+    </symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+    </symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3l1.9 5.8L20 11l-5.8 1.9L12 19l-1.9-5.8L4 11l6.1-2.2z"/>
+      <path d="M19 3v4M21 5h-4"/>
+    </symbol>
+    <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+    </symbol>
+    <symbol id="i-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="4" width="20" height="5" rx="1"/>
+      <path d="M4 9v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9"/>
+      <path d="M10 13h4"/>
+    </symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+      <path d="M10 11v6M14 11v6"/>
+    </symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/>
+    </symbol>
+    <symbol id="i-grip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="9" cy="6" r="1.2"/><circle cx="9" cy="12" r="1.2"/><circle cx="9" cy="18" r="1.2"/>
+      <circle cx="15" cy="6" r="1.2"/><circle cx="15" cy="12" r="1.2"/><circle cx="15" cy="18" r="1.2"/>
+    </symbol>
+    <symbol id="i-more-h" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/>
+    </symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/>
+    </symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+    </symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+    </symbol>
+    <symbol id="i-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2"/>
+      <path d="M16 2v4M8 2v4M3 10h18"/>
+    </symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+    </symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 12h18M3 6h18M3 18h18"/>
+    </symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 3H2l8 9.46V19l4 2v-8.54z"/>
+    </symbol>
+    <symbol id="i-sort" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 6h18M6 12h12M10 18h4"/>
+    </symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/>
+      <path d="M2 21c0-3 1.85-5.36 5.08-6"/>
+    </symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/>
+    </symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="4" width="20" height="16" rx="2"/>
+      <path d="M22 6l-10 7L2 6"/>
+    </symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 16.92V21a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 3h4.09a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.91 11.09a16 16 0 0 0 6 6l1.45-1.54a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+    </symbol>
+    <symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="2" width="16" height="20" rx="1"/>
+      <path d="M9 22v-4h6v4M8 6h.01M16 6h.01M8 10h.01M16 10h.01M8 14h.01M16 14h.01"/>
+    </symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+    </symbol>
+    <symbol id="i-warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <path d="M12 9v4M12 17h.01"/>
+    </symbol>
+    <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>
+    </symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+      <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+    </symbol>
+    <symbol id="i-kanban" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="6" height="18"/><rect x="11" y="3" width="6" height="11"/>
+      <rect x="19" y="3" width="2" height="7"/>
+    </symbol>
+    <symbol id="i-snowflake" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2v20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07M2 12h20"/>
+    </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="4"/>
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+    </symbol>
+    <symbol id="i
+<a class="skip-link" href="#main-content">Aller au contenu</a>
+
+<div class="app" data-drawer="expanded">
+  <aside class="drawer" aria-label="Navigation principale">
+    <div class="drawer-logo">
+      <span class="logo-mark">a</span>
+      <span class="logo-text">aiCEO</span>
+      <span class="logo-version" style="font-size:9px;font-weight:600;color:var(--text-3,#888);background:var(--surface-3,#ebe7df);padding:2px 6px;border-radius:4px;margin-left:6px;letter-spacing:0.04em;text-transform:uppercase">v0.6</span>
+    </div>
+    <button class="drawer-tenant" aria-label="Changer d'espace">
+      <span class="tenant-mark" aria-hidden="true">A</span>
+      <span class="tenant-name">Aubrielle Hayes</span>
+      <svg class="ico" width="14" height="14" aria-hidden="true"><use href="#i-chevron-down"/><symbol id="i-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+  </symbol>
+  </svg>
+    </button>
+    <nav class="drawer-nav" aria-label="Sections">
+      <div class="drawer-section">Pilotage</div>
+      <a href="index.html" class="drawer-item" data-nav="home"><svg class="ico" width="18" height="18"><use href="#i-home"/></svg><span class="label">Cockpit</span></a>
+      <a href="arbitrage.html" class="drawer-item" data-nav="arbitrage"><svg class="ico" width="18" height="18"><use href="#i-arbitrage"/></svg><span class="label">Arbitrage</span><span class="badge">3</span></a>
+      <a href="evening.html" class="drawer-item" data-nav="evening"><svg class="ico" width="18" height="18"><use href="#i-evening"/></svg><span class="label">Soirée</span></a>
+      <div class="drawer-section">Travail</div>
+      <a href="projets.html" class="drawer-item" data-nav="projects"><svg class="ico" width="18" height="18"><use href="#i-projects"/></svg><span class="label">Projets</span></a>
+      <a href="taches.html" class="drawer-item" data-nav="actions"><svg class="ico" width="18" height="18"><use href="#i-actions"/></svg><span class="label">Actions</span><span class="badge">12</span></a>
+      <a href="agenda.html" class="drawer-item" data-nav="agenda"><svg class="ico" width="18" height="18"><use href="#i-clock"/></svg><span class="label">Agenda</span></a>
+      <a href="assistant.html" class="drawer-item is-active" data-nav="assistant" aria-current="page"><svg class="ico" width="18" height="18"><use href="#i-sparkle"/></svg><span class="label">Assistant</span></a>
+      <a href="equipe.html" class="drawer-item" data-nav="people"><svg class="ico" width="18" height="18"><use href="#i-people"/></svg><span class="label">Équipe</span></a>
+      <div class="drawer-section">Capital</div>
+      <a href="connaissance.html" class="drawer-item" data-nav="knowledge"><svg class="ico" width="18" height="18"><use href="#i-knowledge"/></svg><span class="label">Connaissance</span></a>
+      <a href="coaching.html" class="drawer-item" data-nav="coaching"><svg class="ico" width="18" height="18"><use href="#i-coaching"/></svg><span class="label">Coaching</span></a>
+      <a href="revues.html" class="drawer-item" data-nav="revues"><svg class="ico" width="18" height="18"><use href="#i-folder"/></svg><span class="label">Revues</span></a>
+      <a href="decisions.html" class="drawer-item" data-nav="decisions"><svg class="ico" width="18" height="18"><use href="#i-target"/></svg><span class="label">Décisions</span></a>
+    </nav>
+    <div class="drawer-footer">
+      <button class="drawer-locale" aria-label="Langue">
+        <svg class="ico" width="16" height="16"><use href="#i-globe"/></svg>
+        <span class="locale-name">Français</span>
+      </button>
+      <a href="aide.html" class="drawer-item" data-nav="aide"><svg class="ico" width="18" height="18"><use href="#i-help"/></svg><span class="label">Aide</span></a>
+      <a href="settings.html" class="drawer-item" data-nav="settings">
+        <svg class="ico" width="18" height="18"><use href="#i-settings"/></svg>
+        <span class="label">Réglages</span>
+      </a>
+      <button class="drawer-user" aria-label="Profil">
+        <span class="avatar md" data-house="solstice">AH</span>
+        <span class="meta">
+          <span class="name">Aubrielle Hayes</span>
+          <span class="role">Fondatrice · CEO</span>
+        </span>
+      </button>
+    </div>
+
+    <button class="drawer-collapse-btn" onclick="return window.toggleAiceoDrawer && window.toggleAiceoDrawer();" aria-label="Réduire le menu">
+      <svg class="ico" width="14" height="14"><use href="#i-chevron-left"/></svg>
+    </button>
+  </aside>
+
+  <main class="app-main as-main" id="main-content">
+    <header class="topbar">
+      <div class="topbar-title-block">
+        <div class="topbar-title-eyebrow">Assistant</div>
+        <h1 class="section-title">Conversation du mardi</h1>
+      </div>
+      <div class="topbar-cluster u-hidden-mobile">
+        <button class="btn ghost"><svg class="ico" width="14" height="14"><use href="#i-archive"/></svg>Historique</button>
+        <button class="btn primary"><svg class="ico" width="14" height="14"><use href="#i-plus"/></svg>Nouvelle conversation</button>
+      </div>
+    </header>
+
+    <div class="as-shell">
+      <!-- Conversation -->
+      <section class="as-thread" aria-label="Conversation">
+        <div class="as-thread-context">
+          <span class="u-text-3 small">Reprise du fil ouvert lundi 28 · 17:42</span>
+        </div>
+
+        <article class="msg msg-user">
+          <div class="msg-bubble">
+            <p>Je suis bloquée sur le RFP Hôpital Sud. Troisième semaine. J'ai pas envie d'y aller mais j'ai pas envie de dire non non plus.</p>
+          </div>
+          <span class="msg-meta">10:12 · Hier</span>
+        </article>
+
+        <article class="msg msg-ai">
+          <span class="msg-avatar"><svg class="ico" width="14" height="14"><use href="#i-sparkle"/></svg></span>
+          <div class="msg-bubble">
+            <p>D'accord. Avant de répondre, je remarque deux choses :</p>
+            <ul class="msg-list">
+              <li>Tu l'as reportée 3 fois — c'est <strong>l'action la plus reportée</strong> du trimestre.</li>
+              <li>Sur les 11 RFP entrants Northwind ce trimestre, tu en as accepté 2. Le pattern : oui quand l'équipe pousse, non quand tu lis seule.</li>
+            </ul>
+            <p>Une question avant de chercher la réponse : <em>qu'est‑ce qui te ferait dire oui sans hésiter</em> ?</p>
+          </div>
+          <div class="msg-actions">
+            <button class="msg-action-btn">Approfondir</button>
+            <button class="msg-action-btn">Reformuler</button>
+            <button class="msg-action-btn">Sources <svg class="ico" width="10" height="10"><use href="#i-chevron-right"/></svg></button>
+          </div>
+          <span class="msg-meta">10:13 · Hier</span>
+        </article>
+
+        <article class="msg msg-user">
+          <div class="msg-bubble">
+            <p>Si l'équipe technique me disait qu'on a 80% du livrable déjà prêt. Si Sarah voulait y aller. Si la marge était au‑dessus de 35%.</p>
+          </div>
+          <span class="msg-meta">10:18 · Hier</span>
+        </article>
+
+        <article class="msg msg-ai">
+          <span class="msg-avatar"><svg class="ico" width="14" height="14"><use href="#i-sparkle"/></svg></span>
+          <div class="msg-bubble">
+            <p>Trois critères. Je les note dans ta connaissance Northwind.</p>
+            <div class="msg-card">
+              <div class="msg-card-eyebrow">
+                <svg class="ico" width="12" height="12"><use href="#i-check"/></svg>
+                Critères « RFP Northwind » — créés
+              </div>
+              <ol class="msg-card-list">
+                <li><strong>Réutilisabilité technique ≥ 80 %</strong></li>
+                <li><strong>Sponsor interne aligné</strong> (Sarah ou équivalent)</li>
+                <li><strong>Marge ≥ 35 %</strong></li>
+              </ol>
+              <div class="msg-card-actions">
+                <button class="btn ghost small">Modifier</button>
+                <button class="btn ghost small">Voir dans Connaissance</button>
+              </div>
+            </div>
+            <p>Maintenant on regarde Hôpital Sud à travers ces 3 filtres ?</p>
+          </div>
+          <div class="msg-actions">
+            <button class="msg-action-btn primary">Oui, on regarde</button>
+            <button class="msg-action-btn">Pas encore</button>
+          </div>
+          <span class="msg-meta">10:19 · Hier</span>
+        </article>
+
+        <div class="as-thread-divider"><span>aujourd'hui · 10:24</span></div>
+
+        <article class="msg msg-user">
+          <div class="msg-bubble">
+            <p>OK on regarde. Mais avant, peux‑tu retrouver ce que Camille m'avait dit en mars sur les RFP publics ?</p>
+          </div>
+          <span class="msg-meta">10:24</span>
+        </article>
+
+        <article class="msg msg-ai">
+          <span class="msg-avatar"><svg class="ico" width="14" height="14"><use href="#i-sparkle"/></svg></span>
+          <div class="msg-bubble">
+            <p>Trouvé. Mentor 1‑à‑1 du 14 mars, capté à 14:36.</p>
+            <blockquote class="msg-quote">
+              « Sur le secteur public, ne signez que si vous avez quelqu'un qui pousse en interne côté client. Sinon vous payez l'apprentissage à la place du client. »
+              <cite>— Camille (mentor) · 14 mars 14:36</cite>
+            </blockquote>
+            <p>Ça recoupe ton critère 2 — sponsor interne aligné. Tu veux que je regarde si Hôpital Sud a un sponsor identifiable ?</p>
+          </div>
+          <div class="msg-actions">
+            <button class="msg-action-btn primary">Oui, vérifie</button>
+            <button class="msg-action-btn">Plus tard</button>
+            <button class="msg-action-btn">Voir le 1‑à‑1</button>
+          </div>
+          <span class="msg-meta">10:24 · à l'instant</span>
+        </article>
+
+        <!-- Composer -->
+        <div class="as-composer">
+          <div class="as-composer-context">
+            <span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span>
+            <span class="pill"><svg class="ico" width="12" height="12"><use href="#i-archive"/></svg>3 sources liées</span>
+            <button class="pill-x" aria-label="Détacher Northwind"></button>
+          </div>
+          <div class="as-composer-input">
+            <textarea placeholder="Reformule, demande des sources, ou capte une nouvelle pensée…" rows="2"></textarea>
+            <div class="as-composer-actions">
+              <button class="icon-btn" aria-label="Joindre"><svg class="ico" width="14" height="14"><use href="#i-attach"/></svg></button>
+              <button class="icon-btn" aria-label="Enregistrer la voix"><svg class="ico" width="14" height="14"><use href="#i-mic"/></svg></button>
+              <span style="flex:1"></span>
+              <button class="btn primary small"><svg class="ico" width="12" height="12"><use href="#i-arrow-right"/></svg>Envoyer</button>
+            </div>
+          </div>
+          <div class="as-composer-hints">
+            <span class="u-text-3 xs">Suggestions :</span>
+            <button class="suggest-chip">Vérifie le sponsor Hôpital Sud</button>
+            <button class="suggest-chip">Compare aux 2 RFP gagnés ce trimestre</button>
+            <button class="suggest-chip">Bloque 30 min mardi pour trancher</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Side context -->
+      <aside class="as-side" aria-label="Contexte">
+        <section class="as-side-section">
+          <header class="as-side-head">
+            <h3 class="card-title" style="font-size:var(--fs-h4)">Conversations récentes</h3>
+          </header>
+          <ul class="as-conv-list" role="list">
+            <li class="as-conv is-active">
+              <span class="as-conv-title">RFP Hôpital Sud — décider</span>
+              <span class="as-conv-meta">Hier · 4 messages</span>
+            </li>
+            <li class="as-conv">
+              <span class="as-conv-title">Préparation round 3 Solstice</span>
+              <span class="as-conv-meta">Lundi · 11 messages</span>
+            </li>
+            <li class="as-conv">
+              <span class="as-conv-title">Brief Helene — feedback mi‑étape</span>
+              <span class="as-conv-meta">Vendredi · 6 messages</span>
+            </li>
+            <li class="as-conv">
+              <span class="as-conv-title">Synthèse 3 entretiens utilisateur</span>
+              <span class="as-conv-meta">Mer 24 · 8 messages</span>
+            </li>
+            <li class="as-conv">
+              <span class="as-conv-title">Repenser le pitch deck</span>
+              <span class="as-conv-meta">23 avril · 14 messages</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="as-side-section">
+          <header class="as-side-head">
+            <h3 class="card-title" style="font-size:var(--fs-h4)">Contexte de ce fil</h3>
+          </header>
+          <ul class="as-context-list" role="list">
+            <li class="as-context-item">
+              <svg class="ico" width="14" height="14"><use href="#i-target"/></svg>
+              <div>
+                <span class="as-context-title">RFP Hôpital Sud</span>
+                <span class="as-context-meta">Action P1 · échéance 02 mai</span>
+              </div>
+            </li>
+            <li class="as-context-item">
+              <svg class="ico" width="14" height="14"><use href="#i-knowledge"/></svg>
+              <div>
+                <span class="as-context-title">Critères RFP Northwind</span>
+                <span class="as-context-meta">Connaissance · créée à 10:19</span>
+              </div>
+            </li>
+            <li class="as-context-item">
+              <svg class="ico" width="14" height="14"><use href="#i-people"/></svg>
+              <div>
+                <span class="as-context-title">Camille — mentor</span>
+                <span class="as-context-meta">1‑à‑1 du 14 mars cité</span>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <section class="as-side-section">
+          <header class="as-side-head">
+            <h3 class="card-title" style="font-size:var(--fs-h4)">Ce que j'ai fait</h3>
+            <span class="u-text-3 xs">3 effets propagés</span>
+          </header>
+          <ul class="as-effects-list" role="list">
+            <li class="as-effect">
+              <span class="as-effect-marker">+</span>
+              <div>
+                <span class="as-effect-title">Critères créés</span>
+                <span class="as-effect-meta">→ Connaissance / Northwind</span>
+              </div>
+              <button class="as-effect-undo">Annuler</button>
+            </li>
+            <li class="as-effect">
+              <span class="as-effect-marker">↪</span>
+              <div>
+                <span class="as-effect-title">1‑à‑1 du 14/03 lié au fil</span>
+                <span class="as-effect-meta">Citation extraite</span>
+              </div>
+              <button class="as-effect-undo">Annuler</button>
+            </li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+
+    <footer class="app-footer" style="margin-block-start: var(--space-5)">
+      <p class="strategic-q">L'assistant ne pense pas pour vous. Il vous renvoie à vos propres critères.</p>
+      <div class="footer-meta"><span>aiCEO v0.5</span><span>·</span><span>Assistant</span></div>
+    </footer>
+  </main>
+</div>
+
+<nav class="bottom-tab-nav">
+  <a href="index.html" class="bottom-tab"><svg class="ico"><use href="#i-home"/></svg><span>Cockpit</span></a>
+  <a href="arbitrage.html" class="bottom-tab"><svg class="ico"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
+  <button class="bottom-tab fab-trigger"><span class="fab-circle"><svg class="ico"><use href="#i-mic"/></svg></span><span style="margin-top:30px">Capter</span></button>
+  <a href="assistant.html" class="bottom-tab is-active"><svg class="ico"><use href="#i-sparkle"/></svg><span>Assistant</span></a>
+  <a href="evening.html" class="bottom-tab"><svg class="ico"><use href="#i-evening"/></svg><span>Soirée</span></a>
+</nav>
+
+<style>
+.as-shell {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: var(--space-4);
+  margin-block-start: var(--space-4);
+  align-items: start;
+}
+
+.as-thread {
+  display: flex; flex-direction: column;
+  gap: var(--space-4);
+}
+.as-thread-context {
+  text-align: center;
+  padding: var(--space-2) 0;
+}
+.as-thread-divider {
+  text-align: center;
+  display: flex; align-items: center; gap: var(--space-3);
+  color: var(--text-3);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-block: var(--space-3);
+}
+.as-thread-divider::before, .as-thread-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+.msg {
+  display: flex; flex-direction: column; gap: 4px;
+  max-width: 85%;
+}
+.msg-user { align-self: flex-end; align-items: flex-end; }
+.msg-ai { align-self: flex-start; align-items: flex-start; position: relative; padding-inline-start: 36px; }
+.msg-avatar {
+  position: absolute; left: 0; top: 0;
+  width: 28px; height: 28px;
+  background: var(--text); color: var(--surface);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.msg-bubble {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  letter-spacing: var(--tracking-card);
+}
+.msg-bubble p { margin: 0 0 8px; }
+.msg-bubble p:last-child { margin-bottom: 0; }
+.msg-user .msg-bubble {
+  background: var(--text);
+  color: var(--surface);
+  border-bottom-right-radius: var(--radius-sm);
+}
+.msg-ai .msg-bubble {
+  background: var(--surface-2);
+  color: var(--text);
+  border-bottom-left-radius: var(--radius-sm);
+}
+.msg-list { padding-inline-start: 1.2em; margin: 8px 0; }
+.msg-list li { margin-block-end: 4px; }
+
+.msg-meta {
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.msg-actions {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-block-start: 4px;
+}
+.msg-action-btn {
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: var(--fw-medium);
+  padding: 4px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--text-2);
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 4px;
+  transition: all .12s;
+}
+.msg-action-btn:hover { background: var(--surface-2); color: var(--text); }
+.msg-action-btn.primary { background: var(--text); color: var(--surface); border-color: var(--text); }
+
+.msg-card {
+  margin-block: var(--space-3);
+  padding: var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  border-inline-start: 3px solid var(--emerald);
+}
+.msg-card-eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: var(--fs-xs); font-weight: var(--fw-bold);
+  color: var(--emerald);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-block-end: 6px;
+}
+.msg-card-list { margin: 0; padding-inline-start: 1.4em; font-size: var(--fs-sm); }
+.msg-card-list li { margin-block-end: 4px; }
+.msg-card-actions { display: flex; gap: 6px; margin-block-start: var(--space-3); }
+
+.msg-quote {
+  margin: var(--space-3) 0;
+  padding: var(--space-3);
+  background: var(--surface);
+  border-inline-start: 3px solid var(--rose-600);
+  border-radius: var(--radius-sm);
+  font-style: italic;
+  font-size: var(--fs-sm);
+  color: var(--text);
+  line-height: 1.5;
+}
+.msg-quote cite {
+  display: block;
+  font-style: normal;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  color: var(--text-3);
+  margin-block-start: 6px;
+}
+
+.as-composer {
+  margin-block-start: var(--space-4);
+  padding: var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  position: sticky; bottom: var(--space-3);
+}
+.as-composer-context {
+  display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+  padding-block-end: var(--space-2);
+  border-block-end: 1px solid var(--border);
+  margin-block-end: var(--space-2);
+}
+.pill-x {
+  background: transparent; border: none; cursor: pointer;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  color: var(--text-3);
+  font-size: 14px; line-height: 1;
+}
+.pill-x::before { content: '×'; }
+.as-composer-input { display: flex; flex-direction: column; gap: var(--space-2); }
+.as-composer-input textarea {
+  width: 100%;
+  padding: var(--space-2);
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  resize: none;
+  color: var(--text);
+}
+.as-composer-input textarea:focus { outline: none; }
+.as-composer-actions { display: flex; gap: 4px; align-items: center; }
+.as-composer-hints {
+  display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+  padding-block-start: var(--space-2);
+  margin-block-start: var(--space-2);
+  border-block-start: 1px dashed var(--border);
+}
+.suggest-chip {
+  font-family: inherit;
+  font-size: 11px;
+  padding: 4px 10px;
+  background: var(--surface-2);
+  border: 1px dashed var(--border-2);
+  border-radius: var(--radius-pill);
+  color: var(--text-2);
+  cursor: pointer;
+}
+.suggest-chip:hover { background: var(--surface-3); color: var(--text); border-style: solid; }
+
+.as-side { display: flex; flex-direction: column; gap: var(--space-4); position: sticky; top: var(--space-3); }
+.as-side-section {
+  padding: var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.as-side-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-block-end: var(--space-2);
+  margin-block-end: var(--space-2);
+  border-block-end: 1px solid var(--border);
+}
+.as-conv-list, .as-context-list, .as-effects-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
+.as-conv {
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.as-conv:hover { background: var(--surface-2); }
+.as-conv.is-active { background: var(--charcoal-50); border-inline-start: 2px solid var(--text); padding-inline-start: 10px; }
+.as-conv-title { font-size: var(--fs-sm); font-weight: var(--fw-medium); }
+.as-conv-meta { font-size: var(--fs-xs); color: var(--text-3); font-variant-numeric: tabular-nums; }
+
+.as-context-item, .as-effect {
+  display: grid;
+  grid-template-columns: 18px 1fr auto;
+  gap: 8px; align-items: center;
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+}
+.as-context-item:hover, .as-effect:hover { background: var(--surface-2); }
+.as-context-title, .as-effect-title { display: block; font-size: var(--fs-sm); font-weight: var(--fw-semi); }
+.as-context-meta, .as-effect-meta { display: block; font-size: var(--fs-xs); color: var(--text-3); }
+.as-effect-marker {
+  width: 18px; height: 18px;
+  background: var(--emerald); color: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: var(--fw-extrabold);
+}
+.as-effect-undo {
+  background: transparent; border: none; cursor: pointer;
+  font-family: inherit; font-size: 10px;
+  font-weight: var(--fw-bold);
+  color: var(--text-3);
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.as-effect-undo:hover { color: var(--rose-600); }
+
+@media (max-width: 1100px) {
+  .as-shell { grid-template-columns: 1fr; }
+  .as-side { position: static; flex-direction: row; flex-wrap: wrap; }
+  .as-side-section { flex: 1; min-width: 280px; }
+}
+@media (max-width: 600px) {
+  .msg { max-width: 100%; }
+  .as-side-section { min-width: 100%; }
+}
+</style>
+
+<script src="_shared/app.js"></script>
+<script>
+fetch('_shared/icons.svg.html').then(r => r.text()).then(t => document.getElementById('icons-host').innerHTML = t);
+
+document.querySelectorAll('.as-effect-undo').forEach(b => {
+  b.addEventListener('click', () => {
+    const item = b.closest('.as-effect');
+    item.style.opacity = '0.4';
+    item.style.textDecoration = 'line-through';
+    App.toast('Effet annulé.', { kind: 'neutral', duration: 2000 });
+  });
+});
+
+document.querySelectorAll('.suggest-chip').forEach(c => {
+  c.addEventListener('click', () => {
+    const ta = document.querySelector('.as-composer-input textarea');
+    ta.value = c.textContent;
+    ta.focus();
+  });
+});
+</script>
+<!-- aiCEO Convergence v0.6 (S6.2) -->
+<script src="_shared/shell.js?v=92" defer></script>
+<script src="_shared/clear-demo.js?v=92" defer></script>
+<script src="_shared/command-palette.js?v=92" defer></script>
+<script src="_shared/mobile.js?v=92" defer></script>
+<script src="_shared/polish.js?v=92" defer></script>
+<script src="_shared/states.js?v=92" defer></script>
+<script src="_shared/a11y.js?v=92" defer></script>
+<script src="_shared/filters.js?v=92" defer></script>
+<script src="_shared/bulk-actions.js?v=92" defer></script>
+<script src="_shared/breadcrumbs.js?v=92" defer></script>
+<script src="_shared/bind-drawer-extras.js?v=92" defer></script>
+  <script src="_shared/bind-active-nav.js?v=92" defer></script>
+  <script src="_shared/bind-drawer-badges.js?v=92" defer></script>
+<script src="_shared/responsive-mobile.js?v=92" defer></script>
+<script src="_shared/microcopy.js?v=92" defer></script>
+<script src="_shared/settings-actions.js?v=92" defer></script>
+<script src="_shared/profile-menu.js?v=92" defer></script>
+<script src="_shared/modal.js?v=92" defer></script>
+<script src="_shared/crud-modals.js?v=92" defer></script>
+<script src="_shared/workflow.js?v=92" defer></script>
+<script src="_shared/bind-assistant.js?v=92" defer></script>
+</body>
+</html>

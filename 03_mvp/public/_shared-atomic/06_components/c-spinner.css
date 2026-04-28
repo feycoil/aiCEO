@@ -1,0 +1,27 @@
+/**
+ * c-spinner — Loading spinner
+ * Sizes  : sm | md | lg
+ * Source : 06-composants-catalogue.md (S6.1.2)
+ */
+
+.c-spinner {
+  display: inline-block;
+  width: var(--icon-md);
+  height: var(--icon-md);
+  border: 2px solid var(--color-cream-200);
+  border-top-color: var(--color-brand);
+  border-radius: 50%;
+  animation: c-spinner-rotate var(--duration-celebr) var(--ease-linear) infinite;
+}
+
+.c-spinner--sm { width: var(--icon-sm); height: var(--icon-sm); border-width: 2px; }
+.c-spinner--lg { width: var(--icon-lg); height: var(--icon-lg); border-width: 3px; }
+
+@keyframes c-spinner-rotate {
+  to { transform: rotate(360deg); }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .c-spinner { animation-duration: 2s; }
+}

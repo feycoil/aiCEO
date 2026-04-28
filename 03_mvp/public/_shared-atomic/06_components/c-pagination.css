@@ -1,0 +1,111 @@
+/**
+ * c-pagination.css — Molecule Pagination (navigation pages)
+ *
+ * Compose :
+ *   <nav class="c-pagination" aria-label="Pagination">
+ *     <ul class="c-pagination__list">
+ *       <li><button class="c-pagination__item">1</button></li>
+ *       ...
+ *       <li><button class="c-pagination__item is-active">3</button></li>
+ *       ...
+ *       <li class="c-pagination__ellipsis">...</li>
+ *     </ul>
+ *   </nav>
+ *
+ * Variants :
+ *   .c-pagination--sm
+ *
+ * Accessibilite :
+ *   - <nav aria-label="..."> pour annoncer le role
+ *   - aria-current="page" sur item actif
+ *   - aria-label="Page X" sur chaque bouton
+ *   - aria-label="Page suivante/precedente" sur prev/next
+ */
+
+.c-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.c-pagination__list {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.c-pagination__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 var(--space-2);
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-2);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--duration-hover) var(--ease-out);
+  text-decoration: none;
+}
+
+.c-pagination__item:hover {
+  background-color: var(--color-surface-3);
+  color: var(--color-text);
+  border-color: var(--color-border-2);
+}
+
+.c-pagination__item:focus-visible {
+  outline: 0;
+  box-shadow: var(--ring-focus);
+  border-color: var(--color-border-focus);
+}
+
+.c-pagination__item.is-active,
+.c-pagination__item[aria-current="page"] {
+  background-color: var(--color-brand);
+  color: var(--color-text-on-brand);
+  border-color: var(--color-brand);
+  font-weight: var(--weight-semibold);
+}
+
+.c-pagination__item:disabled,
+.c-pagination__item.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.c-pagination__icon {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+}
+
+.c-pagination__ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  color: var(--color-text-3);
+  font-size: var(--text-sm);
+}
+
+/* Small variant */
+.c-pagination--sm .c-pagination__item,
+.c-pagination--sm .c-pagination__ellipsis {
+  min-width: 28px;
+  height: 28px;
+  font-size: var(--text-xs);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-pagination__item { transition: none; }
+}

@@ -1,0 +1,62 @@
+/**
+ * c-avatar — Avatar (image, initiales, placeholder)
+ * Sizes : xs (24) | sm (32) | md (40) | lg (56) | xl (80)
+ * Source : 06-composants-catalogue.md (S6.1.2)
+ */
+
+.c-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-cream-200);
+  color: var(--color-text-2);
+  border-radius: 50%;
+  font-family: var(--font-sans);
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  user-select: none;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.c-avatar img,
+.c-avatar__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Sizes */
+.c-avatar--xs { width: 24px;  height: 24px;  font-size: 10px; }
+.c-avatar--sm { width: 32px;  height: 32px;  font-size: 12px; }
+.c-avatar--md { width: 40px;  height: 40px;  font-size: var(--text-sm); }
+.c-avatar--lg { width: 56px;  height: 56px;  font-size: var(--text-md); }
+.c-avatar--xl { width: 80px;  height: 80px;  font-size: var(--text-h3); }
+
+/* Element: status indicator (dot superpose) */
+.c-avatar__status {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 25%;
+  height: 25%;
+  border-radius: 50%;
+  border: 2px solid var(--color-surface-2);
+  background: var(--color-text-3);
+}
+.c-avatar__status--online   { background: var(--color-success); }
+.c-avatar__status--away     { background: var(--color-warning); }
+.c-avatar__status--busy     { background: var(--color-danger); }
+
+/* Variant: stacked (groupe d avatars chevauchants) */
+.c-avatar-stack {
+  display: inline-flex;
+  flex-direction: row;
+}
+.c-avatar-stack .c-avatar {
+  margin-left: -8px;
+  border: 2px solid var(--color-surface-2);
+}
+.c-avatar-stack .c-avatar:first-child { margin-left: 0; }

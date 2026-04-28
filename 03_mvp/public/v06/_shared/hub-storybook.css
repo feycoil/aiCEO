@@ -1,0 +1,354 @@
+/* hub-storybook.css — Styles pour pages hub.html et components.html
+ * Manquants dans la livraison Claude Design.
+ * Utilise les tokens DS existants.
+ */
+
+/* ── Hub layout ──────────────────────────────────────────── */
+.hub-body {
+  background: var(--bg, #fbf9f5);
+  color: var(--text, #111418);
+  font-family: var(--font-sans, "Fira Sans", system-ui, sans-serif);
+  margin: 0;
+  min-height: 100vh;
+}
+
+.hub-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4, 16px);
+  padding: var(--space-5, 24px) var(--space-6, 32px);
+  background: var(--surface-2, #fff);
+  border-bottom: 1px solid var(--border, #eee);
+}
+
+.hub-title {
+  font-size: var(--fs-h1, 32px);
+  font-weight: var(--fw-extrabold, 800);
+  margin: 0;
+  letter-spacing: var(--tracking-tight, -0.02em);
+  line-height: 1.1;
+}
+.hub-title-thin {
+  font-weight: var(--fw-light, 300);
+  color: var(--text-3, #888);
+}
+.hub-sub {
+  font-size: var(--fs-body, 15px);
+  color: var(--text-3, #6b7280);
+  margin: 4px 0 0;
+}
+
+.hub-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-6, 32px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7, 48px);
+}
+
+.hub-manifesto {
+  background: var(--surface-2, #fff);
+  border-radius: var(--radius-lg, 16px);
+  padding: var(--space-6, 32px);
+  box-shadow: var(--shadow-card, 0 2px 4px rgba(17,20,24,0.06));
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-5, 24px);
+  align-items: center;
+}
+@media (max-width: 900px) {
+  .hub-manifesto { grid-template-columns: 1fr; }
+}
+
+.hub-pages {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 16px);
+}
+.hub-pages-head {
+  margin-bottom: var(--space-3, 12px);
+}
+
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4, 16px);
+}
+
+.hub-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+  padding: var(--space-4, 20px);
+  background: var(--surface-2, #fff);
+  border: 1px solid var(--border, #eee);
+  border-radius: var(--radius-md, 12px);
+  text-decoration: none;
+  color: inherit;
+  transition: all .15s var(--ease-out, cubic-bezier(0.16,1,0.3,1));
+  cursor: pointer;
+}
+.hub-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(17,20,24,0.08));
+  border-color: var(--text-2, #6b7280);
+}
+
+.hub-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.hub-card-num {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: var(--fs-small, 13px);
+  color: var(--text-3, #888);
+  font-variant-numeric: tabular-nums;
+}
+.hub-card-title {
+  font-size: var(--fs-h3, 19px);
+  font-weight: var(--fw-extrabold, 800);
+  margin: 0;
+  letter-spacing: var(--tracking-tight, -0.01em);
+}
+.hub-card-desc {
+  font-size: var(--fs-body, 15px);
+  color: var(--text-2, #4a4f5a);
+  line-height: var(--leading-normal, 1.5);
+  margin: 0;
+}
+.hub-card-states {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: var(--fs-small, 12px);
+  color: var(--text-3, #888);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: var(--space-2, 8px);
+  padding-top: var(--space-2, 8px);
+  border-top: 1px solid var(--border, #eee);
+}
+
+.hub-wave-divider {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3, 12px);
+  margin-top: var(--space-5, 24px);
+}
+.hub-wave-num {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--fs-h2, 24px);
+  font-weight: var(--fw-bold, 700);
+  color: var(--text-3, #888);
+}
+.hub-wave-title {
+  font-size: var(--fs-h3, 19px);
+  font-weight: var(--fw-extrabold, 800);
+  margin: 0;
+}
+.hub-wave-desc {
+  font-size: var(--fs-body, 15px);
+  color: var(--text-3, #888);
+  margin: 0;
+}
+
+.hub-stack {
+  display: grid;
+  gap: var(--space-2, 8px);
+}
+.stack-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: var(--space-3, 12px);
+  align-items: baseline;
+  padding: var(--space-2, 8px) 0;
+  border-bottom: 1px solid var(--border, #eee);
+  font-size: var(--fs-small, 13px);
+}
+.stack-row:last-child { border-bottom: 0; }
+.stack-key {
+  font-weight: var(--fw-semibold, 600);
+  color: var(--text-2, #4a4f5a);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 11px;
+}
+.stack-val { color: var(--text-2, #4a4f5a); }
+
+.hub-guide {
+  background: var(--cream-50, #faf7f1);
+  border-left: 4px solid var(--text, #111418);
+  padding: var(--space-4, 20px);
+  border-radius: var(--radius-md, 12px);
+}
+.hub-guide-list {
+  margin: 0;
+  padding-left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+}
+.hub-guide-list li { line-height: var(--leading-normal, 1.5); }
+
+.hub-foot {
+  text-align: center;
+  padding: var(--space-7, 48px) var(--space-5, 24px);
+  border-top: 1px solid var(--border, #eee);
+  background: var(--surface-2, #fff);
+}
+.strategic-q {
+  font-style: italic;
+  font-size: var(--fs-h3, 19px);
+  color: var(--text-2, #4a4f5a);
+  margin: 0 0 var(--space-3, 12px);
+}
+.footer-meta {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: var(--fs-small, 12px);
+  color: var(--text-3, #888);
+}
+
+/* ── Storybook (components.html) ───────────────────────── */
+.sb-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3, 12px);
+  padding: var(--space-4, 20px) var(--space-5, 24px);
+  background: var(--surface-2, #fff);
+  border-bottom: 1px solid var(--border, #eee);
+}
+.sb-main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-5, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6, 32px);
+}
+.sb-section {
+  background: var(--surface-2, #fff);
+  border: 1px solid var(--border, #eee);
+  border-radius: var(--radius-md, 12px);
+  padding: var(--space-5, 24px);
+}
+.sb-section-head {
+  margin-bottom: var(--space-4, 16px);
+  padding-bottom: var(--space-3, 12px);
+  border-bottom: 1px solid var(--border, #eee);
+}
+.sb-sub {
+  font-size: var(--fs-body, 15px);
+  color: var(--text-3, #888);
+  margin: 4px 0 0;
+}
+.sb-row {
+  display: flex;
+  gap: var(--space-3, 12px);
+  flex-wrap: wrap;
+  align-items: center;
+  padding: var(--space-3, 12px) 0;
+  border-bottom: 1px dashed var(--border, #eee);
+}
+.sb-row:last-child { border-bottom: 0; }
+.sb-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+}
+.sb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--space-3, 12px);
+}
+.sb-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--surface-3, #e7e3d9);
+  color: var(--text-2, #4a4f5a);
+  font-size: 11px;
+  font-weight: var(--fw-semibold, 600);
+  border-radius: 99px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.sb-swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--space-2, 8px);
+}
+
+/* ── Logo mark standalone (hub.html, hors drawer) ──────── */
+.logo-mark {
+  width: 28px; height: 28px;
+  background: var(--rose, #d96d3e);
+  border-radius: 8px;
+  display: grid; place-items: center;
+  color: #fff;
+  font-weight: var(--fw-extrabold, 800);
+  font-size: 14px;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+
+/* Sur hub.html le logo est plus grand (48px via inline style) */
+.hub-top .logo-mark { width: 48px; height: 48px; font-size: 24px; }
+
+/* ── Hub-top header layout (override pour matcher Claude Design) ── */
+.hub-top {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4, 16px);
+  padding: var(--space-4, 16px) var(--space-6, 32px);
+  background: var(--surface-2, #fff);
+  border-bottom: 1px solid var(--border, #eee);
+}
+
+.hub-title {
+  font-size: var(--fs-h2, 24px);
+  font-weight: var(--fw-extrabold, 800);
+  margin: 0;
+  letter-spacing: var(--tracking-tight, -0.02em);
+  line-height: 1.2;
+  color: var(--text, #111);
+}
+.hub-title-thin {
+  font-weight: var(--fw-light, 300);
+  color: var(--text-3, #888);
+}
+.hub-sub {
+  font-size: var(--fs-small, 13px);
+  color: var(--text-3, #6b7280);
+  margin: 2px 0 0;
+}
+
+/* btn lg (gros bouton hero) */
+.btn.lg {
+  padding: 12px 20px;
+  font-size: var(--fs-body, 15px);
+  font-weight: var(--fw-semibold, 600);
+}
+
+/* hub-card-num plus visible */
+.hub-card-num {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 12px;
+  font-weight: var(--fw-bold, 700);
+  color: var(--text-3, #888);
+  font-variant-numeric: tabular-nums;
+}

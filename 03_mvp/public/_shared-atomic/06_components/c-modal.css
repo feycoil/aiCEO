@@ -1,0 +1,144 @@
+/**
+ * c-modal.css — Organism Modal (dialogue centre)
+ *
+ * Compose :
+ *   .c-modal-backdrop
+ *     .c-modal
+ *       .c-modal__header  (titre + close)
+ *       .c-modal__body
+ *       .c-modal__footer  (actions)
+ *
+ * Tailles :
+ *   .c-modal--sm  (400px)
+ *   .c-modal--md  (640px default)
+ *   .c-modal--lg  (880px)
+ *
+ * Etats :
+ *   .c-modal-backdrop.is-open
+ *
+ * Accessibilite :
+ *   - role="dialog" + aria-modal="true"
+ *   - aria-labelledby pointe vers .c-modal__title
+ *   - Focus trap + Escape ferme + premier focus sur 1er element interactif
+ *   - Restaure focus sur trigger a la fermeture
+ *   - <dialog> natif preferable si support OK
+ */
+
+.c-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: var(--modal-backdrop-bg);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  z-index: var(--z-modal);
+  animation: c-modal-fade-in var(--duration-modal) var(--ease-out);
+}
+
+.c-modal-backdrop.is-open { display: flex; }
+
+.c-modal {
+  background-color: var(--modal-bg);
+  border-radius: var(--modal-radius);
+  box-shadow: var(--modal-shadow);
+  width: 100%;
+  max-width: var(--modal-width-md);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: c-modal-slide-up var(--duration-modal) var(--ease-out);
+}
+
+.c-modal--sm { max-width: var(--modal-width-sm); }
+.c-modal--lg { max-width: var(--modal-width-lg); }
+
+.c-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--modal-padding);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.c-modal__title {
+  font-family: var(--font-sans);
+  font-size: var(--text-h3);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  margin: 0;
+  line-height: var(--leading-tight);
+}
+
+.c-modal__close {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.c-modal__close:hover {
+  background-color: var(--color-surface-3);
+  color: var(--color-text);
+}
+
+.c-modal__close:focus-visible {
+  outline: 0;
+  box-shadow: var(--ring-focus);
+}
+
+.c-modal__body {
+  flex: 1;
+  padding: var(--modal-padding);
+  overflow-y: auto;
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  color: var(--color-text);
+  line-height: var(--leading-normal);
+}
+
+.c-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--modal-padding);
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  flex-shrink: 0;
+}
+
+@keyframes c-modal-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes c-modal-slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-modal-backdrop,
+  .c-modal { animation: none; }
+}
+
+/* Mobile: full-width */
+@media (max-width: 640px) {
+  .c-modal-backdrop { padding: 0; align-items: flex-end; }
+  .c-modal {
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+}

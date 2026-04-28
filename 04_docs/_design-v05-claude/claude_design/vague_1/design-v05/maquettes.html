@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>aiCEO v0.5 — Maquettes</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css"/>
+<style>
+  body { background: var(--bg); color: var(--text); font-family: var(--font-sans); margin: 0; padding: 40px 32px; min-height: 100vh; }
+  .wrap { max-width: 1280px; margin: 0 auto; background: var(--surface); border-radius: 28px; padding: 48px 56px; box-shadow: var(--shadow-app); }
+  .hero { padding-bottom: 28px; border-bottom: 1px dashed var(--border); margin-bottom: 32px; }
+  .script { font-family: var(--font-script); font-size: 56px; line-height: 1; color: var(--rose); margin-bottom: 8px; }
+  h1 { font: 800 36px/1.1 var(--font-sans); letter-spacing: -.035em; margin: 0 0 12px; max-width: 22ch; text-wrap: balance; }
+  .sub { font: 500 15px/1.55 var(--font-sans); color: var(--text-2); max-width: 64ch; margin: 0; }
+
+  h2 { font: 800 12px var(--font-sans); text-transform: uppercase; letter-spacing: .12em; color: var(--text-3); margin: 28px 0 14px; padding: 0 4px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 8px; }
+  .card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; text-decoration: none; color: var(--text); display: block; transition: all .15s; }
+  .card:hover { border-color: var(--text); transform: translateY(-1px); box-shadow: var(--shadow-card); }
+  .card .num { font: 800 11px var(--font-mono); color: var(--text-3); letter-spacing: .04em; }
+  .card .t { font: 800 17px var(--font-sans); letter-spacing: -.02em; margin: 6px 0; }
+  .card .m { font: 500 12.5px/1.5 var(--font-sans); color: var(--text-2); }
+  .card.hot { border-left: 3px solid var(--rose); }
+  .card.warm { border-left: 3px solid var(--amber); }
+  .card.cool { border-left: 3px solid var(--sky); }
+  .card.calm { border-left: 3px solid var(--violet); }
+
+  .footer { margin-top: 36px; padding-top: 18px; border-top: 1px dashed var(--border); display: flex; justify-content: space-between; font: 500 11px var(--font-mono); color: var(--text-3); letter-spacing: .04em; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="script">aiCEO v0.5</div>
+    <h1>Maquettes UX — produit local, mono-utilisateur, voix soignée.</h1>
+    <p class="sub">13 écrans HTML statiques explorant le cockpit, les rituels, les listes, et l'assistant. Cohérent avec un design system unique : Fira Sans / Aubrielle script / Sol Thin · accents rose-coral, amber, sky, emerald, violet · jamais de gradients candy.</p>
+  </div>
+
+  <h2>Rituels — le cœur du produit</h2>
+  <div class="grid">
+    <a class="card hot" href="index.html"><div class="num">01 · cockpit</div><div class="t">Cockpit unifié</div><div class="m">Page d'accueil. Greeting Aubrielle, 3 Big Rocks S17, double rituel matin/soir, alertes, KPIs flat, streak, agenda, suggestions IA.</div></a>
+    <a class="card hot" href="arbitrage.html"><div class="num">02 · arbitrage</div><div class="t">Arbitrage matinal</div><div class="m">Split file/fiche. Verdict en 1 geste (1–5). Mode délégation pré-rédigé. États loading / empty (terminé) / error.</div></a>
+    <a class="card calm" href="evening.html"><div class="num">03 · soir</div><div class="t">Boucle 18-20h</div><div class="m">3 étapes : clôtures du jour, top 3 demain, humeur + streak. Hero greeting violet, streak en Sol Thin 110px.</div></a>
+    <a class="card warm" href="revues.html"><div class="num">04 · revue</div><div class="t">Revue hebdo S16</div><div class="m">Bilan hebdo généré dimanche. Big Rocks tenus/manqués, humeur 7j, charge par jour, donut sociétés, à reporter.</div></a>
+  </div>
+
+  <h2>Travail — flux quotidien</h2>
+  <div class="grid">
+    <a class="card cool" href="taches.html"><div class="num">05 · tâches</div><div class="t">Tâches & délégations</div><div class="m">Table dense. Filtres (à moi / déléguées / Big Rocks). Échéances colorisées, statuts pastilles, déléguées Lamiae/Karim/Naïma.</div></a>
+    <a class="card cool" href="agenda.html"><div class="num">06 · agenda</div><div class="t">Agenda hebdo</div><div class="m">Vue semaine 5 jours. Événements colorisés par société. Now-bar, conflits détectés, plages 90 min libres.</div></a>
+    <a class="card calm" href="assistant.html"><div class="num">07 · assistant</div><div class="t">Assistant</div><div class="m">Conversationnel. Action cards 1-clic intégrées. Panneau contexte (Big Rock, sources, personnes). Composer ⌘⏎.</div></a>
+  </div>
+
+  <h2>Registres — vue structurée</h2>
+  <div class="grid">
+    <a class="card" href="groupes.html"><div class="num">08 · sociétés</div><div class="t">4 sociétés du groupe</div><div class="m">AMP / SCIS / ETIC / ITH. Cards dossier avec stats Sol Thin, prochain jalon, accès projets.</div></a>
+    <a class="card" href="projets.html"><div class="num">09 · projets</div><div class="t">Projets · liste</div><div class="m">Table 10 projets actifs. Avancement barres, alertes Big Rock, pilote, échéance.</div></a>
+    <a class="card" href="projet.html"><div class="num">10 · projet · fiche</div><div class="t">Pamandzi 09 phase 2</div><div class="m">Hero + jauge Sol Thin. Tabs (vue/tâches/décisions/contacts/docs/journal). Timeline jalons. Side : équipe, décisions, indicateurs.</div></a>
+    <a class="card" href="contacts.html"><div class="num">11 · contacts</div><div class="t">Annuaire</div><div class="m">Cards 3 colonnes. 62 actifs. Filtres internes/externes/banque/chantier. Dernier échange + tâches/projets liés.</div></a>
+    <a class="card" href="decisions.html"><div class="num">12 · décisions</div><div class="t">Décisions ouvertes</div><div class="m">Kanban 3 colonnes (ouvertes / attente info / tranchées S16). Options listées, ancienneté, dormantes signalées.</div></a>
+  </div>
+
+  <div class="footer">
+    <span>aiCEO v0.5 — local-first, mono-user, voix soignée</span>
+    <span>13 maquettes · Fira Sans · Aubrielle · Sol Thin</span>
+  </div>
+</div>
+</body>
+</html>

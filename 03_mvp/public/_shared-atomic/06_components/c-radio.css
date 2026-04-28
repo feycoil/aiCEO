@@ -1,0 +1,73 @@
+/**
+ * c-radio — Radio button (groupes de choix exclusifs)
+ * Source : 06-composants-catalogue.md (S6.1.2)
+ */
+
+.c-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  user-select: none;
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  color: var(--color-text);
+}
+
+.c-radio__input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.c-radio__circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: 50%;
+  background: var(--color-surface-2);
+  transition: border-color var(--duration-hover) var(--ease-out);
+  flex-shrink: 0;
+}
+
+.c-radio__circle::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-brand);
+  opacity: 0;
+  transition: opacity var(--duration-hover) var(--ease-out);
+}
+
+.c-radio__input:checked + .c-radio__circle {
+  border-color: var(--color-brand);
+}
+.c-radio__input:checked + .c-radio__circle::after {
+  opacity: 1;
+}
+
+.c-radio__input:focus-visible + .c-radio__circle {
+  box-shadow: var(--ring-focus);
+}
+
+.c-radio:has(.c-radio__input:disabled),
+.c-radio.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Group helper */
+.c-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.c-radio-group--horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}

@@ -1,0 +1,99 @@
+/**
+ * c-empty-state.css — Organism EmptyState (zero-state friendly)
+ *
+ * Pattern : icone illustration + titre + message + CTA primaire (+ secondaire optionnel).
+ *
+ * Variants :
+ *   .c-empty-state              (default)
+ *   .c-empty-state--inline      (compact dans une carte)
+ *   .c-empty-state--coaching    (ton coaching v0.6 — script font)
+ *
+ * Accessibilite :
+ *   - <h2> ou <h3> selon contexte pour titre
+ *   - role="status" si etat dynamique (filtres ne renvoient rien)
+ */
+
+.c-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-7) var(--space-5);
+  gap: var(--space-3);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.c-empty-state__illustration {
+  width: 72px;
+  height: 72px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-surface-3);
+  border-radius: var(--radius-pill);
+  color: var(--color-text-3);
+  margin-bottom: var(--space-2);
+}
+
+.c-empty-state__illustration svg {
+  width: var(--icon-xl);
+  height: var(--icon-xl);
+}
+
+.c-empty-state__title {
+  font-family: var(--font-sans);
+  font-size: var(--text-h3);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  margin: 0;
+  line-height: var(--leading-snug);
+}
+
+.c-empty-state__message {
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  color: var(--color-text-2);
+  margin: 0;
+  line-height: var(--leading-normal);
+}
+
+.c-empty-state__actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+/* Inline variant */
+.c-empty-state--inline {
+  padding: var(--space-5) var(--space-4);
+  gap: var(--space-2);
+}
+
+.c-empty-state--inline .c-empty-state__illustration {
+  width: 48px;
+  height: 48px;
+}
+
+.c-empty-state--inline .c-empty-state__title {
+  font-size: var(--text-md);
+}
+
+.c-empty-state--inline .c-empty-state__message {
+  font-size: var(--text-sm);
+}
+
+/* Coaching variant (v0.6 pattern) */
+.c-empty-state--coaching .c-empty-state__title {
+  font-family: var(--font-script);
+  font-size: var(--text-display-sm);
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--tracking-display);
+  color: var(--color-coaching);
+}
+
+.c-empty-state--coaching .c-empty-state__illustration {
+  background-color: var(--color-coaching-bg);
+  color: var(--color-coaching);
+}

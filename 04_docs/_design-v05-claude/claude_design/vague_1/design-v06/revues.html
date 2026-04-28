@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="fr" data-locale="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>aiCEO — Revues · Semaine du 22 au 28 avril</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css?v=2">
+<link rel="stylesheet" href="_shared/app.css?v=2">
+<link rel="stylesheet" href="_shared/tweaks.css?v=2">
+</head>
+<body data-route="revues">
+<div id="icons-host" hidden></div>
+<a class="skip-link" href="#main-content">Aller au contenu</a>
+
+<div class="app" data-drawer="expanded">
+  <aside class="drawer" aria-label="Navigation principale">
+    <div class="drawer-logo">
+      <span class="logo-mark">a</span>
+      <span class="logo-text">aiCEO</span>
+    </div>
+    <button class="drawer-tenant" aria-label="Changer d'espace">
+      <span class="tenant-mark" aria-hidden="true">A</span>
+      <span class="tenant-name">Aubrielle Hayes</span>
+      <svg class="ico" width="14" height="14" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+    </button>
+    <nav class="drawer-nav" aria-label="Sections">
+      <div class="drawer-section">Pilotage</div>
+      <a href="index.html" class="drawer-item" data-nav="home"><svg class="ico" width="18" height="18"><use href="#i-home"/></svg><span class="label">Cockpit</span></a>
+      <a href="arbitrage.html" class="drawer-item" data-nav="arbitrage"><svg class="ico" width="18" height="18"><use href="#i-arbitrage"/></svg><span class="label">Arbitrage</span><span class="badge">3</span></a>
+      <a href="evening.html" class="drawer-item" data-nav="evening"><svg class="ico" width="18" height="18"><use href="#i-evening"/></svg><span class="label">Soirée</span></a>
+      <div class="drawer-section">Travail</div>
+      <a href="projets.html" class="drawer-item" data-nav="projects"><svg class="ico" width="18" height="18"><use href="#i-projects"/></svg><span class="label">Projets</span></a>
+      <a href="taches.html" class="drawer-item" data-nav="actions"><svg class="ico" width="18" height="18"><use href="#i-actions"/></svg><span class="label">Actions</span><span class="badge">12</span></a>
+      <a href="agenda.html" class="drawer-item" data-nav="agenda"><svg class="ico" width="18" height="18"><use href="#i-clock"/></svg><span class="label">Agenda</span></a>
+      <a href="assistant.html" class="drawer-item" data-nav="assistant"><svg class="ico" width="18" height="18"><use href="#i-sparkle"/></svg><span class="label">Assistant</span></a>
+      <a href="equipe.html" class="drawer-item" data-nav="people"><svg class="ico" width="18" height="18"><use href="#i-people"/></svg><span class="label">Équipe</span></a>
+      <div class="drawer-section">Capital</div>
+      <a href="connaissance.html" class="drawer-item" data-nav="knowledge"><svg class="ico" width="18" height="18"><use href="#i-knowledge"/></svg><span class="label">Connaissance</span></a>
+      <a href="coaching.html" class="drawer-item" data-nav="coaching"><svg class="ico" width="18" height="18"><use href="#i-coaching"/></svg><span class="label">Coaching</span></a>
+      <a href="revues.html" class="drawer-item is-active" data-nav="revues" aria-current="page"><svg class="ico" width="18" height="18"><use href="#i-folder"/></svg><span class="label">Revues</span></a>
+      <a href="decisions.html" class="drawer-item" data-nav="decisions"><svg class="ico" width="18" height="18"><use href="#i-target"/></svg><span class="label">Décisions</span></a>
+    </nav>
+    <div class="drawer-footer">
+      <button class="drawer-locale" aria-label="Langue">
+        <svg class="ico" width="16" height="16"><use href="#i-globe"/></svg>
+        <span class="locale-name">Français</span>
+      </button>
+      <a href="settings.html" class="drawer-item" data-nav="settings">
+        <svg class="ico" width="18" height="18"><use href="#i-settings"/></svg>
+        <span class="label">Réglages</span>
+      </a>
+      <button class="drawer-user" aria-label="Profil">
+        <span class="avatar md" data-house="solstice">AH</span>
+        <span class="meta">
+          <span class="name">Aubrielle Hayes</span>
+          <span class="role">Fondatrice · CEO</span>
+        </span>
+      </button>
+    </div>
+
+    <button class="drawer-collapse-btn" aria-label="Réduire le menu">
+      <svg class="ico" width="14" height="14"><use href="#i-chevron-left"/></svg>
+    </button>
+  </aside>
+
+  <main class="app-main" id="main-content">
+    <header class="topbar">
+      <div class="topbar-title-block">
+        <div class="topbar-title-eyebrow">Revue hebdomadaire</div>
+        <h1 class="section-title">Du 22 au 28 avril</h1>
+      </div>
+      <div class="topbar-cluster u-hidden-mobile">
+        <div class="seg" role="tablist">
+          <button class="seg-btn is-active">Semaine</button>
+          <button class="seg-btn">Mois</button>
+          <button class="seg-btn">Trimestre</button>
+        </div>
+        <button class="btn ghost"><svg class="ico" width="14" height="14"><use href="#i-archive"/></svg>Archives</button>
+      </div>
+    </header>
+
+    <!-- Hero recap -->
+    <section class="card revue-hero" style="margin-block: var(--space-4)">
+      <div class="revue-hero-eyebrow">
+        <span class="dot" style="background:var(--rose-600)"></span>
+        Posture de la semaine
+      </div>
+      <h2 class="card-title revue-hero-quote">« J'ai tranché la spec Northwind sans demander 4 avis. C'était la bonne semaine pour ça. »</h2>
+      <p class="revue-hero-meta u-text-2">Capté lundi 28 — 17:42 · Soirée</p>
+    </section>
+
+    <!-- Stats grid -->
+    <section class="revue-stats">
+      <div class="card revue-stat">
+        <span class="u-text-3 small">Décisions tranchées</span>
+        <div class="revue-stat-row">
+          <strong class="u-tnum revue-stat-value">7</strong>
+          <span class="trend up">+2</span>
+        </div>
+        <span class="u-text-3 small">vs semaine dernière</span>
+      </div>
+      <div class="card revue-stat">
+        <span class="u-text-3 small">Top‑3 honorés</span>
+        <div class="revue-stat-row">
+          <strong class="u-tnum revue-stat-value">12<span class="frac">/15</span></strong>
+          <span class="trend up">80 %</span>
+        </div>
+        <span class="u-text-3 small">3 reportés à mardi</span>
+      </div>
+      <div class="card revue-stat">
+        <span class="u-text-3 small">Deep work</span>
+        <div class="revue-stat-row">
+          <strong class="u-tnum revue-stat-value">9h</strong>
+          <span class="trend down">−2h</span>
+        </div>
+        <span class="u-text-3 small">visé 12h</span>
+      </div>
+      <div class="card revue-stat">
+        <span class="u-text-3 small">Soirées tenues</span>
+        <div class="revue-stat-row">
+          <strong class="u-tnum revue-stat-value">4<span class="frac">/5</span></strong>
+          <span class="trend flat">=</span>
+        </div>
+        <span class="u-text-3 small">vendredi sauté</span>
+      </div>
+    </section>
+
+    <div class="revue-cols" style="margin-block-start: var(--space-5)">
+      <!-- LEFT col -->
+      <div class="revue-col">
+        <!-- Wins -->
+        <section class="card revue-section">
+          <header class="revue-section-head">
+            <h3 class="card-title">Ce qui a bougé</h3>
+            <span class="u-text-3 small">3 victoires</span>
+          </header>
+          <ul class="revue-list" role="list">
+            <li class="revue-item" data-house="northwind">
+              <span class="revue-item-marker">✓</span>
+              <div class="revue-item-body">
+                <h4 class="revue-item-title">Spec Northwind v3 — tranchée</h4>
+                <p class="u-text-2 small">Tu hésitais depuis 11 jours. Mardi à 09h47, c'était écrit. L'équipe attend depuis hier.</p>
+                <span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span>
+              </div>
+            </li>
+            <li class="revue-item" data-house="solstice">
+              <span class="revue-item-marker">✓</span>
+              <div class="revue-item-body">
+                <h4 class="revue-item-title">Round 2 négo Solstice — bouclé</h4>
+                <p class="u-text-2 small">Marco a accepté le delta sur la valuation. Round 3 prévu mardi prochain.</p>
+                <span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span>
+              </div>
+            </li>
+            <li class="revue-item" data-house="helix">
+              <span class="revue-item-marker">✓</span>
+              <div class="revue-item-body">
+                <h4 class="revue-item-title">3 entretiens utilisateur Helix</h4>
+                <p class="u-text-2 small">Synthèse à faire jeudi prochain. Premier signal : le segment B est plus mûr que prévu.</p>
+                <span class="pill house" data-house="helix"><span class="dot"></span>Helix</span>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <!-- Frictions -->
+        <section class="card revue-section">
+          <header class="revue-section-head">
+            <h3 class="card-title">Ce qui a coincé</h3>
+            <span class="u-text-3 small">2 frictions notées</span>
+          </header>
+          <ul class="revue-list" role="list">
+            <li class="revue-item friction">
+              <span class="revue-item-marker">!</span>
+              <div class="revue-item-body">
+                <h4 class="revue-item-title">Vendredi : 6 réunions, 0 deep work</h4>
+                <p class="u-text-2 small">Tu as accepté trois créneaux que tu aurais refusés en début de semaine. Pattern à observer.</p>
+              </div>
+            </li>
+            <li class="revue-item friction">
+              <span class="revue-item-marker">!</span>
+              <div class="revue-item-body">
+                <h4 class="revue-item-title">RFP Hôpital Sud — encore reportée</h4>
+                <p class="u-text-2 small">Troisième semaine consécutive. Question vraie : est‑ce qu'on y va, ou on dit non ?</p>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </div>
+
+      <!-- RIGHT col -->
+      <div class="revue-col">
+        <!-- Question travaillée -->
+        <section class="card revue-section accent">
+          <header class="revue-section-head">
+            <h3 class="card-title">Question travaillée</h3>
+            <span class="pill"><span class="dot" style="background:var(--rose-600)"></span>Coaching</span>
+          </header>
+          <blockquote class="revue-question">
+            « Qu'est‑ce que tu protégerais si tu n'avais que 3 heures de bureau cette semaine ? »
+          </blockquote>
+          <p class="u-text-2 small revue-question-meta">Posée lundi 22 · Reformulée mercredi · Toujours ouverte.</p>
+          <div class="revue-question-actions">
+            <button class="btn ghost small">Marquer comme tranchée</button>
+            <button class="btn ghost small">Reformuler</button>
+          </div>
+        </section>
+
+        <!-- Posture / Coaching -->
+        <section class="card revue-section">
+          <header class="revue-section-head">
+            <h3 class="card-title">Mouvement de posture</h3>
+          </header>
+          <div class="posture-track">
+            <div class="posture-axis">
+              <span class="posture-end">Réagit</span>
+              <div class="posture-line">
+                <div class="posture-marker before" style="left: 28%"><span>S‑1</span></div>
+                <div class="posture-marker after" style="left: 56%"><span>Cette semaine</span></div>
+              </div>
+              <span class="posture-end">Décide</span>
+            </div>
+          </div>
+          <p class="u-text-2 small" style="margin-block-start:var(--space-3)">Tu as gagné un cran cette semaine. Trois décisions ont été prises sans demander d'avis externe. C'est notable.</p>
+        </section>
+
+        <!-- Cap pour la semaine -->
+        <section class="card revue-section">
+          <header class="revue-section-head">
+            <h3 class="card-title">Cap pour la semaine prochaine</h3>
+          </header>
+          <ol class="revue-cap" type="1">
+            <li><strong>Trancher le RFP Hôpital Sud.</strong> Oui ou non. Avant mercredi.</li>
+            <li><strong>Protéger 12h de deep work.</strong> Bloquer mardi et jeudi matin sans exception.</li>
+            <li><strong>Round 3 Solstice.</strong> Préparer mardi, exécuter mercredi.</li>
+          </ol>
+          <button class="btn primary small" style="margin-block-start:var(--space-3)"><svg class="ico" width="14" height="14"><use href="#i-arrow-right"/></svg>Reporter ces caps dans la semaine</button>
+        </section>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <section class="card revue-section" style="margin-block-start: var(--space-5)">
+      <header class="revue-section-head">
+        <h3 class="card-title">La semaine, en lignes</h3>
+        <span class="u-text-3 small">17 entrées du journal</span>
+      </header>
+      <div class="revue-timeline">
+        <div class="rt-day">
+          <div class="rt-day-head"><span class="rt-day-name">Lun</span><span class="rt-day-date">22</span></div>
+          <div class="rt-events">
+            <div class="rt-event win" data-house="northwind">Northwind v3 — tranchée</div>
+            <div class="rt-event">Top‑3 ✓</div>
+          </div>
+        </div>
+        <div class="rt-day">
+          <div class="rt-day-head"><span class="rt-day-name">Mar</span><span class="rt-day-date">23</span></div>
+          <div class="rt-events">
+            <div class="rt-event" data-house="solstice">Round 2 Solstice</div>
+            <div class="rt-event">Top‑3 ✓</div>
+          </div>
+        </div>
+        <div class="rt-day">
+          <div class="rt-day-head"><span class="rt-day-name">Mer</span><span class="rt-day-date">24</span></div>
+          <div class="rt-events">
+            <div class="rt-event" data-house="helix">3 entretiens Helix</div>
+            <div class="rt-event">Top‑3 ✓</div>
+          </div>
+        </div>
+        <div class="rt-day">
+          <div class="rt-day-head"><span class="rt-day-name">Jeu</span><span class="rt-day-date">25</span></div>
+          <div class="rt-events">
+            <div class="rt-event">Comité</div>
+            <div class="rt-event friction">Top‑3 reporté</div>
+          </div>
+        </div>
+        <div class="rt-day">
+          <div class="rt-day-head"><span class="rt-day-name">Ven</span><span class="rt-day-date">26</span></div>
+          <div class="rt-events">
+            <div class="rt-event friction">6 réunions</div>
+            <div class="rt-event friction">Soirée sautée</div>
+          </div>
+        </div>
+        <div class="rt-day weekend">
+          <div class="rt-day-head"><span class="rt-day-name">Sam</span><span class="rt-day-date">27</span></div>
+          <div class="rt-events"><div class="rt-event muted">Off</div></div>
+        </div>
+        <div class="rt-day weekend">
+          <div class="rt-day-head"><span class="rt-day-name">Dim</span><span class="rt-day-date">28</span></div>
+          <div class="rt-events"><div class="rt-event muted">Off</div></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="app-footer">
+      <p class="strategic-q">Une revue, c'est un miroir. Que voyez‑vous quand vous regardez la semaine de loin ?</p>
+      <div class="footer-meta"><span>aiCEO v0.5</span><span>·</span><span>Revues</span></div>
+    </footer>
+  </main>
+</div>
+
+<nav class="bottom-tab-nav">
+  <a href="index.html" class="bottom-tab"><svg class="ico"><use href="#i-home"/></svg><span>Cockpit</span></a>
+  <a href="arbitrage.html" class="bottom-tab"><svg class="ico"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
+  <button class="bottom-tab fab-trigger"><span class="fab-circle"><svg class="ico"><use href="#i-mic"/></svg></span><span style="margin-top:30px">Capter</span></button>
+  <a href="revues.html" class="bottom-tab is-active"><svg class="ico"><use href="#i-folder"/></svg><span>Revues</span></a>
+  <a href="evening.html" class="bottom-tab"><svg class="ico"><use href="#i-evening"/></svg><span>Soirée</span></a>
+</nav>
+
+<style>
+.revue-hero {
+  padding: var(--space-6);
+  background: linear-gradient(135deg, var(--surface-2), var(--surface));
+  border-inline-start: 3px solid var(--rose-600);
+}
+.revue-hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: var(--fs-xs); font-weight: var(--fw-bold);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-3);
+  margin-block-end: var(--space-3);
+}
+.revue-hero-eyebrow .dot { width: 8px; height: 8px; border-radius: 50%; }
+.revue-hero-quote {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.6vw, 32px);
+  font-weight: var(--fw-medium);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-wrap: pretty;
+}
+.revue-hero-meta { margin-block-start: var(--space-3); font-size: var(--fs-sm); }
+
+.revue-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+}
+.revue-stat { padding: var(--space-4); display: flex; flex-direction: column; gap: 6px; }
+.revue-stat-row { display: flex; align-items: baseline; gap: 8px; }
+.revue-stat-value {
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-bold);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.revue-stat-value .frac { font-size: 0.5em; color: var(--text-3); font-weight: var(--fw-medium); }
+.trend {
+  font-size: 11px; font-weight: var(--fw-extrabold);
+  padding: 2px 6px;
+  border-radius: var(--radius-pill);
+  font-variant-numeric: tabular-nums;
+}
+.trend.up { background: color-mix(in oklch, var(--emerald) 15%, transparent); color: var(--emerald-700, #047857); }
+.trend.down { background: var(--rose-50); color: var(--rose-800); }
+.trend.flat { background: var(--surface-3); color: var(--text-2); }
+
+.revue-cols { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+.revue-col { display: flex; flex-direction: column; gap: var(--space-4); }
+
+.revue-section { padding: var(--space-5); }
+.revue-section.accent {
+  background: var(--charcoal-50);
+  border: 1px solid var(--border);
+}
+.revue-section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-block-end: var(--space-3);
+  padding-block-end: var(--space-2);
+  border-block-end: 1px solid var(--border);
+}
+
+.revue-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+.revue-item {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--surface-2);
+  border-radius: var(--radius-md);
+  border-inline-start: 3px solid transparent;
+}
+.revue-item[data-house="northwind"] { border-inline-start-color: var(--house-northwind); }
+.revue-item[data-house="solstice"]  { border-inline-start-color: var(--house-solstice); }
+.revue-item[data-house="helix"]     { border-inline-start-color: var(--house-helix); }
+.revue-item.friction { border-inline-start-color: var(--rose-600); background: var(--rose-50); }
+.revue-item-marker {
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  font-size: 12px; font-weight: var(--fw-extrabold);
+  background: var(--emerald);
+  color: white;
+}
+.revue-item.friction .revue-item-marker { background: var(--rose-600); }
+.revue-item-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semi);
+  margin: 0 0 4px;
+  letter-spacing: var(--tracking-card);
+}
+.revue-item-body .pill { margin-block-start: 6px; }
+
+.revue-question {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 1.8vw, 22px);
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  margin: 0;
+  font-weight: var(--fw-medium);
+  text-wrap: pretty;
+  color: var(--text);
+  border-inline-start: 3px solid var(--rose-600);
+  padding-inline-start: var(--space-3);
+}
+.revue-question-meta { margin-block-start: var(--space-3); }
+.revue-question-actions { display: flex; gap: var(--space-2); margin-block-start: var(--space-3); }
+
+.posture-track { padding-block: var(--space-3); }
+.posture-axis {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+}
+.posture-end {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+}
+.posture-line {
+  position: relative;
+  height: 8px;
+  background: linear-gradient(to right, var(--surface-3), var(--text));
+  border-radius: var(--radius-pill);
+}
+.posture-marker {
+  position: absolute;
+  top: -6px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--text-3);
+  display: flex; align-items: center; justify-content: center;
+  transform: translateX(-50%);
+}
+.posture-marker.after {
+  border-color: var(--rose-600);
+  background: var(--rose-600);
+}
+.posture-marker span {
+  position: absolute;
+  top: 24px; left: 50%; transform: translateX(-50%);
+  font-size: 10px; font-weight: var(--fw-bold);
+  white-space: nowrap;
+  color: var(--text-3);
+}
+.posture-marker.after span { color: var(--rose-600); }
+
+.revue-cap {
+  list-style: decimal;
+  padding-inline-start: var(--space-4);
+  margin: 0;
+  display: flex; flex-direction: column; gap: var(--space-2);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+}
+.revue-cap li::marker { font-weight: var(--fw-extrabold); color: var(--rose-600); font-family: var(--font-display); }
+
+.revue-timeline {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.rt-day { background: var(--surface); padding: var(--space-3); min-height: 120px; }
+.rt-day.weekend { background: repeating-linear-gradient(45deg, var(--surface), var(--surface) 6px, var(--surface-2) 6px, var(--surface-2) 12px); opacity: 0.5; }
+.rt-day-head {
+  display: flex; align-items: baseline; gap: 6px;
+  padding-block-end: var(--space-2);
+  border-block-end: 1px solid var(--border);
+  margin-block-end: var(--space-2);
+}
+.rt-day-name { font-size: 10px; font-weight: var(--fw-extrabold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-3); }
+.rt-day-date { font-size: 14px; font-weight: var(--fw-bold); font-variant-numeric: tabular-nums; }
+.rt-events { display: flex; flex-direction: column; gap: 4px; }
+.rt-event {
+  font-size: 11px; font-weight: var(--fw-medium);
+  padding: 4px 6px;
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  border-inline-start: 2px solid var(--text);
+  line-height: 1.25;
+}
+.rt-event.win { border-inline-start-color: var(--emerald); }
+.rt-event.friction { border-inline-start-color: var(--rose-600); background: var(--rose-50); color: var(--rose-800); }
+.rt-event.muted { border-inline-start-color: var(--border-2); color: var(--text-3); font-style: italic; }
+.rt-event[data-house="northwind"] { border-inline-start-color: var(--house-northwind); }
+.rt-event[data-house="solstice"]  { border-inline-start-color: var(--house-solstice); }
+.rt-event[data-house="helix"]     { border-inline-start-color: var(--house-helix); }
+
+@media (max-width: 1100px) {
+  .revue-stats { grid-template-columns: repeat(2, 1fr); }
+  .revue-cols { grid-template-columns: 1fr; }
+  .revue-timeline { grid-template-columns: repeat(4, 1fr); }
+  .rt-day.weekend { display: none; }
+}
+@media (max-width: 600px) {
+  .revue-stats { grid-template-columns: 1fr 1fr; }
+  .revue-timeline { grid-template-columns: 1fr; }
+  .rt-day { min-height: auto; }
+}
+</style>
+
+<script src="_shared/app.js"></script>
+<script>
+fetch('_shared/icons.svg.html').then(r => r.text()).then(t => document.getElementById('icons-host').innerHTML = t);
+document.querySelectorAll('.seg-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    b.parentElement.querySelectorAll('.seg-btn').forEach(o => o.classList.remove('is-active'));
+    b.classList.add('is-active');
+  });
+});
+App.setupTweaks(
+  () => ({ scope: 'week', locale: 'fr' }),
+  {
+    render: (s) => `
+      <section class="tweaks-section">
+        <div class="tweaks-section-title">Période</div>
+        <div class="tweak-row tweak-radio">
+          <input type="radio" name="sc" id="sc-w" value="week" data-tweak="scope" ${s.scope==='week'?'checked':''}><label for="sc-w">Semaine</label>
+          <input type="radio" name="sc" id="sc-m" value="month" data-tweak="scope" ${s.scope==='month'?'checked':''}><label for="sc-m">Mois</label>
+          <input type="radio" name="sc" id="sc-q" value="quarter" data-tweak="scope" ${s.scope==='quarter'?'checked':''}><label for="sc-q">Trimestre</label>
+        </div>
+      </section>
+      <section class="tweaks-section">
+        <div class="tweaks-section-title">Langue</div>
+        <div class="tweak-row"><label>Locale</label>
+          <select data-tweak="locale">
+            <option value="fr" ${s.locale==='fr'?'selected':''}>FR</option>
+            <option value="en" ${s.locale==='en'?'selected':''}>EN</option>
+          </select>
+        </div>
+      </section>
+    `,
+    apply: (s) => { App.setLocale(s.locale); }
+  }
+);
+</script>
+</body>
+</html>

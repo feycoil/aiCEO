@@ -1,0 +1,127 @@
+/**
+ * c-stepper.css — Molecule Stepper (etapes numerotees)
+ *
+ * Usage : onboarding, wizard, processus multi-etapes.
+ *
+ * Etats par etape :
+ *   .c-stepper__step                     (default — pending)
+ *   .c-stepper__step.is-active           (etape courante)
+ *   .c-stepper__step.is-completed        (validee)
+ *   .c-stepper__step.is-disabled
+ *
+ * Variants :
+ *   .c-stepper--horizontal  (default)
+ *   .c-stepper--vertical
+ *
+ * Accessibilite :
+ *   - <ol> pour signifier ordre
+ *   - aria-current="step" sur etape active
+ */
+
+.c-stepper {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.c-stepper__step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+  position: relative;
+}
+
+.c-stepper__indicator {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-border-2);
+  background-color: var(--color-surface-2);
+  color: var(--color-text-3);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  border-radius: var(--radius-pill);
+  transition: all var(--duration-hover) var(--ease-out);
+}
+
+.c-stepper__label {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-2);
+  line-height: var(--leading-snug);
+}
+
+/* Connector line entre etapes */
+.c-stepper__step:not(:last-child)::after {
+  content: "";
+  flex: 1;
+  height: 2px;
+  background-color: var(--color-border-2);
+  margin: 0 var(--space-2);
+  align-self: center;
+  min-width: var(--space-4);
+}
+
+/* Etats */
+.c-stepper__step.is-active .c-stepper__indicator {
+  border-color: var(--color-brand);
+  background-color: var(--color-brand);
+  color: var(--color-text-on-brand);
+}
+.c-stepper__step.is-active .c-stepper__label {
+  color: var(--color-text);
+  font-weight: var(--weight-semibold);
+}
+
+.c-stepper__step.is-completed .c-stepper__indicator {
+  border-color: var(--color-success);
+  background-color: var(--color-success);
+  color: var(--color-text-on-brand);
+}
+.c-stepper__step.is-completed .c-stepper__label {
+  color: var(--color-text);
+}
+.c-stepper__step.is-completed:not(:last-child)::after {
+  background-color: var(--color-success);
+}
+
+.c-stepper__step.is-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Vertical */
+.c-stepper--vertical {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.c-stepper--vertical .c-stepper__step {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.c-stepper--vertical .c-stepper__step:not(:last-child)::after {
+  position: absolute;
+  left: 15px;
+  top: 32px;
+  bottom: -16px;
+  width: 2px;
+  height: auto;
+  margin: 0;
+  flex: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-stepper__indicator { transition: none; }
+}

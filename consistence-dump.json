@@ -1,0 +1,1012 @@
+{
+  "timestamp": "2026-04-26T12:12:02.1528521+02:00",
+  "repo": "feycoil/aiCEO",
+  "branch_current": "main",
+  "head_commit": "60c35d9",
+  "head_message": "feat(s5): sprint S5 livre - cutover production (E2E + smoke + recette ExCom + tag v0.5)",
+  "tags": [
+    {
+      "message": "v0.5 internalisee TERMINEE - 5 sprints livres en ~16h chrono - 110 kÔé¼ - 95 tests",
+      "name": "v0.5"
+    },
+    {
+      "message": "v0.5-s1 ÔÇö GO ExCom internalise + Sprint S1 livre",
+      "name": "v0.5-s1"
+    },
+    {
+      "message": "Recette CEO v0.5-s1 validee le 2026-04-25 (technique 7/7 OK, dogfood differe)",
+      "name": "v0.5-s1-recette"
+    },
+    {
+      "message": "test(s2.07): tests e2e ├ù 3 parcours (HTTP flow)",
+      "name": "v0.5-s2"
+    },
+    {
+      "message": "Sprint S3 livr├®  agenda + revues + SSE live + last-sync",
+      "name": "v0.5-s3"
+    },
+    {
+      "message": "Sprint S4 - assistant chat live + 5 pages portefeuille + polish Windows",
+      "name": "v0.5-s4"
+    }
+  ],
+  "releases": null,
+  "milestones": [
+    {
+      "due_on": null,
+      "number": 1,
+      "open": 0,
+      "html_url": "https://github.com/feycoil/aiCEO/milestone/1",
+      "state": "closed",
+      "closed": 12,
+      "title": "MVP"
+    },
+    {
+      "due_on": null,
+      "number": 2,
+      "open": 31,
+      "html_url": "https://github.com/feycoil/aiCEO/milestone/2",
+      "state": "open",
+      "closed": 14,
+      "title": "V1"
+    },
+    {
+      "due_on": null,
+      "number": 3,
+      "open": 14,
+      "html_url": "https://github.com/feycoil/aiCEO/milestone/3",
+      "state": "open",
+      "closed": 2,
+      "title": "V2"
+    },
+    {
+      "due_on": null,
+      "number": 4,
+      "open": 9,
+      "html_url": "https://github.com/feycoil/aiCEO/milestone/4",
+      "state": "open",
+      "closed": 0,
+      "title": "V3"
+    },
+    {
+      "due_on": null,
+      "number": 9,
+      "open": 0,
+      "html_url": "https://github.com/feycoil/aiCEO/milestone/9",
+      "state": "closed",
+      "closed": 24,
+      "title": "v0.5-s4"
+    },
+    {
+      "due_on": "2026-04-25T00:00:00Z",
+      "number": 7,
+      "open": 0,
+      "html_url": "https://github.com/feycoil/aiCEO/milestone/7",
+      "state": "closed",
+      "closed": 0,
+      "title": "sprint-externe-v0.5"
+    },
+    {
+      "due_on": "2026-04-25T00:00:00Z",
+      "number": 8,
+      "open": 0,
+      "html_url": "https://github.com/feycoil/aiCEO/milestone/8",
+      "state": "closed",
+      "closed": 0,
+      "title": "v0.5-s1"
+    },
+    {
+      "due_on": "2026-04-30T00:00:00Z",
+      "number": 10,
+      "open": 0,
+      "html_url": "https://github.com/feycoil/aiCEO/milestone/10",
+      "state": "closed",
+      "closed": 8,
+      "title": "v0.5-s5"
+    },
+    {
+      "due_on": "2026-06-02T00:00:00Z",
+      "number": 5,
+      "open": 0,
+      "html_url": "https://github.com/feycoil/aiCEO/milestone/5",
+      "state": "closed",
+      "closed": 11,
+      "title": "v0.5-s2"
+    },
+    {
+      "due_on": "2026-06-16T00:00:00Z",
+      "number": 6,
+      "open": 0,
+      "html_url": "https://github.com/feycoil/aiCEO/milestone/6",
+      "state": "closed",
+      "closed": 23,
+      "title": "v0.5-s3"
+    }
+  ],
+  "issues_by_milestone": {
+    "(none)": {
+      "open": [
+        {
+          "title": "[DS] Fusion v0.5 ┬À c├óbler 03_mvp sur le design system (fonts Fira Sans + consommation colors_and_type.css)",
+          "labels": "lane/design-system,type/chore,priority/high,phase/v0.5",
+          "number": 79
+        },
+        {
+          "title": "Securiser .env : rappel dans 00_BOUSSOLE/GOUVERNANCE.md",
+          "labels": "phase/mvp,lane/docs,domain/tech,type/docs,prio/P1",
+          "number": 78
+        },
+        {
+          "title": "Audit dependances MVP (depcheck + suppression inutiles)",
+          "labels": "phase/mvp,lane/mvp-backend,domain/tech,type/chore,prio/P2",
+          "number": 77
+        },
+        {
+          "title": "Couvrir cas erreur reseau dans llm.js (timeout, 429, 500)",
+          "labels": "phase/mvp,lane/mvp-backend,domain/tech,type/fix,prio/P1",
+          "number": 74
+        },
+        {
+          "title": "CONTRIBUTING.md (conventions commits, branches, reviews)",
+          "labels": "phase/mvp,lane/docs,domain/tech,type/docs,prio/P2",
+          "number": 71
+        },
+        {
+          "title": "README.md racine enrichi (getting started + archi)",
+          "labels": "phase/mvp,lane/docs,domain/tech,type/docs,prio/P1",
+          "number": 70
+        },
+        {
+          "title": "Dependabot active pour dependances npm",
+          "labels": "phase/mvp,lane/infra,domain/tech,type/chore,prio/P1",
+          "number": 69
+        },
+        {
+          "title": "CI GitHub Actions : lint + format + audit npm",
+          "labels": "phase/mvp,lane/infra,domain/tech,type/chore,prio/P1",
+          "number": 68
+        },
+        {
+          "title": "Logging structure rotatif (fichier + JSON)",
+          "labels": "phase/mvp,lane/mvp-backend,domain/tech,type/chore,prio/P1",
+          "number": 66
+        },
+        {
+          "title": "Tests unitaires backend MVP (llm/drafts/arbitrage/emails-context)",
+          "labels": "phase/mvp,lane/mvp-backend,domain/tech,type/chore,prio/P2",
+          "number": 65
+        },
+        {
+          "title": "Fix : reselection des taches differees apres reload",
+          "labels": "phase/mvp,lane/app-web,domain/core,type/fix,prio/P1",
+          "number": 50
+        },
+        {
+          "title": "Source-link dans le MVP backend (/api/arbitrage)",
+          "labels": "phase/mvp,lane/mvp-backend,domain/ia,type/feat,prio/P1",
+          "number": 48
+        },
+        {
+          "title": "Integrer le calendrier Outlook dans l'arbitrage matinal",
+          "labels": "phase/mvp,lane/mvp-backend,domain/ia,type/feat,prio/P1",
+          "number": 47
+        },
+        {
+          "title": "[F17] Migration SolidJS",
+          "labels": "lane/mvp-backend,domain/tech,type/epic,type/research,prio/P2,needs-research",
+          "number": 43
+        },
+        {
+          "title": "[F42] Kill switch copilote",
+          "labels": "phase/mvp,lane/mvp-backend,domain/ia,type/epic,prio/P0,quick-win",
+          "number": 11
+        },
+        {
+          "title": "[F9] Tracabilite minimale",
+          "labels": "phase/mvp,lane/mvp-backend,domain/ia,type/epic,prio/P0",
+          "number": 10
+        },
+        {
+          "title": "[F7] Copilote reactif (chat)",
+          "labels": "phase/mvp,lane/mvp-backend,domain/ia,type/epic,prio/P0",
+          "number": 8
+        },
+        {
+          "title": "[Epic] Infrastructure & DX",
+          "labels": "lane/infra,domain/tech,type/epic",
+          "number": 1
+        }
+      ],
+      "closed": []
+    },
+    "v0.5-s5": {
+      "open": [],
+      "closed": [
+        {
+          "title": "[S5.07] ONBOARDING-CEO-PAIR.md mis a jour avec apprentissages reels v0.5",
+          "labels": "lane/docs,type/docs,priority/P1,owner/pmo,sprint/s5,phase/v0.5-s5",
+          "number": 166
+        },
+        {
+          "title": "[S5.06] ADR v0.5 internalisee terminee + ouverture phase V1",
+          "labels": "lane/docs,priority/P0,owner/pmo,type/adr,sprint/s5,phase/v0.5-s5",
+          "number": 165
+        },
+        {
+          "title": "[S5.05] Tag v0.5 final + GitHub Release synthese 4 sprints",
+          "labels": "lane/docs,type/docs,priority/P0,owner/pmo,sprint/s5,phase/v0.5-s5",
+          "number": 164
+        },
+        {
+          "title": "[S5.04] Recette ExCom v0.5 (RECETTE-EXCOM-v0.5.md + scenario demo 30 min)",
+          "labels": "lane/docs,type/docs,priority/P0,owner/pmo,sprint/s5,phase/v0.5-s5",
+          "number": 163
+        },
+        {
+          "title": "[S5.03] /api/health enrichi (uptime + memory + db size + counts + outlook)",
+          "labels": "type/feat,priority/P1,lane/mvp,owner/dev1,sprint/s5,phase/v0.5-s5",
+          "number": 162
+        },
+        {
+          "title": "[S5.02] Smoke test post-deploy automatique (smoke-all.ps1)",
+          "labels": "lane/infra,type/feat,priority/P0,owner/dev1,sprint/s5,phase/v0.5-s5",
+          "number": 161
+        },
+        {
+          "title": "[S5.01] Tests E2E Playwright industrialises (6 parcours P1-P6)",
+          "labels": "priority/P0,lane/tests,type/test,owner/dev1,sprint/s5,phase/v0.5-s5",
+          "number": 160
+        },
+        {
+          "title": "[S5.00] ADR Sprint S5 + zero localStorage rappele + tag v0.5 final cible",
+          "labels": "priority/P0,lane/mvp,owner/pmo,type/adr,sprint/s5,phase/v0.5-s5",
+          "number": 159
+        }
+      ]
+    },
+    "v0.5-s4": {
+      "open": [],
+      "closed": [
+        {
+          "title": "[S4.11] Documentation API S4 + recette CEO v0.5-s4 pr├®par├®e",
+          "labels": "type/docs,priority/P1,lane/mvp,owner/pmo,sprint/s4,phase/v0.5-s4",
+          "number": 158
+        },
+        {
+          "title": "[S4.10] Tests e2e parcours back-office + tests unitaires extensions (ÔëÑ 80 verts)",
+          "labels": "priority/P0,lane/tests,type/test,owner/dev1,sprint/s4,phase/v0.5-s4",
+          "number": 157
+        },
+        {
+          "title": "[S4.09] Polish service Windows (logs rotation + INSTALL-WINDOWS.md consolid├®)",
+          "labels": "priority/P2,lane/mvp,owner/dev1,sprint/s4,phase/v0.5-s4,type/improve",
+          "number": 156
+        },
+        {
+          "title": "[S4.08] Raccourci desktop \"Cockpit aiCEO\" + script install",
+          "labels": "type/feat,priority/P2,lane/mvp,owner/dev1,sprint/s4,phase/v0.5-s4",
+          "number": 155
+        },
+        {
+          "title": "[S4.07] Frontend decisions.html migr├® API + IA recommend",
+          "labels": "type/feat,priority/P1,lane/mvp,owner/dev2,sprint/s4,phase/v0.5-s4",
+          "number": 154
+        },
+        {
+          "title": "[S4.06] Frontend contacts.html migr├® API + recherche + filtres",
+          "labels": "type/feat,priority/P1,lane/mvp,owner/dev2,sprint/s4,phase/v0.5-s4",
+          "number": 153
+        },
+        {
+          "title": "[S4.05] Frontend projet.html template commun migr├® (10 pages ÔåÆ 1 template param├®tr├®)",
+          "labels": "type/feat,priority/P1,lane/mvp,owner/dev2,sprint/s4,phase/v0.5-s4",
+          "number": 152
+        },
+        {
+          "title": "[S4.04] Frontend projets.html migr├® API (liste cross-groupe + filtre)",
+          "labels": "type/feat,priority/P1,lane/mvp,owner/dev2,sprint/s4,phase/v0.5-s4",
+          "number": 151
+        },
+        {
+          "title": "[S4.03] Frontend groupes.html migr├® API (vue portefeuille 3 groupes)",
+          "labels": "type/feat,priority/P1,lane/mvp,owner/dev2,sprint/s4,phase/v0.5-s4",
+          "number": 150
+        },
+        {
+          "title": "[S4.02] Frontend assistant.html migr├® API + chat live SSE streaming",
+          "labels": "type/feat,priority/P0,lane/mvp,owner/dev2,sprint/s4,phase/v0.5-s4",
+          "number": 149
+        },
+        {
+          "title": "[S4.01] Backend assistant chat ÔÇö table conversations + messages + POST streaming SSE",
+          "labels": "type/feat,priority/P0,lane/mvp,owner/dev1,sprint/s4,phase/v0.5-s4",
+          "number": 148
+        },
+        {
+          "title": "[S4.00] ADR Sprint S4 ÔÇö m├®thode + z├®ro localStorage rappel├® sur 6 nouvelles pages",
+          "labels": "priority/P0,lane/mvp,owner/pmo,type/adr,sprint/s4,phase/v0.5-s4",
+          "number": 147
+        },
+        {
+          "title": "[S4.11] Documentation API S4 + recette CEO v0.5-s4 pr├®par├®e",
+          "labels": "type/docs,priority/P1,lane/mvp,owner/pmo,sprint/s4,phase/v0.5-s4",
+          "number": 146
+        },
+        {
+          "title": "[S4.10] Tests e2e parcours back-office + tests unitaires extensions (ÔëÑ 80 verts)",
+          "labels": "priority/P0,lane/tests,type/test,owner/dev1,sprint/s4,phase/v0.5-s4",
+          "number": 145
+        },
+        {
+          "title": "[S4.09] Polish service Windows (logs rotation + INSTALL-WINDOWS.md consolid├®)",
+          "labels": "priority/P2,lane/mvp,owner/dev1,sprint/s4,phase/v0.5-s4,type/improve",
+          "number": 144
+        },
+        {
+          "title": "[S4.08] Raccourci desktop \"Cockpit aiCEO\" + script install",
+          "labels": "type/feat,priority/P2,lane/mvp,owner/dev1,sprint/s4,phase/v0.5-s4",
+          "number": 143
+        },
+        {
+          "title": "[S4.07] Frontend decisions.html migr├® API + IA recommend",
+          "labels": "type/feat,priority/P1,lane/mvp,owner/dev2,sprint/s4,phase/v0.5-s4",
+          "number": 142
+        },
+        {
+          "title": "[S4.06] Frontend contacts.html migr├® API + recherche + filtres",
+          "labels": "type/feat,priority/P1,lane/mvp,owner/dev2,sprint/s4,phase/v0.5-s4",
+          "number": 141
+        },
+        {
+          "title": "[S4.05] Frontend projet.html template commun migr├® (10 pages ÔåÆ 1 template param├®tr├®)",
+          "labels": "type/feat,priority/P1,lane/mvp,owner/dev2,sprint/s4,phase/v0.5-s4",
+          "number": 140
+        },
+        {
+          "title": "[S4.04] Frontend projets.html migr├® API (liste cross-groupe + filtre)",
+          "labels": "type/feat,priority/P1,lane/mvp,owner/dev2,sprint/s4,phase/v0.5-s4",
+          "number": 139
+        },
+        {
+          "title": "[S4.03] Frontend groupes.html migr├® API (vue portefeuille 3 groupes)",
+          "labels": "type/feat,priority/P1,lane/mvp,owner/dev2,sprint/s4,phase/v0.5-s4",
+          "number": 138
+        },
+        {
+          "title": "[S4.02] Frontend assistant.html migr├® API + chat live SSE streaming",
+          "labels": "type/feat,priority/P0,lane/mvp,owner/dev2,sprint/s4,phase/v0.5-s4",
+          "number": 137
+        },
+        {
+          "title": "[S4.01] Backend assistant chat ÔÇö table conversations + messages + POST streaming SSE",
+          "labels": "type/feat,priority/P0,lane/mvp,owner/dev1,sprint/s4,phase/v0.5-s4",
+          "number": 136
+        },
+        {
+          "title": "[S4.00] ADR Sprint S4 ÔÇö m├®thode + z├®ro localStorage rappel├® sur 6 nouvelles pages",
+          "labels": "priority/P0,lane/mvp,owner/pmo,type/adr,sprint/s4,phase/v0.5-s4",
+          "number": 135
+        }
+      ]
+    },
+    "V1": {
+      "open": [
+        {
+          "title": "[INFRA] Pre-commit hook Husky ÔÇö r├®g├®n├¿re ds:export si tokens.json modifi├®",
+          "labels": "lane/infra,priority/P2,phase/v0.5,type/infra",
+          "number": 100
+        },
+        {
+          "title": "[INFRA] OpenAPI 3.0 g├®n├®r├® depuis code (Zod + zod-to-openapi)",
+          "labels": "lane/infra,priority/P1,phase/v0.5,type/infra",
+          "number": 99
+        },
+        {
+          "title": "Build Windows .exe signe (electron-builder ou Tauri)",
+          "labels": "phase/v1,lane/infra,domain/tech,type/chore,prio/P1",
+          "number": 76
+        },
+        {
+          "title": "Tests e2e Playwright sur 3 flux critiques",
+          "labels": "phase/v1,lane/infra,domain/tech,type/chore,prio/P2",
+          "number": 75
+        },
+        {
+          "title": "Normaliser variables CSS Twisty (supprimer hex inline)",
+          "labels": "phase/v1,lane/design-system,domain/ux,type/chore,prio/P2",
+          "number": 73
+        },
+        {
+          "title": "Refactor 01_app-web/assets/app.js en modules ES",
+          "labels": "phase/v1,lane/app-web,domain/tech,type/chore,prio/P2",
+          "number": 72
+        },
+        {
+          "title": "Doc d'installation non-tech (video + PDF)",
+          "labels": "phase/v1,lane/docs,domain/core,type/docs,prio/P1",
+          "number": 64
+        },
+        {
+          "title": "Onboarding guide au premier lancement",
+          "labels": "phase/v1,lane/app-web,domain/ux,type/feat,prio/P2",
+          "number": 61
+        },
+        {
+          "title": "Export PDF d'une revue hebdo",
+          "labels": "phase/v1,lane/app-web,domain/ux,type/feat,prio/P3",
+          "number": 59
+        },
+        {
+          "title": "Skin Twisty applique sur toutes les pages MVP",
+          "labels": "phase/v1,lane/design-system,domain/ux,type/chore,prio/P1",
+          "number": 58
+        },
+        {
+          "title": "Mode focus (timer pomodoro + silence notifications)",
+          "labels": "phase/v1,lane/app-web,domain/wellbeing,type/feat,prio/P2",
+          "number": 57
+        },
+        {
+          "title": "Drag & drop inter-quadrants dans vue Eisenhower",
+          "labels": "phase/v1,lane/app-web,domain/ux,type/feat,prio/P2",
+          "number": 56
+        },
+        {
+          "title": "Compteur cout API Anthropic (jour + mois)",
+          "labels": "phase/v1,lane/mvp-backend,domain/ia,type/feat,prio/P2",
+          "number": 55
+        },
+        {
+          "title": "Rapport hebdo auto-genere par Claude",
+          "labels": "phase/v1,lane/mvp-backend,domain/core,type/feat,prio/P1",
+          "number": 54
+        },
+        {
+          "title": "Bouton Synthese de la semaine (rituel dimanche)",
+          "labels": "phase/v1,lane/mvp-backend,domain/core,type/feat,prio/P1",
+          "number": 53
+        },
+        {
+          "title": "Detection auto d'engagements pris dans les mails",
+          "labels": "phase/v1,lane/mvp-backend,domain/ia,type/feat,prio/P2",
+          "number": 52
+        },
+        {
+          "title": "Ameliorer inference projet (moins de 20% erreurs vs 30% actuel)",
+          "labels": "phase/v1,lane/mvp-backend,domain/ia,type/feat,prio/P2",
+          "number": 51
+        },
+        {
+          "title": "Widget Outlook : carte matin du cockpit",
+          "labels": "phase/v1,lane/mvp-backend,domain/integration,type/feat,prio/P3",
+          "number": 45
+        },
+        {
+          "title": "Scan Outlook incremental (delta depuis last-sync)",
+          "labels": "phase/v1,lane/mvp-backend,domain/integration,type/feat,prio/P1",
+          "number": 44
+        },
+        {
+          "title": "[F40] NON bienveillant sur saturation",
+          "labels": "phase/v1,lane/app-web,domain/wellbeing,type/epic,prio/P0",
+          "number": 22
+        },
+        {
+          "title": "[F39] Streak du repos",
+          "labels": "phase/v1,lane/app-web,domain/wellbeing,type/epic,prio/P2",
+          "number": 21
+        },
+        {
+          "title": "[F19] Visualisations riches",
+          "labels": "phase/v1,lane/app-web,domain/ux,type/epic,prio/P0",
+          "number": 20
+        },
+        {
+          "title": "[F18] Design system etendu",
+          "labels": "phase/v1,lane/app-web,domain/ux,type/epic,prio/P1",
+          "number": 19
+        },
+        {
+          "title": "[F16] Detection burnout (signaux faibles)",
+          "labels": "phase/v1,lane/app-web,domain/wellbeing,type/epic,prio/P1",
+          "number": 18
+        },
+        {
+          "title": "[F15] Integration SharePoint (RAG)",
+          "labels": "phase/v1,lane/mvp-backend,domain/integration,type/epic,prio/P1",
+          "number": 17
+        },
+        {
+          "title": "[F14] Tracabilite totale (Langfuse)",
+          "labels": "phase/v1,lane/mvp-backend,domain/ia,type/epic,prio/P1",
+          "number": 16
+        },
+        {
+          "title": "[F13] Delegation pro (matrice confiance)",
+          "labels": "phase/v1,lane/mvp-backend,domain/ia,type/epic,prio/P0",
+          "number": 15
+        },
+        {
+          "title": "[F12] Rituels integres",
+          "labels": "phase/v1,lane/app-web,domain/core,type/epic,prio/P0",
+          "number": 14
+        },
+        {
+          "title": "[F11] Memoire long-terme (pgvector)",
+          "labels": "phase/v1,lane/mvp-backend,domain/ia,type/epic,prio/P0",
+          "number": 13
+        },
+        {
+          "title": "[F10] Copilote proactif (Inngest)",
+          "labels": "phase/v1,lane/mvp-backend,domain/ia,type/epic,prio/P0",
+          "number": 12
+        },
+        {
+          "title": "[F6] Integration Outlook (Mail + Calendar)",
+          "labels": "phase/v1,lane/mvp-backend,domain/integration,type/epic,prio/P0",
+          "number": 7
+        }
+      ],
+      "closed": [
+        {
+          "title": "[DOC] PITCH-DECK-INVESTISSEUR.pptx ÔÇö 15-18 slides adapt├®es depuis exec-deck",
+          "labels": "lane/docs,priority/P1,scope/externe,type/doc",
+          "number": 96
+        },
+        {
+          "title": "[DOC] LETTRE-INTRO-CEO-PAIR.md ÔÇö 1 page sign├®e Feycoil",
+          "labels": "lane/docs,priority/P1,scope/externe,type/doc",
+          "number": 95
+        },
+        {
+          "title": "[DOC] ONBOARDING-CEO-PAIR.md ÔÇö installer et d├®marrer aiCEO en < 1 h",
+          "labels": "lane/docs,priority/P1,scope/externe,type/doc",
+          "number": 94
+        },
+        {
+          "title": "[DOC] BUSINESS-CASE.md ÔÇö hypoth├¿ses revenue + co├╗ts + ROI",
+          "labels": "lane/docs,priority/P1,scope/externe,type/doc",
+          "number": 93
+        },
+        {
+          "title": "[DOC] PITCH-ONEPAGE.md ÔÇö 1 page A4 investisseur",
+          "labels": "lane/docs,priority/P1,scope/externe,type/doc",
+          "number": 92
+        },
+        {
+          "title": "[DOC] Benchmark v2 ÔÇö positionnement post-fusion v0.5 (bloque livrables externes)",
+          "labels": "lane/docs,priority/P0,scope/interne,type/doc",
+          "number": 91
+        },
+        {
+          "title": "[INFRA] Pre-commit hook Husky ÔÇö r├®g├®n├¿re ds:export si tokens.json modifi├®",
+          "labels": "lane/infra,priority/P2,phase/v0.5,type/infra",
+          "number": 89
+        },
+        {
+          "title": "[INFRA] OpenAPI 3.0 g├®n├®r├® depuis code (Zod + zod-to-openapi)",
+          "labels": "lane/infra,priority/P1,phase/v0.5,type/infra",
+          "number": 88
+        },
+        {
+          "title": "[DOC] PITCH-DECK-INVESTISSEUR.pptx ÔÇö 15-18 slides adapt├®es depuis exec-deck",
+          "labels": "lane/docs,priority/P1,scope/externe,type/doc",
+          "number": 85
+        },
+        {
+          "title": "[DOC] LETTRE-INTRO-CEO-PAIR.md ÔÇö 1 page sign├®e Feycoil",
+          "labels": "lane/docs,priority/P1,scope/externe,type/doc",
+          "number": 84
+        },
+        {
+          "title": "[DOC] ONBOARDING-CEO-PAIR.md ÔÇö installer et d├®marrer aiCEO en < 1 h",
+          "labels": "lane/docs,priority/P1,scope/externe,type/doc",
+          "number": 83
+        },
+        {
+          "title": "[DOC] BUSINESS-CASE.md ÔÇö hypoth├¿ses revenue + co├╗ts + ROI",
+          "labels": "lane/docs,priority/P1,scope/externe,type/doc",
+          "number": 82
+        },
+        {
+          "title": "[DOC] PITCH-ONEPAGE.md ÔÇö 1 page A4 investisseur",
+          "labels": "lane/docs,priority/P1,scope/externe,type/doc",
+          "number": 81
+        },
+        {
+          "title": "[DOC] Benchmark v2 ÔÇö positionnement post-fusion v0.5 (bloque livrables externes)",
+          "labels": "lane/docs,priority/P0,scope/interne,type/doc",
+          "number": 80
+        }
+      ]
+    },
+    "V2": {
+      "open": [
+        {
+          "title": "[DOC-PARQUE] KIT-PARTENAIRE-TECH.md ÔÇö post-V2",
+          "labels": "lane/docs,priority/P3,scope/externe,status/parked,type/doc",
+          "number": 98
+        },
+        {
+          "title": "[DOC-PARQUE] PITCH-CLIENT.md ÔÇö post-V1",
+          "labels": "lane/docs,priority/P3,scope/externe,status/parked,type/doc",
+          "number": 97
+        },
+        {
+          "title": "i18n fr/en (preparer ouverture future)",
+          "labels": "phase/v2,lane/app-web,domain/ux,type/chore,prio/P3",
+          "number": 60
+        },
+        {
+          "title": "[F41] Recadrage cognitif (ACT light)",
+          "labels": "phase/v2,lane/app-web,domain/wellbeing,type/epic,prio/P2",
+          "number": 33
+        },
+        {
+          "title": "[F38] Mode surcharge detectee",
+          "labels": "phase/v2,lane/app-web,domain/wellbeing,type/epic,prio/P2",
+          "number": 32
+        },
+        {
+          "title": "[F37] Bouton visualiser (Napkin pattern)",
+          "labels": "phase/v2,lane/app-web,domain/ux,type/epic,prio/P1",
+          "number": 31
+        },
+        {
+          "title": "[F27] Dashboard equipe",
+          "labels": "phase/v2,lane/app-web,domain/ux,type/epic,prio/P2",
+          "number": 30
+        },
+        {
+          "title": "[F26] Graphe Cytoscape",
+          "labels": "phase/v2,lane/app-web,domain/ux,type/epic,prio/P1",
+          "number": 29
+        },
+        {
+          "title": "[F25] Canvas tldraw + agent visible",
+          "labels": "phase/v2,lane/app-web,domain/ux,type/epic,prio/P0",
+          "number": 28
+        },
+        {
+          "title": "[F24] Comite strategique integre",
+          "labels": "phase/v2,lane/app-web,domain/core,type/epic,prio/P1",
+          "number": 27
+        },
+        {
+          "title": "[F23] Integration Teams",
+          "labels": "phase/v2,lane/mvp-backend,domain/integration,type/epic,prio/P1",
+          "number": 26
+        },
+        {
+          "title": "[F22] Delegation end-to-end",
+          "labels": "phase/v2,lane/mvp-backend,domain/ia,type/epic,prio/P0",
+          "number": 25
+        },
+        {
+          "title": "[F21] Vues role-specifiques",
+          "labels": "phase/v2,lane/app-web,domain/ux,type/epic,prio/P0",
+          "number": 24
+        },
+        {
+          "title": "[F20] Multi-tenant Supabase (RLS)",
+          "labels": "phase/v2,lane/mvp-backend,domain/tech,type/epic,prio/P0",
+          "number": 23
+        }
+      ],
+      "closed": [
+        {
+          "title": "[DOC-PARQUE] KIT-PARTENAIRE-TECH.md ÔÇö post-V2",
+          "labels": "lane/docs,priority/P3,scope/externe,status/parked,type/doc",
+          "number": 87
+        },
+        {
+          "title": "[DOC-PARQUE] PITCH-CLIENT.md ÔÇö post-V1",
+          "labels": "lane/docs,priority/P3,scope/externe,status/parked,type/doc",
+          "number": 86
+        }
+      ]
+    },
+    "v0.5-s3": {
+      "open": [],
+      "closed": [
+        {
+          "title": "[S3.10] Spike Service Windows ÔÇö POC node-windows + ADR (time-box 1,5 j strict)",
+          "labels": "priority/P2,lane/mvp,type/spike,owner/dev1,sprint/s3,phase/v0.5-s3,area/deploy",
+          "number": 134
+        },
+        {
+          "title": "[S3.09] Documentation API S3 (events/week, weekly-reviews, big-rocks, last-sync, SSE c├óbl├®)",
+          "labels": "type/docs,priority/P1,lane/mvp,owner/pmo,sprint/s3,phase/v0.5-s3",
+          "number": 133
+        },
+        {
+          "title": "[S3.08] Tests unitaires extensions (SSE ├®mission, last-sync, events with_tasks, big-rocks) >= 65 verts",
+          "labels": "priority/P1,lane/tests,type/test,owner/pmo,sprint/s3,phase/v0.5-s3",
+          "number": 132
+        },
+        {
+          "title": "[S3.07] Tests e2e parcours hebdo P4 (agenda + drag-drop -> revue draft -> commit)",
+          "labels": "priority/P0,lane/tests,type/test,owner/dev1,sprint/s3,phase/v0.5-s3",
+          "number": 131
+        },
+        {
+          "title": "[S3.06] Outlook autosync 2 h (schtasks + GET /api/system/last-sync + alerte cockpit)",
+          "labels": "type/feat,priority/P1,lane/mvp,owner/dev1,sprint/s3,phase/v0.5-s3,area/integration",
+          "number": 130
+        },
+        {
+          "title": "[S3.05] C├óblage SSE front (cockpit + taches s'abonnent au flux temps r├®el)",
+          "labels": "type/feat,priority/P1,lane/mvp,owner/dev1,sprint/s3,phase/v0.5-s3,area/realtime",
+          "number": 129
+        },
+        {
+          "title": "[S3.04] Frontend revues/index.html migr├® (Big Rocks + auto-draft + archives)",
+          "labels": "type/feat,priority/P0,lane/mvp,owner/dev2,sprint/s3,phase/v0.5-s3,area/ux",
+          "number": 128
+        },
+        {
+          "title": "[S3.03] Backend auto-draft revue Claude (POST /api/weekly-reviews/:week/draft)",
+          "labels": "type/feat,priority/P1,lane/mvp,owner/dev1,sprint/s3,phase/v0.5-s3,area/ai",
+          "number": 127
+        },
+        {
+          "title": "[S3.02] Frontend agenda.html migr├® (vue hebdo lun-dim + drag-drop natif HTML5)",
+          "labels": "type/feat,priority/P0,lane/mvp,owner/dev2,sprint/s3,phase/v0.5-s3,area/ux",
+          "number": 126
+        },
+        {
+          "title": "[S3.01] Backend /api/events/week extension + /api/weekly-reviews + /api/big-rocks",
+          "labels": "type/feat,priority/P0,lane/mvp,owner/dev1,sprint/s3,phase/v0.5-s3,area/api",
+          "number": 125
+        },
+        {
+          "title": "[S3.00] ADR Sprint S3 ÔÇö m├®thode + z├®ro localStorage applicatif rappel├®",
+          "labels": "priority/P0,lane/mvp,owner/pmo,sprint/s3,phase/v0.5-s3,type/adr",
+          "number": 124
+        },
+        {
+          "title": "[S3.10] Spike Service Windows ÔÇö POC node-windows + ADR (time-box 1,5 j strict)",
+          "labels": "priority/P2,lane/mvp,type/spike,owner/dev1,sprint/s3,phase/v0.5-s3,area/deploy",
+          "number": 123
+        },
+        {
+          "title": "[S3.09] Documentation API S3 (events/week, weekly-reviews, big-rocks, last-sync, SSE c├óbl├®)",
+          "labels": "type/docs,priority/P1,lane/mvp,owner/pmo,sprint/s3,phase/v0.5-s3",
+          "number": 122
+        },
+        {
+          "title": "[S3.08] Tests unitaires extensions (SSE ├®mission, last-sync, events with_tasks, big-rocks) >= 65 verts",
+          "labels": "priority/P1,lane/tests,type/test,owner/pmo,sprint/s3,phase/v0.5-s3",
+          "number": 121
+        },
+        {
+          "title": "[S3.07] Tests e2e parcours hebdo P4 (agenda + drag-drop -> revue draft -> commit)",
+          "labels": "priority/P0,lane/tests,type/test,owner/dev1,sprint/s3,phase/v0.5-s3",
+          "number": 120
+        },
+        {
+          "title": "[S3.06] Outlook autosync 2 h (schtasks + GET /api/system/last-sync + alerte cockpit)",
+          "labels": "type/feat,priority/P1,lane/mvp,owner/dev1,sprint/s3,phase/v0.5-s3,area/integration",
+          "number": 119
+        },
+        {
+          "title": "[S3.05] C├óblage SSE front (cockpit + taches s'abonnent au flux temps r├®el)",
+          "labels": "type/feat,priority/P1,lane/mvp,owner/dev1,sprint/s3,phase/v0.5-s3,area/realtime",
+          "number": 118
+        },
+        {
+          "title": "[S3.04] Frontend revues/index.html migr├® (Big Rocks + auto-draft + archives)",
+          "labels": "type/feat,priority/P0,lane/mvp,owner/dev2,sprint/s3,phase/v0.5-s3,area/ux",
+          "number": 117
+        },
+        {
+          "title": "[S3.03] Backend auto-draft revue Claude (POST /api/weekly-reviews/:week/draft)",
+          "labels": "type/feat,priority/P1,lane/mvp,owner/dev1,sprint/s3,phase/v0.5-s3,area/ai",
+          "number": 116
+        },
+        {
+          "title": "[S3.02] Frontend agenda.html migr├® (vue hebdo lun-dim + drag-drop natif HTML5)",
+          "labels": "type/feat,priority/P0,lane/mvp,owner/dev2,sprint/s3,phase/v0.5-s3,area/ux",
+          "number": 115
+        },
+        {
+          "title": "[S3.01] Backend /api/events/week extension + /api/weekly-reviews + /api/big-rocks",
+          "labels": "type/feat,priority/P0,lane/mvp,owner/dev1,sprint/s3,phase/v0.5-s3,area/api",
+          "number": 114
+        },
+        {
+          "title": "[S3.00] ADR Sprint S3 ÔÇö m├®thode + z├®ro localStorage applicatif rappel├®",
+          "labels": "priority/P0,lane/mvp,owner/pmo,sprint/s3,phase/v0.5-s3,type/adr",
+          "number": 113
+        }
+      ]
+    },
+    "MVP": {
+      "open": [],
+      "closed": [
+        {
+          "title": "[DS] Fusion v0.5 ┬À c├óbler 03_mvp sur le design system (fonts Fira Sans + consommation colors_and_type.css)",
+          "labels": "lane/design-system,type/chore,priority/high,phase/v0.5",
+          "number": 90
+        },
+        {
+          "title": "Install MVP comme service Windows (auto-start)",
+          "labels": "phase/mvp,lane/mvp-backend,domain/tech,type/chore,prio/P1",
+          "number": 67
+        },
+        {
+          "title": "Spec technique fusion app web + MVP",
+          "labels": "phase/mvp,lane/docs,domain/tech,type/docs,prio/P0",
+          "number": 63
+        },
+        {
+          "title": "Spec fonctionnelle fusion app web + MVP",
+          "labels": "phase/mvp,lane/docs,domain/core,type/docs,prio/P0",
+          "number": 62
+        },
+        {
+          "title": "Historique arbitrages matinaux (JSON dates)",
+          "labels": "phase/mvp,lane/mvp-backend,domain/ia,type/feat,prio/P1",
+          "number": 49
+        },
+        {
+          "title": "Chat live temps reel dans assistant.html",
+          "labels": "phase/mvp,lane/app-web,domain/ia,type/feat,prio/P1",
+          "number": 46
+        },
+        {
+          "title": "[F8] Delegation assistee",
+          "labels": "phase/mvp,lane/mvp-backend,domain/ia,type/epic,prio/P0",
+          "number": 9
+        },
+        {
+          "title": "[F5] Taches unifiees",
+          "labels": "phase/mvp,lane/app-web,domain/core,type/epic,prio/P0",
+          "number": 6
+        },
+        {
+          "title": "[F4] Agenda consolide",
+          "labels": "phase/mvp,lane/app-web,domain/core,type/epic,prio/P0",
+          "number": 5
+        },
+        {
+          "title": "[F3] Revue hebdo manuelle",
+          "labels": "phase/mvp,lane/app-web,domain/core,type/epic,prio/P0",
+          "number": 4
+        },
+        {
+          "title": "[F2] Vue par societe",
+          "labels": "phase/mvp,lane/app-web,domain/core,type/epic,prio/P0",
+          "number": 3
+        },
+        {
+          "title": "[F1] Cockpit consolide",
+          "labels": "phase/mvp,lane/app-web,domain/core,type/epic,prio/P0",
+          "number": 2
+        }
+      ]
+    },
+    "V3": {
+      "open": [
+        {
+          "title": "[F36] Multi-CEO (ecosysteme ETIC)",
+          "labels": "phase/v3,lane/mvp-backend,domain/tech,type/epic,prio/P1",
+          "number": 42
+        },
+        {
+          "title": "[F35] App mobile compagnon",
+          "labels": "phase/v3,lane/mvp-backend,domain/tech,type/epic,prio/P1",
+          "number": 41
+        },
+        {
+          "title": "[F34] Offline-first (ElectricSQL)",
+          "labels": "phase/v3,lane/mvp-backend,domain/tech,type/epic,prio/P1",
+          "number": 40
+        },
+        {
+          "title": "[F33] Post-mortem automatique",
+          "labels": "phase/v3,lane/app-web,domain/wellbeing,type/epic,prio/P2",
+          "number": 39
+        },
+        {
+          "title": "[F32] Boite a outils psycho",
+          "labels": "phase/v3,lane/app-web,domain/wellbeing,type/epic,prio/P2",
+          "number": 38
+        },
+        {
+          "title": "[F31] Detection burnout active",
+          "labels": "phase/v3,lane/app-web,domain/wellbeing,type/epic,prio/P1",
+          "number": 37
+        },
+        {
+          "title": "[F30] Journal de reconnaissance",
+          "labels": "phase/v3,lane/app-web,domain/wellbeing,type/epic,prio/P2",
+          "number": 36
+        },
+        {
+          "title": "[F29] Coach conversationnel",
+          "labels": "phase/v3,lane/app-web,domain/wellbeing,type/epic,prio/P1",
+          "number": 35
+        },
+        {
+          "title": "[F28] SOC 2 Type II",
+          "labels": "phase/v3,lane/mvp-backend,domain/tech,type/epic,prio/P0",
+          "number": 34
+        }
+      ],
+      "closed": []
+    },
+    "v0.5-s2": {
+      "open": [],
+      "closed": [
+        {
+          "title": "[S2.10] Spike WebSocket ÔÇö preuve de concept chat live (pr├®paration S4 assistant.html, time-box 3 j)",
+          "labels": "priority/P2,sprint/s2,phase/v0.5-s2,lane/mvp,type/spike,owner/dev1",
+          "number": 110
+        },
+        {
+          "title": "[S2.09] Documentation API ├á jour (README 03_mvp + curl examples + variables env)",
+          "labels": "priority/P2,type/doc,sprint/s2,phase/v0.5-s2,lane/mvp,owner/pmo",
+          "number": 109
+        },
+        {
+          "title": "[S2.08] Tests unitaires extensions (cockpit aggregator, tasks defer/toggle, evening rollup)",
+          "labels": "priority/P2,sprint/s2,phase/v0.5-s2,lane/tests,type/test,owner/dev2",
+          "number": 108
+        },
+        {
+          "title": "[S2.07] Tests Playwright e2e ÔÇö 3 specs (arbitrage, evening, tasks)",
+          "labels": "priority/P1,sprint/s2,phase/v0.5-s2,lane/tests,type/test,owner/dev1",
+          "number": 107
+        },
+        {
+          "title": "[S2.06] Finaliser migrate-from-appweb.js (taches + d├®cisions + contacts) + check-migration.js",
+          "labels": "priority/P1,sprint/s2,phase/v0.5-s2,lane/mvp,type/migration,owner/dev1",
+          "number": 106
+        },
+        {
+          "title": "[S2.05] Frontend taches.html migr├® sur /api/tasks/* + matrice Eisenhower 2x2",
+          "labels": "priority/P1,sprint/s2,phase/v0.5-s2,lane/mvp,type/feature,owner/dev2",
+          "number": 105
+        },
+        {
+          "title": "[S2.04] Frontend evening.html migr├® sur /api/evening/* + streak engine backend",
+          "labels": "priority/P1,sprint/s2,phase/v0.5-s2,lane/mvp,type/feature,owner/dev2",
+          "number": 104
+        },
+        {
+          "title": "[S2.03] Frontend arbitrage.html migr├® sur /api/arbitrage/* + drag & drop natif HTML5",
+          "labels": "priority/P1,sprint/s2,phase/v0.5-s2,lane/mvp,type/feature,owner/dev1",
+          "number": 103
+        },
+        {
+          "title": "[S2.02] Frontend index.html migr├® sur /api/cockpit/today + retrait localStorage",
+          "labels": "priority/P1,sprint/s2,phase/v0.5-s2,lane/mvp,type/feature,owner/dev2",
+          "number": 102
+        },
+        {
+          "title": "[S2.01] Backend GET /api/cockpit/today (agr├®gat intention + Big Rocks + compteurs + alertes)",
+          "labels": "priority/P1,sprint/s2,phase/v0.5-s2,lane/mvp,type/feature,owner/dev1",
+          "number": 101
+        }
+      ]
+    }
+  },
+  "branches_recent": [
+    "* main",
+    "remotes/origin/HEAD -> origin/main",
+    "remotes/origin/main",
+    "docs/sprint-s3-kickoff",
+    "remotes/origin/docs/sprint-s3-kickoff",
+    "merge/s3-into-main",
+    "release/v0.5-s2",
+    "remotes/origin/release/v0.5-s2",
+    "chore/changelog-sprint-externe",
+    "remotes/origin/chore/changelog-sprint-externe",
+    "docs/pitch-deck",
+    "remotes/origin/docs/pitch-deck",
+    "docs/lettre-intro",
+    "remotes/origin/docs/lettre-intro",
+    "docs/onboarding-ceo"
+  ]
+}

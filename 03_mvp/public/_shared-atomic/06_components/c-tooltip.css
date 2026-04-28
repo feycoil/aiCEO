@@ -1,0 +1,113 @@
+/**
+ * c-tooltip.css — Molecule Tooltip (info bulle on hover/focus)
+ *
+ * Implementation CSS pure (option [data-tooltip]) ou avec markup explicite.
+ *
+ * Variants placement :
+ *   .c-tooltip--top    (default)
+ *   .c-tooltip--bottom
+ *   .c-tooltip--left
+ *   .c-tooltip--right
+ *
+ * Accessibilite :
+ *   - role="tooltip" + id reference par aria-describedby sur trigger
+ *   - Visible au focus-clavier (pas seulement hover)
+ *   - Disparait via Escape (JS)
+ */
+
+.c-tooltip {
+  position: absolute;
+  z-index: var(--z-tooltip);
+  padding: var(--space-1) var(--space-2);
+  background-color: var(--color-navy-900);
+  color: var(--color-text-on-brand);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-snug);
+  border-radius: var(--radius-xs);
+  box-shadow: var(--shadow-md);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--duration-tooltip) var(--ease-out);
+  max-width: 240px;
+  white-space: normal;
+}
+
+.c-tooltip.is-visible,
+.c-tooltip[data-visible="true"] {
+  opacity: 1;
+}
+
+/* Arrows via ::before */
+.c-tooltip::before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 4px solid transparent;
+}
+
+/* Placements */
+.c-tooltip--top {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: var(--space-1);
+}
+.c-tooltip--top::before {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top-color: var(--color-navy-900);
+}
+
+.c-tooltip--bottom {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: var(--space-1);
+}
+.c-tooltip--bottom::before {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-bottom-color: var(--color-navy-900);
+}
+
+.c-tooltip--left {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: var(--space-1);
+}
+.c-tooltip--left::before {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-left-color: var(--color-navy-900);
+}
+
+.c-tooltip--right {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: var(--space-1);
+}
+.c-tooltip--right::before {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-right-color: var(--color-navy-900);
+}
+
+/* Wrapper trigger */
+.c-tooltip-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-tooltip { transition: none; }
+}

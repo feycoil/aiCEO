@@ -1,0 +1,144 @@
+{
+  "$schema": "https://raw.githubusercontent.com/feycoil/aiCEO/main/02_design-system/tokens.schema.json",
+  "$meta": {
+    "generatedBy": "02_design-system/scripts/export.js",
+    "source": "02_design-system/tokens.json",
+    "version": "1.0.0",
+    "lastUpdated": "2026-04-24",
+    "notes": "Source canonique des tokens DS aiCEO. Toute modification ici doit être suivie de `npm run ds:export` pour régénérer colors_and_type.css + push vers 03_mvp/public/assets/colors_and_type.css. Chemin type dans 00_BOUSSOLE/GOUVERNANCE.md."
+  },
+  "fonts": {
+    "faces": [
+      { "family": "Fira Sans", "weight": 100, "src": "./fonts/FiraSans-Thin.otf",       "format": "opentype" },
+      { "family": "Fira Sans", "weight": 200, "src": "./fonts/FiraSans-ExtraLight.otf", "format": "opentype" },
+      { "family": "Fira Sans", "weight": 300, "src": "./fonts/FiraSans-Light.otf",      "format": "opentype" },
+      { "family": "Fira Sans", "weight": 400, "src": "./fonts/FiraSans-Regular.otf",    "format": "opentype" },
+      { "family": "Fira Sans", "weight": 450, "src": "./fonts/FiraSans-Book.otf",       "format": "opentype", "note": "Book — slightly heavier than Regular, treated as 450" },
+      { "family": "Fira Sans", "weight": 500, "src": "./fonts/FiraSans-Medium.otf",     "format": "opentype" },
+      { "family": "Fira Sans", "weight": 600, "src": "./fonts/FiraSans-SemiBold.otf",   "format": "opentype" },
+      { "family": "Fira Sans", "weight": 700, "src": "./fonts/FiraSans-Bold.otf",       "format": "opentype" },
+      { "family": "Fira Sans", "weight": 800, "src": "./fonts/FiraSans-ExtraBold.otf",  "format": "opentype" },
+      { "family": "Fira Sans", "weight": 900, "src": "./fonts/FiraSans-Heavy.otf",      "format": "opentype" },
+      { "family": "Aubrielle", "weight": 400, "src": "./fonts/Aubrielle_Demo.ttf",      "format": "truetype", "note": "Display script — greetings, hero only, min 36px" },
+      { "family": "Sol",       "weight": 100, "src": "./fonts/SolThin.otf",             "format": "opentype", "note": "Ultra-light display numerals, 28px+" }
+    ]
+  },
+  "vars": {
+    "Color — neutrals (warm cream frame, off-lilac body)": {
+      "bg":        "#a9adbe",
+      "surface":   "#f5f3ef",
+      "surface-2": "#ffffff",
+      "surface-3": "#eeebe4",
+      "border":    "#e4e1d9",
+      "border-2":  "#cfcbc1",
+      "text":      "#111418",
+      "text-2":    "#5b5e68",
+      "text-3":    "#9a9da8"
+    },
+    "Color — brand (dark primary, not coral)": {
+      "brand":      "#111418",
+      "brand-dark": "#000000",
+      "brand-50":   "#eeebe4",
+      "brand-100":  "#dcd8cd",
+      "brand-700":  "#111418"
+    },
+    "Color — accents (muted, desaturated — never candy)": {
+      "rose":        "#d96d3e",
+      "rose-50":     "#fdecdf",
+      "rose-800":    "#8a3b1b",
+      "amber":       "#b88237",
+      "amber-50":    "#f5e8d6",
+      "amber-800":   "#6d4816",
+      "emerald":     "#3d7363",
+      "emerald-50":  "#e2ece8",
+      "emerald-800": "#234236",
+      "sky":         "#7790ae",
+      "sky-50":      "#e9eef4",
+      "sky-800":     "#3b506a",
+      "violet":      "#7a6a8a",
+      "violet-50":   "#ece7f0",
+      "violet-800":  "#463a54"
+    },
+    "Type — families": {
+      "font-sans":         "\"Fira Sans\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+      "font-script":       "\"Aubrielle\", \"Apple Chancery\", \"Snell Roundhand\", cursive",
+      "font-thin":         "\"Sol\", \"Fira Sans\", sans-serif",
+      "font-mono":         "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace",
+      "font-features":     "\"kern\",\"liga\",\"calt\"",
+      "font-features-num": "\"tnum\",\"lnum\""
+    },
+    "Type — scale (px)": {
+      "fs-script-hero": "64px",
+      "fs-script":      "44px",
+      "fs-display":     "32px",
+      "fs-h1":          "22px",
+      "fs-h2":          "18px",
+      "fs-h3":          "15px",
+      "fs-lead":        "14px",
+      "fs-body":        "14px",
+      "fs-sm":          "13px",
+      "fs-xs":          "12px",
+      "fs-tiny":        "11px",
+      "fs-caption":     "10px"
+    },
+    "Type — line heights": {
+      "lh-tight":   "1.05",
+      "lh-snug":    "1.3",
+      "lh-base":    "1.5",
+      "lh-relaxed": "1.6"
+    },
+    "Type — tracking": {
+      "tracking-script":  "-0.01em",
+      "tracking-display": "-0.025em",
+      "tracking-h1":      "-0.02em",
+      "tracking-h2":      "-0.015em",
+      "tracking-card":    "-0.01em",
+      "tracking-body":    "0em",
+      "tracking-caption": "0.09em",
+      "tracking-kpi":     "-0.035em"
+    },
+    "Type — weights": {
+      "fw-thin":       "100",
+      "fw-extralight": "200",
+      "fw-light":      "300",
+      "fw-regular":    "400",
+      "fw-book":       "450",
+      "fw-medium":     "500",
+      "fw-semi":       "600",
+      "fw-bold":       "700",
+      "fw-extrabold":  "800",
+      "fw-heavy":      "900"
+    },
+    "Shape — radius": {
+      "radius-xs": "8px",
+      "radius-sm": "12px",
+      "radius":    "18px",
+      "radius-lg": "24px",
+      "radius-xl": "28px"
+    },
+    "Shape — shadow": {
+      "shadow-xs":   "0 1px 2px rgba(17,20,24,.04)",
+      "shadow-sm":   "0 1px 3px rgba(17,20,24,.06)",
+      "shadow":      "0 4px 16px rgba(17,20,24,.06)",
+      "shadow-card": "0 1px 2px rgba(17,20,24,.04), 0 10px 30px -14px rgba(17,20,24,.12)",
+      "shadow-app":  "0 30px 80px -20px rgba(17,20,24,.25)",
+      "shadow-lg":   "0 20px 60px -20px rgba(17,20,24,.3)",
+      "shadow-hero": "0 1px 2px rgba(17,20,24,.04), 0 20px 50px -24px rgba(17,20,24,.18)"
+    },
+    "Shape — space": {
+      "space-1":  "4px",
+      "space-2":  "8px",
+      "space-3":  "12px",
+      "space-4":  "16px",
+      "space-5":  "20px",
+      "space-6":  "24px",
+      "space-8":  "32px",
+      "space-10": "40px"
+    },
+    "Gradient & ring": {
+      "gradient-brand": "linear-gradient(135deg, #111418 0%, #2c2f36 100%)",
+      "gradient-hero":  "linear-gradient(135deg, #ffffff 0%, #fbf9f5 60%, #f5f0e6 100%)",
+      "ring":           "0 0 0 4px rgba(17,20,24,.12)"
+    }
+  }
+}

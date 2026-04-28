@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>aiCEO — Tâches</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css"/>
+<link rel="stylesheet" href="_shared/app.css"/>
+<style>
+  .filters { display: flex; gap: 8px; padding: 14px 0 18px; border-bottom: 1px dashed var(--border); margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
+  .chipf { font: 700 11.5px var(--font-sans); padding: 6px 12px; border: 1px solid var(--border); border-radius: 999px; background: #fff; color: var(--text-2); cursor: pointer; }
+  .chipf.active { background: var(--text); color: #fff; border-color: var(--text); }
+  .chipf .n { color: var(--text-3); margin-left: 4px; font-weight: 800; }
+  .chipf.active .n { color: rgba(255,255,255,.6); }
+
+  .tbl { width: 100%; border-collapse: collapse; }
+  .tbl th { text-align: left; font: 800 10px var(--font-sans); text-transform: uppercase; letter-spacing: .1em; color: var(--text-3); padding: 8px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  .tbl td { padding: 12px; border-bottom: 1px dashed var(--border); font: 500 13px var(--font-sans); vertical-align: middle; }
+  .tbl tr:hover td { background: var(--surface); }
+  .tbl .t { font: 700 13.5px var(--font-sans); letter-spacing: -.005em; }
+  .tbl .m { font: 500 11.5px var(--font-sans); color: var(--text-3); margin-top: 2px; }
+  .tbl .due { font-variant-numeric: tabular-nums; font-weight: 700; }
+  .tbl .due.over { color: var(--rose); }
+  .tbl .due.soon { color: var(--amber); }
+  .who { display: inline-flex; align-items: center; gap: 6px; }
+  .who .av { width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, #b88237, #d96d3e); color: #fff; font: 800 10px var(--font-sans); display: grid; place-items: center; }
+  .who .av.l { background: linear-gradient(135deg, #7a6a8a, #463a54); }
+  .who .av.k { background: linear-gradient(135deg, #3d7363, #234236); }
+  .who .av.n { background: linear-gradient(135deg, #7790ae, #3b506a); }
+
+  .tag-rock { display: inline-flex; align-items: center; gap: 4px; font: 700 10px var(--font-sans); color: var(--violet); padding: 1px 6px; background: var(--violet-50); border-radius: 4px; letter-spacing: .03em; }
+</style>
+</head>
+<body data-nav="taches">
+<div class="app">
+  <div id="sidebar-slot"></div>
+  <main class="main">
+    <header class="topbar">
+      <div class="crumbs"><a href="index.html">Cockpit</a><span class="sep">›</span><span class="current">Tâches</span><span class="sep">·</span><span class="muted tabular">28 ouvertes · 3 en retard · 12 soldées S16</span></div>
+      <div class="topbar-actions">
+        <button class="btn">Importer</button>
+        <button class="btn">Vue Big Rocks</button>
+        <button class="btn primary">+ Nouvelle tâche <kbd class="kbd">N</kbd></button>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="page-h">
+        <div>
+          <h1>Tâches & délégations</h1>
+          <div class="sub">Tout ce qui a un verbe, une échéance, et un destinataire. Triez par échéance ou Big Rock.</div>
+        </div>
+        <div class="state-tabs" data-scope=".main">
+          <button class="active" data-show="default">Default</button>
+          <button data-show="empty">Empty</button>
+          <button data-show="loading">Loading</button>
+        </div>
+      </div>
+
+      <div class="page" data-state="default" data-active style="padding:0">
+        <div class="filters">
+          <button class="chipf active">Toutes <span class="n">28</span></button>
+          <button class="chipf">À moi <span class="n">17</span></button>
+          <button class="chipf">Déléguées <span class="n">11</span></button>
+          <button class="chipf">En retard <span class="n">3</span></button>
+          <button class="chipf">Big Rocks <span class="n">7</span></button>
+          <button class="chipf">Cette semaine <span class="n">14</span></button>
+          <span style="margin-left:auto" class="muted tiny">Trier · Échéance ↑ · Groupe : aucun</span>
+        </div>
+
+        <table class="tbl">
+          <thead><tr><th></th><th>Tâche</th><th>Société</th><th>Pour</th><th>Échéance</th><th>Big Rock</th><th>Statut</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><div class="t">Solder Affejee — relance 3</div><div class="m">honoraires 12 800 € · cabinet expert</div></td>
+              <td><span class="company-chip c-ETIC">ETIC</span></td>
+              <td><span class="who"><span class="av">FM</span>moi</span></td>
+              <td><span class="due over">auj. 17:00</span></td>
+              <td><span class="tag-rock">🪨 #3</span></td>
+              <td><span class="badge rose">en retard 3j</span></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><div class="t">Préparer dossier banque Bretagne</div><div class="m">KBIS + plan financement à jour</div></td>
+              <td><span class="company-chip c-SCIS">SCIS</span></td>
+              <td><span class="who"><span class="av">FM</span>moi</span></td>
+              <td><span class="due soon">mar. 28 · 17:00</span></td>
+              <td><span class="tag-rock">🪨 #1</span></td>
+              <td><span class="badge slate">à planifier</span></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><div class="t">Consolider NDF T1 — multi sociétés</div><div class="m">ETIC + AMP + SCIS · format CSV</div></td>
+              <td><span class="company-chip c-ETIC">ETIC</span></td>
+              <td><span class="who"><span class="av l">L</span>Lamiae</span></td>
+              <td><span class="due">ven. 24</span></td>
+              <td>—</td>
+              <td><span class="badge violet">déléguée 09:22</span></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><div class="t">FF&amp;E Pamandzi — commande étage 2</div><div class="m">3 fournisseurs · arbitrage prix</div></td>
+              <td><span class="company-chip c-AMP">AMP</span></td>
+              <td><span class="who"><span class="av k">K</span>Karim</span></td>
+              <td><span class="due soon">mer. 22</span></td>
+              <td><span class="tag-rock">🪨 #2</span></td>
+              <td><span class="badge violet">déléguée</span></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><div class="t">URSSAF T4 2025 — solde</div><div class="m">~ 4 200 € · prélèv. SEPA OK</div></td>
+              <td><span class="company-chip c-ETIC">ETIC</span></td>
+              <td><span class="who"><span class="av l">L</span>Lamiae</span></td>
+              <td><span class="due soon">ven. 24</span></td>
+              <td>—</td>
+              <td><span class="badge violet">déléguée</span></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><div class="t">Visite chantier Pamandzi 09 — phase 2</div><div class="m">avec Naïr · 3h sur place</div></td>
+              <td><span class="company-chip c-AMP">AMP</span></td>
+              <td><span class="who"><span class="av">FM</span>moi</span></td>
+              <td><span class="due">lun. 27 · 09:30</span></td>
+              <td><span class="tag-rock">🪨 #2</span></td>
+              <td><span class="badge slate">planifiée</span></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><div class="t">Préparer COPIL ETIC sprint 7</div><div class="m">slides 4 KPI + roadmap S18</div></td>
+              <td><span class="company-chip c-ETIC">ETIC</span></td>
+              <td><span class="who"><span class="av n">N</span>Naïma</span></td>
+              <td><span class="due">mar. 28 · 14:00</span></td>
+              <td>—</td>
+              <td><span class="badge violet">déléguée</span></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox"/></td>
+              <td><div class="t">Répondre architecte Naïr — avenant</div><div class="m">décision liée · 9j ouverte</div></td>
+              <td><span class="company-chip c-AMP">AMP</span></td>
+              <td><span class="who"><span class="av">FM</span>moi</span></td>
+              <td><span class="due over">retard 9j</span></td>
+              <td>—</td>
+              <td><span class="badge rose">décision dormante</span></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" checked/></td>
+              <td><div class="t" style="text-decoration: line-through; color: var(--text-3)">Validation NDF Lamiae T1</div></td>
+              <td><span class="company-chip c-ETIC">ETIC</span></td>
+              <td><span class="who"><span class="av">FM</span>moi</span></td>
+              <td><span class="muted">soldée 15:21</span></td>
+              <td>—</td>
+              <td><span class="badge emerald">soldée auj.</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="footer-bar"><span>9 lignes affichées · 28 au total</span><span><span class="ok">●</span> sync Outlook · 4 min</span></div>
+      </div>
+
+      <div class="page" data-state="empty" style="padding:0">
+        <div class="state-card">
+          <div class="ic">∅</div>
+          <h3>Aucune tâche en cours.</h3>
+          <p>Créez-en une, ou laissez l'arbitrage matinal en générer demain à 08:30.</p>
+          <button class="btn primary">+ Nouvelle tâche</button>
+        </div>
+      </div>
+
+      <div class="page" data-state="loading" style="padding:0">
+        <div class="filters"><div class="sk" style="height:30px; width: 90px; border-radius: 999px"></div><div class="sk" style="height:30px; width: 100px; border-radius: 999px"></div><div class="sk" style="height:30px; width: 110px; border-radius: 999px"></div></div>
+        <div class="sk" style="height: 280px; border-radius: 12px"></div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="_shared/shell.js"></script>
+</body>
+</html>

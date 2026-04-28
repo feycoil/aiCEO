@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="fr" data-locale="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>aiCEO — Agenda · Semaine du 28 avril</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css?v=2">
+<link rel="stylesheet" href="_shared/app.css?v=2">
+<link rel="stylesheet" href="_shared/tweaks.css?v=2">
+</head>
+<body data-route="agenda">
+<div id="icons-host" hidden></div>
+<a class="skip-link" href="#main-content">Aller au contenu</a>
+
+<div class="app" data-drawer="expanded">
+  <aside class="drawer" aria-label="Navigation principale">
+    <div class="drawer-logo">
+      <span class="logo-mark">a</span>
+      <span class="logo-text">aiCEO</span>
+    </div>
+    <button class="drawer-tenant" aria-label="Changer d'espace">
+      <span class="tenant-mark" aria-hidden="true">A</span>
+      <span class="tenant-name">Aubrielle Hayes</span>
+      <svg class="ico" width="14" height="14" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+    </button>
+    <nav class="drawer-nav" aria-label="Sections">
+      <div class="drawer-section">Pilotage</div>
+      <a href="index.html" class="drawer-item" data-nav="home"><svg class="ico" width="18" height="18"><use href="#i-home"/></svg><span class="label">Cockpit</span></a>
+      <a href="arbitrage.html" class="drawer-item" data-nav="arbitrage"><svg class="ico" width="18" height="18"><use href="#i-arbitrage"/></svg><span class="label">Arbitrage</span><span class="badge">3</span></a>
+      <a href="evening.html" class="drawer-item" data-nav="evening"><svg class="ico" width="18" height="18"><use href="#i-evening"/></svg><span class="label">Soirée</span></a>
+      <div class="drawer-section">Travail</div>
+      <a href="projets.html" class="drawer-item" data-nav="projects"><svg class="ico" width="18" height="18"><use href="#i-projects"/></svg><span class="label">Projets</span></a>
+      <a href="taches.html" class="drawer-item" data-nav="actions"><svg class="ico" width="18" height="18"><use href="#i-actions"/></svg><span class="label">Actions</span><span class="badge">12</span></a>
+      <a href="agenda.html" class="drawer-item is-active" data-nav="agenda" aria-current="page"><svg class="ico" width="18" height="18"><use href="#i-clock"/></svg><span class="label">Agenda</span></a>
+      <a href="assistant.html" class="drawer-item" data-nav="assistant"><svg class="ico" width="18" height="18"><use href="#i-sparkle"/></svg><span class="label">Assistant</span></a>
+      <a href="equipe.html" class="drawer-item" data-nav="people"><svg class="ico" width="18" height="18"><use href="#i-people"/></svg><span class="label">Équipe</span></a>
+      <div class="drawer-section">Capital</div>
+      <a href="connaissance.html" class="drawer-item" data-nav="knowledge"><svg class="ico" width="18" height="18"><use href="#i-knowledge"/></svg><span class="label">Connaissance</span></a>
+      <a href="coaching.html" class="drawer-item" data-nav="coaching"><svg class="ico" width="18" height="18"><use href="#i-coaching"/></svg><span class="label">Coaching</span></a>
+      <a href="revues.html" class="drawer-item" data-nav="revues"><svg class="ico" width="18" height="18"><use href="#i-folder"/></svg><span class="label">Revues</span></a>
+      <a href="decisions.html" class="drawer-item" data-nav="decisions"><svg class="ico" width="18" height="18"><use href="#i-target"/></svg><span class="label">Décisions</span></a>
+    </nav>
+    <div class="drawer-footer">
+      <button class="drawer-locale" aria-label="Langue">
+        <svg class="ico" width="16" height="16"><use href="#i-globe"/></svg>
+        <span class="locale-name">Français</span>
+      </button>
+      <a href="settings.html" class="drawer-item" data-nav="settings">
+        <svg class="ico" width="18" height="18"><use href="#i-settings"/></svg>
+        <span class="label">Réglages</span>
+      </a>
+      <button class="drawer-user" aria-label="Profil">
+        <span class="avatar md" data-house="solstice">AH</span>
+        <span class="meta">
+          <span class="name">Aubrielle Hayes</span>
+          <span class="role">Fondatrice · CEO</span>
+        </span>
+      </button>
+    </div>
+
+    <button class="drawer-collapse-btn" aria-label="Réduire le menu">
+      <svg class="ico" width="14" height="14"><use href="#i-chevron-left"/></svg>
+    </button>
+  </aside>
+
+  <main class="app-main" id="main-content">
+    <header class="topbar">
+      <div class="topbar-title-block">
+        <div class="topbar-title-eyebrow">Agenda</div>
+        <h1 class="section-title">Semaine du 28 avril</h1>
+      </div>
+      <div class="topbar-cluster u-hidden-mobile">
+        <div class="seg" role="tablist">
+          <button class="seg-btn">Jour</button>
+          <button class="seg-btn is-active">Semaine</button>
+          <button class="seg-btn">Mois</button>
+        </div>
+        <div class="topbar-week-nav">
+          <button class="icon-btn" aria-label="Précédent"><svg class="ico" width="14" height="14"><use href="#i-chevron-left"/></svg></button>
+          <button class="btn ghost small">Aujourd'hui</button>
+          <button class="icon-btn" aria-label="Suivant"><svg class="ico" width="14" height="14"><use href="#i-chevron-right"/></svg></button>
+        </div>
+      </div>
+    </header>
+
+    <section class="agenda-summary">
+      <div class="agenda-summary-stat">
+        <span class="u-text-3 small">Deep work cette semaine</span>
+        <strong class="u-tnum" style="font-size:var(--fs-h3);font-family:var(--font-display);font-weight:var(--fw-bold)">11h</strong>
+        <span class="u-text-3 small">sur 15h visées</span>
+      </div>
+      <div class="agenda-summary-stat">
+        <span class="u-text-3 small">Réunions</span>
+        <strong class="u-tnum" style="font-size:var(--fs-h3);font-family:var(--font-display);font-weight:var(--fw-bold)">8h30</strong>
+        <span class="u-text-3 small">17 créneaux</span>
+      </div>
+      <div class="agenda-summary-stat">
+        <span class="u-text-3 small">Espace libre</span>
+        <strong class="u-tnum" style="font-size:var(--fs-h3);font-family:var(--font-display);font-weight:var(--fw-bold)">6h15</strong>
+        <span class="u-text-3 small">à protéger</span>
+      </div>
+      <div class="agenda-summary-stat">
+        <span class="u-text-3 small">Top‑3 placés</span>
+        <strong class="u-tnum" style="font-size:var(--fs-h3);font-family:var(--font-display);font-weight:var(--fw-bold)">3/5</strong>
+        <span class="u-text-3 small">jours protégés</span>
+      </div>
+    </section>
+
+    <section class="agenda-grid">
+      <div class="agenda-hours">
+        <div class="agenda-hour-row" style="height:32px"></div>
+        <div class="agenda-hour"><span>08</span></div>
+        <div class="agenda-hour"><span>09</span></div>
+        <div class="agenda-hour"><span>10</span></div>
+        <div class="agenda-hour"><span>11</span></div>
+        <div class="agenda-hour"><span>12</span></div>
+        <div class="agenda-hour"><span>13</span></div>
+        <div class="agenda-hour"><span>14</span></div>
+        <div class="agenda-hour"><span>15</span></div>
+        <div class="agenda-hour"><span>16</span></div>
+        <div class="agenda-hour"><span>17</span></div>
+        <div class="agenda-hour"><span>18</span></div>
+        <div class="agenda-hour"><span>19</span></div>
+      </div>
+
+      <div class="agenda-day" data-day="lun">
+        <div class="agenda-day-head past">
+          <span class="agenda-day-name">LUN</span>
+          <span class="agenda-day-date">28</span>
+        </div>
+        <div class="agenda-day-body" style="opacity:.55">
+          <div class="agenda-block ritual" style="top:0;height:48px"><span class="agenda-block-time">08:00</span><span class="agenda-block-title">Top‑3</span></div>
+          <div class="agenda-block deep" data-house="northwind" style="top:64px;height:120px">
+            <span class="agenda-block-time">09:00 – 11:00</span>
+            <span class="agenda-block-title">Spec Northwind v3</span>
+            <span class="agenda-block-meta">Deep work · seul</span>
+          </div>
+          <div class="agenda-block meet" style="top:240px;height:48px">
+            <span class="agenda-block-time">12:00</span>
+            <span class="agenda-block-title">Déjeuner — Marc</span>
+          </div>
+          <div class="agenda-block meet" data-house="solstice" style="top:336px;height:60px">
+            <span class="agenda-block-time">14:00</span>
+            <span class="agenda-block-title">Comité Solstice</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="agenda-day is-today" data-day="mar">
+        <div class="agenda-day-head today">
+          <span class="agenda-day-name">MAR</span>
+          <span class="agenda-day-date">29</span>
+        </div>
+        <div class="agenda-day-body">
+          <div class="agenda-now-line" style="top:140px"><span class="agenda-now-dot"></span><span class="agenda-now-time">10:18</span></div>
+          <div class="agenda-block ritual done" style="top:0;height:48px">
+            <span class="agenda-block-time">08:00 ✓</span>
+            <span class="agenda-block-title">Top‑3 du jour</span>
+          </div>
+          <div class="agenda-block deep" data-house="northwind" style="top:64px;height:96px">
+            <span class="agenda-block-time">09:00 – 10:30</span>
+            <span class="agenda-block-title">Trancher spec Northwind</span>
+            <span class="agenda-block-meta">P0 · 32 min restantes</span>
+          </div>
+          <div class="agenda-block meet" data-house="helix" style="top:240px;height:48px">
+            <span class="agenda-block-time">11:00</span>
+            <span class="agenda-block-title">1‑à‑1 Helene</span>
+          </div>
+          <div class="agenda-block deep" data-house="solstice" style="top:336px;height:96px">
+            <span class="agenda-block-time">14:00 – 15:30</span>
+            <span class="agenda-block-title">Négo Solstice — round 3</span>
+            <span class="agenda-block-meta">Préparation</span>
+          </div>
+          <div class="agenda-block ritual" style="top:528px;height:32px">
+            <span class="agenda-block-time">17:30</span>
+            <span class="agenda-block-title">Soirée</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="agenda-day" data-day="mer">
+        <div class="agenda-day-head">
+          <span class="agenda-day-name">MER</span>
+          <span class="agenda-day-date">30</span>
+        </div>
+        <div class="agenda-day-body">
+          <div class="agenda-block ritual" style="top:0;height:48px"><span class="agenda-block-time">08:00</span><span class="agenda-block-title">Top‑3</span></div>
+          <div class="agenda-block meet" data-house="northwind" style="top:96px;height:60px">
+            <span class="agenda-block-time">09:30</span>
+            <span class="agenda-block-title">Standup Northwind</span>
+          </div>
+          <div class="agenda-block deep" data-house="northwind" style="top:192px;height:144px">
+            <span class="agenda-block-time">11:00 – 13:30</span>
+            <span class="agenda-block-title">RFP Hôpital Sud</span>
+            <span class="agenda-block-meta">Deep work · réponse</span>
+          </div>
+          <div class="agenda-block meet" style="top:432px;height:60px">
+            <span class="agenda-block-time">15:00</span>
+            <span class="agenda-block-title">Investisseur — découverte</span>
+          </div>
+          <div class="agenda-block ritual" style="top:528px;height:32px">
+            <span class="agenda-block-time">17:30</span>
+            <span class="agenda-block-title">Soirée</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="agenda-day" data-day="jeu">
+        <div class="agenda-day-head">
+          <span class="agenda-day-name">JEU</span>
+          <span class="agenda-day-date">01</span>
+        </div>
+        <div class="agenda-day-body">
+          <div class="agenda-block ritual" style="top:0;height:48px"><span class="agenda-block-time">08:00</span><span class="agenda-block-title">Top‑3</span></div>
+          <div class="agenda-block deep" data-house="helix" style="top:64px;height:144px">
+            <span class="agenda-block-time">09:00 – 11:30</span>
+            <span class="agenda-block-title">Synthèse entretiens</span>
+            <span class="agenda-block-meta">Helix · 3 personnes</span>
+          </div>
+          <div class="agenda-block meet" data-house="helix" style="top:240px;height:60px">
+            <span class="agenda-block-time">11:30</span>
+            <span class="agenda-block-title">Atelier équipe Helix</span>
+          </div>
+          <div class="agenda-block meet" style="top:384px;height:48px">
+            <span class="agenda-block-time">14:30</span>
+            <span class="agenda-block-title">Déjeuner — Camille</span>
+          </div>
+          <div class="agenda-block ritual" style="top:528px;height:32px">
+            <span class="agenda-block-time">17:30</span>
+            <span class="agenda-block-title">Soirée</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="agenda-day" data-day="ven">
+        <div class="agenda-day-head">
+          <span class="agenda-day-name">VEN</span>
+          <span class="agenda-day-date">02</span>
+        </div>
+        <div class="agenda-day-body">
+          <div class="agenda-block ritual" style="top:0;height:48px"><span class="agenda-block-time">08:00</span><span class="agenda-block-title">Top‑3</span></div>
+          <div class="agenda-block deep" data-house="solstice" style="top:64px;height:96px">
+            <span class="agenda-block-time">09:00 – 10:30</span>
+            <span class="agenda-block-title">Contrat Solstice — relecture</span>
+          </div>
+          <div class="agenda-block meet" style="top:288px;height:60px">
+            <span class="agenda-block-time">12:30</span>
+            <span class="agenda-block-title">Comité hebdo</span>
+          </div>
+          <div class="agenda-block ritual" data-special="review" style="top:432px;height:96px">
+            <span class="agenda-block-time">15:00 – 16:30</span>
+            <span class="agenda-block-title">Revue de la semaine</span>
+            <span class="agenda-block-meta">Rituel hebdo</span>
+          </div>
+          <div class="agenda-block ritual" style="top:528px;height:32px">
+            <span class="agenda-block-time">17:30</span>
+            <span class="agenda-block-title">Soirée</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="agenda-day weekend" data-day="sam">
+        <div class="agenda-day-head"><span class="agenda-day-name">SAM</span><span class="agenda-day-date">03</span></div>
+        <div class="agenda-day-body weekend-empty"><span class="u-text-3 small" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)">—</span></div>
+      </div>
+
+      <div class="agenda-day weekend" data-day="dim">
+        <div class="agenda-day-head"><span class="agenda-day-name">DIM</span><span class="agenda-day-date">04</span></div>
+        <div class="agenda-day-body weekend-empty"><span class="u-text-3 small" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)">—</span></div>
+      </div>
+    </section>
+
+    <section class="agenda-legend">
+      <span class="legend-item"><span class="legend-swatch deep"></span>Deep work</span>
+      <span class="legend-item"><span class="legend-swatch meet"></span>Réunion</span>
+      <span class="legend-item"><span class="legend-swatch ritual"></span>Rituel</span>
+      <span class="legend-item"><span class="dot" style="background:var(--house-northwind);width:10px;height:10px;border-radius:50%"></span>Northwind</span>
+      <span class="legend-item"><span class="dot" style="background:var(--house-solstice);width:10px;height:10px;border-radius:50%"></span>Solstice</span>
+      <span class="legend-item"><span class="dot" style="background:var(--house-helix);width:10px;height:10px;border-radius:50%"></span>Helix</span>
+    </section>
+
+    <footer class="app-footer">
+      <p class="strategic-q">11h de deep work cette semaine. Vous en aviez visé 15. Qu'est‑ce qui a pris la place ?</p>
+      <div class="footer-meta"><span>aiCEO v0.5</span><span>·</span><span>Agenda</span></div>
+    </footer>
+  </main>
+</div>
+
+<nav class="bottom-tab-nav">
+  <a href="index.html" class="bottom-tab"><svg class="ico"><use href="#i-home"/></svg><span>Cockpit</span></a>
+  <a href="arbitrage.html" class="bottom-tab"><svg class="ico"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
+  <button class="bottom-tab fab-trigger"><span class="fab-circle"><svg class="ico"><use href="#i-mic"/></svg></span><span style="margin-top:30px">Capter</span></button>
+  <a href="agenda.html" class="bottom-tab is-active"><svg class="ico"><use href="#i-clock"/></svg><span>Agenda</span></a>
+  <a href="evening.html" class="bottom-tab"><svg class="ico"><use href="#i-evening"/></svg><span>Soirée</span></a>
+</nav>
+
+<style>
+.topbar-week-nav { display:flex; gap:4px; align-items:center; }
+
+.agenda-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-block: var(--space-4);
+}
+.agenda-summary-stat { display: flex; flex-direction: column; gap: 2px; }
+
+.agenda-grid {
+  display: grid;
+  grid-template-columns: 56px repeat(7, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-block-end: var(--space-4);
+}
+.agenda-hours { background: var(--surface-2); position: relative; }
+.agenda-hour {
+  height: 48px;
+  display: flex; justify-content: center; padding-block-start: 4px;
+  font-size: 10px; font-weight: var(--fw-bold);
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+.agenda-day { background: var(--surface); display: flex; flex-direction: column; }
+.agenda-day-head {
+  height: 32px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  background: var(--surface-2);
+  border-block-end: 1px solid var(--border);
+}
+.agenda-day-head.today { background: var(--text); color: var(--surface); }
+.agenda-day-head.past .agenda-day-name { opacity: 0.6; }
+.agenda-day-name { font-size: 11px; font-weight: var(--fw-extrabold); letter-spacing: 0.06em; }
+.agenda-day-date { font-size: 14px; font-weight: var(--fw-bold); font-variant-numeric: tabular-nums; }
+
+.agenda-day-body {
+  position: relative;
+  height: 576px;
+  background-image: linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+  background-size: 100% 48px;
+}
+.agenda-day.weekend .agenda-day-body {
+  background: repeating-linear-gradient(45deg, var(--surface), var(--surface) 8px, var(--surface-2) 8px, var(--surface-2) 16px);
+  opacity: 0.5;
+}
+
+.agenda-block {
+  position: absolute;
+  inset-inline: 4px;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  display: flex; flex-direction: column; gap: 1px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .12s, box-shadow .12s;
+}
+.agenda-block:hover { transform: scale(1.01); box-shadow: var(--shadow-sm); z-index: 2; }
+.agenda-block.deep {
+  background: var(--charcoal-50);
+  border-inline-start: 3px solid var(--text);
+  color: var(--text);
+}
+.agenda-block.deep[data-house="northwind"] { border-inline-start-color: var(--house-northwind); background: color-mix(in oklch, var(--house-northwind) 8%, var(--surface)); }
+.agenda-block.deep[data-house="solstice"] { border-inline-start-color: var(--house-solstice); background: color-mix(in oklch, var(--house-solstice) 8%, var(--surface)); }
+.agenda-block.deep[data-house="helix"] { border-inline-start-color: var(--house-helix); background: color-mix(in oklch, var(--house-helix) 8%, var(--surface)); }
+.agenda-block.meet { background: var(--surface-3); color: var(--text); }
+.agenda-block.meet[data-house="northwind"] { box-shadow: inset 3px 0 0 var(--house-northwind); }
+.agenda-block.meet[data-house="solstice"] { box-shadow: inset 3px 0 0 var(--house-solstice); }
+.agenda-block.meet[data-house="helix"] { box-shadow: inset 3px 0 0 var(--house-helix); }
+.agenda-block.ritual {
+  background: var(--rose-50);
+  border-inline-start: 3px solid var(--rose-600);
+  color: var(--rose-800);
+}
+.agenda-block.ritual[data-special="review"] { background: var(--rose-600); color: #fff; border-inline-start-color: var(--rose-800); }
+.agenda-block.ritual.done {
+  background: var(--surface-2);
+  border-inline-start-color: var(--emerald);
+  color: var(--text-2);
+  text-decoration: line-through;
+  opacity: .6;
+}
+.agenda-block-time { font-size: 10px; font-weight: var(--fw-bold); letter-spacing: 0.02em; font-variant-numeric: tabular-nums; opacity: 0.7; }
+.agenda-block-title { font-size: 12px; font-weight: var(--fw-semi); letter-spacing: var(--tracking-card); line-height: 1.2; }
+.agenda-block-meta { font-size: 10px; opacity: 0.7; }
+
+.agenda-now-line { position: absolute; inset-inline: 0; height: 0; border-top: 2px solid var(--rose-600); z-index: 3; pointer-events: none; }
+.agenda-now-dot { position: absolute; inset-inline-start: -5px; top: -5px; width: 10px; height: 10px; border-radius: 50%; background: var(--rose-600); }
+.agenda-now-time { position: absolute; inset-inline-start: 8px; top: -16px; font-size: 9px; font-weight: var(--fw-extrabold); color: var(--rose-600); background: var(--surface); padding: 0 4px; font-variant-numeric: tabular-nums; }
+
+.agenda-legend { display: flex; flex-wrap: wrap; gap: var(--space-4); padding: var(--space-3) 0; font-size: var(--fs-xs); color: var(--text-2); }
+.legend-item { display: inline-flex; align-items: center; gap: 6px; }
+.legend-swatch { width: 14px; height: 14px; border-radius: 3px; }
+.legend-swatch.deep { background: var(--charcoal-50); border-inline-start: 3px solid var(--text); }
+.legend-swatch.meet { background: var(--surface-3); }
+.legend-swatch.ritual { background: var(--rose-50); border-inline-start: 3px solid var(--rose-600); }
+
+@media (max-width: 900px) {
+  .agenda-summary { grid-template-columns: repeat(2, 1fr); }
+  .agenda-grid { grid-template-columns: 40px 1fr; grid-auto-flow: row; }
+  .agenda-hours { display: none; }
+  .agenda-day:not(.is-today) { display: none; }
+  .agenda-day.is-today { grid-column: 1 / -1; }
+}
+</style>
+
+<script src="_shared/app.js"></script>
+<script>
+fetch('_shared/icons.svg.html').then(r => r.text()).then(t => document.getElementById('icons-host').innerHTML = t);
+document.querySelectorAll('.seg-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    b.parentElement.querySelectorAll('.seg-btn').forEach(o => o.classList.remove('is-active'));
+    b.classList.add('is-active');
+  });
+});
+App.setupTweaks(
+  () => ({ view: 'week', locale: 'fr' }),
+  {
+    render: (s) => `
+      <section class="tweaks-section">
+        <div class="tweaks-section-title">Vue</div>
+        <div class="tweak-row tweak-radio">
+          <input type="radio" name="v" id="v-w" value="week" data-tweak="view" ${s.view==='week'?'checked':''}><label for="v-w">Semaine</label>
+          <input type="radio" name="v" id="v-d" value="day" data-tweak="view" ${s.view==='day'?'checked':''}><label for="v-d">Jour</label>
+        </div>
+      </section>
+      <section class="tweaks-section">
+        <div class="tweaks-section-title">Langue</div>
+        <div class="tweak-row"><label>Locale</label>
+          <select data-tweak="locale">
+            <option value="fr" ${s.locale==='fr'?'selected':''}>FR</option>
+            <option value="en" ${s.locale==='en'?'selected':''}>EN</option>
+          </select>
+        </div>
+      </section>
+    `,
+    apply: (s) => { App.setLocale(s.locale); }
+  }
+);
+</script>
+</body>
+</html>

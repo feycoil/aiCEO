@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>aiCEO — Projets</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css"/>
+<link rel="stylesheet" href="_shared/app.css"/>
+<style>
+  .pj-tbl { width: 100%; border-collapse: collapse; background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+  .pj-tbl th { text-align: left; font: 800 10px var(--font-sans); text-transform: uppercase; letter-spacing: .1em; color: var(--text-3); padding: 14px 16px; border-bottom: 1px solid var(--border); background: var(--surface); }
+  .pj-tbl td { padding: 16px; border-bottom: 1px dashed var(--border); font: 500 13px var(--font-sans); vertical-align: middle; }
+  .pj-tbl tr:last-child td { border-bottom: 0; }
+  .pj-tbl tr:hover td { background: var(--surface); cursor: pointer; }
+  .pj-tbl .name { font: 800 14.5px var(--font-sans); letter-spacing: -.015em; color: var(--text); }
+  .pj-tbl .name .m { font: 500 11.5px var(--font-sans); color: var(--text-3); margin-top: 2px; letter-spacing: 0; }
+  .pj-pbar { width: 120px; height: 6px; background: var(--surface-3); border-radius: 3px; overflow: hidden; }
+  .pj-pbar > div { height: 100%; background: var(--text); }
+  .pj-pbar.r > div { background: var(--rose); }
+  .pj-pbar.a > div { background: var(--amber); }
+  .pj-pbar.e > div { background: var(--emerald); }
+</style>
+</head>
+<body data-nav="projets">
+<div class="app">
+  <div id="sidebar-slot"></div>
+  <main class="main">
+    <header class="topbar">
+      <div class="crumbs"><a href="index.html">Cockpit</a><span class="sep">›</span><span class="current">Projets</span><span class="sep">·</span><span class="muted tabular">10 actifs · 3 en alerte · 2 livrent ce mois</span></div>
+      <div class="topbar-actions">
+        <button class="btn">Vue Gantt</button>
+        <button class="btn primary">+ Projet</button>
+      </div>
+    </header>
+    <div class="page">
+      <div class="page-h">
+        <div><h1>Projets</h1><div class="sub">Tous les projets ouverts dans le groupe. Cliquez pour ouvrir la fiche.</div></div>
+        <div class="flex gap-8">
+          <span class="badge slate">Toutes sociétés</span>
+          <span class="badge rose">3 alertes</span>
+        </div>
+      </div>
+      <table class="pj-tbl">
+        <thead><tr><th>Projet</th><th>Société</th><th>Phase</th><th>Avancement</th><th>Pilote</th><th>Échéance</th><th>Statut</th></tr></thead>
+        <tbody>
+          <tr onclick="location.href='projet.html'">
+            <td><div class="name">Pamandzi 09 — phase 2<div class="m">Mayotte · résidentiel 24 logements · FF&amp;E + livraison</div></div></td>
+            <td><span class="company-chip c-AMP">AMP</span></td>
+            <td>Travaux T2</td>
+            <td><div class="pj-pbar a"><div style="width:55%"></div></div><div class="m" style="margin-top:4px; color:var(--text-3); font: 500 11px var(--font-mono)">55%</div></td>
+            <td>Karim El M.</td>
+            <td><span class="due tabular" style="font-weight:700">livraison été 26</span></td>
+            <td><span class="badge amber">FF&amp;E à arbitrer</span></td>
+          </tr>
+          <tr>
+            <td><div class="name">CA Bretagne · acquisition foncier<div class="m">tirage prêt 1.4 M€ · validation banque</div></div></td>
+            <td><span class="company-chip c-SCIS">SCIS</span></td>
+            <td>Tirage</td>
+            <td><div class="pj-pbar r"><div style="width:30%"></div></div><div class="m" style="margin-top:4px; color:var(--text-3); font: 500 11px var(--font-mono)">30%</div></td>
+            <td>Vous</td>
+            <td><span class="due over" style="font-weight:700">jeu. 30 avr.</span></td>
+            <td><span class="badge rose">Big Rock #1</span></td>
+          </tr>
+          <tr>
+            <td><div class="name">ETIC sprint 7 — refonte espace COO<div class="m">SI interne · COPIL hebdo</div></div></td>
+            <td><span class="company-chip c-ETIC">ETIC</span></td>
+            <td>Sprint en cours</td>
+            <td><div class="pj-pbar"><div style="width:65%"></div></div><div class="m" style="margin-top:4px; color:var(--text-3); font: 500 11px var(--font-mono)">65%</div></td>
+            <td>Lamiae B.</td>
+            <td>fin S18</td>
+            <td><span class="badge slate">recurrent</span></td>
+          </tr>
+          <tr>
+            <td><div class="name">Affejee · recouvrement honoraires<div class="m">12 800 € · cabinet expert · relance 3</div></div></td>
+            <td><span class="company-chip c-ETIC">ETIC</span></td>
+            <td>Soldé</td>
+            <td><div class="pj-pbar e"><div style="width:100%"></div></div><div class="m" style="margin-top:4px; color:var(--emerald); font: 700 11px var(--font-mono)">100%</div></td>
+            <td>Vous</td>
+            <td>auj.</td>
+            <td><span class="badge emerald">soldé 17:08</span></td>
+          </tr>
+          <tr>
+            <td><div class="name">ITH · saisonnalité S2 2026<div class="m">3 sites · prévisions occupation + tarification</div></div></td>
+            <td><span class="company-chip c-ITH">ITH</span></td>
+            <td>Cadrage</td>
+            <td><div class="pj-pbar"><div style="width:25%"></div></div><div class="m" style="margin-top:4px; color:var(--text-3); font: 500 11px var(--font-mono)">25%</div></td>
+            <td>Naïma O.</td>
+            <td>juin 26</td>
+            <td><span class="badge slate">consolide</span></td>
+          </tr>
+          <tr>
+            <td><div class="name">AMP · recrutement chargé travaux<div class="m">décision ouverte · 3 candidats short-list</div></div></td>
+            <td><span class="company-chip c-AMP">AMP</span></td>
+            <td>Décision</td>
+            <td><div class="pj-pbar r"><div style="width:40%"></div></div><div class="m" style="margin-top:4px; color:var(--text-3); font: 500 11px var(--font-mono)">40%</div></td>
+            <td>Karim + vous</td>
+            <td>fin avr.</td>
+            <td><span class="badge rose">dormant 14j</span></td>
+          </tr>
+          <tr>
+            <td><div class="name">Pamandzi 11 — étude de faisabilité<div class="m">terrain Mayotte · pré-promesse</div></div></td>
+            <td><span class="company-chip c-AMP">AMP</span></td>
+            <td>Pré-étude</td>
+            <td><div class="pj-pbar"><div style="width:15%"></div></div><div class="m" style="margin-top:4px; color:var(--text-3); font: 500 11px var(--font-mono)">15%</div></td>
+            <td>Karim</td>
+            <td>Q3 26</td>
+            <td><span class="badge slate">en veille</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+<script src="_shared/shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+/**
+ * c-skeleton — Loading placeholder (line, circle, card)
+ * Source : 06-composants-catalogue.md (S6.1.2)
+ */
+
+.c-skeleton {
+  display: block;
+  background: linear-gradient(
+    90deg,
+    var(--color-cream-200) 0%,
+    var(--color-cream-100) 50%,
+    var(--color-cream-200) 100%
+  );
+  background-size: 200% 100%;
+  animation: c-skeleton-shimmer var(--duration-celebr) var(--ease-in-out) infinite;
+  border-radius: var(--radius-sm);
+}
+
+.c-skeleton--line {
+  height: 12px;
+  margin-bottom: var(--space-1);
+}
+.c-skeleton--line:last-child { margin-bottom: 0; }
+
+.c-skeleton--circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.c-skeleton--card {
+  height: 120px;
+  border-radius: var(--radius-card);
+}
+
+.c-skeleton--text-sm  { height: 10px; width: 80%; }
+.c-skeleton--text-md  { height: 14px; width: 90%; }
+.c-skeleton--text-lg  { height: 20px; width: 60%; }
+
+@keyframes c-skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-skeleton { animation: none; opacity: 0.6; }
+}

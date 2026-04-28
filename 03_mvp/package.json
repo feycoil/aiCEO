@@ -1,9 +1,12 @@
 {
   "name": "aiceo-mvp",
-  "version": "0.5.0-s1",
-  "description": "aiCEO v0.5 - produit unifie local (App Web Twisty + serveur Node + SQLite via node:sqlite)",
+  "version": "0.6.0-s6.1",
+  "description": "aiCEO v0.6 - Interface finalisee (DS atomic + 27 composants + microcopy + a11y + coaching legers)",
   "type": "commonjs",
   "private": true,
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
@@ -12,16 +15,27 @@
     "db:reset": "node scripts/init-db.js --reset",
     "db:migrate-from-appweb": "node scripts/migrate-from-appweb.js",
     "db:migrate-json": "node scripts/migrate-json-to-sqlite.js",
-    "test": "node --test"
-  },
-  "engines": {
-    "node": ">=22.5.0"
+    "test": "node --test",
+    "smoke": "powershell -ExecutionPolicy Bypass -File scripts/smoke-all.ps1",
+    "css:lint": "stylelint \"public/_shared/**/*.css\" --config .stylelintrc.json",
+    "css:lint:fix": "stylelint \"public/_shared/**/*.css\" --config .stylelintrc.json --fix",
+    "a11y:audit": "node scripts/a11y-audit.js",
+    "svg:sprite": "node scripts/svg-sprite.js",
+    "lint": "npm run css:lint"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.27.0",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.1",
-    "https-proxy-agent": "^9.0.0",
-    "undici": "^8.1.0"
+    "@anthropic-ai/sdk": "^0.27.3",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
+    "https-proxy-agent": "^7.0.5"
+  },
+  "devDependencies": {
+    "@axe-core/cli": "^4.10.0",
+    "@playwright/test": "^1.48.0",
+    "lucide-static": "^0.462.0",
+    "node-windows": "^1.0.0-beta.8",
+    "stylelint": "^16.10.0",
+    "stylelint-config-standard": "^36.0.1",
+    "stylelint-selector-bem-pattern": "^4.0.1"
   }
 }

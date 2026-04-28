@@ -23,6 +23,7 @@
  */
 const express = require('express');
 const { getDb, uuid7, now } = require('../db');
+const { loadEmails } = require('../emails-context');
 
 const router = express.Router();
 
@@ -277,6 +278,239 @@ router.get('/history', (req, res) => {
   }
 });
 
+// --- POST /analyze-emails ----------------------------
+// Source : table SQLite `emails` (alimentee par scripts/normalize-emails.js
+// apres sync Outlook, ou par scripts/ingest-emails.js en rattrapage).
+// Ne lit plus le JSON : la DB est la source de verite.
+
+router.post("/analyze-emails", async (req, res) => {
+  try {
+    const db = getDb();
+
+    // Verifier presence table emails (tolerant si migration pas encore lancee)
+    const hasTable = db
+      .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='emails'")
+      .get();
+    if (!hasTable) {
+      return res.status(200).json({
+        proposals: [],
+        ready: false,
+        reason: "no-table",
+        message:
+          "La table emails n'existe pas encore. Lancez : npm run db:init puis scripts/sync-outlook.ps1.",
+      });
+    }
+
+    const total = db.prepare("SELECT COUNT(*) AS c FROM emails").get().c;
+    if (total === 0) {
+      return res.status(200).json({
+        proposals: [],
+        ready: false,
+        reason: "no-sync",
+        message:
+          "Aucun email synchronise pour le moment. Lancez d'abord la sync Outlook (scripts/sync-outlook.ps1), puis revenez ici.",
+      });
+    }
+
+    // Heuristique de scoring SQL :
+    //   flagged*100 + unread*30 + has_attach*5 + (project!=null)*10
+    //   + bonus recence (CASE sur diff jours)
+    // On ignore is_self et les emails deja arbitres (arbitrated_at NOT NULL).
+    const rows = db.prepare(`
+      SELECT
+        id, account, folder, subject, from_name, from_email, to_addrs,
+        received_at, unread, flagged, has_attach, preview,
+        inferred_project, is_self,
+        (
+          (flagged * 100)
+          + (unread * 30)
+          + (has_attach * 5)
+          + (CASE WHEN inferred_project IS NOT NULL AND inferred_project != '' THEN 10 ELSE 0 END)
+          + (CASE
+              WHEN julianday('now') - julianday(received_at) < 1 THEN 20
+              WHEN julianday('now') - julianday(received_at) < 3 THEN 10
+              WHEN julianday('now') - julianday(received_at) < 7 THEN 5
+              ELSE 0
+            END)
+        ) AS score
+      FROM emails
+      WHERE is_self = 0
+        AND arbitrated_at IS NULL
+      ORDER BY score DESC, received_at DESC
+      LIMIT 8
+    `).all();
+
+    const candidates = rows.filter((r) => r.score > 0);
+
+    // Stats globales pour info CEO
+    const stats = db.prepare(`
+      SELECT
+        COUNT(*) AS total,
+        SUM(CASE WHEN unread = 1 THEN 1 ELSE 0 END) AS unread,
+        SUM(CASE WHEN flagged = 1 THEN 1 ELSE 0 END) AS flagged,
+        SUM(CASE WHEN arbitrated_at IS NOT NULL THEN 1 ELSE 0 END) AS arbitrated,
+        MAX(ingested_at) AS last_ingest
+      FROM emails
+    `).get();
+
+    if (candidates.length === 0) {
+      return res.status(200).json({
+        proposals: [],
+        ready: false,
+        reason: "no-actionable",
+        totals: stats,
+        message:
+          "Sync trouvee (" + total + " emails) mais aucun n'est non-lu, flagge ou recent. Rien a arbitrer ce matin.",
+      });
+    }
+
+    // Mapping kind heuristique (subject -> task / decision / project)
+    const kindFor = (subject) => {
+      const s = (subject || "");
+      if (/[?]\s*$/.test(s)) return "decision";
+      if (/^(re|fwd|tr)\s*:/i.test(s)) return "task";
+      if (/(projet|launch|kickoff|lancement)/i.test(s)) return "project";
+      return "task";
+    };
+
+    const proposals = candidates.map((r, i) => ({
+      id: "arb-" + (i + 1),
+      source_id: r.id,
+      kind: kindFor(r.subject),
+      title: r.subject || "(sans objet)",
+      from: r.from_name || r.from_email || "",
+      from_email: r.from_email || "",
+      excerpt: (r.preview || "").slice(0, 220).trim(),
+      proposed_priority: r.score >= 100 ? "P0" : r.score >= 50 ? "P1" : "P2",
+      inferred_project: r.inferred_project || null,
+      received_at: r.received_at,
+      flagged: !!r.flagged,
+      unread: !!r.unread,
+      score: r.score,
+      created_from: "email",
+    }));
+
+    res.json({
+      proposals,
+      total: proposals.length,
+      ready: true,
+      totals: stats,
+      message:
+        "Analyse terminee - " + proposals.length + " action(s) proposee(s) a arbitrer.",
+    });
+  } catch (e) {
+    console.error("[/api/arbitrage/analyze-emails] error:", e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// --- POST /bootstrap-from-emails -------------------------
+// Auto-cree projets distincts (depuis emails.inferred_project)
+// et contacts recurrents (>= 3 emails) en table SQLite.
+// Idempotent : skip si name/email deja present.
+router.post("/bootstrap-from-emails", async (req, res) => {
+  try {
+    const db = getDb();
+    const crypto = require("crypto");
+    const uuid = () => crypto.randomUUID();
+
+    // Verif table emails
+    const hasEmails = db.prepare(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='emails'"
+    ).get();
+    if (!hasEmails) {
+      return res.status(200).json({
+        ok: false,
+        reason: "no-table",
+        message: "Table emails absente. Lancez node scripts/init-db.js puis ingest-emails.js.",
+      });
+    }
+
+    // 1. Projets
+    const distinctProjects = db.prepare(`
+      SELECT inferred_project AS slug, COUNT(*) AS n,
+             MIN(received_at) AS first_seen, MAX(received_at) AS last_seen
+      FROM emails
+      WHERE inferred_project IS NOT NULL AND inferred_project != '' AND is_self = 0
+      GROUP BY inferred_project
+      ORDER BY n DESC
+    `).all();
+
+    const checkProj = db.prepare("SELECT id FROM projects WHERE LOWER(name) = LOWER(?)");
+    const insProj = db.prepare(
+      "INSERT INTO projects (id, name, tagline, status, description, progress, created_at, updated_at) " +
+      "VALUES (?, ?, ?, 'active', ?, 0, datetime('now'), datetime('now'))"
+    );
+
+    let projCreated = 0, projSkipped = 0;
+    const projNames = [];
+    for (const p of distinctProjects) {
+      if (checkProj.get(p.slug)) { projSkipped++; continue; }
+      insProj.run(
+        uuid(),
+        p.slug,
+        "Auto-cree depuis sync Outlook",
+        p.n + " email(s) sur 30 jours (premier " + (p.first_seen || "?").slice(0, 10) +
+          ", dernier " + (p.last_seen || "?").slice(0, 10) + ")"
+      );
+      projCreated++;
+      projNames.push(p.slug);
+    }
+
+    // 2. Contacts
+    const senders = db.prepare(`
+      SELECT from_email, COUNT(*) AS n, MAX(received_at) AS last_seen
+      FROM emails
+      WHERE is_self = 0 AND from_email IS NOT NULL AND from_email != ''
+      GROUP BY from_email
+      HAVING n >= 3
+      ORDER BY n DESC
+    `).all();
+
+    const pickName = db.prepare(
+      "SELECT from_name, COUNT(*) AS n FROM emails " +
+      "WHERE from_email = ? AND from_name IS NOT NULL AND from_name != '' " +
+      "GROUP BY from_name ORDER BY n DESC LIMIT 1"
+    );
+    const checkCon = db.prepare("SELECT id FROM contacts WHERE LOWER(email) = LOWER(?)");
+    const insCon = db.prepare(
+      "INSERT INTO contacts (id, name, email, trust_level, notes, last_seen_at, created_at, updated_at) " +
+      "VALUES (?, ?, ?, 'moyenne', ?, ?, datetime('now'), datetime('now'))"
+    );
+
+    let conCreated = 0, conSkipped = 0;
+    const conNames = [];
+    for (const s of senders) {
+      if (checkCon.get(s.from_email)) { conSkipped++; continue; }
+      const nameRow = pickName.get(s.from_email);
+      const name = (nameRow && nameRow.from_name) || s.from_email.split("@")[0];
+      insCon.run(
+        uuid(),
+        name,
+        s.from_email,
+        s.n + " email(s) recu(s) sur 30 jours",
+        s.last_seen
+      );
+      conCreated++;
+      conNames.push(name);
+    }
+
+    res.json({
+      ok: true,
+      projects: { created: projCreated, skipped: projSkipped, names: projNames },
+      contacts: { created: conCreated, skipped: conSkipped, names: conNames },
+      totals: {
+        projects: db.prepare("SELECT COUNT(*) AS c FROM projects").get().c,
+        contacts: db.prepare("SELECT COUNT(*) AS c FROM contacts").get().c,
+      },
+      message:
+        projCreated + " projet(s) + " + conCreated + " contact(s) crees " +
+        "(skipped " + projSkipped + "/" + conSkipped + ").",
+    });
+  } catch (e) {
+    console.error("[/api/arbitrage/bootstrap-from-emails] error:", e);
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
 module.exports = router;
-module.exports.proposeBuckets = proposeBuckets;
-module.exports.todayIso = todayIso;

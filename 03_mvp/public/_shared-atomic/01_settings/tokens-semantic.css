@@ -1,0 +1,130 @@
+/**
+ * tokens-semantic.css — Niveau B : tokens semantiques
+ *
+ * Usage contextuel — mappe les primitives vers des roles concrets.
+ * C'est le SEUL niveau que les composants doivent referencer
+ * (eventuellement via tokens-component.css pour les blocs critiques).
+ *
+ * Source canonique : 13-architecture-atomique.md §3
+ *
+ * Avantage 3 niveaux : changer brand color tenant V1 = surcharger ces semantic,
+ * sans toucher aux primitives (palette source) ni aux components (heritent auto).
+ */
+
+:root {
+
+  /* ═══════════════════════════════════════════════════════════════
+     COULEURS SEMANTIQUES — surfaces
+     ═══════════════════════════════════════════════════════════════ */
+  --color-bg:           var(--color-bg-ambient);   /* fond global lavande */
+  --color-surface:      var(--color-cream-100);    /* cartes, panels */
+  --color-surface-2:    #ffffff;                    /* zones contrastees */
+  --color-surface-3:    var(--color-cream-200);    /* zones en retrait */
+  --color-surface-soft: var(--color-cream-50);     /* halo doux */
+
+  /* ═══════════════════════════════════════════════════════════════
+     COULEURS SEMANTIQUES — texte
+     ═══════════════════════════════════════════════════════════════ */
+  --color-text:        var(--color-navy-900);  /* corps */
+  --color-text-2:      var(--color-navy-700);  /* secondaire */
+  --color-text-3:      var(--color-navy-500);  /* meta, legendes */
+  --color-text-muted:  var(--color-cream-500); /* placeholder */
+  --color-text-on-brand: #ffffff;              /* sur fond brand */
+
+  /* ═══════════════════════════════════════════════════════════════
+     COULEURS SEMANTIQUES — borders
+     ═══════════════════════════════════════════════════════════════ */
+  --color-border:        rgba(17, 20, 24, 0.08);
+  --color-border-2:      rgba(17, 20, 24, 0.16);  /* accent border */
+  --color-border-strong: rgba(17, 20, 24, 0.32);
+  --color-border-focus:  var(--color-navy-900);   /* focus visible WCAG */
+
+  /* ═══════════════════════════════════════════════════════════════
+     COULEURS SEMANTIQUES — brand
+     ═══════════════════════════════════════════════════════════════ */
+  --color-brand:        var(--color-navy-900);
+  --color-brand-hover:  var(--color-navy-700);
+  --color-brand-soft:   var(--color-navy-50);
+
+  /* ═══════════════════════════════════════════════════════════════
+     COULEURS SEMANTIQUES — etats / feedback
+     ═══════════════════════════════════════════════════════════════ */
+
+  /* Success (emerald) */
+  --color-success:      var(--color-emerald-500);
+  --color-success-bg:   var(--color-emerald-50);
+  --color-success-text: var(--color-emerald-800);
+
+  /* Warning (amber) */
+  --color-warning:      var(--color-amber-500);
+  --color-warning-bg:   var(--color-amber-50);
+  --color-warning-text: var(--color-amber-800);
+
+  /* Danger (rose) */
+  --color-danger:       var(--color-rose-500);
+  --color-danger-bg:    var(--color-rose-50);
+  --color-danger-text:  var(--color-rose-800);
+
+  /* Info (sky) */
+  --color-info:         var(--color-sky-500);
+  --color-info-bg:      var(--color-sky-50);
+  --color-info-text:    var(--color-sky-800);
+
+  /* Coaching / IA (violet — pour patterns coaching v0.6) */
+  --color-coaching:      var(--color-violet-500);
+  --color-coaching-bg:   var(--color-violet-50);
+  --color-coaching-text: var(--color-violet-800);
+
+  /* ═══════════════════════════════════════════════════════════════
+     COULEURS SEMANTIQUES — overlays
+     ═══════════════════════════════════════════════════════════════ */
+  --color-overlay:        rgba(17, 20, 24, 0.4);   /* modal backdrop */
+  --color-overlay-soft:   rgba(17, 20, 24, 0.16);  /* drawer overlay mobile */
+  --color-overlay-strong: rgba(17, 20, 24, 0.7);   /* lightbox */
+
+  /* ═══════════════════════════════════════════════════════════════
+     SPACING SEMANTIQUE — usage contextuel
+     ═══════════════════════════════════════════════════════════════ */
+  --space-card-padding:    var(--space-5);  /* 24px padding interne carte */
+  --space-card-gap:        var(--space-4);  /* 16px gap entre cartes */
+  --space-section-gap:     var(--space-7);  /* 48px gap entre sections */
+  --space-stack-tight:     var(--space-2);  /* 8px stack vertical serre */
+  --space-stack-normal:    var(--space-3);  /* 12px stack vertical normal */
+  --space-stack-loose:     var(--space-5);  /* 24px stack vertical aere */
+  --space-cluster-gap:     var(--space-2);  /* 8px elements en ligne */
+  --space-form-row-gap:    var(--space-3);  /* 12px gap entre champs form */
+
+  /* ═══════════════════════════════════════════════════════════════
+     RADIUS SEMANTIQUE
+     ═══════════════════════════════════════════════════════════════ */
+  --radius-button:    var(--radius-sm);   /* 8px boutons */
+  --radius-input:     var(--radius-sm);   /* 8px form inputs */
+  --radius-card:      var(--radius-md);   /* 12px cartes default */
+  --radius-modal:     var(--radius-lg);   /* 16px modals */
+  --radius-hero:      var(--radius-xl);   /* 24px heros */
+  --radius-chip:      var(--radius-pill); /* pills, tags, chips */
+
+  /* ═══════════════════════════════════════════════════════════════
+     DURATION SEMANTIQUE
+     ═══════════════════════════════════════════════════════════════ */
+  --duration-tooltip:    var(--duration-instant);
+  --duration-hover:      var(--duration-fast);
+  --duration-modal:      var(--duration-normal);
+  --duration-drawer:     var(--duration-normal);
+  --duration-page:       var(--duration-slow);
+
+  /* ═══════════════════════════════════════════════════════════════
+     SHADOWS SEMANTIQUES
+     ═══════════════════════════════════════════════════════════════ */
+  --shadow-card:    var(--shadow-sm);   /* cartes statiques */
+  --shadow-card-hover: var(--shadow-md);
+  --shadow-popover: var(--shadow-md);   /* dropdowns, tooltips */
+  --shadow-modal:   var(--shadow-xl);   /* modals plein ecran */
+
+  /* ═══════════════════════════════════════════════════════════════
+     RING (focus visible WCAG AA — cf. CONTRIBUTING-V06.md §3)
+     ═══════════════════════════════════════════════════════════════ */
+  --ring-focus: 0 0 0 3px rgba(17, 20, 24, 0.16);
+  --ring-error: 0 0 0 3px rgba(217, 109, 62, 0.24);
+
+}

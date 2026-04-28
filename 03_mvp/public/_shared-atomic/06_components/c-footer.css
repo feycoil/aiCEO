@@ -1,0 +1,88 @@
+/**
+ * c-footer.css — Organism Footer (posture strategique v0.6)
+ *
+ * Pattern coaching v0.6 : footer affiche un ancrage strategique
+ * (citation, focus du jour, mantra) plutot que liens utilitaires.
+ *
+ * Variants :
+ *   .c-footer              (default — discret, sticky bottom optionnel)
+ *   .c-footer--posture     (ancrage coaching — fond cream-50, italique)
+ *   .c-footer--minimal     (juste copyright)
+ *
+ * Accessibilite :
+ *   - <footer role="contentinfo">
+ */
+
+.c-footer {
+  padding: var(--space-3) var(--space-5);
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  color: var(--color-text-3);
+}
+
+.c-footer__copyright {
+  flex-shrink: 0;
+}
+
+.c-footer__links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.c-footer__links a {
+  color: var(--color-text-3);
+  text-decoration: none;
+}
+
+.c-footer__links a:hover {
+  color: var(--color-text);
+  text-decoration: underline;
+}
+
+/* Variant posture (coaching v0.6) */
+.c-footer--posture {
+  background-color: var(--color-surface-soft);
+  padding: var(--space-4) var(--space-5);
+  flex-direction: column;
+  gap: var(--space-2);
+  text-align: center;
+  border-top: 1px solid var(--color-border);
+}
+
+.c-footer__posture-quote {
+  font-family: var(--font-script);
+  font-size: var(--text-h3);
+  color: var(--color-text-2);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-display);
+  font-style: normal;
+}
+
+.c-footer__posture-meta {
+  font-size: var(--text-xs);
+  color: var(--color-text-3);
+}
+
+/* Variant minimal */
+.c-footer--minimal {
+  padding: var(--space-2) var(--space-4);
+  justify-content: center;
+}
+
+@media (max-width: 767px) {
+  .c-footer {
+    flex-direction: column;
+    gap: var(--space-2);
+    text-align: center;
+  }
+}

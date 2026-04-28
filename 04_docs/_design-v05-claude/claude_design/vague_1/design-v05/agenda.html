@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>aiCEO — Agenda</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css"/>
+<link rel="stylesheet" href="_shared/app.css"/>
+<style>
+  .week-h { display: flex; align-items: baseline; justify-content: space-between; padding: 14px 0 18px; border-bottom: 1px dashed var(--border); margin-bottom: 18px; }
+  .week-h h2 { font: 800 22px var(--font-sans); letter-spacing: -.02em; margin: 0; }
+  .week-h .sub { font: 500 13px var(--font-sans); color: var(--text-2); }
+  .seg2 { display: inline-flex; gap: 2px; background: var(--surface-3); padding: 3px; border-radius: 10px; }
+  .seg2 button { font: 700 11.5px var(--font-sans); padding: 6px 12px; border: 0; border-radius: 8px; background: transparent; color: var(--text-2); cursor: pointer; }
+  .seg2 button.active { background: #fff; color: var(--text); box-shadow: var(--shadow-xs); }
+
+  .cal { display: grid; grid-template-columns: 56px repeat(5, 1fr); gap: 0;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; }
+  .cal .head { padding: 12px 10px; font: 800 11px var(--font-sans); text-transform: uppercase; letter-spacing: .08em; color: var(--text-2); border-bottom: 1px solid var(--border); border-right: 1px dashed var(--border); }
+  .cal .head:last-child { border-right: 0; }
+  .cal .head.today { background: var(--text); color: #fff; }
+  .cal .head .d { font: 800 18px var(--font-sans); letter-spacing: -.02em; margin-top: 4px; }
+  .cal .head .meta { font: 500 10.5px var(--font-sans); margin-top: 2px; opacity: .7; }
+  .cal .head.today .meta { opacity: .85; }
+
+  .cal .col { position: relative; height: 720px; border-right: 1px dashed var(--border); }
+  .cal .col:last-child { border-right: 0; }
+  .cal .axis { position: relative; height: 720px; }
+  .cal .axis .h { position: absolute; right: 8px; font: 700 10px var(--font-mono); color: var(--text-3); transform: translateY(-50%); }
+  .cal .col .row-line { position: absolute; left: 0; right: 0; border-top: 1px dashed var(--border); }
+
+  .ev { position: absolute; left: 4px; right: 4px; padding: 6px 8px; border-radius: 8px;
+    background: var(--surface); border-left: 3px solid var(--text); font: 600 11.5px var(--font-sans);
+    box-shadow: var(--shadow-xs); overflow: hidden; }
+  .ev .t { font-weight: 800; letter-spacing: -.005em; color: var(--text); margin-bottom: 2px; line-height: 1.2; }
+  .ev .m { font-weight: 500; color: var(--text-3); font-size: 10.5px; }
+  .ev.amp { background: #fdf3e7; border-left-color: var(--amber); }
+  .ev.scis { background: #fdecdf; border-left-color: var(--rose); }
+  .ev.etic { background: #e9eef4; border-left-color: var(--sky); }
+  .ev.ith { background: #ece7f0; border-left-color: var(--violet); }
+  .ev.gh { background: var(--surface-3); border-left-color: var(--text-3); color: var(--text-3); }
+  .ev.now { box-shadow: 0 0 0 2px var(--text), var(--shadow-card); }
+
+  .now-bar { position: absolute; left: 0; right: 0; height: 2px; background: var(--rose); pointer-events: none; }
+  .now-bar::before { content: ""; position: absolute; left: -5px; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: var(--rose); }
+
+  /* Sidebar drawer mini */
+  .agenda-side { display: grid; grid-template-columns: 1fr 280px; gap: 24px; }
+  .ag-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+  .ag-card h4 { font: 800 12px var(--font-sans); text-transform: uppercase; letter-spacing: .08em; color: var(--text-2); margin: 0 0 10px; }
+  .ag-card .row { display: flex; align-items: center; gap: 8px; padding: 6px 0; font: 500 12.5px var(--font-sans); border-bottom: 1px dashed var(--border); }
+  .ag-card .row:last-child { border-bottom: 0; }
+  .ag-card .row .sw { width: 10px; height: 10px; border-radius: 3px; }
+</style>
+</head>
+<body data-nav="agenda">
+<div class="app">
+  <div id="sidebar-slot"></div>
+  <main class="main">
+    <header class="topbar">
+      <div class="crumbs"><a href="index.html">Cockpit</a><span class="sep">›</span><span class="current">Agenda</span><span class="sep">·</span><span class="muted tabular">29 événements · synchro Outlook 4 min</span></div>
+      <div class="topbar-actions">
+        <div class="seg2"><button>Jour</button><button class="active">Semaine</button><button>Mois</button></div>
+        <button class="btn">Aujourd'hui</button>
+        <button class="btn primary">+ RV</button>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="week-h">
+        <div>
+          <h2>Semaine 17 · 20–26 avril 2026</h2>
+          <div class="sub">5 jours ouvrés · 4 visios, 2 chantiers, 1 banque · 14 plages libres entre 30 et 120 min</div>
+        </div>
+        <div class="flex gap-8">
+          <button class="btn">‹</button>
+          <button class="btn">›</button>
+        </div>
+      </div>
+
+      <div class="agenda-side">
+        <div class="cal">
+          <div class="head"></div>
+          <div class="head today"><div>LUN</div><div class="d tabular">20</div><div class="meta">auj. · 4 RV</div></div>
+          <div class="head"><div>MAR</div><div class="d tabular">21</div><div class="meta">3 RV</div></div>
+          <div class="head"><div>MER</div><div class="d tabular">22</div><div class="meta">2 RV</div></div>
+          <div class="head"><div>JEU</div><div class="d tabular">23</div><div class="meta">1 RV · CA</div></div>
+          <div class="head"><div>VEN</div><div class="d tabular">24</div><div class="meta">2 RV</div></div>
+
+          <!-- axis -->
+          <div class="axis">
+            <div class="h" style="top:0%">8h</div>
+            <div class="h" style="top:14.28%">9h</div>
+            <div class="h" style="top:28.57%">10h</div>
+            <div class="h" style="top:42.85%">11h</div>
+            <div class="h" style="top:57.14%">12h</div>
+            <div class="h" style="top:71.42%">14h</div>
+            <div class="h" style="top:85.71%">16h</div>
+            <div class="h" style="top:100%">18h</div>
+          </div>
+
+          <!-- LUN 20 -->
+          <div class="col">
+            <div class="row-line" style="top:14.28%"></div>
+            <div class="row-line" style="top:28.57%"></div>
+            <div class="row-line" style="top:42.85%"></div>
+            <div class="row-line" style="top:57.14%"></div>
+            <div class="row-line" style="top:71.42%"></div>
+            <div class="row-line" style="top:85.71%"></div>
+            <div class="ev etic" style="top:14%; height:9%"><div class="t">Standup ETIC</div><div class="m">09:00–09:30 · visio</div></div>
+            <div class="ev amp now" style="top:32%; height:14%"><div class="t">Karim — Pamandzi</div><div class="m">10:30–12:00 · sur place</div></div>
+            <div class="ev scis" style="top:73%; height:11%"><div class="t">Affejee — relance 3</div><div class="m">17:00–17:45 · call</div></div>
+            <div class="now-bar" style="top:38%"></div>
+          </div>
+
+          <!-- MAR 21 -->
+          <div class="col">
+            <div class="ev etic" style="top:6%; height:11%"><div class="t">Stratégie S17</div><div class="m">08:30–09:30 · seul</div></div>
+            <div class="ev gh" style="top:35%; height:8%"><div class="t">Déj. Lamiae</div><div class="m">12:30–13:30</div></div>
+            <div class="ev scis" style="top:71%; height:14%"><div class="t">Préparer dossier banque</div><div class="m">14:00–15:30 · 🪨#1</div></div>
+          </div>
+
+          <!-- MER 22 -->
+          <div class="col">
+            <div class="ev amp" style="top:14%; height:18%"><div class="t">FF&amp;E commande étage 2</div><div class="m">09:00–11:00 · Karim + fournisseurs</div></div>
+            <div class="ev ith" style="top:71%; height:9%"><div class="t">ITH · point COO</div><div class="m">14:00–15:00</div></div>
+          </div>
+
+          <!-- JEU 23 -->
+          <div class="col">
+            <div class="ev scis" style="top:42%; height:10%"><div class="t">CA Bretagne · point tirage</div><div class="m">11:00–12:00 · visio banque</div></div>
+          </div>
+
+          <!-- VEN 24 -->
+          <div class="col">
+            <div class="ev etic" style="top:14%; height:9%"><div class="t">Standup ETIC</div><div class="m">09:00–09:30</div></div>
+            <div class="ev gh" style="top:71%; height:9%"><div class="t">Solder NDF T1</div><div class="m">14:00–15:00 · attendu Lamiae</div></div>
+            <div class="ev ith" style="top:85%; height:11%"><div class="t">ITH · revue mensuelle</div><div class="m">16:00–17:30 · COMEX</div></div>
+          </div>
+        </div>
+
+        <aside>
+          <div class="ag-card">
+            <h4>Filtres calendriers</h4>
+            <div class="row"><span class="sw" style="background: var(--rose)"></span> SCIS · 4</div>
+            <div class="row"><span class="sw" style="background: var(--amber)"></span> AMP · 6</div>
+            <div class="row"><span class="sw" style="background: var(--sky)"></span> ETIC · 11</div>
+            <div class="row"><span class="sw" style="background: var(--violet)"></span> ITH · 3</div>
+            <div class="row"><span class="sw" style="background: var(--text-3)"></span> Perso · 5</div>
+          </div>
+          <div class="ag-card">
+            <h4>Conflits détectés</h4>
+            <div style="font: 500 12px/1.5 var(--font-sans); color: var(--text-2)">
+              <p style="margin:0 0 8px"><b style="color: var(--rose)">●</b> Mardi 14:00 — "Préparer dossier banque" entre en conflit avec COPIL ETIC (récurrent). aiCEO a pré-rédigé un mail de décalage.</p>
+              <button class="btn" style="margin-top: 8px">Voir suggestion</button>
+            </div>
+          </div>
+          <div class="ag-card">
+            <h4>Plages 90 min libres</h4>
+            <div style="font: 500 12px/1.5 var(--font-sans); color: var(--text-2)">
+              <div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom: 1px dashed var(--border)"><span>Mar 14:00–15:30</span><b style="color:var(--emerald)">recommandé</b></div>
+              <div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom: 1px dashed var(--border)"><span>Jeu 14:30–16:00</span><span class="muted">libre</span></div>
+              <div style="display:flex; justify-content:space-between; padding:4px 0"><span>Ven 10:00–11:30</span><span class="muted">libre</span></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="_shared/shell.js"></script>
+</body>
+</html>

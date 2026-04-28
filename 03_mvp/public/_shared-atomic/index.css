@@ -1,0 +1,98 @@
+/**
+ * _shared/index.css — Orchestrateur DS v0.6 (ITCSS 7 couches)
+ *
+ * Point d'entree unique pour les pages refondues v0.6 (S6.2+).
+ * Importe dans l'ordre les 7 couches ITCSS du plus general au plus specifique.
+ *
+ * Usage HTML :
+ *   <link rel="stylesheet" href="/_shared/index.css">
+ *
+ * Source : 13-architecture-atomique.md + CONTRIBUTING-V06.md
+ *
+ * Note : `assets/colors_and_type.css` (genere DS pipeline) reste utilise par
+ * les pages v0.5 non encore refondues. Les pages refondues v0.6 utilisent
+ * uniquement ce fichier (+ leurs CSS locaux si necessaire).
+ */
+
+/* ═══════════════════════════════════════════════════════════════
+   01_SETTINGS — Tokens 3 niveaux
+   ═══════════════════════════════════════════════════════════════ */
+@import url("./01_settings/tokens-primitive.css");
+@import url("./01_settings/tokens-semantic.css");
+@import url("./01_settings/tokens-component.css");
+
+/* ═══════════════════════════════════════════════════════════════
+   02_TOOLS — n/a en CSS pur (mixins Sass non applicables)
+   ═══════════════════════════════════════════════════════════════ */
+/* (empty layer — see _shared/02_tools/README.md if needed) */
+
+/* ═══════════════════════════════════════════════════════════════
+   03_GENERIC — Reset, normalize, box-sizing
+   ═══════════════════════════════════════════════════════════════ */
+/* @import url("./03_generic/reset.css");          — TODO S6.1.2 */
+
+/* ═══════════════════════════════════════════════════════════════
+   04_ELEMENTS — Defaults pour h1, p, a, ul (sans classe)
+   ═══════════════════════════════════════════════════════════════ */
+/* @import url("./04_elements/typography.css");    — TODO S6.1.2 */
+/* @import url("./04_elements/links.css");         — TODO S6.1.2 */
+
+/* ═══════════════════════════════════════════════════════════════
+   05_OBJECTS — Layout primitives (.o-grid, .o-stack, .o-cluster)
+   ═══════════════════════════════════════════════════════════════ */
+/* @import url("./05_objects/grid.css");           — TODO S6.1.2 */
+/* @import url("./05_objects/stack.css");          — TODO S6.1.2 */
+/* @import url("./05_objects/cluster.css");        — TODO S6.1.2 */
+
+/* ═══════════════════════════════════════════════════════════════
+   06_COMPONENTS — Visuel par bloc (.c-button, .c-card, etc.)
+   Un fichier par composant. Ajoutes en S6.1.2/3/4.
+   ═══════════════════════════════════════════════════════════════ */
+/* === Statut S6.1 === 11 atoms (S6.1.2) + 9 molecules (S6.1.3) + 7 organisms (S6.1.4) actifs === */
+/* Atoms (S6.1.2) - LIVRES */
+@import url("./06_components/c-button.css");
+@import url("./06_components/c-input.css");
+@import url("./06_components/c-badge.css");
+@import url("./06_components/c-avatar.css");
+@import url("./06_components/c-icon.css");
+@import url("./06_components/c-spinner.css");
+@import url("./06_components/c-skeleton.css");
+@import url("./06_components/c-switch.css");
+@import url("./06_components/c-checkbox.css");
+@import url("./06_components/c-radio.css");
+@import url("./06_components/c-tag.css");
+
+/* Molecules (S6.1.3) — TODO */
+@import url("./06_components/c-search-pill.css");
+@import url("./06_components/c-form-field.css");
+@import url("./06_components/c-toast.css");
+@import url("./06_components/c-tooltip.css");
+@import url("./06_components/c-progress-meter.css");
+@import url("./06_components/c-stepper.css");
+@import url("./06_components/c-dropdown.css");
+@import url("./06_components/c-tabs.css");
+@import url("./06_components/c-pagination.css");
+
+/* Organisms (S6.1.4) — TODO */
+@import url("./06_components/c-drawer.css");
+@import url("./06_components/c-header.css");
+@import url("./06_components/c-footer.css");
+@import url("./06_components/c-modal.css");
+@import url("./06_components/c-cmdk.css");
+@import url("./06_components/c-empty-state.css");
+@import url("./06_components/c-error-state.css");
+
+/* ═══════════════════════════════════════════════════════════════
+   07_UTILITIES — Overrides ciblés (.u-text-center, .u-mt-4)
+   ═══════════════════════════════════════════════════════════════ */
+/* @import url("./07_utilities/spacing.css");      — TODO S6.1.2 */
+/* @import url("./07_utilities/text.css");         — TODO S6.1.2 */
+
+/* ═══════════════════════════════════════════════════════════════
+   Fonts — chargees via assets/colors_and_type.css (DS pipeline)
+   Pour eviter doublon, ce fichier ne re-importe pas les @font-face.
+   Si une page v0.6 utilise UNIQUEMENT _shared/index.css (sans
+   assets/colors_and_type.css), ajouter manuellement :
+     <link rel="stylesheet" href="/assets/colors_and_type.css">
+   AVANT _shared/index.css pour les @font-face.
+   ═══════════════════════════════════════════════════════════════ */

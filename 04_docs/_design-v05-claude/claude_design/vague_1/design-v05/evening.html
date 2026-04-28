@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>aiCEO — Boucle du soir</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css"/>
+<link rel="stylesheet" href="_shared/app.css"/>
+<style>
+  /* Soir — un seul pas à la fois, format conversationnel */
+  .ev-wrap { max-width: 760px; margin: 0 auto; padding: 28px 24px 64px; }
+
+  .ev-greet { padding: 18px 0 32px; border-bottom: 1px dashed var(--border); margin-bottom: 32px; }
+  .ev-greet .script { font-family: var(--font-script); font-size: 56px; line-height: 1; color: var(--violet); margin-bottom: 4px; }
+  .ev-greet h1 { font: 800 28px/1.2 var(--font-sans); letter-spacing: -.03em; margin: 0 0 10px; text-wrap: balance; }
+  .ev-greet p { font: 500 14px/1.55 var(--font-sans); color: var(--text-2); margin: 0; }
+
+  /* Step bar */
+  .stepbar { display: flex; align-items: center; gap: 8px; margin-bottom: 32px;
+    padding: 12px 16px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; }
+  .stepbar .step { flex: 1; display: flex; align-items: center; gap: 8px; font: 700 11.5px var(--font-sans); color: var(--text-3); letter-spacing: .02em; }
+  .stepbar .step.done { color: var(--text-2); }
+  .stepbar .step.active { color: var(--text); }
+  .stepbar .num { width: 22px; height: 22px; border-radius: 50%; background: var(--surface-3);
+    display: grid; place-items: center; font: 800 11px var(--font-sans); color: var(--text-3); }
+  .stepbar .step.done .num { background: var(--emerald); color: #fff; }
+  .stepbar .step.active .num { background: var(--text); color: #fff; box-shadow: 0 0 0 4px var(--surface-3); }
+
+  /* Step content */
+  .step-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 18px;
+    padding: 28px 32px; box-shadow: var(--shadow-card); margin-bottom: 18px; }
+  .step-card .step-eye { font: 800 11px var(--font-sans); text-transform: uppercase; letter-spacing: .12em; color: var(--rose); margin-bottom: 10px; }
+  .step-card h2 { font: 800 22px/1.25 var(--font-sans); letter-spacing: -.02em; margin: 0 0 8px; }
+  .step-card .lead { font: 500 14px/1.55 var(--font-sans); color: var(--text-2); margin: 0 0 20px; }
+
+  /* Closures list */
+  .closure-list { display: flex; flex-direction: column; gap: 8px; }
+  .closure { display: grid; grid-template-columns: 28px 1fr auto; gap: 12px; padding: 12px 14px;
+    border: 1px solid var(--border); border-radius: 12px; align-items: center; cursor: pointer; }
+  .closure:hover { background: var(--surface-3); }
+  .closure.checked { background: #f3f7f4; border-color: #cadfd5; }
+  .closure .chk { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border-2); display: grid; place-items: center;
+    color: transparent; font: 800 12px var(--font-sans); }
+  .closure.checked .chk { background: var(--emerald); border-color: var(--emerald); color: #fff; }
+  .closure .t { font: 700 13.5px var(--font-sans); letter-spacing: -.005em; }
+  .closure .m { font: 500 11.5px var(--font-sans); color: var(--text-2); margin-top: 2px; }
+  .closure .age { font: 700 11px var(--font-mono); color: var(--text-3); }
+
+  /* Top 3 */
+  .top3 { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+  .top3 .row { display: grid; grid-template-columns: 36px 1fr; gap: 14px; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--border); }
+  .top3 .row:last-child { border-bottom: 0; }
+  .top3 .num { width: 36px; height: 36px; border-radius: 12px; background: var(--text); color: #fff; display: grid; place-items: center; font: 800 16px var(--font-sans); }
+  .top3 input { width: 100%; border: 0; background: transparent; font: 700 15.5px var(--font-sans); color: var(--text); padding: 6px 0; outline: none; letter-spacing: -.01em; }
+  .top3 input::placeholder { color: var(--text-3); font-weight: 500; }
+  .top3 .meta { font: 500 11.5px var(--font-sans); color: var(--text-3); margin-top: 2px; }
+
+  /* Mood scale */
+  .mood-row { display: flex; gap: 8px; margin: 6px 0 18px; }
+  .mood { flex: 1; padding: 14px 8px; border: 1px solid var(--border); border-radius: 12px; text-align: center; cursor: pointer; background: #fff; transition: all .15s; }
+  .mood:hover { border-color: var(--text); }
+  .mood.selected { background: var(--text); color: #fff; border-color: var(--text); }
+  .mood .em { font-size: 24px; line-height: 1; }
+  .mood .lbl { font: 700 11px var(--font-sans); margin-top: 6px; letter-spacing: .02em; }
+
+  .reflection { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px;
+    font: 500 14px/1.55 var(--font-sans); color: var(--text); width: 100%; outline: none; resize: vertical; min-height: 90px; }
+
+  /* Streak grand format */
+  .streak-big { display: grid; grid-template-columns: auto 1fr; gap: 32px; align-items: center; padding: 14px 4px 0; }
+  .streak-big .n { font-family: var(--font-thin); font-weight: 100; font-size: 110px; line-height: 1; color: var(--text); letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+  .streak-big .lbl { font: 700 11px var(--font-sans); text-transform: uppercase; letter-spacing: .12em; color: var(--text-2); margin-bottom: 4px; }
+  .streak-big .desc { font: 500 14px/1.5 var(--font-sans); color: var(--text-2); margin-bottom: 12px; }
+  .streak-big .grid { display: grid; grid-template-columns: repeat(14, 1fr); gap: 4px; max-width: 320px; }
+  .streak-big .cell { aspect-ratio: 1; border-radius: 4px; background: var(--surface-3); }
+  .streak-big .cell.on { background: var(--text); }
+  .streak-big .cell.today { background: var(--rose); }
+
+  .ev-actions { display: flex; justify-content: space-between; align-items: center; padding-top: 14px; }
+  .ev-actions .hint { font: 500 11px var(--font-mono); color: var(--text-3); letter-spacing: .04em; }
+</style>
+</head>
+<body data-nav="evening">
+
+<!--
+  Page : evening.html — Boucle 18h-20h
+  3 étapes : (1) clôtures du jour (2) Top 3 demain (3) humeur + streak
+  Components : <Stepbar /> <ClosureList /> <Top3Editor /> <MoodScale /> <StreakBig />
+  States : default · streak-up (incrément animé) · streak-broken
+-->
+
+<div class="app">
+  <div id="sidebar-slot"></div>
+  <main class="main">
+    <header class="topbar">
+      <div class="crumbs"><a href="index.html">Cockpit</a><span class="sep">›</span><span class="current">Boucle du soir</span><span class="sep">·</span><span class="muted tabular">Lundi 20 avril · 18:47</span></div>
+      <div class="topbar-actions">
+        <button class="btn">Skip ce soir</button>
+        <button class="btn primary">Boucler & rentrer</button>
+      </div>
+    </header>
+
+    <div class="ev-wrap">
+      <div class="ev-greet">
+        <div class="script">Bonsoir Feyçoil,</div>
+        <h1>Deux minutes pour clore lundi proprement.</h1>
+        <p>Vous avez bouclé le rituel du matin à 08:47. 9 délégations sont parties, 7 actions soldées. Streak en cours · 12 jours.</p>
+      </div>
+
+      <div class="stepbar">
+        <div class="step done"><span class="num">✓</span>Connexion Outlook</div>
+        <div class="step active"><span class="num">1</span>Clôtures du jour</div>
+        <div class="step"><span class="num">2</span>Top 3 demain</div>
+        <div class="step"><span class="num">3</span>Humeur · streak</div>
+      </div>
+
+      <!-- Étape 1 -->
+      <section class="step-card">
+        <div class="step-eye">Étape 1 · ~ 40s</div>
+        <h2>Qu'est-ce qui s'est vraiment soldé aujourd'hui ?</h2>
+        <p class="lead">aiCEO a détecté ces tâches comme probablement closes (mail envoyé, RV terminé, statut changé). Confirmez d'un clic.</p>
+
+        <div class="closure-list">
+          <div class="closure checked">
+            <div class="chk">✓</div>
+            <div>
+              <div class="t">Affejee — relance 3 envoyée à 17:08</div>
+              <div class="m">détecté · mail "Re: Honoraires" → comptable@affejee.fr · <span class="company-chip c-ETIC">ETIC</span></div>
+            </div>
+            <div class="age">Big Rock 3</div>
+          </div>
+          <div class="closure checked">
+            <div class="chk">✓</div>
+            <div>
+              <div class="t">Validation NDF Lamiae T1 · ETIC + AMP</div>
+              <div class="m">action manuelle 15:21 · 6 lignes validées</div>
+            </div>
+            <div class="age">interne</div>
+          </div>
+          <div class="closure checked">
+            <div class="chk">✓</div>
+            <div>
+              <div class="t">RV Karim — Pamandzi étage 2 (fini 11:30)</div>
+              <div class="m">événement Outlook clos · décisions prises × 2</div>
+            </div>
+            <div class="age"><span class="company-chip c-AMP">AMP</span></div>
+          </div>
+          <div class="closure">
+            <div class="chk">✓</div>
+            <div>
+              <div class="t">URSSAF T4 — solde déclenché</div>
+              <div class="m">délégation envoyée à Lamiae 09:22 · pas encore de retour</div>
+            </div>
+            <div class="age">à confirmer</div>
+          </div>
+          <div class="closure">
+            <div class="chk">✓</div>
+            <div>
+              <div class="t">Avenant architecte Naïr — décision lue ?</div>
+              <div class="m">décision ouvert depuis 9j · vous avez consulté la fiche 14:02</div>
+            </div>
+            <div class="age">décision</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Étape 2 -->
+      <section class="step-card" style="opacity: .55">
+        <div class="step-eye" style="color: var(--text-3)">Étape 2 · ~ 60s</div>
+        <h2>Top 3 pour mardi 21 avril</h2>
+        <p class="lead">Quelles sont les trois actions qui doivent absolument avancer demain ? aiCEO suggère ci-dessous d'après vos Big Rocks et l'agenda.</p>
+
+        <div class="top3">
+          <div class="row">
+            <div class="num">1</div>
+            <div>
+              <input value="Préparer dossier banque Bretagne — bloc 14h-15h30"/>
+              <div class="meta">Big Rock #1 · suggéré ce matin · <span class="company-chip c-SCIS">SCIS</span></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="num">2</div>
+            <div>
+              <input value="Décision avenant architecte Naïr — répondre à Karim"/>
+              <div class="meta">décision dormante 9j · <span class="company-chip c-AMP">AMP</span></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="num">3</div>
+            <div>
+              <input placeholder="Ajouter une 3ᵉ priorité… (ou laisser vide)"/>
+              <div class="meta">aiCEO suggère : "Repousser COPIL ETIC mardi 14h"</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Étape 3 -->
+      <section class="step-card" style="opacity: .55">
+        <div class="step-eye" style="color: var(--text-3)">Étape 3 · ~ 20s</div>
+        <h2>Comment vous sentez-vous ce soir ?</h2>
+        <p class="lead">Une donnée privée, jamais partagée. Sert juste à corréler charge / clarté / tirage Big Rocks dans la revue hebdo.</p>
+
+        <div class="mood-row">
+          <div class="mood"><div class="em">😵</div><div class="lbl">Submergé</div></div>
+          <div class="mood"><div class="em">😕</div><div class="lbl">Tendu</div></div>
+          <div class="mood selected"><div class="em">🙂</div><div class="lbl">Net</div></div>
+          <div class="mood"><div class="em">😌</div><div class="lbl">Calme</div></div>
+          <div class="mood"><div class="em">🎯</div><div class="lbl">Aligné</div></div>
+        </div>
+
+        <textarea class="reflection" placeholder="Une phrase, pas plus. Ce qui a coincé, ce qui a libéré.">Affejee soldé enfin. Le tirage Bretagne traîne mais le slot mardi 14h règle le sujet.</textarea>
+
+        <div class="streak-big">
+          <div class="n tabular">13</div>
+          <div>
+            <div class="lbl">+1 — Streak 13 jours</div>
+            <div class="desc">Demain 14 jours = revue hebdo enrichie (humeur sur 14 jours · répartition Big Rocks · ratio délégations).</div>
+            <div class="grid">
+              <div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell"></div>
+              <div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div>
+              <div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div>
+              <div class="cell on"></div><div class="cell today"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="ev-actions">
+        <span class="hint"><kbd class="kbd">⏎</kbd> valider l'étape · <kbd class="kbd">esc</kbd> revenir · <kbd class="kbd">⌘⏎</kbd> tout boucler</span>
+        <div class="flex gap-8">
+          <button class="btn">Précédent</button>
+          <button class="btn primary">Étape suivante <kbd class="kbd">⏎</kbd></button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="_shared/shell.js"></script>
+</body>
+</html>

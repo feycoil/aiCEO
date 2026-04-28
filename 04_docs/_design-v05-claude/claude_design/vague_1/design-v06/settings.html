@@ -1,0 +1,950 @@
+<!doctype html>
+<html lang="fr" data-locale="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>aiCEO — Réglages</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css?v=2">
+<link rel="stylesheet" href="_shared/app.css?v=2">
+<link rel="stylesheet" href="_shared/tweaks.css?v=2">
+</head>
+<body data-route="settings">
+
+<div id="icons-host" hidden></div>
+<a class="skip-link" href="#main-content">Aller au contenu</a>
+
+<div class="app" data-drawer="expanded">
+
+  <aside class="drawer" aria-label="Navigation principale">
+    <div class="drawer-logo">
+      <span class="logo-mark">a</span>
+      <span class="logo-text">aiCEO</span>
+    </div>
+    <button class="drawer-tenant" aria-label="Changer d'espace">
+      <span class="tenant-mark" aria-hidden="true">A</span>
+      <span class="tenant-name">Aubrielle Hayes</span>
+      <svg class="ico" width="14" height="14" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+    </button>
+    <nav class="drawer-nav" aria-label="Sections">
+      <div class="drawer-section">Pilotage</div>
+      <a href="index.html" class="drawer-item" data-nav="home"><svg class="ico" width="18" height="18"><use href="#i-home"/></svg><span class="label">Cockpit</span></a>
+      <a href="arbitrage.html" class="drawer-item" data-nav="arbitrage"><svg class="ico" width="18" height="18"><use href="#i-arbitrage"/></svg><span class="label">Arbitrage</span><span class="badge">3</span></a>
+      <a href="evening.html" class="drawer-item" data-nav="evening"><svg class="ico" width="18" height="18"><use href="#i-evening"/></svg><span class="label">Soirée</span></a>
+      <div class="drawer-section">Travail</div>
+      <a href="projets.html" class="drawer-item" data-nav="projects"><svg class="ico" width="18" height="18"><use href="#i-projects"/></svg><span class="label">Projets</span></a>
+      <a href="taches.html" class="drawer-item" data-nav="actions"><svg class="ico" width="18" height="18"><use href="#i-actions"/></svg><span class="label">Actions</span><span class="badge">12</span></a>
+      <a href="agenda.html" class="drawer-item" data-nav="agenda"><svg class="ico" width="18" height="18"><use href="#i-clock"/></svg><span class="label">Agenda</span></a>
+      <a href="assistant.html" class="drawer-item" data-nav="assistant"><svg class="ico" width="18" height="18"><use href="#i-sparkle"/></svg><span class="label">Assistant</span></a>
+      <a href="equipe.html" class="drawer-item" data-nav="people"><svg class="ico" width="18" height="18"><use href="#i-people"/></svg><span class="label">Équipe</span></a>
+      <div class="drawer-section">Capital</div>
+      <a href="connaissance.html" class="drawer-item" data-nav="knowledge"><svg class="ico" width="18" height="18"><use href="#i-knowledge"/></svg><span class="label">Connaissance</span></a>
+      <a href="coaching.html" class="drawer-item" data-nav="coaching"><svg class="ico" width="18" height="18"><use href="#i-coaching"/></svg><span class="label">Coaching</span></a>
+      <a href="revues.html" class="drawer-item" data-nav="revues"><svg class="ico" width="18" height="18"><use href="#i-folder"/></svg><span class="label">Revues</span></a>
+      <a href="decisions.html" class="drawer-item" data-nav="decisions"><svg class="ico" width="18" height="18"><use href="#i-target"/></svg><span class="label">Décisions</span></a>
+    </nav>
+    <div class="drawer-footer">
+      <button class="drawer-locale" aria-label="Langue">
+        <svg class="ico" width="16" height="16"><use href="#i-globe"/></svg>
+        <span class="locale-name">Français</span>
+      </button>
+      <a href="settings.html" class="drawer-item is-active" data-nav="settings" aria-current="page">
+        <svg class="ico" width="18" height="18"><use href="#i-settings"/></svg>
+        <span class="label">Réglages</span>
+      </a>
+      <button class="drawer-user" aria-label="Profil">
+        <span class="avatar md" data-house="solstice">AH</span>
+        <span class="meta">
+          <span class="name">Aubrielle Hayes</span>
+          <span class="role">Fondatrice · CEO</span>
+        </span>
+      </button>
+    </div>
+
+    <button class="drawer-collapse-btn" aria-label="Réduire le menu">
+      <svg class="ico" width="14" height="14"><use href="#i-chevron-left"/></svg>
+    </button>
+  </aside>
+
+  <main class="app-main" id="main-content">
+
+    <header class="topbar">
+      <div class="topbar-title-block">
+        <div class="topbar-title-eyebrow">Réglages</div>
+        <h1 class="section-title" style="margin-top:4px">Vos préférences</h1>
+      </div>
+      <div class="topbar-cluster u-hidden-mobile">
+        <span class="autosave"><span class="pulse"></span>Auto‑sauvegardé · 2 s</span>
+      </div>
+    </header>
+
+    <!-- Settings layout: vertical tabs + panel -->
+    <section class="settings-grid">
+
+      <!-- Vertical tabs -->
+      <nav class="settings-side" aria-label="Sections de réglages">
+        <button class="settings-tab is-active" data-tab="general">
+          <svg class="ico" width="16" height="16"><use href="#i-settings"/></svg>
+          <span>Général</span>
+        </button>
+        <button class="settings-tab" data-tab="locale">
+          <svg class="ico" width="16" height="16"><use href="#i-globe"/></svg>
+          <span>Langue & format</span>
+        </button>
+        <button class="settings-tab" data-tab="houses">
+          <svg class="ico" width="16" height="16"><use href="#i-building"/></svg>
+          <span>Maisons</span>
+        </button>
+        <button class="settings-tab" data-tab="rituals">
+          <svg class="ico" width="16" height="16"><use href="#i-clock"/></svg>
+          <span>Rituels</span>
+        </button>
+        <button class="settings-tab" data-tab="coaching">
+          <svg class="ico" width="16" height="16"><use href="#i-coaching"/></svg>
+          <span>Coaching</span>
+        </button>
+        <button class="settings-tab" data-tab="data">
+          <svg class="ico" width="16" height="16"><use href="#i-shield"/></svg>
+          <span>Données & souveraineté</span>
+        </button>
+        <button class="settings-tab" data-tab="appearance">
+          <svg class="ico" width="16" height="16"><use href="#i-eye"/></svg>
+          <span>Apparence</span>
+        </button>
+        <button class="settings-tab" data-tab="health">
+          <svg class="ico" width="16" height="16"><use href="#i-server"/></svg>
+          <span>Santé système</span>
+        </button>
+        <hr style="margin:12px 0">
+        <button class="settings-tab danger" data-tab="danger">
+          <svg class="ico" width="16" height="16"><use href="#i-trash"/></svg>
+          <span>Zone sensible</span>
+        </button>
+      </nav>
+
+      <!-- Panel -->
+      <div class="settings-panel">
+
+        <!-- General -->
+        <article class="card panel settings-section is-visible" data-panel="general">
+          <header class="settings-section-head">
+            <h2 class="card-title">Général</h2>
+            <p class="small u-text-3">Comment le cockpit vous appelle, et quel ton il prend.</p>
+          </header>
+          <div class="o-stack" style="--stack-gap:18px">
+            <div class="field">
+              <label class="field-label">Prénom utilisé dans les salutations</label>
+              <input class="input" value="Aubrielle">
+              <span class="field-help">Apparaît dans « Bonjour {prénom} ». Vous pouvez utiliser un surnom.</span>
+            </div>
+            <div class="field">
+              <label class="field-label">Tonalité de coaching</label>
+              <div class="toggle-group" style="align-self:flex-start">
+                <button class="toggle-btn">Direct</button>
+                <button class="toggle-btn is-active">Mesurée</button>
+                <button class="toggle-btn">Douce</button>
+              </div>
+            </div>
+            <div class="setting-row">
+              <div>
+                <strong>Question stratégique en pied de page</strong>
+                <p class="small u-text-3" style="margin:2px 0 0">Une seule par page. Aucune jamais répétée à l'identique.</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="switch-track"><span class="switch-thumb"></span></span>
+              </label>
+            </div>
+            <div class="setting-row">
+              <div>
+                <strong>Greeting au format script</strong>
+                <p class="small u-text-3" style="margin:2px 0 0">« Bonjour Aubrielle » — peut être désactivé pour un look plus neutre.</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="switch-track"><span class="switch-thumb"></span></span>
+              </label>
+            </div>
+          </div>
+        </article>
+
+        <!-- Locale -->
+        <article class="card panel settings-section" data-panel="locale">
+          <header class="settings-section-head">
+            <h2 class="card-title">Langue & format</h2>
+            <p class="small u-text-3">Trois langues officielles. Le système formate dates, nombres et devise en conséquence.</p>
+          </header>
+          <div class="o-stack" style="--stack-gap:18px">
+            <div class="field">
+              <label class="field-label">Langue de l'interface</label>
+              <div class="locale-grid">
+                <button class="locale-card is-active" data-loc="fr">
+                  <span class="loc-flag">🇫🇷</span>
+                  <strong>Français</strong>
+                  <span class="small u-text-3">Tonalité par défaut</span>
+                </button>
+                <button class="locale-card" data-loc="en">
+                  <span class="loc-flag">🇬🇧</span>
+                  <strong>English</strong>
+                  <span class="small u-text-3">UK · 24h</span>
+                </button>
+                <button class="locale-card" data-loc="ar">
+                  <span class="loc-flag">🇸🇦</span>
+                  <strong>العربية</strong>
+                  <span class="small u-text-3">RTL · Hijri toggle</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field" style="flex:1">
+                <label class="field-label">Premier jour de la semaine</label>
+                <select class="input">
+                  <option>Lundi</option>
+                  <option>Dimanche</option>
+                  <option>Samedi</option>
+                </select>
+              </div>
+              <div class="field" style="flex:1">
+                <label class="field-label">Format des dates</label>
+                <select class="input">
+                  <option>28 avril 2026 (long)</option>
+                  <option>28/04/2026 (court)</option>
+                  <option>2026‑04‑28 (ISO)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field" style="flex:1">
+                <label class="field-label">Devise</label>
+                <select class="input">
+                  <option>€ EUR — Euro</option>
+                  <option>$ USD — Dollar US</option>
+                  <option>£ GBP — Livre</option>
+                  <option>SAR ر.س — Riyal saoudien</option>
+                </select>
+              </div>
+              <div class="field" style="flex:1">
+                <label class="field-label">Fuseau horaire</label>
+                <select class="input">
+                  <option>Europe/Paris (UTC+2)</option>
+                  <option>Europe/London (UTC+1)</option>
+                  <option>Asia/Riyadh (UTC+3)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Houses -->
+        <article class="card panel settings-section" data-panel="houses">
+          <header class="settings-section-head">
+            <h2 class="card-title">Maisons</h2>
+            <p class="small u-text-3">Vos maisons structurent les projets, les KPIs, et les arbitrages. 3 par défaut, jusqu'à 6.</p>
+          </header>
+
+          <ul class="house-edit-list">
+            <li class="house-edit-row" data-house="northwind">
+              <span class="house-bar" style="background:var(--house-northwind)"></span>
+              <input class="input" value="Northwind" style="flex:1;max-width:200px">
+              <span class="small u-text-3">3 projets · 14 actions</span>
+              <span class="pill status hot">Tension</span>
+              <button class="icon-btn" aria-label="Plus" style="margin-left:auto"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+            </li>
+            <li class="house-edit-row" data-house="solstice">
+              <span class="house-bar" style="background:var(--house-solstice)"></span>
+              <input class="input" value="Solstice" style="flex:1;max-width:200px">
+              <span class="small u-text-3">2 projets · 8 actions</span>
+              <span class="pill status active">Cadence</span>
+              <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+            </li>
+            <li class="house-edit-row" data-house="helix">
+              <span class="house-bar" style="background:var(--house-helix)"></span>
+              <input class="input" value="Helix" style="flex:1;max-width:200px">
+              <span class="small u-text-3">1 projet · 3 actions</span>
+              <span class="pill status new">Émergence</span>
+              <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+            </li>
+          </ul>
+          <button class="btn ghost" style="margin-top:14px">
+            <svg class="ico" width="14" height="14"><use href="#i-plus"/></svg>
+            Ajouter une maison
+          </button>
+        </article>
+
+        <!-- Rituals -->
+        <article class="card panel settings-section" data-panel="rituals">
+          <header class="settings-section-head">
+            <h2 class="card-title">Rituels</h2>
+            <p class="small u-text-3">Le rythme du système. Modifiez chaque créneau, ou désactivez sans culpabilité.</p>
+          </header>
+          <ul class="ritual-list">
+            <li class="ritual-row">
+              <div class="ritual-icon" style="background:var(--rose-50);color:var(--rose-800)">
+                <svg class="ico" width="18" height="18"><use href="#i-flame"/></svg>
+              </div>
+              <div class="ritual-main">
+                <strong>Top‑3 du matin</strong>
+                <p class="small u-text-3" style="margin:2px 0 0">Posté chaque matin à 07:00, ajustable.</p>
+              </div>
+              <input class="input" type="time" value="07:00" style="width:110px">
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="switch-track"><span class="switch-thumb"></span></span>
+              </label>
+            </li>
+            <li class="ritual-row">
+              <div class="ritual-icon" style="background:var(--violet-50);color:var(--violet-800)">
+                <svg class="ico" width="18" height="18"><use href="#i-coaching"/></svg>
+              </div>
+              <div class="ritual-main">
+                <strong>Question stratégique</strong>
+                <p class="small u-text-3" style="margin:2px 0 0">Hebdomadaire · vendredi 17:00 ou en pied de page.</p>
+              </div>
+              <select class="input" style="width:140px">
+                <option>Hebdomadaire</option>
+                <option>Tous les jours</option>
+                <option>Mensuelle</option>
+              </select>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="switch-track"><span class="switch-thumb"></span></span>
+              </label>
+            </li>
+            <li class="ritual-row">
+              <div class="ritual-icon" style="background:var(--amber-50);color:var(--amber-800)">
+                <svg class="ico" width="18" height="18"><use href="#i-evening"/></svg>
+              </div>
+              <div class="ritual-main">
+                <strong>Soirée — clôture calme</strong>
+                <p class="small u-text-3" style="margin:2px 0 0">Mode lent activé après 18:30. Notifs coupées 22h–6h.</p>
+              </div>
+              <input class="input" type="time" value="18:30" style="width:110px">
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="switch-track"><span class="switch-thumb"></span></span>
+              </label>
+            </li>
+          </ul>
+        </article>
+
+        <!-- Coaching -->
+        <article class="card panel settings-section" data-panel="coaching">
+          <header class="settings-section-head">
+            <h2 class="card-title">Coaching</h2>
+            <p class="small u-text-3">Votre IA‑coach. Posture, fréquence, profondeur des relances.</p>
+          </header>
+          <div class="o-stack" style="--stack-gap:18px">
+            <div class="field">
+              <label class="field-label">Posture actuelle</label>
+              <div class="posture-summary">
+                <span class="ob-pc-glyph" style="width:48px;height:48px;background:var(--emerald);color:#fff">
+                  <svg viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.6" width="28" height="28"><path d="M30 10v40M10 30h40"/></svg>
+                </span>
+                <div>
+                  <strong>L'exploratrice</strong>
+                  <p class="small u-text-3" style="margin:2px 0 0">« Je tranche pour ouvrir » · ajustée le 12 mars</p>
+                </div>
+                <button class="btn ghost sm" style="margin-left:auto">Reconfigurer</button>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label">Profondeur des questions <span class="u-text-3">(plus haut = plus dérangeant)</span></label>
+              <div style="display:flex;align-items:center;gap:14px">
+                <input type="range" min="1" max="5" value="3" style="flex:1;accent-color:var(--violet)">
+                <span class="u-tnum" style="min-width:32px;text-align:end">3 / 5</span>
+              </div>
+            </div>
+            <div class="setting-row">
+              <div><strong>Coaching pendant l'arbitrage</strong><p class="small u-text-3" style="margin:2px 0 0">Strip violet sous chaque décision.</p></div>
+              <label class="switch"><input type="checkbox" checked><span class="switch-track"><span class="switch-thumb"></span></span></label>
+            </div>
+          </div>
+        </article>
+
+        <!-- Data -->
+        <article class="card panel settings-section" data-panel="data">
+          <header class="settings-section-head">
+            <h2 class="card-title">Données & souveraineté</h2>
+            <p class="small u-text-3">Vos données vous appartiennent. Toujours.</p>
+          </header>
+          <div class="o-stack" style="--stack-gap:14px">
+            <div class="data-row">
+              <svg class="ico" width="18" height="18" style="color:var(--emerald-800)"><use href="#i-shield"/></svg>
+              <div><strong>Hébergement</strong><p class="small u-text-3" style="margin:2px 0 0">Frankfurt · OVH bare‑metal · ISO 27001</p></div>
+              <span class="pill status active u-ml-auto">Vert</span>
+            </div>
+            <div class="data-row">
+              <svg class="ico" width="18" height="18"><use href="#i-eye"/></svg>
+              <div><strong>Visibilité IA</strong><p class="small u-text-3" style="margin:2px 0 0">Aucune donnée n'est envoyée à un fournisseur tiers sans votre accord explicite.</p></div>
+              <button class="btn sm u-ml-auto">Voir le journal</button>
+            </div>
+            <div class="data-row">
+              <svg class="ico" width="18" height="18"><use href="#i-archive"/></svg>
+              <div><strong>Export complet</strong><p class="small u-text-3" style="margin:2px 0 0">JSON, Markdown, ou archive imprimable. Sous 30 secondes.</p></div>
+              <button class="btn sm u-ml-auto">Exporter</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Appearance -->
+        <article class="card panel settings-section" data-panel="appearance">
+          <header class="settings-section-head">
+            <h2 class="card-title">Apparence</h2>
+            <p class="small u-text-3">Le système est sobre par défaut. Trois latitudes pour s'adapter.</p>
+          </header>
+          <div class="o-stack" style="--stack-gap:18px">
+            <div class="field">
+              <label class="field-label">Thème</label>
+              <div class="toggle-group">
+                <button class="toggle-btn is-active">Système</button>
+                <button class="toggle-btn">Clair</button>
+                <button class="toggle-btn">Sombre</button>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label">Densité</label>
+              <div class="toggle-group">
+                <button class="toggle-btn is-active">Confortable</button>
+                <button class="toggle-btn">Compact</button>
+              </div>
+            </div>
+            <div class="setting-row">
+              <div><strong>Réduire les animations</strong><p class="small u-text-3" style="margin:2px 0 0">Honore <code>prefers‑reduced‑motion</code>.</p></div>
+              <label class="switch"><input type="checkbox"><span class="switch-track"><span class="switch-thumb"></span></span></label>
+            </div>
+          </div>
+        </article>
+
+        <!-- Health (Santé système) -->
+        <article class="card panel settings-section" data-panel="health">
+          <header class="settings-section-head">
+            <h2 class="card-title">Santé système</h2>
+            <p class="small u-text-3">L'app tourne en local sur votre machine. Voici ce qu'elle fait, sans bavardage.</p>
+          </header>
+
+          <div class="o-stack" style="--stack-gap:24px">
+
+            <!-- Bloc 1 — Serveur applicatif -->
+            <section class="health-block">
+              <h3 class="health-block-title">Serveur applicatif</h3>
+              <div class="health-stat-grid">
+                <div class="stat-tile">
+                  <span class="stat-tile-label">Statut</span>
+                  <span class="stat-tile-value" data-bind="health-status" aria-live="polite">
+                    <span class="pill status active"><span class="dot dot-pulse"></span>En ligne</span>
+                  </span>
+                </div>
+                <div class="stat-tile">
+                  <span class="stat-tile-label">Uptime</span>
+                  <span class="stat-tile-value u-tnum" data-bind="health-uptime">4 h 22 min</span>
+                </div>
+                <div class="stat-tile">
+                  <span class="stat-tile-label">Mémoire</span>
+                  <span class="stat-tile-value u-tnum" data-bind="health-memory">42 Mo</span>
+                </div>
+              </div>
+              <p class="small u-text-3 health-process">
+                Process #<span data-bind="health-pid">28471</span> · Node <span data-bind="health-node">v20.11.1</span>
+              </p>
+            </section>
+
+            <!-- Bloc 2 — Synchronisation Outlook -->
+            <section class="health-block">
+              <h3 class="health-block-title">Synchronisation Outlook</h3>
+              <div class="health-card">
+                <div class="health-card-head">
+                  <div>
+                    <strong>Calendrier &amp; emails</strong>
+                    <p class="small u-text-3" style="margin:2px 0 0">
+                      Dernière sync : <time data-bind="sync-last">il y a 2 h</time>
+                    </p>
+                    <p class="small u-text-3" style="margin:2px 0 0">
+                      <span data-bind="sync-count">147</span> événements synchronisés
+                    </p>
+                  </div>
+                  <span class="pill status active u-ml-auto" data-bind="sync-status">
+                    <span class="dot"></span>OK
+                  </span>
+                </div>
+                <div class="health-card-foot">
+                  <button class="btn ghost sm" disabled aria-disabled="true" title="Disponible en v0.7">
+                    <svg class="ico" width="14" height="14"><use href="#i-refresh"/></svg>
+                    Forcer une sync
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <!-- Bloc 3 — Base de données -->
+            <section class="health-block">
+              <h3 class="health-block-title">Base de données</h3>
+              <div class="health-card">
+                <div class="health-card-head">
+                  <svg class="ico health-card-ico" width="18" height="18"><use href="#i-database"/></svg>
+                  <div>
+                    <strong>SQLite local</strong>
+                    <p class="small u-text-3 u-mono" style="margin:2px 0 0">~/.aiCEO/data/cockpit.db</p>
+                    <p class="small u-text-3" style="margin:2px 0 0">Dernier backup : jamais (auto‑backup en V1.5)</p>
+                  </div>
+                  <button class="btn ghost sm u-ml-auto" disabled aria-disabled="true" title="Disponible en v0.7">
+                    <svg class="ico" width="14" height="14"><use href="#i-archive"/></svg>
+                    Exporter la base
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <!-- Bloc 4 — Logs récents -->
+            <section class="health-block">
+              <h3 class="health-block-title">Activité récente</h3>
+              <details class="health-logs">
+                <summary>3 dernières activités<svg class="ico chevron" width="14" height="14"><use href="#i-chevron-down"/></svg></summary>
+                <ul class="health-log-list" role="list">
+                  <li class="health-log-item">
+                    <svg class="ico log-ico" width="14" height="14"><use href="#i-clock"/></svg>
+                    <time class="log-time u-tnum">14:32</time>
+                    <span class="log-msg">Sync Outlook : 12 événements ajoutés</span>
+                  </li>
+                  <li class="health-log-item">
+                    <svg class="ico log-ico" width="14" height="14"><use href="#i-plus"/></svg>
+                    <time class="log-time u-tnum">14:18</time>
+                    <span class="log-msg">Décision tranchée : « 3 critères RFP » archivée</span>
+                  </li>
+                  <li class="health-log-item warn">
+                    <svg class="ico log-ico" width="14" height="14"><use href="#i-warning"/></svg>
+                    <time class="log-time u-tnum">12:04</time>
+                    <span class="log-msg">Sync emails ralentie (réseau lent · résolu en 18 s)</span>
+                  </li>
+                </ul>
+              </details>
+            </section>
+
+            <p class="health-foot small u-text-3">
+              <svg class="ico" width="14" height="14" style="vertical-align:-2px;margin-inline-end:4px"><use href="#i-shield"/></svg>
+              Vos données restent sur cette machine. Personne d'autre ne les voit. C'est votre cockpit, pas un cloud.
+            </p>
+          </div>
+        </article>
+
+        <!-- Danger -->
+        <article class="card panel settings-section danger-section" data-panel="danger">
+          <header class="settings-section-head">
+            <h2 class="card-title">Zone sensible</h2>
+            <p class="small u-text-3">Ces actions sont définitives. Le système ne vous demandera pas deux fois.</p>
+          </header>
+          <div class="o-stack" style="--stack-gap:14px">
+            <div class="data-row">
+              <svg class="ico" width="18" height="18" style="color:var(--rose-800)"><use href="#i-warning"/></svg>
+              <div><strong>Réinitialiser le coaching</strong><p class="small u-text-3" style="margin:2px 0 0">Supprime vos préférences, votre posture et l'historique des questions.</p></div>
+              <button class="btn danger sm u-ml-auto">Réinitialiser</button>
+            </div>
+            <div class="data-row">
+              <svg class="ico" width="18" height="18" style="color:var(--rose-800)"><use href="#i-trash"/></svg>
+              <div><strong>Supprimer mon espace</strong><p class="small u-text-3" style="margin:2px 0 0">Suppression complète sous 7 jours. Récupération impossible après.</p></div>
+              <button class="btn danger sm u-ml-auto" id="del-btn">Supprimer</button>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <footer class="app-footer">
+      <p class="strategic-q">Vos réglages reflètent‑ils encore qui vous êtes <em>aujourd'hui</em>, ou qui vous étiez en mars ?</p>
+      <div class="footer-meta">
+        <span>aiCEO v0.5</span><span>·</span><span>Réglages</span>
+      </div>
+    </footer>
+  </main>
+</div>
+
+<nav class="bottom-tab-nav">
+  <a href="index.html" class="bottom-tab"><svg class="ico"><use href="#i-home"/></svg><span>Cockpit</span></a>
+  <a href="arbitrage.html" class="bottom-tab"><svg class="ico"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
+  <button class="bottom-tab fab-trigger"><span class="fab-circle"><svg class="ico"><use href="#i-mic"/></svg></span><span style="margin-top:30px">Capter</span></button>
+  <a href="#" class="bottom-tab"><svg class="ico"><use href="#i-projects"/></svg><span>Projets</span></a>
+  <a href="evening.html" class="bottom-tab"><svg class="ico"><use href="#i-evening"/></svg><span>Soirée</span></a>
+</nav>
+
+<style>
+.settings-grid {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: var(--space-6);
+  align-items: start;
+}
+@media (max-width: 1023px) {
+  .settings-grid { grid-template-columns: 1fr; gap: var(--space-4); }
+}
+
+.settings-side {
+  display: flex; flex-direction: column;
+  gap: 2px;
+  position: sticky; top: var(--space-4);
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  padding: 8px;
+  box-shadow: var(--shadow-card);
+}
+@media (max-width: 1023px) {
+  .settings-side { position: static; flex-direction: row; overflow-x: auto; padding: 8px; gap: 4px; }
+  .settings-side::-webkit-scrollbar { display: none; }
+}
+
+.settings-tab {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  background: transparent; border: 0;
+  border-radius: 8px;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-2);
+  cursor: pointer;
+  text-align: start;
+  width: 100%;
+  white-space: nowrap;
+  transition: all .12s;
+}
+.settings-tab:hover { background: var(--surface-3); color: var(--text); }
+.settings-tab.is-active { background: var(--brand-50); color: var(--text); font-weight: var(--fw-semi); }
+.settings-tab.danger { color: var(--rose-800); }
+.settings-tab svg { color: currentColor; flex-shrink: 0; }
+@media (max-width: 1023px) { .settings-tab { width: auto; flex: 0 0 auto; } }
+
+.settings-panel { display: flex; flex-direction: column; gap: var(--space-4); }
+.settings-section { display: none; padding: var(--space-6); }
+.settings-section.is-visible { display: block; }
+.settings-section-head { margin-block-end: var(--space-5); }
+
+.field-row { display: flex; gap: var(--space-3); flex-wrap: wrap; }
+
+.setting-row {
+  display: flex; align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  border-block-start: 1px solid var(--border);
+}
+.setting-row:first-child { border-block-start: 0; padding-block-start: 0; }
+.setting-row > div:first-child { flex: 1; }
+
+.locale-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+@media (max-width: 600px) { .locale-grid { grid-template-columns: 1fr; } }
+.locale-card {
+  display: flex; flex-direction: column;
+  gap: 4px;
+  padding: var(--space-4);
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-align: start;
+  font-family: inherit;
+  color: inherit;
+  transition: all .14s;
+}
+.locale-card:hover { border-color: var(--text-3); }
+.locale-card.is-active { border-color: var(--brand); background: var(--brand-50); }
+.locale-card .loc-flag { font-size: 24px; line-height: 1; margin-bottom: 4px; }
+.locale-card strong { font-size: var(--fs-body); font-weight: var(--fw-bold); }
+
+.house-edit-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: var(--space-2);
+}
+.house-edit-row {
+  display: flex; align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--surface);
+  border-radius: var(--radius);
+}
+.house-edit-row .house-bar {
+  width: 6px; height: 32px; border-radius: 3px; flex-shrink: 0;
+}
+
+.ritual-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: var(--space-3);
+}
+.ritual-row {
+  display: flex; align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.ritual-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: grid; place-items: center;
+  flex-shrink: 0;
+}
+.ritual-main { flex: 1; }
+@media (max-width: 720px) {
+  .ritual-row { flex-wrap: wrap; }
+  .ritual-main { flex: 1 0 100%; order: 2; }
+  .ritual-row .input { order: 3; flex: 1; }
+}
+
+.posture-summary {
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--emerald-bg);
+  border-radius: var(--radius);
+  border-inline-start: 3px solid var(--emerald);
+}
+
+.data-row {
+  display: flex; align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--surface);
+  border-radius: var(--radius);
+}
+.data-row > svg { flex-shrink: 0; color: var(--text-2); }
+
+.danger-section { border-inline-start: 4px solid var(--rose); }
+.danger-section .data-row { background: var(--rose-bg); }
+
+/* Health (Santé système) */
+.health-block { display: flex; flex-direction: column; gap: var(--space-3); }
+.health-block-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-extrabold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caption);
+  color: var(--text-2);
+  margin: 0;
+  padding-block-end: var(--space-1);
+  border-block-end: 1px solid var(--border);
+}
+.health-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+.health-stat-grid .stat-tile {
+  display: flex; flex-direction: column;
+  gap: 6px;
+  padding: var(--space-4);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.health-stat-grid .stat-tile-label {
+  font-size: 11px;
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+}
+.health-stat-grid .stat-tile-value {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.health-process {
+  margin: 4px 0 0;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 11px;
+}
+.health-card {
+  padding: var(--space-4);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex; flex-direction: column;
+  gap: var(--space-3);
+}
+.health-card-head {
+  display: flex; align-items: flex-start;
+  gap: var(--space-3);
+}
+.health-card-head > .health-card-ico { color: var(--text-2); margin-block-start: 2px; flex-shrink: 0; }
+.health-card-head > div { flex: 1; min-width: 0; }
+.health-card-foot {
+  display: flex; justify-content: flex-end;
+  padding-block-start: var(--space-2);
+  border-block-start: 1px solid var(--border);
+}
+.dot-pulse {
+  background: var(--emerald-500, var(--emerald, oklch(0.65 0.15 145)));
+  position: relative;
+}
+.dot-pulse::after {
+  content: ""; position: absolute; inset: -3px;
+  border-radius: 50%;
+  background: var(--emerald-500, var(--emerald, oklch(0.65 0.15 145)));
+  opacity: 0.35;
+  animation: dotPulse 1.8s ease-out infinite;
+}
+@keyframes dotPulse { 0% { transform: scale(.8); opacity: .55; } 70%, 100% { transform: scale(2.2); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .dot-pulse::after { animation: none; } }
+
+.health-logs {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.health-logs > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  display: flex; align-items: center; gap: var(--space-2);
+  user-select: none;
+}
+.health-logs > summary::-webkit-details-marker { display: none; }
+.health-logs > summary .chevron { margin-inline-start: auto; transition: transform .14s; color: var(--text-3); }
+.health-logs[open] > summary .chevron { transform: rotate(180deg); }
+.health-log-list {
+  list-style: none; padding: 0;
+  margin: 0;
+  border-block-start: 1px solid var(--border);
+}
+.health-log-item {
+  display: grid;
+  grid-template-columns: 18px 52px 1fr;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--fs-sm);
+  border-block-end: 1px solid var(--border);
+}
+.health-log-item:last-child { border-block-end: 0; }
+.health-log-item .log-ico { color: var(--text-3); }
+.health-log-item.warn .log-ico { color: var(--amber, oklch(0.72 0.16 75)); }
+.health-log-item .log-time { font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.health-log-item .log-msg { color: var(--text-2); line-height: 1.4; }
+
+.health-foot {
+  margin-block-start: var(--space-2);
+  padding: var(--space-3);
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  border-inline-start: 3px solid var(--emerald, oklch(0.65 0.15 145));
+}
+
+.btn[disabled], .btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.u-mono { font-family: var(--font-mono, ui-monospace, "JetBrains Mono", monospace); }
+
+@media (max-width: 900px) {
+  .health-stat-grid { grid-template-columns: 1fr; }
+}
+@media (min-width: 901px) and (max-width: 1180px) {
+  .health-stat-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* RTL adjustments */
+html[dir="rtl"] .ob-accent,
+html[dir="rtl"] .accent { direction: rtl; }
+html[dir="rtl"] .moment-row,
+html[dir="rtl"] .agenda-row {
+  /* CSS logical properties already handle most cases */
+}
+html[dir="rtl"] .switch-track .switch-thumb { inset-inline-start: auto; inset-inline-end: 2px; }
+
+/* Smaller settings on mobile */
+@media (max-width: 720px) {
+  .settings-section { padding: var(--space-4); }
+}
+</style>
+
+<script src="_shared/app.js"></script>
+<script>
+fetch('_shared/icons.svg.html').then(r => r.text()).then(t => {
+  document.getElementById('icons-host').innerHTML = t;
+});
+
+document.querySelectorAll('.settings-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.settings-tab').forEach(o => o.classList.remove('is-active'));
+    document.querySelectorAll('.settings-section').forEach(o => o.classList.remove('is-visible'));
+    t.classList.add('is-active');
+    document.querySelector(`[data-panel="${t.dataset.tab}"]`).classList.add('is-visible');
+  });
+});
+
+document.querySelectorAll('.locale-card').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('.locale-card').forEach(o => o.classList.remove('is-active'));
+    c.classList.add('is-active');
+    App.setLocale(c.dataset.loc);
+    App.toast('Langue mise à jour. L\'interface bascule.', { kind: 'info', duration: 2000 });
+  });
+});
+
+document.getElementById('del-btn')?.addEventListener('click', () => {
+  App.modal({
+    title: 'Supprimer mon espace ?',
+    size: 'compact',
+    body: `<p style="line-height:1.6">Cette action déclenche une suppression sous 7 jours. Vous recevrez un email de confirmation.</p><div class="field"><label class="field-label">Tapez « SUPPRIMER » pour confirmer</label><input class="input" placeholder="SUPPRIMER"></div>`,
+    footer: `<button class="btn ghost" data-close>Annuler</button><button class="btn danger" data-close>Confirmer</button>`,
+    onMount: (r,c) => r.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', c)),
+  });
+});
+
+App.setupTweaks(
+  () => ({ tab: 'general', locale: 'fr' }),
+  {
+    render: (s) => `
+      <section class="tweaks-section">
+        <div class="tweaks-section-title">Section visible</div>
+        <div class="tweak-row">
+          <label>Onglet</label>
+          <select data-tweak="tab">
+            <option value="general" ${s.tab==='general'?'selected':''}>Général</option>
+            <option value="locale" ${s.tab==='locale'?'selected':''}>Langue</option>
+            <option value="houses" ${s.tab==='houses'?'selected':''}>Maisons</option>
+            <option value="rituals" ${s.tab==='rituals'?'selected':''}>Rituels</option>
+            <option value="coaching" ${s.tab==='coaching'?'selected':''}>Coaching</option>
+            <option value="data" ${s.tab==='data'?'selected':''}>Données</option>
+            <option value="appearance" ${s.tab==='appearance'?'selected':''}>Apparence</option>
+            <option value="health" ${s.tab==='health'?'selected':''}>Santé système</option>
+            <option value="danger" ${s.tab==='danger'?'selected':''}>Zone sensible</option>
+          </select>
+        </div>
+      </section>
+      <section class="tweaks-section">
+        <div class="tweaks-section-title">Locale (test RTL)</div>
+        <div class="tweak-row tweak-radio">
+          <input type="radio" name="lc" id="lc-fr" value="fr" data-tweak="locale" ${s.locale==='fr'?'checked':''}>
+          <label for="lc-fr">FR</label>
+          <input type="radio" name="lc" id="lc-en" value="en" data-tweak="locale" ${s.locale==='en'?'checked':''}>
+          <label for="lc-en">EN</label>
+          <input type="radio" name="lc" id="lc-ar" value="ar" data-tweak="locale" ${s.locale==='ar'?'checked':''}>
+          <label for="lc-ar">AR (RTL)</label>
+        </div>
+      </section>
+      <div class="tweak-help">
+        Réglages doit être <em>navigable</em> sans peur. Aucune action irréversible sans confirmation explicite.
+      </div>
+    `,
+    apply: (s, key) => {
+      App.setLocale(s.locale);
+      const tab = document.querySelector(`.settings-tab[data-tab="${s.tab}"]`);
+      if (tab) tab.click();
+    }
+  }
+);
+</script>
+</body>
+</html>

@@ -602,6 +602,160 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
                             text-transform: uppercase; letter-spacing: 0.04em;
                             min-width: 80px; }
 
+/* ════════════════════════════════════════════════════════════════
+   NOUVEAU TAB v2 — Vue d'ensemble (overview) + V1 → V3
+   ════════════════════════════════════════════════════════════════ */
+.ov-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); margin-bottom: var(--space-8); }
+.ov-kpi { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-5); display: flex; flex-direction: column; gap: 4px; position: relative; transition: transform .15s, box-shadow .15s; }
+.ov-kpi:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.ov-kpi-icon { position: absolute; top: 12px; right: 12px; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-3); color: var(--text-2); font-size: 14px; font-weight: var(--fw-bold); }
+.ov-kpi-val { font-family: var(--font-thin); font-size: 44px; font-weight: var(--fw-thin); letter-spacing: -0.04em; line-height: 1; color: var(--text); font-variant-numeric: tabular-nums; }
+.ov-kpi-unit { font-size: 22px; font-weight: var(--fw-light); color: var(--text-2); margin-left: 2px; }
+.ov-kpi-lbl { font-size: var(--fs-xs); font-weight: var(--fw-bold); color: var(--text); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+.ov-kpi-sub { font-size: var(--fs-tiny); color: var(--text-3); line-height: 1.4; }
+.ov-kpi--big { grid-column: span 2; background: var(--emerald-50); border-color: var(--emerald); border-width: 2px; }
+.ov-kpi--big .ov-kpi-icon { background: var(--emerald); color: #fff; }
+.ov-kpi--big .ov-kpi-val { color: var(--emerald-800); }
+.ov-kpi--big .ov-kpi-lbl { color: var(--emerald-800); }
+.ov-kpi--big .ov-kpi-sub { color: var(--emerald-800); }
+.ov-kpi--next { background: var(--rose-50); border-color: var(--rose); border-width: 2px; }
+.ov-kpi--next .ov-kpi-icon { background: var(--rose); color: #fff; }
+.ov-kpi--next .ov-kpi-val { color: var(--rose-800); }
+.ov-kpi--next .ov-kpi-lbl { color: var(--rose-800); }
+.ov-kpi--next .ov-kpi-sub { color: var(--rose-800); }
+.ov-section { margin-bottom: var(--space-8); }
+.ov-section-title { font-family: var(--font-sans); font-size: var(--fs-h2); font-weight: var(--fw-extrabold); letter-spacing: -0.01em; margin: 0 0 8px; color: var(--text); }
+.ov-section-sub { font-size: var(--fs-sm); color: var(--text-2); margin: 0 0 var(--space-5); line-height: 1.5; }
+.ov-gitgraph { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-6); overflow-x: auto; box-shadow: var(--shadow-sm); }
+.ov-gitgraph .mermaid { font-family: var(--font-sans); }
+.ov-gitgraph-legend { display: flex; gap: var(--space-5); margin-top: var(--space-4); font-size: var(--fs-xs); color: var(--text-2); flex-wrap: wrap; justify-content: center; }
+.ov-leg { display: flex; align-items: center; gap: 6px; }
+.ov-leg-dot { width: 10px; height: 10px; border-radius: 50%; }
+.ov-leg--done .ov-leg-dot { background: var(--emerald); }
+.ov-leg--current .ov-leg-dot { background: var(--rose); box-shadow: 0 0 0 3px var(--rose-50); }
+.ov-leg--todo .ov-leg-dot { background: var(--violet); }
+.ov-next { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); margin-bottom: var(--space-8); }
+.ov-next-block { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-5); border-left: 4px solid var(--text-3); }
+.ov-next-block--current { border-left-color: var(--emerald); background: var(--emerald-50); }
+.ov-next-block--soon { border-left-color: var(--rose); background: var(--rose-50); }
+.ov-next-block--decision { border-left-color: var(--amber); background: var(--amber-50); }
+.ov-next-tag { font-size: var(--fs-tiny); font-weight: var(--fw-bold); text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-2); margin-bottom: 8px; }
+.ov-next-block--current .ov-next-tag { color: var(--emerald-800); }
+.ov-next-block--soon .ov-next-tag { color: var(--rose-800); }
+.ov-next-block--decision .ov-next-tag { color: var(--amber-800); }
+.ov-next-title { font-size: var(--fs-h3); font-weight: var(--fw-bold); letter-spacing: -0.005em; margin-bottom: 8px; line-height: 1.3; color: var(--text); }
+.ov-next-detail { font-size: var(--fs-sm); color: var(--text-2); line-height: 1.5; }
+.ov-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-3); }
+.ov-link { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-4); background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; text-align: left; font-family: inherit; transition: all .15s; }
+.ov-link:hover { border-color: var(--text-2); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.ov-link:focus-visible { outline: none; box-shadow: var(--ring); }
+.ov-link-icon { width: 32px; height: 32px; border-radius: var(--radius-xs); background: var(--surface-3); color: var(--text); display: grid; place-items: center; font-size: 16px; font-weight: var(--fw-bold); flex-shrink: 0; }
+.ov-link-content { display: flex; flex-direction: column; gap: 2px; }
+.ov-link-title { font-size: var(--fs-sm); font-weight: var(--fw-bold); color: var(--text); }
+.ov-link-sub { font-size: var(--fs-tiny); color: var(--text-3); line-height: 1.4; }
+.v1-themes { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); margin-bottom: var(--space-6); }
+.v1-theme { display: flex; gap: var(--space-4); padding: var(--space-5); background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.v1-theme-num { width: 36px; height: 36px; border-radius: 50%; background: var(--text); color: #fff; display: grid; place-items: center; font-weight: var(--fw-extrabold); font-size: var(--fs-h3); flex-shrink: 0; }
+.v1-theme-content { flex: 1; }
+.v1-theme-title { font-size: var(--fs-h3); font-weight: var(--fw-bold); letter-spacing: -0.005em; margin-bottom: 4px; color: var(--text); }
+.v1-theme-budget { font-size: var(--fs-tiny); font-weight: var(--fw-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--rose-800); margin-bottom: 8px; }
+.v1-theme-detail { font-size: var(--fs-sm); color: var(--text-2); line-height: 1.5; }
+.v1-budget { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-6); }
+.v1-budget-title { font-size: var(--fs-h3); font-weight: var(--fw-extrabold); margin-bottom: var(--space-4); color: var(--text); }
+.v1-budget-table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); font-variant-numeric: tabular-nums; }
+.v1-budget-table td, .v1-budget-table th { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; }
+.v1-budget-table th { font-weight: var(--fw-bold); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-2); }
+.v1-budget-table td:last-child, .v1-budget-table th:last-child { text-align: right; }
+.v1-budget-table .v1-budget-total td { font-weight: var(--fw-bold); border-top: 2px solid var(--text); border-bottom: none; padding-top: 14px; font-size: var(--fs-h3); }
+.v1-budget-saving { margin-top: var(--space-4); padding: var(--space-3) var(--space-4); background: var(--emerald-50); border-left: 3px solid var(--emerald); border-radius: var(--radius-xs); font-size: var(--fs-sm); color: var(--emerald-800); }
+.v2-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-3); }
+.v2-feat { padding: var(--space-3) var(--space-4); background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: var(--fs-sm); color: var(--text); line-height: 1.5; }
+@media (max-width: 1024px) {
+  .ov-kpis { grid-template-columns: repeat(2, 1fr); }
+  .ov-kpi--big { grid-column: span 2; }
+  .ov-next { grid-template-columns: 1fr; }
+  .v1-themes { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .ov-kpis { grid-template-columns: 1fr; }
+  .ov-kpi--big { grid-column: span 1; }
+  .ov-kpi-val { font-size: 36px; }
+}
+
+/* Vue executive — bandeau résumé une ligne */
+.ov-exec-summary {
+  background: linear-gradient(135deg, var(--surface-2) 0%, var(--surface-3) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4) var(--space-5);
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-sm);
+}
+.ov-exec-line {
+  margin: 0;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-medium);
+  color: var(--text);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+.ov-exec-line strong { font-weight: var(--fw-extrabold); color: var(--text); }
+.ov-exec-sep { color: var(--text-3); font-weight: var(--fw-light); margin: 0 4px; }
+
+/* KPIs allégés en mode exec — 4 colonnes au lieu de 4×2 */
+.ov-kpis--exec {
+  grid-template-columns: 1.5fr 1fr 1.5fr 1fr;
+}
+@media (max-width: 1024px) {
+  .ov-kpis--exec { grid-template-columns: 1fr 1fr; }
+  .ov-kpis--exec .ov-kpi--big { grid-column: span 2; }
+}
+@media (max-width: 640px) {
+  .ov-kpis--exec { grid-template-columns: 1fr; }
+  .ov-kpis--exec .ov-kpi--big { grid-column: span 1; }
+}
+
+/* Trajectoire — vue par palier */
+.traj-paliers { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
+.traj-palier {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4) var(--space-5);
+  border-left: 4px solid var(--text-3);
+  transition: border-left-color .15s, box-shadow .15s;
+}
+.traj-palier:hover { box-shadow: var(--shadow-sm); }
+.traj-palier--done { border-left-color: var(--emerald); background: linear-gradient(90deg, rgba(61,115,99,0.04) 0%, var(--surface-2) 30%); }
+.traj-palier--soon { border-left-color: var(--rose); background: linear-gradient(90deg, rgba(217,109,62,0.04) 0%, var(--surface-2) 30%); }
+.traj-palier--later { border-left-color: var(--violet); background: linear-gradient(90deg, rgba(122,106,138,0.04) 0%, var(--surface-2) 30%); }
+.traj-palier-tag {
+  display: inline-block;
+  font-size: var(--fs-tiny);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-2);
+  margin-bottom: 6px;
+}
+.traj-palier--done .traj-palier-tag { color: var(--emerald-800); }
+.traj-palier--soon .traj-palier-tag { color: var(--rose-800); }
+.traj-palier--later .traj-palier-tag { color: var(--violet-800); }
+.traj-palier-title { font-size: var(--fs-h3); margin-bottom: 4px; color: var(--text); line-height: 1.3; }
+.traj-palier-meta { font-size: var(--fs-xs); color: var(--text-2); margin-bottom: 8px; font-variant-numeric: tabular-nums; }
+.traj-palier-detail { font-size: var(--fs-sm); color: var(--text-2); line-height: 1.55; }
+
+.traj-budget-summary {
+  margin-top: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  background: linear-gradient(135deg, var(--surface-3) 0%, var(--surface-2) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-sm);
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
 </style>
 <!-- Mermaid pour les 3 blocs ciblés (architecture / dépendances / ADR) -->
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
@@ -621,7 +775,7 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
         <span class="bar" aria-hidden="true"><i id="progress-bar" style="width:0%"></i></span>
         <span id="progress-text">— jalons faits</span>
       </div>
-      <div class="version">v0.5-s2 · 25/04/2026</div>
+      <div class="version">v0.5 LIVRÉ · v0.6 EN COURS S6.1 · 26/04/2026 · binôme CEO+Claude</div>
     </div>
   </header>
 
@@ -636,16 +790,447 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
   </div>
 
   <nav class="tabs" role="tablist" aria-label="Vues de la roadmap">
-    <button class="tab" data-tab="convergence" role="tab" aria-selected="true" aria-controls="tab-convergence" id="tab-btn-convergence">Carte de convergence</button>
-    <button class="tab" data-tab="fusion-v05" role="tab" aria-selected="false" aria-controls="tab-fusion-v05" id="tab-btn-fusion-v05">Plan v0.5 fusion <span class="badge">v0.5 LIVRÉ</span></button>
+    <button class="tab" data-tab="overview" role="tab" aria-selected="true" aria-controls="tab-overview" id="tab-btn-overview">Vue d'ensemble <span class="badge">v0.5 ✓</span></button>
+    <button class="tab" data-tab="v06" role="tab" aria-selected="false" aria-controls="tab-v06" id="tab-btn-v06">v0.6 plan <span class="badge">3 sprints</span></button>
+    <button class="tab" data-tab="v1plus" role="tab" aria-selected="false" aria-controls="tab-v1plus" id="tab-btn-v1plus">V1 → V3 <span class="badge">à venir</span></button>
+    <button class="tab" data-tab="convergence" role="tab" aria-selected="false" aria-controls="tab-convergence" id="tab-btn-convergence">Trajectoire détaillée</button>
+    <button class="tab" data-tab="fusion-v05" role="tab" aria-selected="false" aria-controls="tab-fusion-v05" id="tab-btn-fusion-v05">v0.5 livré <span class="badge">5/5 sprints</span></button>
     <button class="tab" data-tab="release-notes" role="tab" aria-selected="false" aria-controls="tab-release-notes" id="tab-btn-release-notes">Release notes</button>
     <button class="tab" data-tab="journal" role="tab" aria-selected="false" aria-controls="tab-journal" id="tab-btn-journal">Journal &amp; écarts <span class="badge" id="journal-badge">live</span></button>
   </nav>
 
   <!-- ============================================================ -->
-  <!-- TAB 1 — Carte de convergence (timeline grid)                  -->
+  <!-- TAB 0 — Vue d'ensemble (NOUVEAU défaut)                       -->
   <!-- ============================================================ -->
-  <div class="tab-pane active" id="tab-convergence" role="tabpanel" aria-labelledby="tab-btn-convergence">
+  <div class="tab-pane active" id="tab-overview" role="tabpanel" aria-labelledby="tab-btn-overview">
+
+    <section class="ov-exec-summary" aria-label="Resume executif">
+      <p class="ov-exec-line"><strong>v0.5 LIVRÉ</strong> ✅ <span class="ov-exec-sep">·</span> <strong>v0.6 EN COURS</strong> ⚙ S6.1 démarrée 26/04 <span class="ov-exec-sep">·</span> <strong>V1</strong> (T3 2026 → T1 2027) <span class="ov-exec-sep">·</span> <strong>Action</strong> : générer maquette Claude Design (CEO manuel)</p>
+    </section>
+
+    <section class="ov-kpis ov-kpis--exec" aria-label="Indicateurs cles">
+      <div class="ov-kpi ov-kpi--big">
+        <div class="ov-kpi-icon" aria-hidden="true">&#10003;</div>
+        <div class="ov-kpi-val">v0.5</div>
+        <div class="ov-kpi-lbl">LIVRÉ 26/04/2026</div>
+        <div class="ov-kpi-sub">5 sprints · 110 k€ · 41 issues · ~95 tests · binôme CEO+Claude</div>
+      </div>
+      <div class="ov-kpi"><div class="ov-kpi-val">×30</div><div class="ov-kpi-lbl">Vélocité v0.5</div><div class="ov-kpi-sub">~16 h chrono cumulées vs ~520 h ETP plan</div></div>
+      <div class="ov-kpi ov-kpi--next">
+        <div class="ov-kpi-icon" aria-hidden="true">&#9881;</div>
+        <div class="ov-kpi-val">S6.1</div>
+        <div class="ov-kpi-lbl">EN COURS · v0.6</div>
+        <div class="ov-kpi-sub">DS atomic + 16 composants · 8 issues · ~5 j chrono dogfood</div>
+      </div>
+      <div class="ov-kpi">
+        <div class="ov-kpi-val">1,47<span class="ov-kpi-unit">M€</span></div>
+        <div class="ov-kpi-lbl">Trajectoire 18 mois</div>
+        <div class="ov-kpi-sub">v0.5 + v0.6 + V1 + V2 + V3 cumulés</div>
+      </div>
+    </section>
+
+    <section class="ov-section">
+      <h2 class="ov-section-title">Trajectoire produit · v0.4 → V3</h2>
+      <p class="ov-section-sub">Visualisation Git de la trajectoire 18 mois. <strong>Vous êtes ici</strong> entre <code>v0.5</code> (livré) et la branche <code>V1</code> (à ouvrir post-ExCom).</p>
+      <div class="ov-gitgraph">
+        <pre class="mermaid" id="mermaid-gitgraph">
+gitGraph
+   commit id: "v0.4 MVP" tag: "v0.4"
+   commit id: "Atelier coherence"
+   commit id: "ADR fusion app-web/MVP"
+   branch v0.5
+   commit id: "S1 Backend SQLite"
+   commit id: "S2 Cockpit + rituels"
+   commit id: "S3 Agenda + revues"
+   commit id: "S4 Chat + portefeuille"
+   commit id: "S5 Cutover + recette"
+   checkout main
+   merge v0.5 tag: "v0.5" type: HIGHLIGHT
+   commit id: "Bundle Claude Design v3.1"
+   branch v0.6
+   commit id: "DS atomic + 16 composants"
+   commit id: "13 pages refondues"
+   commit id: "Coaching + Onboarding + a11y"
+   checkout main
+   merge v0.6 tag: "v0.6" type: HIGHLIGHT
+   branch V1
+   commit id: "Multi-tenant + equipes"
+   commit id: "Integrations + mobile PWA"
+   commit id: "Backup + logs"
+   checkout main
+   merge V1 tag: "v1" type: HIGHLIGHT
+   branch V2
+   commit id: "i18n + SOC 2"
+   commit id: "Premier client international"
+   checkout main
+   merge V2 tag: "v2" type: HIGHLIGHT
+   branch V3
+   commit id: "Coach Opus + offline"
+   commit id: "Multi-CEO ecosysteme"
+   checkout main
+   merge V3 tag: "v3" type: HIGHLIGHT
+</pre>
+      </div>
+      <div class="ov-gitgraph-legend">
+        <span class="ov-leg ov-leg--done"><span class="ov-leg-dot"></span>Livré</span>
+        <span class="ov-leg ov-leg--current"><span class="ov-leg-dot"></span>Vous êtes ici</span>
+        <span class="ov-leg ov-leg--todo"><span class="ov-leg-dot"></span>À venir</span>
+      </div>
+    </section>
+
+    <section class="ov-next">
+      <div class="ov-next-block ov-next-block--current"><div class="ov-next-tag">PHASE ACTUELLE</div><div class="ov-next-title">v0.5 LIVRÉ · recette ExCom prête</div><div class="ov-next-detail">Phase v0.5 internalisée close ce 26/04. Tag <code>v0.5</code> posé. Bundle design Claude Design v3.1 livré comme cible visuelle V1. Feycoil en dogfood quotidien.</div></div>
+      <div class="ov-next-block ov-next-block--current"><div class="ov-next-tag">PHASE EN COURS</div><div class="ov-next-title">v0.6 — S6.1 démarrée · DS atomic + 16 composants</div><div class="ov-next-detail">Sprint S6.1 démarré le 26/04/2026 (kickoff DOSSIER-V06.md + ADR S6.00 + 24 issues GitHub créées). Pré-requis : génération maquette Claude Design via prompt v3.1 (~60-90 min, action manuelle CEO). Cible 8 issues S6.1.0 → S6.1.7 sur ~5 j chrono dogfood. Tag <code>v0.6-s6.1</code> cible J5.</div></div>
+      <div class="ov-next-block ov-next-block--decision"><div class="ov-next-tag">ACTION ATTENDUE</div><div class="ov-next-title">Génération maquette Claude Design (CEO manuel)</div><div class="ov-next-detail">Pré-requis bloquant S6.1 : poster prompt v3.1 sur Claude Design (<code>04_docs/_design-v05-claude/PROMPT-FINAL.md</code>) + uploader 15 PJ + récupérer ~62 vues hi-fi. Stocker dans <code>04_docs/_sprint-s6/maquette-claude-design/</code>. Puis demander à Claude (cette session) de démarrer S6.1.0 (ADR setup ITCSS).</div></div>
+    </section>
+
+    <section class="ov-section">
+      <h2 class="ov-section-title">Drill-down par sujet</h2>
+      <div class="ov-links">
+        <button class="ov-link" data-goto="v06"><span class="ov-link-icon">&#9881;</span><span class="ov-link-content"><span class="ov-link-title">v0.6 Interface finalisée</span><span class="ov-link-sub">Plan détaillé · 3 sprints S6.1-S6.3 · DS atomic + composants + a11y</span></span></button>
+        <button class="ov-link" data-goto="v1plus"><span class="ov-link-icon">&#8594;</span><span class="ov-link-content"><span class="ov-link-title">V1 → V3 détaillé</span><span class="ov-link-sub">6 thèmes V1, V2 commercial international, V3 coach + offline</span></span></button>
+        <button class="ov-link" data-goto="fusion-v05"><span class="ov-link-icon">&#10003;</span><span class="ov-link-content"><span class="ov-link-title">v0.5 livré · 5 sprints</span><span class="ov-link-sub">Détail S1 à S5, tests, budget consommé, ADRs</span></span></button>
+        <button class="ov-link" data-goto="journal"><span class="ov-link-icon">&#9998;</span><span class="ov-link-content"><span class="ov-link-title">Journal &amp; écarts</span><span class="ov-link-sub">21+ entrées chronologiques, schedule variance vs BASELINE</span></span></button>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB v0.6 plan — Interface finalisée (sur modèle v0.5)        -->
+  <!-- ============================================================ -->
+  <div class="tab-pane" id="tab-v06" role="tabpanel" aria-labelledby="tab-btn-v06">
+
+    <div class="youarehere" role="status">
+      <span class="pulse" aria-hidden="true"></span>
+      <div>
+        <div class="label">Prochaine phase · cible mai 2026 · binôme CEO+Claude · ~8 k€ absorbé provision V1</div>
+        <h2>v0.6 — Interface finalisée selon bundle Claude Design v3.1 · 3 sprints courts</h2>
+        <p>Palier UI dédié inséré entre v0.5 livré (26/04) et V1 (T3 2026), pour refondre l'interface des 13 pages selon le bundle Claude Design v3.1 (16 ressources, prompt v3.1) sans ajouter de scope fonctionnel. <strong>Pas de feature nouvelle</strong> : DS atomic 3 niveaux, 16 composants UI, microcopy FR unifié, accessibilité WCAG AA, patterns coaching légers, onboarding wizard simple, settings basique, components gallery. Audit accessibilité externe en sortie. <strong>Vélocité cible ×15-×20</strong> (entre v0.5 ×30 et V1 ×10), réaliste car scope étroit.</p>
+      </div>
+      <div class="stamp">3 sprints · ~2-3 sem · ~8 k€ · 0 régression v0.5 · binôme CEO+Claude</div>
+    </div>
+
+    <!-- Timeline 3 sprints courts -->
+    <div class="section">
+      <h2 class="section-title">Timeline · 3 sprints courts (~5 j chrono dogfood chacun)</h2>
+      <div class="section-sub">Découpage cible v0.6 · démarrage post-ExCom 04/05 · tag v0.6 cible mi-mai 2026</div>
+      <div class="diagram">
+        <svg viewBox="0 0 1280 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Timeline v0.6 3 sprints courts">
+          <defs>
+            <linearGradient id="v06phaseGrad" x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0" stop-color="#7a6a8a"/>
+              <stop offset="0.5" stop-color="#7790ae"/>
+              <stop offset="1" stop-color="#3d7363"/>
+            </linearGradient>
+          </defs>
+
+          <!-- GO ExCom (zone amont) -->
+          <rect x="20" y="84" width="120" height="32" rx="6" fill="#fdecdf" stroke="#d96d3e"/>
+          <text x="80" y="100" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#8a3b1b" letter-spacing="0.5">GO EXCOM</text>
+          <text x="80" y="112" text-anchor="middle" font-family="Fira Sans" font-size="9" fill="#d96d3e">04/05 · GO v0.6</text>
+
+          <!-- Sprint S6.1 -->
+          <g transform="translate(370,68)">
+            <circle r="9" fill="#fff" stroke="#7a6a8a" stroke-width="2"/>
+            <text x="0" y="3" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#7a6a8a">1</text>
+          </g>
+          <text x="370" y="48" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#463a54">S6.1</text>
+
+          <!-- Sprint S6.2 -->
+          <g transform="translate(710,68)">
+            <circle r="9" fill="#fff" stroke="#7790ae" stroke-width="2"/>
+            <text x="0" y="3" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#7790ae">2</text>
+          </g>
+          <text x="710" y="48" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#3b506a">S6.2</text>
+
+          <!-- Sprint S6.3 -->
+          <g transform="translate(1050,68)">
+            <circle r="9" fill="#fff" stroke="#3d7363" stroke-width="2"/>
+            <text x="0" y="3" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#3d7363">3</text>
+          </g>
+          <text x="1050" y="48" text-anchor="middle" font-family="Fira Sans" font-size="10" font-weight="700" fill="#234236">S6.3</text>
+
+          <!-- Main timeline bar -->
+          <rect x="160" y="84" width="1100" height="32" rx="16" fill="url(#v06phaseGrad)"/>
+
+          <!-- Phase dividers -->
+          <line x1="540" y1="80" x2="540" y2="120" stroke="#f5f3ef" stroke-width="2"/>
+          <line x1="880" y1="80" x2="880" y2="120" stroke="#f5f3ef" stroke-width="2"/>
+
+          <!-- Phase labels (sprint titles) -->
+          <text x="370" y="74" text-anchor="middle" font-family="Fira Sans" font-size="11" font-weight="800" fill="#111418">DS + Composants</text>
+          <text x="370" y="102" text-anchor="middle" font-family="Fira Sans" font-size="11" fill="#f5f3ef" font-weight="600">~5 j · J1-J5</text>
+          <text x="370" y="138" text-anchor="middle" font-family="Fira Sans" font-size="9" fill="#5b5e68">Tokens 3 niveaux · 16 composants</text>
+
+          <text x="710" y="74" text-anchor="middle" font-family="Fira Sans" font-size="11" font-weight="800" fill="#111418">Refonte cockpit + rituels</text>
+          <text x="710" y="102" text-anchor="middle" font-family="Fira Sans" font-size="11" fill="#f5f3ef" font-weight="600">~5 j · J6-J10</text>
+          <text x="710" y="138" text-anchor="middle" font-family="Fira Sans" font-size="9" fill="#5b5e68">cockpit, arbitrage, evening, tâches, agenda + coaching</text>
+
+          <text x="1050" y="74" text-anchor="middle" font-family="Fira Sans" font-size="11" font-weight="800" fill="#111418">Registres + recette</text>
+          <text x="1050" y="102" text-anchor="middle" font-family="Fira Sans" font-size="11" fill="#f5f3ef" font-weight="600">~5 j · J11-J15</text>
+          <text x="1050" y="138" text-anchor="middle" font-family="Fira Sans" font-size="9" fill="#5b5e68">5 pages registres + onboarding + a11y + tag v0.6</text>
+
+          <!-- End marker: tag v0.6 -->
+          <g transform="translate(1260,100)">
+            <polygon points="-8,-12 8,0 -8,12" fill="#7a6a8a" stroke="#111418" stroke-width="1.5"/>
+            <text x="0" y="32" text-anchor="middle" font-family="Fira Sans" font-size="11" font-weight="800" fill="#111418">Tag v0.6</text>
+            <text x="0" y="46" text-anchor="middle" font-family="Fira Sans" font-size="9" fill="#5b5e68">mi-mai 2026</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 3 piliers v0.6 -->
+    <div class="section">
+      <h2 class="section-title">3 piliers v0.6</h2>
+      <div class="v1-themes">
+        <div class="v1-theme">
+          <div class="v1-theme-num">1</div>
+          <div class="v1-theme-content">
+            <div class="v1-theme-title">DS atomic + 16 composants UI</div>
+            <div class="v1-theme-budget">S6.1 · ~5 j chrono dogfood</div>
+            <div class="v1-theme-detail">Tokens 3 niveaux (primitive / semantic / component), ITCSS, BEM avec préfixes (c-/o-/u-/is-/has-). 16 composants : buttons (4 variants × 3 sizes), inputs, modals (3 sizes), toasts, tooltips, dropdowns, switches, progress bars, tags/chips, avatars, skeletons, tabs underline, cards, KPI tiles, search pill, command palette ⌘K. Drawer collapsible 240↔60 px. Header. Footer. Components gallery <code>/components.html</code> mini-storybook.</div>
+          </div>
+        </div>
+        <div class="v1-theme">
+          <div class="v1-theme-num">2</div>
+          <div class="v1-theme-content">
+            <div class="v1-theme-title">Refonte 7 pages cockpit + rituels + travail courant</div>
+            <div class="v1-theme-budget">S6.2 · ~5 j chrono dogfood</div>
+            <div class="v1-theme-detail">cockpit, arbitrage, evening, tâches, agenda, revues, assistant — refondues selon maquette Claude Design v3.1. Patterns coaching v0.6 légers : time-of-day adaptation cockpit (4 modes matin/journée/soir/nuit), friction positive (5e P0 → modal soft), recovery streak break (sans drame), posture stratégique footer (question du mois). Streaming SSE assistant raffiné. Auto-save dirty state.</div>
+          </div>
+        </div>
+        <div class="v1-theme">
+          <div class="v1-theme-num">3</div>
+          <div class="v1-theme-content">
+            <div class="v1-theme-title">5 pages registres + onboarding + recette + tag v0.6</div>
+            <div class="v1-theme-budget">S6.3 · ~5 j chrono dogfood</div>
+            <div class="v1-theme-detail">5 pages registres refondues (groupes, projets, projet, contacts, decisions). Onboarding wizard simple (5 étapes, désactivé Feycoil, activable CEO pair). Settings page basique (4 sections : identité, intégrations, sécurité base, données — sans multi-tenant config). Microcopy FR unifié (zéro string ad hoc). Iconographie Lucide stroke 1.5 (30 icônes). Charts SVG inline (6 patterns). Source-link pattern. WCAG AA cockpit + audit a11y externe (~3 k€ axe-core + audit pro). Recette CEO. Tag <code>v0.6</code> posé.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Critères d'acceptation -->
+    <div class="section">
+      <h2 class="section-title">Critères d'acceptation v0.6 (go/no-go V1)</h2>
+      <div class="v2-features">
+        <div class="v2-feat">✅ <strong>13 pages refondues</strong> conformes maquette Claude Design v3.1 (mode "vue dev" filtré sur <code>[v0.5]</code> + <code>[v0.6]</code>)</div>
+        <div class="v2-feat">✅ <strong>DS atomic implémenté</strong> (tokens 3 niveaux + 16 composants catalogués)</div>
+        <div class="v2-feat">✅ <strong>Microcopy FR unifié</strong> (zéro string ad hoc cross-pages)</div>
+        <div class="v2-feat">✅ <strong>WCAG AA verifiable cockpit/arbitrage/evening</strong> (axe-core 0 finding critique)</div>
+        <div class="v2-feat">✅ <strong>Patterns coaching v0.6 visibles</strong> (time-of-day, friction positive, recovery, posture footer)</div>
+        <div class="v2-feat">✅ <strong>Onboarding wizard fonctionnel</strong> (testable en démo CEO pair)</div>
+        <div class="v2-feat">✅ <strong>Components gallery</strong> accessible via <code>/components.html</code></div>
+        <div class="v2-feat">✅ <strong>Tests Playwright préservés</strong> (≥ 95 verts)</div>
+        <div class="v2-feat">✅ <strong>0 régression fonctionnelle vs v0.5</strong></div>
+        <div class="v2-feat">✅ <strong>Performance</strong> : LCP &lt; 2 s desktop, bundle CSS &lt; 50 kb</div>
+        <div class="v2-feat">✅ <strong>Tag <code>v0.6</code> posé</strong> sur main + GitHub Release publiée</div>
+        <div class="v2-feat">✅ <strong>Adoption Feycoil</strong> : 100 % dogfood sur la nouvelle UI pendant 14 j sans bug bloquant</div>
+      </div>
+    </div>
+
+    <!-- Hors scope v0.6 -->
+    <div class="section">
+      <h2 class="section-title">Hors scope v0.6 (réservé V1+)</h2>
+      <div class="v2-features">
+        <div class="v2-feat">❌ <strong>Multi-tenant + RLS Supabase</strong> → V1 thème 1 (~80 k€)</div>
+        <div class="v2-feat">❌ <strong>Équipes / délégation E2E</strong> → V1 thème 2 (~50 k€)</div>
+        <div class="v2-feat">❌ <strong>Intégrations Teams/Notion/Slack</strong> → V1 thème 3 (~60 k€)</div>
+        <div class="v2-feat">❌ <strong>Mobile / tablet / PWA / bottom-tab nav</strong> → V1 thème 4 (~70 k€)</div>
+        <div class="v2-feat">❌ <strong>Backup chiffré automatique</strong> → V1 thème 5 (~20 k€)</div>
+        <div class="v2-feat">❌ <strong>Logs winston + Langfuse</strong> → V1 thème 6 (~20 k€)</div>
+        <div class="v2-feat">❌ <strong>i18n FR + EN activé</strong> (architecture posée v0.6, activation V2)</div>
+        <div class="v2-feat">❌ <strong>RTL prep AR/HE</strong> → V2</div>
+        <div class="v2-feat">❌ <strong>Coach Opus + mirror moments + score santé + self-talk</strong> → V3</div>
+        <div class="v2-feat">❌ <strong>Offline-first ElectricSQL</strong> → V3</div>
+      </div>
+    </div>
+
+    <!-- Budget v0.6 -->
+    <div class="section">
+      <div class="v1-budget">
+        <div class="v1-budget-title">Budget v0.6 — absorbé sans rallonge</div>
+        <table class="v1-budget-table">
+          <tr><td>Dev humain (Feycoil dogfood + signature)</td><td><strong>0 €</strong></td></tr>
+          <tr><td>Infra (déjà payée v0.5)</td><td>0 €</td></tr>
+          <tr><td>LLM Claude API (3 sem × 30 €/jour)</td><td>~600 €</td></tr>
+          <tr><td>Provision imprévus / outils</td><td>~3 k€</td></tr>
+          <tr><td>Tests utilisateur (1 CEO pair pré-V1)</td><td>~2 k€</td></tr>
+          <tr><td>Audit accessibilité externe (axe-core + audit pro)</td><td>~3 k€</td></tr>
+          <tr class="v1-budget-total"><td><strong>Total v0.6</strong></td><td><strong>~8 k€</strong></td></tr>
+        </table>
+        <div class="v1-budget-saving">Source : <strong>provision V1 actuelle</strong> (105 k€ disponible). Pas de rallonge budgétaire. Trajectoire 18 mois passe de 1,46 M€ à <strong>1,47 M€</strong>.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB V1+ — V1, V2, V3 redéfinis                                -->
+  <!-- ============================================================ -->
+  <div class="tab-pane" id="tab-v1plus" role="tabpanel" aria-labelledby="tab-btn-v1plus">
+
+    <div class="ov-section">
+      <h2 class="ov-section-title">v0.6 Interface finalisée · ~8 k€ binôme / 2-3 sem (mai 2026)</h2>
+      <p class="ov-section-sub">Palier UI dédié inséré entre v0.5 livré et V1 (ADR 26/04). Refonte UI complète selon bundle Claude Design v3.1 sur scope fonctionnel v0.5 préservé. Pas de feature nouvelle.</p>
+      <div class="v2-features">
+        <div class="v2-feat"><strong>DS atomic 3 niveaux</strong> — tokens primitive / semantic / component, ITCSS, BEM</div>
+        <div class="v2-feat"><strong>16 composants UI catalogués</strong> — buttons, inputs, modals, toasts, dropdowns, switches, progress, tags, avatars, skeletons, tabs, cards, KPI, search pill, command palette ⌘K</div>
+        <div class="v2-feat"><strong>13 pages refondues</strong> selon maquette Claude Design v3.1</div>
+        <div class="v2-feat"><strong>Microcopy FR unifié</strong> — empty states, errors, confirmations, placeholders, tooltips</div>
+        <div class="v2-feat"><strong>WCAG AA cockpit</strong> + audit a11y externe (~3 k€ axe-core + audit pro)</div>
+        <div class="v2-feat"><strong>Patterns coaching v0.6 légers</strong> — time-of-day adaptation, friction positive 5e P0, recovery streak break, posture stratégique footer</div>
+        <div class="v2-feat"><strong>Onboarding wizard simple</strong> (5 étapes) — désactivé Feycoil, activable CEO pair</div>
+        <div class="v2-feat"><strong>Settings page basique</strong> (4 sections, sans multi-tenant)</div>
+        <div class="v2-feat"><strong>Components gallery</strong> — mini-storybook visuel</div>
+        <div class="v2-feat"><strong>Iconographie Lucide</strong> stroke 1.5 unifiée (30 icônes)</div>
+        <div class="v2-feat"><strong>Charts SVG inline</strong> (6 patterns autorisés)</div>
+        <div class="v2-feat"><strong>Source-link pattern + auto-save</strong> dirty state</div>
+        <div class="v2-feat"><strong>Streaming SSE assistant raffiné</strong> (skeleton + curseur + reconnexion exp.)</div>
+        <div class="v2-feat"><strong>0 régression v0.5</strong> · tests Playwright ≥ 95 verts · adoption Feycoil 100 % dogfood 14 j</div>
+      </div>
+    </div>
+
+    <div class="ov-section">
+      <h2 class="ov-section-title">V1 SaaS + équipes + mobile · 6 thèmes / ~46 k€ binôme / 6 mois</h2>
+      <p class="ov-section-sub">Modèle binôme Feycoil + Claude étendu (ADR 26/04). Recrutement externe annulé. Vélocité cible ×10. Voir <a href="08-roadmap.md">08-roadmap.md v3.1</a>.</p>
+
+      <div class="v1-themes">
+        <div class="v1-theme"><div class="v1-theme-num">1</div><div class="v1-theme-content"><div class="v1-theme-title">Multi-tenant Supabase + RLS + auth Microsoft Entra</div><div class="v1-theme-budget">~80 k€ valeur travail externalisée équiv.</div><div class="v1-theme-detail">Isolation stricte par <code>tenant_id</code>, vocabulary configurable ("groupe"/"house"/"holding"), migration SQLite → Postgres. Auth msal-node device code flow.</div></div></div>
+        <div class="v1-theme"><div class="v1-theme-num">2</div><div class="v1-theme-content"><div class="v1-theme-title">Équipes — rôles + délégation E2E + matrice confiance</div><div class="v1-theme-budget">~50 k€ valeur travail</div><div class="v1-theme-detail">CEO, DG, AE, manager, collaborateur. Quand CEO délègue, tâche apparaît chez destinataire. Vues role-specific (AE voit agenda + tâches, DG voit décisions + projets).</div></div></div>
+        <div class="v1-theme"><div class="v1-theme-num">3</div><div class="v1-theme-content"><div class="v1-theme-title">Intégrations Teams + Notion + Slack + webhooks</div><div class="v1-theme-budget">~60 k€ valeur travail</div><div class="v1-theme-detail">Microsoft Graph API OAuth (remplace PowerShell COM), pousse délégations dans Teams/Slack, lecture pages Notion + push tâches. Webhooks Zapier-compatible.</div></div></div>
+        <div class="v1-theme"><div class="v1-theme-num">4</div><div class="v1-theme-content"><div class="v1-theme-title">App mobile compagnon PWA</div><div class="v1-theme-budget">~70 k€ valeur travail</div><div class="v1-theme-detail">iOS + Android via PWA. 3 viewports responsive (390/1024/1440). Bottom-tab nav + FAB. Bottom sheets remplaçant modals. Push notifications, dictée vocale, consultation déplacement.</div></div></div>
+        <div class="v1-theme"><div class="v1-theme-num">5</div><div class="v1-theme-content"><div class="v1-theme-title">Backup automatique SQLite + chiffrement at-rest</div><div class="v1-theme-budget">~20 k€ valeur travail</div><div class="v1-theme-detail">Schtasks daily backup chiffré AES-256. Snapshots versionnés 7/30/365 j. S5.04 reporté. Fin du risque "perte irréversible si crash disque".</div></div></div>
+        <div class="v1-theme"><div class="v1-theme-num">6</div><div class="v1-theme-content"><div class="v1-theme-title">Logs winston-daily-rotate-file + Langfuse</div><div class="v1-theme-budget">~20 k€ valeur travail</div><div class="v1-theme-detail">Logs structurés JSON avec rotation. Langfuse pour traçabilité LLM (tokens, prompts, latences). S5.05 reporté. Pré-requis observabilité multi-tenant.</div></div></div>
+      </div>
+
+      <div class="v1-budget">
+        <div class="v1-budget-title">Budget V1 binôme révisé</div>
+        <table class="v1-budget-table">
+          <tr><td>Dev humain (Feycoil dogfood + signature externe)</td><td><strong>0 €</strong></td></tr>
+          <tr><td>Infra (Supabase Pro + Postgres RLS + Bedrock + Langfuse + monitoring + backup)</td><td>~12 k€</td></tr>
+          <tr><td>LLM Claude API (6 mois × 30 €/jour)</td><td>~5,5 k€</td></tr>
+          <tr><td>Apple Developer + Google Play</td><td>~150 €</td></tr>
+          <tr><td>Audit sécurité externe (pen-testing fin V1)</td><td>~15 k€</td></tr>
+          <tr><td>Onboarding 1er CEO pair francophone</td><td>~3 k€</td></tr>
+          <tr><td>Provision imprévus / outils SaaS</td><td>~10 k€</td></tr>
+          <tr class="v1-budget-total"><td><strong>Total V1 binôme</strong></td><td><strong>~46 k€</strong></td></tr>
+        </table>
+        <div class="v1-budget-saving">Économie vs sourcing externe initial (300 k€) : <strong>254 k€</strong>. Réalloués en anticipation V2 — option β : 80 k€ marketing + 40 k€ success/sales junior + 50 k€ provision SOC 2 + 85 k€ trésorerie restante.</div>
+      </div>
+    </div>
+
+    <div class="ov-section">
+      <h2 class="ov-section-title">V2 commercial international · 800 k€ · 20 sem (T2-T4 2027)</h2>
+      <p class="ov-section-sub">Recentrée sur dimension commerciale internationale + i18n + SOC 2. Multi-tenant déjà absorbé en V1.</p>
+      <div class="v2-features">
+        <div class="v2-feat"><strong>i18n FR + EN activé</strong> — premier client EN onboardé</div>
+        <div class="v2-feat"><strong>RTL prep AR/HE</strong> — premier marché Maroc / Émirats</div>
+        <div class="v2-feat"><strong>Premier client international</strong> hors écosystème ETIC, pricing transparent, self-service signup</div>
+        <div class="v2-feat"><strong>SOC 2 Type II</strong> via Vanta/Drata, RGPD complet</div>
+        <div class="v2-feat"><strong>Canvas IA collaboratif</strong> tldraw + Yjs</div>
+        <div class="v2-feat"><strong>Graphe Cytoscape</strong> réseau parties prenantes</div>
+        <div class="v2-feat"><strong>Visualisations riches</strong> carte radiale, arbre Big Rocks, timeline</div>
+        <div class="v2-feat"><strong>API publique + browser extension</strong></div>
+        <div class="v2-feat"><strong>Cible</strong> ARR ≥ 200 k€ sur 12 mois glissants</div>
+      </div>
+    </div>
+
+    <div class="ov-section">
+      <h2 class="ov-section-title">V3 coach + offline + multi-CEO · 600 k€ · 16 sem (T4 2027+)</h2>
+      <p class="ov-section-sub">Recentrée sur coaching + offline + multi-CEO écosystème. Mobile déjà livré en V1.</p>
+      <div class="v2-features">
+        <div class="v2-feat"><strong>Coach conversationnel Claude Opus</strong> — modes arbitrage / coincé / revue stoïque, frameworks EOS / Eisenhower / Stoïcisme</div>
+        <div class="v2-feat"><strong>Mirror moments hebdo + score santé exécutive</strong></div>
+        <div class="v2-feat"><strong>Self-talk monitoring + recadrage doux</strong></div>
+        <div class="v2-feat"><strong>Pause forcée ergonomie</strong> — détection > 2h continues</div>
+        <div class="v2-feat"><strong>Détection burnout active</strong> — interventions graduées</div>
+        <div class="v2-feat"><strong>Boîte à outils psychologique</strong> — respiration, méditation, recadrage cognitif</div>
+        <div class="v2-feat"><strong>Post-mortem automatique</strong> sur Big Rocks ratés</div>
+        <div class="v2-feat"><strong>Offline-first</strong> ElectricSQL ou PowerSync</div>
+        <div class="v2-feat"><strong>Multi-CEO écosystème</strong> — 2-3+ CEO indépendants en partage réseau limité</div>
+      </div>
+    </div>
+
+    <div class="ov-section">
+      <h2 class="ov-section-title">Trajectoire 18 mois — synthèse budgétaire</h2>
+      <table class="v1-budget-table">
+        <tr><th>Phase</th><th>Date</th><th>Budget v3.1</th><th>Statut</th></tr>
+        <tr><td>v0.5 fusion</td><td>26/04/2026</td><td>110 k€ (4,6 direct + 105 provision)</td><td>✅ LIVRÉ</td></tr>
+        <tr><td><strong>v0.6 Interface finalisée</strong></td><td>mai 2026 (~2-3 sem)</td><td><strong>~8 k€</strong> (absorbé provision V1)</td><td>🔜 GO ExCom 04/05</td></tr>
+        <tr><td>V1 SaaS + équipes + mobile</td><td>T3 2026 → T1 2027</td><td><strong>46 k€</strong> (binôme)</td><td>🔜 démarre post-v0.6</td></tr>
+        <tr><td>V2 commercial international</td><td>T2-T4 2027</td><td>800 k€</td><td>esquissée</td></tr>
+        <tr><td>V3 coach + offline + multi-CEO</td><td>T4 2027+</td><td>600 k€</td><td>esquissée</td></tr>
+        <tr class="v1-budget-total"><td><strong>Total 18 mois</strong></td><td>—</td><td><strong>1,46 M€</strong></td><td>économie 254 k€ vs v3.0</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- TAB 1 — Trajectoire détaillée (ex-Carte convergence)         -->
+  <!-- ============================================================ -->
+  <div class="tab-pane" id="tab-convergence" role="tabpanel" aria-labelledby="tab-btn-convergence">
+
+    <!-- Vue par palier — alignée ROADMAP v3.2 -->
+    <div class="ov-section">
+      <h2 class="ov-section-title">Trajectoire 6 paliers · ROADMAP v3.2</h2>
+      <p class="ov-section-sub">Vue alignée sur la roadmap officielle <code>04_docs/08-roadmap.md v3.2</code>. Chaque palier détaille périmètre, dates, budget, statut. Drill-down sur la grille 49 milestones plus bas.</p>
+
+      <div class="traj-paliers">
+        <div class="traj-palier traj-palier--done">
+          <div class="traj-palier-tag">PALIER 1</div>
+          <div class="traj-palier-title"><strong>v0.4 MVP</strong> · arbitrage matinal Claude</div>
+          <div class="traj-palier-meta">24/04/2026 · ✅ LIVRÉ · run réel 28/28 tâches arbitrées en 41 s</div>
+          <div class="traj-palier-detail">App statique app-web Twisty (cockpit + 13 pages) + MVP Node Express + intégration Outlook COM + délégation un-clic + boucle du soir + chip coral sous pression. Tag <code>v0.4</code> · ≈ 1,5 ct/jour LLM.</div>
+        </div>
+
+        <div class="traj-palier traj-palier--done">
+          <div class="traj-palier-tag">PALIER 2</div>
+          <div class="traj-palier-title"><strong>v0.5 fusion</strong> · produit unifié SQLite + Claude</div>
+          <div class="traj-palier-meta">26/04/2026 · ✅ LIVRÉ · 5 sprints en ~16 h chrono dogfood (vélocité ×30) · 110 k€ / 110 k€</div>
+          <div class="traj-palier-detail">SQLite unifié 14 tables · 13 pages /api · Cockpit live · Service Windows (Variante D Startup) · Tests Playwright · Bundle Claude Design v3.1. Tag <code>v0.5</code> · 41 issues closes · ~95 tests verts · ~150 j d'avance vs BASELINE.</div>
+        </div>
+
+        <div class="traj-palier traj-palier--soon">
+          <div class="traj-palier-tag">PALIER 3</div>
+          <div class="traj-palier-title"><strong>v0.6 Interface finalisée</strong> · refonte UI selon bundle Claude Design v3.1</div>
+          <div class="traj-palier-meta">mai 2026 · 🔜 prochain (~2-3 sem binôme) · ~8 k€ absorbé provision V1</div>
+          <div class="traj-palier-detail">3 sprints courts (S6.1 DS atomic + 16 composants · S6.2 refonte cockpit + rituels + coaching · S6.3 registres + onboarding + a11y). DS atomic 3 niveaux · 16 composants UI · microcopy FR · WCAG AA · patterns coaching légers · onboarding wizard simple · settings basique · components gallery · audit a11y externe. <strong>Pas de feature nouvelle</strong>.</div>
+        </div>
+
+        <div class="traj-palier traj-palier--soon">
+          <div class="traj-palier-tag">PALIER 4</div>
+          <div class="traj-palier-title"><strong>V1 SaaS + équipes + mobile</strong> · 6 thèmes binôme</div>
+          <div class="traj-palier-meta">T3 2026 → T1 2027 · 🔜 démarre post-v0.6 · ~46 k€ binôme / 6 mois · vélocité cible ×10</div>
+          <div class="traj-palier-detail">6 thèmes priorisés : (1) multi-tenant Supabase + RLS + auth Microsoft Entra · (2) équipes + délégation E2E + matrice confiance · (3) intégrations Teams + Notion + Slack + webhooks · (4) app mobile compagnon PWA · (5) backup chiffré AES-256 · (6) logs winston + Langfuse. Audit sécurité externe en sortie (~15 k€). 254 k€ économisés vs sourcing externe → réallocation V2 (option β).</div>
+        </div>
+
+        <div class="traj-palier traj-palier--later">
+          <div class="traj-palier-tag">PALIER 5</div>
+          <div class="traj-palier-title"><strong>V2 commercial international</strong> · i18n + SOC 2 + premier client intl</div>
+          <div class="traj-palier-meta">T2-T4 2027 · esquissée · ~800 k€ / 20 sem</div>
+          <div class="traj-palier-detail">i18n FR+EN activé · RTL prep AR/HE · premier client international hors écosystème ETIC · pricing transparent · self-service signup · SOC 2 Type II Vanta/Drata · canvas IA collaboratif (tldraw + Yjs) · graphe Cytoscape · viz riches · API publique + browser extension. Cible ARR ≥ 200 k€ sur 12 mois glissants.</div>
+        </div>
+
+        <div class="traj-palier traj-palier--later">
+          <div class="traj-palier-tag">PALIER 6</div>
+          <div class="traj-palier-title"><strong>V3 coach + offline + multi-CEO</strong> · Claude Opus + ElectricSQL</div>
+          <div class="traj-palier-meta">T4 2027+ · esquissée · ~600 k€ / 16 sem</div>
+          <div class="traj-palier-detail">Coach conversationnel Claude Opus (modes arbitrage / coincé / revue stoïque, frameworks EOS / Eisenhower / Stoïcisme). Mirror moments hebdo + score santé exécutive. Self-talk monitoring + recadrage doux. Pause forcée ergonomie. Détection burnout active. Boîte à outils psychologique. Post-mortem automatique. Offline-first (ElectricSQL ou PowerSync). Multi-CEO écosystème (2-3+ CEO indépendants en partage réseau limité).</div>
+        </div>
+      </div>
+
+      <div class="traj-budget-summary">
+        <strong>Trajectoire 18 mois</strong> : v0.4 livré + v0.5 110 k€ + v0.6 ~8 k€ + V1 46 k€ + V2 800 k€ + V3 600 k€ = <strong>~1,47 M€ cumul</strong>. Budget v0.6 absorbé dans provision V1 actuelle.
+      </div>
+    </div>
+
+    <!-- Section ancienne grille — drill-down power user -->
+    <div class="ov-section" style="margin-top: var(--space-12);">
+      <h2 class="ov-section-title">Détail granulaire · 49 milestones par lane</h2>
+      <p class="ov-section-sub">Vue power user · grille timeline historique × 4 lanes (App Web · MVP · Hub fusion · V1→V3). Filtrable par statut/branche.</p>
+    </div>
 
     <div class="controls" role="toolbar" aria-label="Filtres">
       <span class="label">Statut</span>
@@ -1089,13 +1674,13 @@ footer strong { color: var(--text); font-weight: var(--fw-bold); }
     <!-- Décision GO ExCom prise + S1 en recette -->
     <div class="decision" style="background:#0d0d0f;border-color:#b88237;color:#f5f3ef;">
       <div class="label" style="color:#f5f3ef;letter-spacing:0.08em;">v0.5 internalisée TERMINÉE · 26/04/2026 · 5/5 sprints livrés · tag v0.5 posé</div>
-      <h2 style="color:#fff;">v0.5 internalisée TERMINÉE · S1 ✓ · S2 ✓ · S3 ✓ · S4 ✓ · S5 ✓ · tag <code style="background:#2a2a30;color:#f5f3ef;padding:2px 6px;border-radius:3px;">v0.5</code> posé</h2>
-      <p style="color:#d4d2d8;">Cadence pulvérisée : <strong style="color:#f5f3ef;">5 sprints livrés en ~16 h chrono cumulées</strong> (vs plan 6 sprints / 10 sem). Tag <code style="background:#2a2a30;color:#f5f3ef;padding:1px 5px;border-radius:3px;">v0.5</code> final posé <strong style="color:#f5f3ef;">26/04/2026</strong> (vs plan 14 juillet 2026, soit ~150 j d'avance). Cumul : <strong style="color:#f5f3ef;">110 k€ / 110 k€ = 100%</strong> · 41 issues closes · 5 GitHub Releases · 12 pages frontend · 4 routes assistant streaming Claude · 11 routers REST · 31 ADRs · ~95 tests verts. <strong style="color:#b88237;">v0.5 internalisée TERMINÉE</strong>. NEXT : recette ExCom + décision GO V1.</p>
+      <h2 style="color:#fff;">v0.5 ✓ · <strong>v0.6 Phase 1 ADOPTÉE 26/04 PM</strong> (Claude Design 8.9 Mo · 7 écrans + DS + PWA déployés <code style="background:#2a2a30;color:#f5f3ef;padding:2px 6px;border-radius:3px;">/v06/</code>) · NEXT recette ExCom + GO V1</h2>
+      <p style="color:#d4d2d8;">Cadence pulvérisée : <strong style="color:#f5f3ef;">5 sprints livrés en ~16 h chrono cumulées</strong> + <strong style="color:#b88237;">v0.6 Phase 1 adoptée intégralement (Claude Design 8.9 Mo)</strong> (vs plan 6 sprints / 10 sem). Tag <code style="background:#2a2a30;color:#f5f3ef;padding:1px 5px;border-radius:3px;">v0.5</code> final posé <strong style="color:#f5f3ef;">26/04/2026</strong> (vs plan 14 juillet 2026, soit ~150 j d'avance). Cumul : <strong style="color:#f5f3ef;">110 k€ / 110 k€ = 100%</strong> · 41 issues closes · 5 GitHub Releases · 12 pages frontend · 4 routes assistant streaming Claude · 11 routers REST · 31 ADRs · ~95 tests verts. <strong style="color:#b88237;">v0.5 internalisée TERMINÉE</strong>. NEXT : recette ExCom + décision GO V1.</p>
       <div class="gate">
         <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4738;"><strong>S1 ✓</strong>livré · tag v0.5-s1 sur 141ca0f · 0 incident dogfood</div>
         <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4738;"><strong>S2 ✓</strong>livré 25/04 · 10/10 issues · 55/55 tests · branche release/v0.5-s2</div>
-        <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4536;"><strong>S3 LIVRÉ ✓</strong> 25/04 · 11/11 issues · 75/75 tests</div><div class="gate-pill" style="background:#fff;border-color:#d96d3e;color:#8a3b1b;"><strong>S4 LIVRÉ ✓</strong> 26/04 · 12/12 issues · 85/85 tests</div><div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4536;"><strong>S5 LIVRÉ ✓</strong> 26/04 · 8/8 issues · ~95 tests · tag v0.5 final</div>
-        <div class="gate-pill" style="background:#fff;border-color:#b88237;color:#6d4816;"><strong>NEXT</strong>recette ExCom · décision GO V1 · cadrage V1 (multi-tenant + équipes + mobile)</div>
+        <div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4536;"><strong>S3 LIVRÉ ✓</strong> 25/04 · 11/11 issues · 75/75 tests</div><div class="gate-pill" style="background:#fff;border-color:#d96d3e;color:#8a3b1b;"><strong>S4 LIVRÉ ✓</strong> 26/04 · 12/12 issues · 85/85 tests</div><div class="gate-pill" style="background:#fff;border-color:#3d7363;color:#1f4536;"><strong>S5 LIVRÉ ✓</strong> 26/04 · 8/8 issues · 91 tests · tag v0.5 final</div><div class="gate-pill" style="background:#fff;border-color:#7960b5;color:#5c4584;"><strong>v0.6 Phase 1 ADOPTÉE ✓</strong> 26/04 PM · Claude Design intégral · 7 écrans + DS + PWA dans /v06/</div>
+        <div class="gate-pill" style="background:#fff;border-color:#b88237;color:#6d4816;"><strong>NEXT</strong>recette ExCom 04/05 · GO V1 binôme (46 k€ vs 300 k€) · S6.2 brancher API sur 7 pages v06</div>
       </div>
     </div>
 
@@ -1294,7 +1879,7 @@ const PERIODS = [
   { id:"avril-s1",    label:"Avril 2026",       sub:"S14-S15 · sprint cockpit + MVP scaffolds" },
   { id:"avril-s2",    label:"Avril 2026",       sub:"S16 · pages app + arbitrage 3/2/N" },
   { id:"avril-s3",    label:"Avril 2026",       sub:"S17 · Outlook + cockpit serenity" },
-  { id:"avril-s4",    label:"Avril 2026",       sub:"S18 · v0.5 internalisée TERMINÉE — 5 sprints livrés en ~16h chrono (110 k€ · ~95 tests · tag v0.5) — décision GO V1 ExCom", now:true },
+  { id:"avril-s4",    label:"Avril 2026",       sub:"S18 · v0.5 TERMINÉE + v0.6 Phase 1 ADOPTÉE (Claude Design intégral 26/04 PM) — décision ExCom 04/05 : GO v0.6 Phase 2 + GO V1 binôme 46k€ vs 300k€", now:true },
   { id:"juin-s2",     label:"Juin 2026",        sub:"S23-S24 · Plan original Sprint S4 16-27/06 (livré en avance le 26/04)" },
   { id:"mai-juin",    label:"Mai-juin 2026",    sub:"Sprints S4 → S6 · service Windows + E2E · polish + handoff" },
   { id:"juillet",     label:"Juillet 2026",     sub:"Tag v0.5 · cutover", banner:true },
@@ -1502,7 +2087,19 @@ const BASELINE = {
 // ──────────────────────────────────────────────────────────────
 
 const JOURNAL = [
-  { ts:"2026-04-26", type:"livraison", component:"mvp", title:"v0.5 internalisée TERMINÉE — Sprint S5 livré + tag v0.5 final + ADR clôture phase",
+  { ts:"2026-04-28", type:"livraison", component:"mvp", title:"Sprint S6.4 LIVRÉ — Câblage v0.6 réel (backend SQLite étendu + 13/17 pages frontend branchées API + sync emails Outlook)",
+    detail:"28/04/2026 PM : session intensive ~12 itérations / ~4 h binôme CEO + Claude. 4 livrables structurants : (1) Migration emails JSON→SQLite — table emails 15 colonnes, migration 2026-04-28-emails.sql, normalize-emails.js patché (ingestion + JSON rétro-compat), ingest-emails.js standalone rattrapage. 1052 emails ingérés. (2) Bootstrap automatique — bootstrap-from-emails.js + endpoint POST /api/arbitrage/bootstrap-from-emails. 13 projets (depuis inferred_project) + 77 contacts (top expéditeurs ≥3 emails) auto-créés idempotent. (3) Route /api/arbitrage/analyze-emails réécrite SQL — scoring flagged*100 + unread*30 + has_attach*5 + recence_bonus, top 8 propositions. (4) 13/17 pages frontend câblées : cockpit (KPIs + Cap stratégique + dot-chart 7j + projects-houses + Top3), arbitrage (3 binds : queue file emails repliée + focus mode flag data-arb-ready + board kanban drag-drop SQL persist), projets (auto-status alerte/à-surveiller/sain heuristique), équipe (avatars uniformes), décisions (liste + tri + summary), tâches (buckets temporels + chips filtres dynamiques + tri + toggle done), revues (CTA Démarrer la revue), evening, settings, onboarding, projet, hub, components. 3 pages preview annoncées v0.7/v0.8 (assistant, connaissance, coaching) avec banners ambres. LLM Anthropic disponible côté serveur (4 routes SSE) mais non branché UI — décision délibérée v0.7. Pattern onclick inline + globales window pour résister aux handlers globaux. Pattern empty state CSS strict + flag JS. Pattern bootstrap idempotent. Cache bumped v=77 → v=92 (449 occurrences). Recette CEO requise post Ctrl+Shift+R sur 13 pages.",
+    gh:{ milestone:"v0.6-s6.4", branch:"main" },
+    delta:0, source:"00_BOUSSOLE/DECISIONS.md (2026-04-28 Câblage v0.6 réel S6.4) + 04_docs/CR-GAP-v06-cablage.md + 04_docs/_release-notes/v0.6-s6.4-cablage.md" },
+  { ts:"2026-04-28", type:"décision", component:"mvp", title:"Sprint v0.7 PLANIFIÉ — LLM Anthropic + sync events Outlook + status reportee + UI rattachement maison/projet",
+    detail:"Identifié au cours du câblage S6.4 : (1) 4 surfaces UX restent en preview LLM — coaching banner arbitrage, decision-recommend, auto-draft-review, 'Si vous tranchez A'. Routes SSE existent mais besoin validation ANTHROPIC_API_KEY en prod + budget tokens. (2) Sync events Outlook — fetch-outlook.ps1 ne lit que Inbox/Sent. Calendrier Outlook (olFolderCalendar) non implémenté. Page /v06/agenda.html reste vide. À faire : nouveau script fetch-outlook-events.ps1 + ingestion table events. (3) Status decision DB n'a pas 'reportee' — kanban arbitrage col 'Reporté' stocke en sessionStorage volatile. Migration v0.7 à ajouter : ALTER TABLE decisions add 'reportee' au CHECK status. (4) FK emails → projects + UI rattachement — table emails n'a pas project_id. À ajouter : FK + endpoint suggestion + UI manuelle dans page projet. (5) Pages preview à brancher : assistant.html (chat SSE live), connaissance.html (épinglage decisions/critères), coaching.html (sessions hebdo dimanche soir). Volume estimé v0.7 : ~3-4 sessions binôme.",
+    gh:{ milestone:"v0.7" },
+    delta:0, source:"04_docs/CR-GAP-v06-cablage.md §3 Gap fonctionnel" },
+  { ts:"2026-04-26", type:"livraison", component:"design", title:"v0.6 Phase 1 ADOPTÉE — Claude Design intégral livré (8.9 Mo, 7 écrans + DS partagé + PWA)",
+    detail:"26/04/2026 PM : pivot stratégique majeur. La Phase 1 du bundle Claude Design v3.1 reçue le 26/04 (8.9 Mo) est adoptée intégralement comme implémentation officielle v0.6 (cf. ADR Adoption Claude Design v0.6). Contenu : 7 écrans HTML (hub, cockpit, arbitrage, evening, onboarding, settings, components storybook) + DS partagé (colors_and_type.css + app.css + tweaks.css + app.js + sprite 54 icônes + 11 fonts self-hosted) + PWA manifest + service worker. Déployé en coexistence dans 03_mvp/public/v06/. Pages v0.5 (12) inchangées. S6.1 atomic livré (DS BEM strict + ITCSS 7 couches + 27 composants) archivé dans _shared-atomic/ comme référence V2/V3. Économie : ~6 semaines de développement v0.6 (livraison clé-en-main vs développement from scratch). À venir S6.2 : brancher les 7 pages v06 sur l'API REST (90 endpoints disponibles).",
+    gh:{ milestone:"v0.6", branch:"main" },
+    delta:0, source:"00_BOUSSOLE/DECISIONS.md (2026-04-26 Adoption Claude Design v0.6)" },
+    { ts:"2026-04-26", type:"livraison", component:"mvp", title:"v0.5 internalisée TERMINÉE — Sprint S5 livré + tag v0.5 final + ADR clôture phase",
     detail:"Phase v0.5 internalisée TERMINÉE le 26/04/2026 après-midi. Sprint S5 LIVRÉ EN AVANCE (~3 h dogfood) vs planifié 30/04. 8/8 issues closes (S5.00 → S5.07), commit feat(s5) sur main, ~95 tests verts (85 hérités + ~12 E2E Playwright). Tag v0.5 final posable post-recette ExCom. Cumul 5 sprints livrés en ~16 h chrono cumulées (S1+S2+S3 le 25/04 ~9h, S4 le 26/04 ~4h, S5 le 26/04 ~3h) vs 13 semaines BASELINE = ~520 h ETP — gain ×30 vélocité. 110 k€ / 110 k€ = 100% budget consommé (97,4 k€ direct + 12,6 k€ provision V1). Architecture livrée : 12 pages frontend + 4 routes assistant streaming Claude + 11 routers REST CRUD + autostart Windows + raccourci Bureau + sync Outlook 2h + recette CEO + recette ExCom. Phase V1 ouverte : 6 thèmes prioritaires (multi-tenant 80k, équipes 50k, intégrations 60k, mobile 70k, backup 20k, logs 20k = ~300k ordre de grandeur).",
     gh:{ milestone:"v0.5-s5", tag:"v0.5", branch:"main" },
     delta:-65, source:"00_BOUSSOLE/DECISIONS.md (2026-04-26 v0.5 internalisée terminée)" },
@@ -2787,6 +3384,15 @@ document.querySelectorAll("[data-jump-tab]").forEach(a => {
   });
 });
 
+// Drill-down buttons (overview tab)
+document.querySelectorAll("[data-goto]").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    activateTab(btn.dataset.goto);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+});
+
 // Search input
 document.getElementById("rn-search").addEventListener("input", (e) => {
   rnQuery = (e.target.value || "").toLowerCase().trim();
@@ -3026,7 +3632,33 @@ function initMermaid() {
         primaryBorderColor: "#7790ae",
         lineColor: "#7790ae",
         secondaryColor: "#f5e9d8",
-        tertiaryColor: "#fff"
+        tertiaryColor: "#fff",
+        // GitGraph theme variables
+        git0: "#3d7363",
+        git1: "#7a6a8a",
+        git2: "#7790ae",
+        git3: "#b88237",
+        git4: "#d96d3e",
+        git5: "#3d4e7d",
+        git6: "#8a3b1b",
+        git7: "#234236",
+        gitBranchLabel0: "#fff",
+        gitBranchLabel1: "#fff",
+        gitBranchLabel2: "#fff",
+        gitBranchLabel3: "#fff",
+        gitBranchLabel4: "#fff",
+        gitBranchLabel5: "#fff",
+        commitLabelColor: "#111418",
+        commitLabelBackground: "#f5f3ef",
+        commitLabelFontSize: "11px",
+        tagLabelColor: "#fff",
+        tagLabelBackground: "#111418",
+        tagLabelBorder: "#111418"
+      },
+      gitGraph: {
+        showBranches: true,
+        showCommitLabel: true,
+        mainBranchName: "main"
       }
     });
     mermaid.run({ querySelector: ".mermaid" });

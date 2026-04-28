@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>aiCEO v0.5 — design-v06 · index</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css?v=2">
+<link rel="stylesheet" href="_shared/app.css?v=2">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#fbf9f5">
+</head>
+<body class="hub-body">
+
+<div id="icons-host" hidden></div>
+
+<header class="hub-top">
+  <div class="o-cluster" style="gap:14px">
+    <span class="logo-mark" style="width:48px;height:48px;font-size:24px">a</span>
+    <div>
+      <h1 class="hub-title">aiCEO <span class="hub-title-thin">/ design v06</span></h1>
+      <p class="hub-sub">Pour Aubrielle Hayes — un cockpit qui se lit en 6 secondes.</p>
+    </div>
+  </div>
+  <div class="o-cluster">
+    <a href="components.html" class="btn ghost">
+      <svg class="ico" width="14" height="14"><use href="#i-eye"/></svg>
+      Composants
+    </a>
+    <a href="index.html" class="btn primary">
+      Ouvrir le cockpit
+      <svg class="ico" width="14" height="14"><use href="#i-arrow-right"/></svg>
+    </a>
+  </div>
+</header>
+
+<main class="hub-main">
+
+  <!-- Manifesto -->
+  <section class="hub-manifesto card hero">
+    <div class="o-cluster" style="gap:8px">
+      <span class="pill outline">v0.5 · livraison interne</span>
+      <span class="pill status active">17 écrans · 3 langues · drag & drop</span>
+    </div>
+    <h2 class="greeting" style="font-size:80px;line-height:1;margin-top:16px">
+      <span class="accent" style="font-size:0.7em">Bonjour</span><br>Aubrielle.
+    </h2>
+    <p class="lead" style="max-width:60ch;margin-top:12px">
+      Cette version explore une posture : <strong>moins, mais habité</strong>.
+      L'inspiration visuelle est Twisty (ivoire, type maxi, dot‑chart).
+      Le système de design : Fira Sans + Aubrielle script + numéraux Sol fins, palette neutre, accents calmes.
+    </p>
+    <div class="o-cluster" style="gap:10px;margin-top:20px">
+      <a href="index.html" class="btn primary lg">
+        <svg class="ico" width="16" height="16"><use href="#i-home"/></svg>
+        Cockpit Aubrielle
+      </a>
+      <a href="onboarding.html" class="btn lg">Onboarding</a>
+      <a href="components.html" class="btn ghost lg">Storybook</a>
+    </div>
+  </section>
+
+  <!-- Pages grid -->
+  <section class="hub-pages">
+    <header class="hub-pages-head">
+      <h3 class="card-title" style="font-size:var(--fs-h3)">Les 17 écrans</h3>
+      <p class="small u-text-3 u-mt-2">Cliquez pour ouvrir. Chaque page expose un panneau Tweaks pour explorer ses états et langues.</p>
+      <div class="o-cluster" style="gap:6px;margin-top:14px">
+        <span class="pill outline sm">Vague 1 · Le cœur</span>
+        <span class="pill outline sm">Vague 2 · Le quotidien</span>
+        <span class="pill outline sm">Vague 3 · Le capital</span>
+      </div>
+    </header>
+
+    <div class="hub-grid">
+
+      <a href="index.html" class="hub-card" data-tier="p0">
+        <header class="hub-card-head">
+          <span class="hub-card-num">01</span>
+          <span class="pill outline sm">P0 · Cœur</span>
+        </header>
+        <h3 class="hub-card-title">Cockpit</h3>
+        <p class="hub-card-desc">
+          La page d'accueil. Posture, top‑3 du jour, agenda, projets par maison.
+          Le « Bonjour Aubrielle » en script + dot‑chart Twisty.
+        </p>
+        <ul class="hub-card-states">
+          <li>Matin · Jour · Vide · Loading</li>
+          <li>FR / EN / AR (RTL)</li>
+        </ul>
+      </a>
+
+      <a href="arbitrage.html" class="hub-card" data-tier="p0">
+        <header class="hub-card-head">
+          <span class="hub-card-num">02</span>
+          <span class="pill outline sm">P0 · Cœur</span>
+        </header>
+        <h3 class="hub-card-title">Arbitrage</h3>
+        <p class="hub-card-desc">
+          Trancher une chose à la fois — Focus mode (carte généreuse + 2 options + coaching),
+          ou Tableau (kanban à drag & drop).
+        </p>
+        <ul class="hub-card-states">
+          <li>Focus / Tableau · 3 décisions · 1 décision · Inbox zero</li>
+          <li>Drag & drop entre colonnes</li>
+        </ul>
+      </a>
+
+      <a href="evening.html" class="hub-card" data-tier="p0">
+        <header class="hub-card-head">
+          <span class="hub-card-num">03</span>
+          <span class="pill outline sm">P0 · Cœur</span>
+        </header>
+        <h3 class="hub-card-title">Soirée</h3>
+        <p class="hub-card-desc">
+          Le rituel de clôture. Ce qui s'est vraiment passé, ce qui glisse, ce qui tient.
+          Une question — pas une réponse. 4 minutes.
+        </p>
+        <ul class="hub-card-states">
+          <li>Normal · Sauté hier · Tout fait</li>
+          <li>Tonalité chaleureuse / neutre</li>
+        </ul>
+      </a>
+
+      <a href="onboarding.html" class="hub-card" data-tier="p1">
+        <header class="hub-card-head">
+          <span class="hub-card-num">04</span>
+          <span class="pill outline sm">P1 · Onboarding</span>
+        </header>
+        <h3 class="hub-card-title">Onboarding · étape 3</h3>
+        <p class="hub-card-desc">
+          La plus douce des étapes : choisir une posture (gardienne · exploratrice · architecte).
+          Ce choix calibre tout le coaching.
+        </p>
+        <ul class="hub-card-states">
+          <li>Étapes 1‑5 navigables</li>
+          <li>Avec / sans suggestion IA</li>
+        </ul>
+      </a>
+
+      <a href="settings.html" class="hub-card" data-tier="p1">
+        <header class="hub-card-head">
+          <span class="hub-card-num">05</span>
+          <span class="pill outline sm">P1 · Réglages</span>
+        </header>
+        <h3 class="hub-card-title">Réglages</h3>
+        <p class="hub-card-desc">
+          8 sections (général, langue, maisons, rituels, coaching, données, apparence, zone sensible).
+          La preuve que la souveraineté est sérieuse.
+        </p>
+        <ul class="hub-card-states">
+          <li>FR · EN · AR (test RTL)</li>
+          <li>Zone sensible avec confirmation</li>
+        </ul>
+      </a>
+
+      <a href="components.html" class="hub-card" data-tier="ds">
+        <header class="hub-card-head">
+          <span class="hub-card-num">06</span>
+          <span class="pill outline sm">Système</span>
+        </header>
+        <h3 class="hub-card-title">Composants — storybook</h3>
+        <p class="hub-card-desc">
+          Tous les composants du design‑system : type, palette, boutons, pills,
+          formulaires, cartes, listes, loading, coaching strip, dot‑chart.
+        </p>
+        <ul class="hub-card-states">
+          <li>Live toasts & modals</li>
+          <li>Référence visuelle</li>
+        </ul>
+      </a>
+
+    </div>
+
+    <div class="hub-wave-divider"><span class="hub-wave-num">V2</span><h4 class="hub-wave-title">Le travail au quotidien</h4><p class="hub-wave-desc">Les écrans qu'on ouvre plusieurs fois par jour, traités avec la même retenue.</p></div>
+
+    <div class="hub-grid">
+      <a href="taches.html" class="hub-card" data-tier="p1">
+        <header class="hub-card-head"><span class="hub-card-num">07</span><span class="pill outline sm">V2 · Quotidien</span></header>
+        <h3 class="hub-card-title">Actions</h3>
+        <p class="hub-card-desc">Liste exhaustive des actions, multi‑filtres (maison, priorité, statut, échéance), batch edit.</p>
+        <ul class="hub-card-states"><li>Sections par maison · barre de filtres</li></ul>
+      </a>
+      <a href="agenda.html" class="hub-card" data-tier="p1">
+        <header class="hub-card-head"><span class="hub-card-num">08</span><span class="pill outline sm">V2 · Quotidien</span></header>
+        <h3 class="hub-card-title">Agenda</h3>
+        <p class="hub-card-desc">Vue semaine + jour, blocs deep work, intégration des rituels (top‑3, soirée).</p>
+        <ul class="hub-card-states"><li>Drag pour replanifier · vue 7 jours</li></ul>
+      </a>
+      <a href="assistant.html" class="hub-card" data-tier="p1">
+        <header class="hub-card-head"><span class="hub-card-num">09</span><span class="pill outline sm">V2 · Quotidien</span></header>
+        <h3 class="hub-card-title">Assistant</h3>
+        <p class="hub-card-desc">Conversation libre avec l'IA — capter, reformuler, demander des effets propagés.</p>
+        <ul class="hub-card-states"><li>Threads · effets propagés · citations</li></ul>
+      </a>
+      <a href="revues.html" class="hub-card" data-tier="p1">
+        <header class="hub-card-head"><span class="hub-card-num">10</span><span class="pill outline sm">V2 · Quotidien</span></header>
+        <h3 class="hub-card-title">Revues</h3>
+        <p class="hub-card-desc">Bilans hebdo / mensuels / trimestriels — la mémoire longue. Cadence projets, posture, coaching.</p>
+        <ul class="hub-card-states"><li>Hebdo · Mensuelle · Trimestrielle</li></ul>
+      </a>
+    </div>
+
+    <div class="hub-wave-divider"><span class="hub-wave-num">V3</span><h4 class="hub-wave-title">Le capital long terme</h4><p class="hub-wave-desc">Les écrans qu'on ouvre 1‑2 fois par semaine, mais qui structurent la durée.</p></div>
+
+    <div class="hub-grid">
+      <a href="projets.html" class="hub-card" data-tier="p2">
+        <header class="hub-card-head"><span class="hub-card-num">11</span><span class="pill outline sm">V3 · Capital</span></header>
+        <h3 class="hub-card-title">Projets</h3>
+        <p class="hub-card-desc">Tous les projets actifs/gelés, vue par maison ou tableau global, filtres santé.</p>
+        <ul class="hub-card-states"><li>Liste · santé · jalons</li></ul>
+      </a>
+      <a href="projet.html" class="hub-card" data-tier="p2">
+        <header class="hub-card-head"><span class="hub-card-num">12</span><span class="pill outline sm">V3 · Capital</span></header>
+        <h3 class="hub-card-title">Projet · détail</h3>
+        <p class="hub-card-desc">Une page projet : santé, jalons, équipe, décisions liées, journal.</p>
+        <ul class="hub-card-states"><li>Spec moteur v3 · Northwind</li></ul>
+      </a>
+      <a href="equipe.html" class="hub-card" data-tier="p2">
+        <header class="hub-card-head"><span class="hub-card-num">13</span><span class="pill outline sm">V3 · Capital</span></header>
+        <h3 class="hub-card-title">Équipe</h3>
+        <p class="hub-card-desc">Carnet — qui fait quoi, dernière interaction, capital relationnel.</p>
+        <ul class="hub-card-states"><li>Cercles · interactions · 1‑à‑1</li></ul>
+      </a>
+      <a href="connaissance.html" class="hub-card" data-tier="p2">
+        <header class="hub-card-head"><span class="hub-card-num">14</span><span class="pill outline sm">V3 · Capital</span></header>
+        <h3 class="hub-card-title">Connaissance</h3>
+        <p class="hub-card-desc">Notes, documents, décisions historiques — le « cerveau » de l'entreprise.</p>
+        <ul class="hub-card-states"><li>Épinglés · types · maisons</li></ul>
+      </a>
+      <a href="decisions.html" class="hub-card" data-tier="p2">
+        <header class="hub-card-head"><span class="hub-card-num">15</span><span class="pill outline sm">V3 · Capital</span></header>
+        <h3 class="hub-card-title">Décisions</h3>
+        <p class="hub-card-desc">Historique des décisions tranchées, recherchables, avec leur impact rétrospectif.</p>
+        <ul class="hub-card-states"><li>Active · Gelée · Infirmée</li></ul>
+      </a>
+      <a href="coaching.html" class="hub-card" data-tier="p2">
+        <header class="hub-card-head"><span class="hub-card-num">16</span><span class="pill outline sm">V3 · Capital</span></header>
+        <h3 class="hub-card-title">Coaching</h3>
+        <p class="hub-card-desc">Espace dédié — historique des questions, posture évolutive, journal de bord.</p>
+        <ul class="hub-card-states"><li>Posture · signaux · sessions</li></ul>
+      </a>
+    </div>
+  </section>
+
+  <!-- Reading guide -->
+  <section class="hub-guide card panel">
+    <h3 class="card-title">Comment relire cette livraison</h3>
+    <ol class="hub-guide-list">
+      <li>
+        <span class="guide-num">1</span>
+        <div>
+          <strong>Ouvrez le cockpit</strong> — c'est la voix du produit. Le ton du script « Bonjour Aubrielle », la posture (« protéger Northwind sans saboter Solstice »), la cadence des KPIs. Si ça ne sonne pas juste, le reste tombe.
+        </div>
+      </li>
+      <li>
+        <span class="guide-num">2</span>
+        <div>
+          <strong>Activez les Tweaks</strong> (toggle dans la toolbar) — chaque page expose ses états (loading, vide, plein) et ses langues. La même page en arabe, c'est la preuve que le système respire.
+        </div>
+      </li>
+      <li>
+        <span class="guide-num">3</span>
+        <div>
+          <strong>Allez dans Arbitrage</strong> — basculez entre Focus et Tableau. Glissez une mini‑carte d'une colonne à l'autre. C'est là que la promesse « trancher une chose à la fois » devient gestuelle.
+        </div>
+      </li>
+      <li>
+        <span class="guide-num">4</span>
+        <div>
+          <strong>Ouvrez Soirée</strong> en fin de session — la dégradé chaud, la question « qu'est‑ce que vous attendez vraiment ? », le bouton « Clôturer la journée ». C'est l'âme du produit.
+        </div>
+      </li>
+      <li>
+        <span class="guide-num">5</span>
+        <div>
+          <strong>Storybook</strong> pour vérifier la cohérence — type, palette, boutons. Tout sort des mêmes tokens.
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- Stack -->
+  <section class="hub-stack">
+    <h3 class="card-title" style="font-size:var(--fs-body);text-transform:uppercase;letter-spacing:var(--tracking-caption);color:var(--text-3)">Sous le capot</h3>
+    <div class="stack-grid">
+      <div class="stack-row">
+        <span class="stack-key">Type</span>
+        <span class="stack-val">Fira Sans (UI) · Aubrielle (script) · Sol (numéraux fins) · JetBrains Mono (code)</span>
+      </div>
+      <div class="stack-row">
+        <span class="stack-key">Couleur</span>
+        <span class="stack-val">Tokens OKLCH · ivoire #fbf9f5 · accents rose / emerald / amber / sky / violet</span>
+      </div>
+      <div class="stack-row">
+        <span class="stack-key">Layout</span>
+        <span class="stack-val">CSS Grid + propriétés logiques (margin‑inline‑start) → RTL natif sans hack</span>
+      </div>
+      <div class="stack-row">
+        <span class="stack-key">Tweaks</span>
+        <span class="stack-val">Panneau host‑intégré (window.parent.postMessage) — état persistant via EDITMODE markers</span>
+      </div>
+      <div class="stack-row">
+        <span class="stack-key">PWA</span>
+        <span class="stack-val">manifest.webmanifest + service worker (cache‑first pour fonts & icônes)</span>
+      </div>
+      <div class="stack-row">
+        <span class="stack-key">Accessibilité</span>
+        <span class="stack-val">prefers‑reduced‑motion · prefers‑color‑scheme · focus visible · skip‑link</span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="hub-foot">
+    <p class="strategic-q">
+      Si vous deviez ne garder qu'<em>un</em> écran de cette livraison, lequel ?
+    </p>
+    <div class="footer-meta">
+      <span>aiCEO v0.5</span>
+      <span>·</span>
+      <span>design‑v06</span>
+      <span>·</span>
+      <span>livraison interne · avril 2026</span>
+    </div>
+  </footer>
+</main>
+
+<style>
+.hub-body {
+  background: linear-gradient(135deg, #fbf9f5 0%, #fff 50%, #f5f0e6 100%);
+  min-height: 100dvh;
+}
+.hub-top {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6);
+  position: sticky; top: 0; z-index: 10;
+  background: rgba(255,255,255,.7);
+  backdrop-filter: blur(10px);
+  border-block-end: 1px solid var(--border);
+}
+@media (max-width: 720px) {
+  .hub-top { flex-direction: column; align-items: stretch; gap: var(--space-3); }
+  .hub-top > .o-cluster { justify-content: flex-start; }
+}
+.hub-title {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--tracking-h3);
+  margin: 0;
+}
+.hub-title-thin {
+  font-family: var(--font-thin);
+  font-weight: var(--fw-thin);
+  color: var(--text-3);
+  font-size: 0.85em;
+}
+.hub-sub { font-size: var(--fs-sm); color: var(--text-2); margin: 2px 0 0; }
+
+.hub-main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+  display: flex; flex-direction: column;
+  gap: var(--space-8);
+}
+
+.hub-manifesto {
+  background: linear-gradient(135deg, #fff 0%, #fbf9f5 50%, #fff 100%);
+  padding: var(--space-10);
+}
+@media (max-width: 720px) {
+  .hub-manifesto { padding: var(--space-6); }
+  .hub-manifesto .greeting { font-size: 56px !important; }
+}
+
+.hub-pages-head { margin-block-end: var(--space-5); }
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+.hub-wave-divider {
+  margin-block-start: var(--space-7);
+  margin-block-end: var(--space-4);
+  padding-block-end: var(--space-3);
+  border-block-end: 2px solid var(--border);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: var(--space-4);
+  row-gap: 4px;
+  align-items: baseline;
+}
+.hub-wave-num {
+  font-family: var(--font-thin);
+  font-weight: var(--fw-thin);
+  font-size: 60px;
+  line-height: 1;
+  color: var(--text-3);
+  letter-spacing: -0.04em;
+  grid-row: 1 / span 2;
+  align-self: center;
+}
+.hub-wave-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--tracking-h3);
+  margin: 0;
+}
+.hub-wave-desc {
+  font-size: var(--fs-sm);
+  color: var(--text-2);
+  margin: 0;
+}
+
+.hub-card {
+  display: flex; flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background: var(--surface-2);
+  border-radius: var(--radius-lg);
+  border: 2px solid transparent;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .14s, box-shadow .14s, border-color .14s;
+  position: relative;
+}
+.hub-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-app);
+  border-color: var(--brand);
+}
+.hub-card.disabled {
+  opacity: 0.55;
+  pointer-events: none;
+}
+.hub-card-head {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.hub-card-num {
+  font-family: var(--font-thin);
+  font-weight: var(--fw-thin);
+  font-size: 36px;
+  line-height: 1;
+  color: var(--text-3);
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.hub-card-title {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--tracking-card);
+  margin: 0;
+}
+.hub-card-desc {
+  font-size: var(--fs-sm);
+  color: var(--text-2);
+  margin: 0;
+  line-height: 1.5;
+}
+.hub-card-states {
+  list-style: none; padding: 0; margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+  display: flex; flex-direction: column;
+  gap: 2px;
+  padding-block-start: var(--space-2);
+  border-block-start: 1px solid var(--border);
+}
+
+/* Reading guide */
+.hub-guide { padding: var(--space-6); }
+.hub-guide-list {
+  list-style: none; padding: 0;
+  display: flex; flex-direction: column;
+  gap: var(--space-4);
+  margin: var(--space-4) 0 0;
+}
+.hub-guide-list li {
+  display: flex; gap: var(--space-3);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  color: var(--text-2);
+}
+.guide-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #fff;
+  display: grid; place-items: center;
+  font-weight: var(--fw-extrabold);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+/* Stack */
+.hub-stack { padding: var(--space-4) 0; }
+.stack-grid {
+  display: flex; flex-direction: column;
+  gap: 0;
+  margin-top: var(--space-3);
+}
+.stack-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: var(--space-4);
+  padding: var(--space-2) 0;
+  border-block-end: 1px solid var(--border);
+  font-size: var(--fs-sm);
+}
+.stack-row:last-child { border-block-end: 0; }
+.stack-key {
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caption);
+  font-size: var(--fs-xs);
+}
+.stack-val { color: var(--text-2); line-height: 1.5; }
+@media (max-width: 720px) { .stack-row { grid-template-columns: 1fr; gap: 4px; } }
+
+.hub-foot {
+  text-align: center;
+  padding: var(--space-6) 0;
+  border-block-start: 1px solid var(--border);
+  margin-block-start: var(--space-6);
+}
+.hub-foot .strategic-q {
+  font-family: var(--font-script);
+  font-size: 36px;
+  color: var(--text-2);
+  font-style: normal;
+  margin: 0 0 var(--space-3);
+  line-height: 1.2;
+}
+.hub-foot .strategic-q em { color: var(--rose); font-style: italic; }
+</style>
+
+<script src="_shared/app.js"></script>
+<script>
+fetch('_shared/icons.svg.html').then(r => r.text()).then(t => {
+  document.getElementById('icons-host').innerHTML = t;
+});
+
+// Service worker registration (if supported, non-blocking)
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>

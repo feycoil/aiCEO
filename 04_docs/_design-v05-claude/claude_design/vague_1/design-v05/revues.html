@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>aiCEO — Revue hebdo</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css"/>
+<link rel="stylesheet" href="_shared/app.css"/>
+<style>
+  .rev-h { padding: 14px 0 28px; border-bottom: 1px dashed var(--border); margin-bottom: 28px; display: grid; grid-template-columns: 1.4fr 1fr; gap: 32px; align-items: end; }
+  .rev-h .script { font-family: var(--font-script); font-size: 56px; line-height: 1; color: var(--rose); margin-bottom: 4px; }
+  .rev-h h1 { font: 800 32px/1.15 var(--font-sans); letter-spacing: -.035em; margin: 0 0 10px; text-wrap: balance; }
+  .rev-h p { font: 500 14px/1.55 var(--font-sans); color: var(--text-2); max-width: 56ch; margin: 0; }
+  .rev-h .summary { display: grid; grid-template-columns: repeat(2,1fr); gap: 18px; }
+  .rev-h .summary .v { font-family: var(--font-thin); font-weight: 100; font-size: 56px; line-height: 1; letter-spacing: -.03em; color: var(--text); font-variant-numeric: tabular-nums; }
+  .rev-h .summary .lbl { font: 700 11px var(--font-sans); text-transform: uppercase; letter-spacing: .1em; color: var(--text-2); margin-top: 4px; }
+  .rev-h .summary .delta { font: 500 11.5px var(--font-mono); color: var(--text-3); margin-top: 2px; }
+  .rev-h .summary .delta.up { color: var(--emerald); } .rev-h .summary .delta.dn { color: var(--rose); }
+
+  .grid2 { display: grid; grid-template-columns: 1.3fr 1fr; gap: 28px; margin-bottom: 28px; }
+
+  .rocks-r { display: flex; flex-direction: column; gap: 12px; }
+  .rock-r { background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; }
+  .rock-r .top { display: flex; gap: 12px; align-items: baseline; margin-bottom: 8px; }
+  .rock-r .num { width: 28px; height: 28px; border-radius: 8px; background: var(--text); color: #fff; font: 800 13px var(--font-sans); display: grid; place-items: center; }
+  .rock-r .t { font: 800 15px var(--font-sans); letter-spacing: -.015em; flex: 1; }
+  .rock-r .pbar { height: 6px; background: var(--surface-3); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
+  .rock-r .pbar > div { height: 100%; background: var(--text); }
+  .rock-r .pbar.green > div { background: var(--emerald); }
+  .rock-r .pbar.amber > div { background: var(--amber); }
+  .rock-r .meta { font: 500 12px var(--font-sans); color: var(--text-2); }
+
+  .mood-track { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 12px; }
+  .mood-cell { aspect-ratio: 1; border-radius: 8px; background: var(--surface-3); display: grid; place-items: center; font-size: 16px; }
+  .mood-cell .d { font: 700 9px var(--font-mono); color: var(--text-3); position: absolute; }
+
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 28px; }
+  .chart { background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+  .chart h4 { font: 800 13px var(--font-sans); letter-spacing: -.005em; margin: 0 0 12px; }
+  .bars { display: flex; align-items: flex-end; gap: 8px; height: 140px; padding-bottom: 22px; position: relative; border-bottom: 1px solid var(--border); }
+  .bar { flex: 1; background: var(--text); border-radius: 4px 4px 0 0; position: relative; }
+  .bar.r { background: var(--rose); } .bar.a { background: var(--amber); } .bar.e { background: var(--emerald); } .bar.s { background: var(--sky); }
+  .bar::after { content: attr(data-l); position: absolute; bottom: -22px; left: 0; right: 0; text-align: center; font: 700 10px var(--font-mono); color: var(--text-3); }
+
+  .donut { width: 140px; height: 140px; margin: 0 auto; position: relative; }
+  .donut svg { transform: rotate(-90deg); }
+  .donut .center { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+  .donut .center .v { font-family: var(--font-thin); font-weight: 100; font-size: 36px; }
+  .donut .center .l { font: 700 9px var(--font-sans); text-transform: uppercase; letter-spacing: .08em; color: var(--text-3); }
+  .donut-leg { display: flex; flex-direction: column; gap: 4px; margin-top: 14px; font: 500 12px var(--font-sans); }
+  .donut-leg .li { display: flex; align-items: center; gap: 8px; }
+  .donut-leg .sw { width: 10px; height: 10px; border-radius: 3px; }
+
+  .open-list { background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; padding: 4px 18px; }
+  .open-list .li { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; padding: 12px 0; border-bottom: 1px dashed var(--border); align-items: center; }
+  .open-list .li:last-child { border-bottom: 0; }
+  .open-list .t { font: 700 13px var(--font-sans); }
+  .open-list .m { font: 500 11px var(--font-sans); color: var(--text-3); margin-top: 2px; }
+</style>
+</head>
+<body data-nav="revues">
+<div class="app">
+  <div id="sidebar-slot"></div>
+  <main class="main">
+    <header class="topbar">
+      <div class="crumbs"><a href="index.html">Cockpit</a><span class="sep">›</span><span class="current">Revue hebdo · S16</span><span class="sep">·</span><span class="muted tabular">générée dim. 19 avril 18:30</span></div>
+      <div class="topbar-actions">
+        <button class="btn">← S15</button>
+        <button class="btn">S17 →</button>
+        <button class="btn">Imprimer PDF</button>
+        <button class="btn primary">Préparer S17 →</button>
+      </div>
+    </header>
+    <div class="page">
+
+      <div class="rev-h">
+        <div>
+          <div class="script">Bilan Semaine 16,</div>
+          <h1>Affejee débloqué, Pamandzi tient le cap, Bretagne traîne.</h1>
+          <p>Une semaine "moyenne haute". 12 actions soldées (+3 vs S15), 11 délégations envoyées (charge équipe en hausse contrôlée). Le seul vrai retard structurel reste le tirage banque Bretagne — sans action concrète planifiée pendant 5 jours.</p>
+        </div>
+        <div class="summary">
+          <div>
+            <div class="v">12</div>
+            <div class="lbl">Tâches soldées</div>
+            <div class="delta up">+3 vs S15</div>
+          </div>
+          <div>
+            <div class="v">11</div>
+            <div class="lbl">Délégations</div>
+            <div class="delta up">+4 vs S15</div>
+          </div>
+          <div>
+            <div class="v">2/3</div>
+            <div class="lbl">Big Rocks tenus</div>
+            <div class="delta dn">Bretagne ↓</div>
+          </div>
+          <div>
+            <div class="v">7</div>
+            <div class="lbl">Streak fin S16</div>
+            <div class="delta up">poursuit</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div>
+          <div class="sec-head">
+            <h3 class="sec-title">🪨 Big Rocks · résultat S16</h3>
+            <span class="sec-sub">3 objectifs déclarés lundi · résultat dimanche</span>
+          </div>
+          <div class="rocks-r">
+            <div class="rock-r">
+              <div class="top"><div class="num">1</div><div class="t">Décrocher RV banque Bretagne avant 25/04</div><span class="badge rose">manqué</span></div>
+              <div class="pbar"><div style="width:30%"></div></div>
+              <div class="meta">Déclenché trop tard. Aucune action programmée entre lun. 13 et ven. 17. Reporté en S17 avec slot mar. 14h.</div>
+            </div>
+            <div class="rock-r">
+              <div class="top"><div class="num">2</div><div class="t">Boucler FF&amp;E Pamandzi étage 2</div><span class="badge amber">partiel</span></div>
+              <div class="pbar amber"><div style="width:55%"></div></div>
+              <div class="meta">3 fournisseurs sélectionnés sur 4. Dernier devis attendu mardi. Karim a pris la main, charge contenue.</div>
+            </div>
+            <div class="rock-r">
+              <div class="top"><div class="num">3</div><div class="t">Solder Affejee — relance 3</div><span class="badge emerald">tenu</span></div>
+              <div class="pbar green"><div style="width:100%"></div></div>
+              <div class="meta">Soldé lundi 17:08. 12 800 € recouvrés. Dossier clos.</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="sec-head">
+            <h3 class="sec-title">Humeur · 7 jours</h3>
+            <span class="sec-sub">moyenne 3.4 / 5 · stable</span>
+          </div>
+          <div class="chart" style="margin-bottom: 14px">
+            <div class="mood-track">
+              <div class="mood-cell">😕</div>
+              <div class="mood-cell">🙂</div>
+              <div class="mood-cell">🙂</div>
+              <div class="mood-cell">😌</div>
+              <div class="mood-cell">😵</div>
+              <div class="mood-cell">🙂</div>
+              <div class="mood-cell">🎯</div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 6px; text-align: center; font: 700 10px var(--font-mono); color: var(--text-3)">
+              <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+            </div>
+          </div>
+          <div class="chart">
+            <h4>Réflexion saillante</h4>
+            <p style="font: 500 13px/1.55 var(--font-sans); color: var(--text-2); margin: 0;">"Vendredi vraiment dur — 6 réunions, aucune décision tranchée. Lundi 13 le plus net : 3 délégations envoyées dès 9h, calme jusqu'au COMEX."</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-row">
+        <div class="chart">
+          <h4>Charge soldée par jour</h4>
+          <div class="bars">
+            <div class="bar e" style="height:60%" data-l="LUN"></div>
+            <div class="bar e" style="height:80%" data-l="MAR"></div>
+            <div class="bar a" style="height:35%" data-l="MER"></div>
+            <div class="bar e" style="height:70%" data-l="JEU"></div>
+            <div class="bar r" style="height:25%" data-l="VEN"></div>
+            <div class="bar" style="height:15%" data-l="SAM"></div>
+            <div class="bar" style="height:10%" data-l="DIM"></div>
+          </div>
+        </div>
+        <div class="chart">
+          <h4>Répartition par société</h4>
+          <div style="display:grid; grid-template-columns: 140px 1fr; gap: 18px; align-items: center;">
+            <div class="donut">
+              <svg width="140" height="140" viewBox="0 0 140 140">
+                <circle cx="70" cy="70" r="58" fill="none" stroke="var(--surface-3)" stroke-width="20"/>
+                <circle cx="70" cy="70" r="58" fill="none" stroke="var(--rose)" stroke-width="20" stroke-dasharray="91 364" stroke-dashoffset="0"/>
+                <circle cx="70" cy="70" r="58" fill="none" stroke="var(--amber)" stroke-width="20" stroke-dasharray="73 364" stroke-dashoffset="-91"/>
+                <circle cx="70" cy="70" r="58" fill="none" stroke="var(--sky)" stroke-width="20" stroke-dasharray="146 364" stroke-dashoffset="-164"/>
+                <circle cx="70" cy="70" r="58" fill="none" stroke="var(--violet)" stroke-width="20" stroke-dasharray="54 364" stroke-dashoffset="-310"/>
+              </svg>
+              <div class="center"><div><div class="v tabular">23</div><div class="l">tâches</div></div></div>
+            </div>
+            <div class="donut-leg">
+              <div class="li"><span class="sw" style="background:var(--rose)"></span>SCIS · 5 (22%)</div>
+              <div class="li"><span class="sw" style="background:var(--amber)"></span>AMP · 4 (17%)</div>
+              <div class="li"><span class="sw" style="background:var(--sky)"></span>ETIC · 11 (48%)</div>
+              <div class="li"><span class="sw" style="background:var(--violet)"></span>ITH · 3 (13%)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="sec-head">
+          <h3 class="sec-title">À reporter en S17</h3>
+          <span class="sec-sub">3 dossiers ouverts depuis &gt; 5 j</span>
+        </div>
+        <div class="open-list">
+          <div class="li">
+            <div><div class="t">Décision avenant architecte Naïr</div><div class="m">ouverte 9j · Karim attend votre arbitrage</div></div>
+            <span class="company-chip c-AMP">AMP</span>
+            <button class="btn">→ Top 3 demain</button>
+          </div>
+          <div class="li">
+            <div><div class="t">Recruter chargé travaux AMP</div><div class="m">ouverte 14j · 3 candidats en short-list</div></div>
+            <span class="company-chip c-AMP">AMP</span>
+            <button class="btn">→ Décisions</button>
+          </div>
+          <div class="li">
+            <div><div class="t">Préparer dossier banque Bretagne</div><div class="m">jamais planifiée S16 · slot S17 mar 14h confirmé</div></div>
+            <span class="company-chip c-SCIS">SCIS</span>
+            <button class="btn">→ Big Rock #1</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="_shared/shell.js"></script>
+</body>
+</html>

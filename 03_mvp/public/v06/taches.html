@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="fr" data-locale="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>aiCEO — Tâches · 12 actions</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css?v=92">
+<link rel="stylesheet" href="_shared/app.css?v=92">
+<link rel="stylesheet" href="_shared/tweaks.css?v=92">
+<script src="_shared/theme.js?v=92"></script>
+</head>
+<body data-route="taches">
+<script>
+/* Restore drawer state ASAP (avant defer scripts) — évite le flash */
+(function(){
+  try {
+    var p = localStorage.getItem('aiCEO.uiPrefs.drawerCollapsed');
+    if (p !== '1' && p !== '0') return;
+    /* Quand .app sera dans le DOM, appliquer l'état */
+    var apply = function(){
+      var a = document.querySelector('.app');
+      if (a) a.dataset.drawer = (p === '1') ? 'collapsed' : 'expanded';
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', apply, { once: true });
+    } else {
+      apply();
+    }
+  } catch(e){}
+})();
+</script>
+
+<div id="icons-host" hidden></div>
+<!-- icons sprite inlined (S6.2 fix) -->
+<!--
+  aiCEO v0.5 — ICONS SPRITE
+  Inline SVG sprite. Use via <svg class="ico"><use href="#i-X"/></svg>
+  Style stroke: currentColor, 1.6–2px, rounded, lucide-inspired.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 11l9-7 9 7v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2v-9z"/>
+    </symbol>
+    <symbol id="i-arbitrage" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M16 3l5 5-5 5"/><path d="M21 8H8a5 5 0 0 0-5 5v0"/>
+      <path d="M8 21l-5-5 5-5"/><path d="M3 16h13a5 5 0 0 0 5-5"/>
+    </symbol>
+    <symbol id="i-projects" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="4" width="18" height="16" rx="2"/>
+      <path d="M3 9h18"/><path d="M9 4v16"/>
+    </symbol>
+    <symbol id="i-actions" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 11l3 3L22 4"/>
+      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+    </symbol>
+    <symbol id="i-people" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    </symbol>
+    <symbol id="i-evening" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </symbol>
+    <symbol id="i-knowledge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+    </symbol>
+    <symbol id="i-coaching" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2l2.39 4.84L20 8l-4 3.91.94 5.5L12 14.77l-4.94 2.64L8 11.91 4 8l5.61-1.16z"/>
+    </symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </symbol>
+    <symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+    </symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+    </symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 5v14M5 12h14"/>
+    </symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 12h14M13 5l7 7-7 7"/>
+    </symbol>
+    <symbol id="i-arrow-up-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M7 17L17 7"/><path d="M7 7h10v10"/>
+    </symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 9l6 6 6-6"/>
+    </symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 6l6 6-6 6"/>
+    </symbol>
+    <symbol id="i-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 6l-6 6 6 6"/>
+    </symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 6L6 18M6 6l12 12"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 12l5 5L20 7"/>
+    </symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+    </symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+    </symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="9" y="2" width="6" height="12" rx="3"/>
+      <path d="M19 10a7 7 0 0 1-14 0"/>
+      <path d="M12 19v3"/>
+    </symbol>
+    <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+    </symbol>
+    <symbol id="i-trending-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/>
+    </symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+    </symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3l1.9 5.8L20 11l-5.8 1.9L12 19l-1.9-5.8L4 11l6.1-2.2z"/>
+      <path d="M19 3v4M21 5h-4"/>
+    </symbol>
+    <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+    </symbol>
+    <symbol id="i-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="4" width="20" height="5" rx="1"/>
+      <path d="M4 9v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9"/>
+      <path d="M10 13h4"/>
+    </symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+      <path d="M10 11v6M14 11v6"/>
+    </symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/>
+    </symbol>
+    <symbol id="i-grip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="9" cy="6" r="1.2"/><circle cx="9" cy="12" r="1.2"/><circle cx="9" cy="18" r="1.2"/>
+      <circle cx="15" cy="6" r="1.2"/><circle cx="15" cy="12" r="1.2"/><circle cx="15" cy="18" r="1.2"/>
+    </symbol>
+    <symbol id="i-more-h" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/>
+    </symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/>
+    </symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+    </symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+    </symbol>
+    <symbol id="i-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2"/>
+      <path d="M16 2v4M8 2v4M3 10h18"/>
+    </symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+    </symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 12h18M3 6h18M3 18h18"/>
+    </symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 3H2l8 9.46V19l4 2v-8.54z"/>
+    </symbol>
+    <symbol id="i-sort" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 6h18M6 12h12M10 18h4"/>
+    </symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/>
+      <path d="M2 21c0-3 1.85-5.36 5.08-6"/>
+    </symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/>
+    </symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="4" width="20" height="16" rx="2"/>
+      <path d="M22 6l-10 7L2 6"/>
+    </symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 16.92V21a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 3h4.09a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.91 11.09a16 16 0 0 0 6 6l1.45-1.54a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+    </symbol>
+    <symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="2" width="16" height="20" rx="1"/>
+      <path d="M9 22v-4h6v4M8 6h.01M16 6h.01M8 10h.01M16 10h.01M8 14h.01M16 14h.01"/>
+    </symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+    </symbol>
+    <symbol id="i-warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <path d="M12 9v4M12 17h.01"/>
+    </symbol>
+    <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>
+    </symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+      <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+    </symbol>
+    <symbol id="i-kanban" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="6" height="18"/><rect x="11" y="3" width="6" height="11"/>
+      <rect x="19" y="3" width="2" height="7"/>
+    </symbol>
+    <symbol id="i-snowflake" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2v20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07M2 12h20"/>
+    </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="4"/>
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+    </symbol>
+    <symbol id="i
+<a class="skip-link" href="#main-content">Aller au contenu</a>
+
+<div class="app" data-drawer="expanded">
+  <aside class="drawer" aria-label="Navigation principale">
+    <div class="drawer-logo">
+      <span class="logo-mark">a</span>
+      <span class="logo-text">aiCEO</span>
+      <span class="logo-version" style="font-size:9px;font-weight:600;color:var(--text-3,#888);background:var(--surface-3,#ebe7df);padding:2px 6px;border-radius:4px;margin-left:6px;letter-spacing:0.04em;text-transform:uppercase">v0.6</span>
+    </div>
+    <button class="drawer-tenant" aria-label="Changer d'espace">
+      <span class="tenant-mark" aria-hidden="true">A</span>
+      <span class="tenant-name">Aubrielle Hayes</span>
+      <svg class="ico" width="14" height="14" aria-hidden="true"><use href="#i-chevron-down"/><symbol id="i-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+  </symbol>
+  </svg>
+    </button>
+    <nav class="drawer-nav" aria-label="Sections">
+      <div class="drawer-section">Pilotage</div>
+      <a href="index.html" class="drawer-item" data-nav="home"><svg class="ico" width="18" height="18"><use href="#i-home"/></svg><span class="label">Cockpit</span></a>
+      <a href="arbitrage.html" class="drawer-item" data-nav="arbitrage"><svg class="ico" width="18" height="18"><use href="#i-arbitrage"/></svg><span class="label">Arbitrage</span><span class="badge">3</span></a>
+      <a href="evening.html" class="drawer-item" data-nav="evening"><svg class="ico" width="18" height="18"><use href="#i-evening"/></svg><span class="label">Soirée</span></a>
+      <div class="drawer-section">Travail</div>
+      <a href="projets.html" class="drawer-item" data-nav="projects"><svg class="ico" width="18" height="18"><use href="#i-projects"/></svg><span class="label">Projets</span></a>
+      <a href="taches.html" class="drawer-item is-active" data-nav="actions" aria-current="page"><svg class="ico" width="18" height="18"><use href="#i-actions"/></svg><span class="label">Actions</span><span class="badge">12</span></a>
+      <a href="agenda.html" class="drawer-item" data-nav="agenda"><svg class="ico" width="18" height="18"><use href="#i-clock"/></svg><span class="label">Agenda</span></a>
+      <a href="assistant.html" class="drawer-item" data-nav="assistant"><svg class="ico" width="18" height="18"><use href="#i-sparkle"/></svg><span class="label">Assistant</span></a>
+      <a href="equipe.html" class="drawer-item" data-nav="people"><svg class="ico" width="18" height="18"><use href="#i-people"/></svg><span class="label">Équipe</span></a>
+      <div class="drawer-section">Capital</div>
+      <a href="connaissance.html" class="drawer-item" data-nav="knowledge"><svg class="ico" width="18" height="18"><use href="#i-knowledge"/></svg><span class="label">Connaissance</span></a>
+      <a href="coaching.html" class="drawer-item" data-nav="coaching"><svg class="ico" width="18" height="18"><use href="#i-coaching"/></svg><span class="label">Coaching</span></a>
+      <a href="revues.html" class="drawer-item" data-nav="revues"><svg class="ico" width="18" height="18"><use href="#i-folder"/></svg><span class="label">Revues</span></a>
+      <a href="decisions.html" class="drawer-item" data-nav="decisions"><svg class="ico" width="18" height="18"><use href="#i-target"/></svg><span class="label">Décisions</span></a>
+    </nav>
+    <div class="drawer-footer">
+      <button class="drawer-locale" aria-label="Langue">
+        <svg class="ico" width="16" height="16"><use href="#i-globe"/></svg>
+        <span class="locale-name">Français</span>
+      </button>
+      <a href="aide.html" class="drawer-item" data-nav="aide"><svg class="ico" width="18" height="18"><use href="#i-help"/></svg><span class="label">Aide</span></a>
+      <a href="settings.html" class="drawer-item" data-nav="settings">
+        <svg class="ico" width="18" height="18"><use href="#i-settings"/></svg>
+        <span class="label">Réglages</span>
+      </a>
+      <button class="drawer-user" aria-label="Profil">
+        <span class="avatar md" data-house="solstice">AH</span>
+        <span class="meta">
+          <span class="name">Aubrielle Hayes</span>
+          <span class="role">Fondatrice · CEO</span>
+        </span>
+      </button>
+    </div>
+
+    <button class="drawer-collapse-btn" onclick="return window.toggleAiceoDrawer && window.toggleAiceoDrawer();" aria-label="Réduire le menu">
+      <svg class="ico" width="14" height="14"><use href="#i-chevron-left"/></svg>
+    </button>
+  </aside>
+
+  <main class="app-main" id="main-content">
+    <header class="topbar">
+      <div class="topbar-title-block">
+        <div class="topbar-title-eyebrow">Actions</div>
+        <h1 class="section-title">12 choses à faire</h1>
+      </div>
+      <div class="topbar-cluster u-hidden-mobile">
+        <div class="search-pill" role="search">
+          <svg class="ico ico-s" width="16" height="16"><use href="#i-search"/></svg>
+          <input type="search" placeholder="Filtrer…" aria-label="Recherche">
+        </div>
+        <button class="btn primary"><svg class="ico" width="14" height="14"><use href="#i-plus"/></svg>Nouvelle action</button>
+      </div>
+    </header>
+
+    <!-- Filter bar -->
+    <section class="filter-bar">
+      <div class="filter-chips">
+        <button class="chip is-active" data-filter="all">Tout <span class="chip-count">12</span></button>
+        <button class="chip" data-filter="today">Aujourd'hui <span class="chip-count">3</span></button>
+        <button class="chip" data-filter="week">Cette semaine <span class="chip-count">7</span></button>
+        <button class="chip" data-filter="late">En retard <span class="chip-count">2</span></button>
+        <span class="chip-sep"></span>
+        <button class="chip" data-filter="northwind"><span class="dot" style="background:var(--house-northwind)"></span>Northwind</button>
+        <button class="chip" data-filter="solstice"><span class="dot" style="background:var(--house-solstice)"></span>Solstice</button>
+        <button class="chip" data-filter="helix"><span class="dot" style="background:var(--house-helix)"></span>Helix</button>
+      </div>
+      <div class="filter-meta">
+        <select class="input" style="min-width:160px">
+          <option>Trier : priorité</option>
+          <option>Trier : échéance</option>
+          <option>Trier : maison</option>
+          <option>Trier : récent</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Task groups -->
+    <section class="task-groups">
+
+      <article class="task-group">
+        <header class="task-group-head">
+          <h2 class="card-title" style="font-size:var(--fs-h4)">Aujourd'hui</h2>
+          <span class="u-text-3 small">3 actions · ~1h40 estimées</span>
+        </header>
+        <ul class="task-list" role="list">
+          <li class="task-row" data-house="northwind">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p0">P0</span>
+            <div class="task-main">
+              <h3 class="task-title">Trancher le spec Northwind v3</h3>
+              <div class="task-meta">
+                <span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span>
+                <span class="u-tnum">~32 min</span>
+                <span>·</span>
+                <span class="task-due">Avant 10h</span>
+              </div>
+            </div>
+            <button class="icon-btn" aria-label="Plus"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+          <li class="task-row" data-house="solstice">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p1">P1</span>
+            <div class="task-main">
+              <h3 class="task-title">Préparer la négo Solstice — round 3</h3>
+              <div class="task-meta">
+                <span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span>
+                <span class="avatar-stack"><span class="avatar xs">MD</span></span>
+                <span class="u-tnum">~45 min</span>
+              </div>
+            </div>
+            <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+          <li class="task-row" data-house="helix">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p2">P2</span>
+            <div class="task-main">
+              <h3 class="task-title">1‑à‑1 Helene · feedback de mi‑étape</h3>
+              <div class="task-meta">
+                <span class="pill house" data-house="helix"><span class="dot"></span>Helix</span>
+                <span class="u-tnum">11:00 · 30 min</span>
+              </div>
+            </div>
+            <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+        </ul>
+      </article>
+
+      <article class="task-group">
+        <header class="task-group-head">
+          <h2 class="card-title" style="font-size:var(--fs-h4)">Cette semaine</h2>
+          <span class="u-text-3 small">7 actions</span>
+        </header>
+        <ul class="task-list" role="list">
+          <li class="task-row" data-house="northwind">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p1">P1</span>
+            <div class="task-main">
+              <h3 class="task-title">Réponse RFP — Hôpital régional Sud</h3>
+              <div class="task-meta">
+                <span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span>
+                <span class="task-due late">02 mai · J‑4</span>
+              </div>
+            </div>
+            <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+          <li class="task-row" data-house="solstice">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p2">P2</span>
+            <div class="task-main">
+              <h3 class="task-title">Relire le contrat partenaire Solstice</h3>
+              <div class="task-meta"><span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span><span class="u-tnum">~25 min</span></div>
+            </div>
+            <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+          <li class="task-row" data-house="northwind">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p2">P2</span>
+            <div class="task-main">
+              <h3 class="task-title">Relancer 3 candidats front senior</h3>
+              <div class="task-meta"><span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span><span class="avatar-stack"><span class="avatar xs">+3</span></span></div>
+            </div>
+            <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+          <li class="task-row" data-house="helix">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p2">P2</span>
+            <div class="task-main">
+              <h3 class="task-title">Synthétiser les 3 entretiens utilisateur</h3>
+              <div class="task-meta"><span class="pill house" data-house="helix"><span class="dot"></span>Helix</span><span class="u-tnum">~1h</span></div>
+            </div>
+            <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+          <li class="task-row" data-house="solstice">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p3">P3</span>
+            <div class="task-main">
+              <h3 class="task-title">Mettre à jour le pitch deck — slides 4‑7</h3>
+              <div class="task-meta"><span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span></div>
+            </div>
+            <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+        </ul>
+      </article>
+
+      <article class="task-group">
+        <header class="task-group-head">
+          <h2 class="card-title" style="font-size:var(--fs-h4)">Plus tard</h2>
+          <span class="u-text-3 small">2 actions · sans date ferme</span>
+        </header>
+        <ul class="task-list" role="list">
+          <li class="task-row">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p3">P3</span>
+            <div class="task-main">
+              <h3 class="task-title">Lire le rapport CB Insights — santé numérique</h3>
+              <div class="task-meta"><span class="u-text-3">Sans maison</span><span class="u-tnum">~40 min</span></div>
+            </div>
+            <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+          <li class="task-row" data-house="helix">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p3">P3</span>
+            <div class="task-main">
+              <h3 class="task-title">Réfléchir au nom de marque Helix</h3>
+              <div class="task-meta"><span class="pill house" data-house="helix"><span class="dot"></span>Helix</span><span>Brainstorm libre</span></div>
+            </div>
+            <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+        </ul>
+      </article>
+
+    </section>
+
+    <footer class="app-footer">
+      <p class="strategic-q">12 actions, c'est <em>plus</em> que ce que vous ferez aujourd'hui. Lesquelles peuvent attendre vraiment ?</p>
+      <div class="footer-meta"><span>aiCEO v0.5</span><span>·</span><span>Actions</span></div>
+    </footer>
+  </main>
+</div>
+
+<nav class="bottom-tab-nav">
+  <a href="index.html" class="bottom-tab"><svg class="ico"><use href="#i-home"/></svg><span>Cockpit</span></a>
+  <a href="arbitrage.html" class="bottom-tab"><svg class="ico"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
+  <button class="bottom-tab fab-trigger"><span class="fab-circle"><svg class="ico"><use href="#i-mic"/></svg></span><span style="margin-top:30px">Capter</span></button>
+  <a href="taches.html" class="bottom-tab is-active"><svg class="ico"><use href="#i-actions"/></svg><span>Actions</span></a>
+  <a href="evening.html" class="bottom-tab"><svg class="ico"><use href="#i-evening"/></svg><span>Soirée</span></a>
+</nav>
+
+<style>
+.filter-bar {
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-3) 0;
+  flex-wrap: wrap;
+}
+.filter-chips {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  flex: 1;
+}
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all .12s;
+  font-family: inherit;
+}
+.chip:hover { background: var(--surface-3); color: var(--text); }
+.chip.is-active { background: var(--text); color: var(--surface); border-color: var(--text); }
+.chip .dot { width:8px;height:8px;border-radius:50%; }
+.chip-count {
+  font-size: 11px; font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+.chip-sep {
+  width: 1px; height: 18px; background: var(--border-2);
+  margin: 0 4px;
+}
+.filter-meta { flex-shrink: 0; }
+
+.task-groups { display: flex; flex-direction: column; gap: var(--space-6); }
+.task-group-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding-block-end: var(--space-2);
+  border-block-end: 2px solid var(--border);
+  margin-block-end: var(--space-2);
+}
+
+.task-list { list-style: none; padding: 0; margin: 0; }
+.task-row {
+  display: grid;
+  grid-template-columns: 24px 36px 1fr 28px;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-2);
+  border-block-end: 1px solid var(--border);
+  align-items: center;
+  border-inline-start: 3px solid transparent;
+  transition: background .12s;
+}
+.task-row:hover { background: var(--surface-2); }
+.task-row[data-house="northwind"] { border-inline-start-color: var(--house-northwind); }
+.task-row[data-house="solstice"]  { border-inline-start-color: var(--house-solstice); }
+.task-row[data-house="helix"]     { border-inline-start-color: var(--house-helix); }
+
+.task-check {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--border-2);
+  background: transparent;
+  cursor: pointer;
+  transition: all .14s;
+}
+.task-check:hover { border-color: var(--brand); }
+.task-check.is-done {
+  background: var(--emerald);
+  border-color: var(--emerald);
+}
+
+.task-prio {
+  font-size: 10px;
+  font-weight: var(--fw-extrabold);
+  text-align: center;
+  padding: 3px 0;
+  border-radius: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.task-prio.p0 { background: var(--rose); color: #fff; }
+.task-prio.p1 { background: var(--rose-50); color: var(--rose-800); }
+.task-prio.p2 { background: var(--surface-3); color: var(--text-2); }
+.task-prio.p3 { background: transparent; color: var(--text-3); border: 1px solid var(--border); }
+
+.task-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semi);
+  margin: 0 0 2px;
+  letter-spacing: var(--tracking-card);
+  line-height: 1.35;
+}
+.task-meta {
+  display: flex; gap: 8px; align-items: center;
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+  flex-wrap: wrap;
+}
+.task-due { font-weight: var(--fw-bold); color: var(--text-2); }
+.task-due.late { color: var(--rose-800); }
+</style>
+
+<script src="_shared/app.js"></script>
+<script>
+fetch('_shared/icons.svg.html').then(r => r.text()).then(t => document.getElementById('icons-host').innerHTML = t);
+
+document.querySelectorAll('.task-check').forEach(c => {
+  c.addEventListener('click', e => {
+    e.stopPropagation();
+    c.classList.toggle('is-done');
+    const row = c.closest('.task-row');
+    row.style.opacity = c.classList.contains('is-done') ? '0.4' : '';
+    if (c.classList.contains('is-done')) App.toast('Action validée.', { kind: 'success', duration: 1800, action: 'Annuler', onAction: () => { c.classList.remove('is-done'); row.style.opacity = ''; } });
+  });
+});
+document.querySelectorAll('.chip').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('.chip').forEach(o => o.classList.remove('is-active'));
+    c.classList.add('is-active');
+  });
+});
+</script>
+<!-- aiCEO Convergence v0.6 (S6.2) -->
+<script src="_shared/shell.js?v=92" defer></script>
+<script src="_shared/clear-demo.js?v=92" defer></script>
+<script src="_shared/command-palette.js?v=92" defer></script>
+<script src="_shared/mobile.js?v=92" defer></script>
+<script src="_shared/polish.js?v=92" defer></script>
+<script src="_shared/states.js?v=92" defer></script>
+<script src="_shared/a11y.js?v=92" defer></script>
+<script src="_shared/filters.js?v=92" defer></script>
+<script src="_shared/bulk-actions.js?v=92" defer></script>
+<script src="_shared/breadcrumbs.js?v=92" defer></script>
+<script src="_shared/bind-drawer-extras.js?v=92" defer></script>
+  <script src="_shared/bind-active-nav.js?v=92" defer></script>
+  <script src="_shared/bind-drawer-badges.js?v=92" defer></script>
+<script src="_shared/responsive-mobile.js?v=92" defer></script>
+<script src="_shared/microcopy.js?v=92" defer></script>
+<script src="_shared/settings-actions.js?v=92" defer></script>
+<script src="_shared/profile-menu.js?v=92" defer></script>
+<script src="_shared/modal.js?v=92" defer></script>
+<script src="_shared/crud-modals.js?v=92" defer></script>
+<script src="_shared/workflow.js?v=92" defer></script>
+<script src="_shared/bind-taches.js?v=92" defer></script>
+</body>
+</html>

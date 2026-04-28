@@ -1,0 +1,92 @@
+/**
+ * c-search-pill.css — Molecule SearchPill (searchbar arrondie avec icone)
+ *
+ * Variants :
+ *   .c-search-pill                  : default
+ *   .c-search-pill--sm              : compact
+ *   .c-search-pill--lg              : hero (cockpit)
+ *
+ * Etats : :focus-within, .is-disabled
+ *
+ * Accessibilite :
+ *   - role="search" sur le wrapper si standalone
+ *   - <label> visuel ou aria-label sur input
+ *   - icone decorative (aria-hidden="true")
+ */
+
+.c-search-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  transition: border-color var(--duration-hover) var(--ease-out),
+              box-shadow var(--duration-hover) var(--ease-out);
+  min-width: 240px;
+}
+
+.c-search-pill:focus-within {
+  border-color: var(--color-border-focus);
+  box-shadow: var(--ring-focus);
+}
+
+.c-search-pill__icon {
+  flex-shrink: 0;
+  width: var(--icon-md);
+  height: var(--icon-md);
+  color: var(--color-text-3);
+}
+
+.c-search-pill__input {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  color: var(--color-text);
+  min-width: 0;
+}
+
+.c-search-pill__input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.c-search-pill__clear {
+  flex-shrink: 0;
+  width: var(--icon-md);
+  height: var(--icon-md);
+  border: 0;
+  background: transparent;
+  color: var(--color-text-3);
+  cursor: pointer;
+  border-radius: var(--radius-pill);
+}
+
+.c-search-pill__clear:hover {
+  color: var(--color-text);
+}
+
+/* Sizes */
+.c-search-pill--sm {
+  padding: var(--space-1) var(--space-3);
+  min-width: 180px;
+}
+.c-search-pill--sm .c-search-pill__input { font-size: var(--text-sm); }
+.c-search-pill--sm .c-search-pill__icon  { width: var(--icon-sm); height: var(--icon-sm); }
+
+.c-search-pill--lg {
+  padding: var(--space-3) var(--space-5);
+  min-width: 360px;
+}
+.c-search-pill--lg .c-search-pill__input { font-size: var(--text-lg); }
+.c-search-pill--lg .c-search-pill__icon  { width: var(--icon-lg); height: var(--icon-lg); }
+
+/* States */
+.c-search-pill.is-disabled,
+.c-search-pill:has(.c-search-pill__input:disabled) {
+  opacity: 0.5;
+  pointer-events: none;
+}

@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="fr" data-locale="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>aiCEO — Spec moteur v3 · Northwind</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css?v=2">
+<link rel="stylesheet" href="_shared/app.css?v=2">
+<link rel="stylesheet" href="_shared/tweaks.css?v=2">
+</head>
+<body data-route="projet">
+<div id="icons-host" hidden></div>
+<a class="skip-link" href="#main-content">Aller au contenu</a>
+
+<div class="app" data-drawer="expanded">
+  <aside class="drawer" aria-label="Navigation principale">
+    <div class="drawer-logo">
+      <span class="logo-mark">a</span>
+      <span class="logo-text">aiCEO</span>
+    </div>
+    <button class="drawer-tenant" aria-label="Changer d'espace">
+      <span class="tenant-mark" aria-hidden="true">A</span>
+      <span class="tenant-name">Aubrielle Hayes</span>
+      <svg class="ico" width="14" height="14" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+    </button>
+    <nav class="drawer-nav" aria-label="Sections">
+      <div class="drawer-section">Pilotage</div>
+      <a href="index.html" class="drawer-item" data-nav="home"><svg class="ico" width="18" height="18"><use href="#i-home"/></svg><span class="label">Cockpit</span></a>
+      <a href="arbitrage.html" class="drawer-item" data-nav="arbitrage"><svg class="ico" width="18" height="18"><use href="#i-arbitrage"/></svg><span class="label">Arbitrage</span><span class="badge">3</span></a>
+      <a href="evening.html" class="drawer-item" data-nav="evening"><svg class="ico" width="18" height="18"><use href="#i-evening"/></svg><span class="label">Soirée</span></a>
+      <div class="drawer-section">Travail</div>
+      <a href="projets.html" class="drawer-item is-active" data-nav="projects" aria-current="page"><svg class="ico" width="18" height="18"><use href="#i-projects"/></svg><span class="label">Projets</span></a>
+      <a href="taches.html" class="drawer-item" data-nav="actions"><svg class="ico" width="18" height="18"><use href="#i-actions"/></svg><span class="label">Actions</span><span class="badge">12</span></a>
+      <a href="agenda.html" class="drawer-item" data-nav="agenda"><svg class="ico" width="18" height="18"><use href="#i-clock"/></svg><span class="label">Agenda</span></a>
+      <a href="assistant.html" class="drawer-item" data-nav="assistant"><svg class="ico" width="18" height="18"><use href="#i-sparkle"/></svg><span class="label">Assistant</span></a>
+      <a href="equipe.html" class="drawer-item" data-nav="people"><svg class="ico" width="18" height="18"><use href="#i-people"/></svg><span class="label">Équipe</span></a>
+      <div class="drawer-section">Capital</div>
+      <a href="connaissance.html" class="drawer-item" data-nav="knowledge"><svg class="ico" width="18" height="18"><use href="#i-knowledge"/></svg><span class="label">Connaissance</span></a>
+      <a href="coaching.html" class="drawer-item" data-nav="coaching"><svg class="ico" width="18" height="18"><use href="#i-coaching"/></svg><span class="label">Coaching</span></a>
+      <a href="revues.html" class="drawer-item" data-nav="revues"><svg class="ico" width="18" height="18"><use href="#i-folder"/></svg><span class="label">Revues</span></a>
+      <a href="decisions.html" class="drawer-item" data-nav="decisions"><svg class="ico" width="18" height="18"><use href="#i-target"/></svg><span class="label">Décisions</span></a>
+    </nav>
+    <div class="drawer-footer">
+      <button class="drawer-locale" aria-label="Langue">
+        <svg class="ico" width="16" height="16"><use href="#i-globe"/></svg>
+        <span class="locale-name">Français</span>
+      </button>
+      <a href="settings.html" class="drawer-item" data-nav="settings">
+        <svg class="ico" width="18" height="18"><use href="#i-settings"/></svg>
+        <span class="label">Réglages</span>
+      </a>
+      <button class="drawer-user" aria-label="Profil">
+        <span class="avatar md" data-house="solstice">AH</span>
+        <span class="meta">
+          <span class="name">Aubrielle Hayes</span>
+          <span class="role">Fondatrice · CEO</span>
+        </span>
+      </button>
+    </div>
+
+    <button class="drawer-collapse-btn" aria-label="Réduire le menu">
+      <svg class="ico" width="14" height="14"><use href="#i-chevron-left"/></svg>
+    </button>
+  </aside>
+
+  <main class="app-main" id="main-content">
+    <header class="topbar">
+      <nav class="breadcrumb" aria-label="Fil">
+        <a href="projets.html">Projets</a>
+        <svg class="ico" width="10" height="10"><use href="#i-chevron-right"/></svg>
+        <a href="projets.html">Northwind</a>
+        <svg class="ico" width="10" height="10"><use href="#i-chevron-right"/></svg>
+        <span>Spec moteur v3</span>
+      </nav>
+      <div class="topbar-cluster u-hidden-mobile">
+        <button class="btn ghost"><svg class="ico" width="14" height="14"><use href="#i-archive"/></svg>Geler</button>
+        <button class="btn primary"><svg class="ico" width="14" height="14"><use href="#i-plus"/></svg>Capter sur ce projet</button>
+      </div>
+    </header>
+
+    <!-- Project header -->
+    <section class="proj-detail-head" data-house="northwind">
+      <div class="proj-detail-house">
+        <span class="dot lg" style="background:var(--house-northwind)"></span>
+        <span class="u-text-2 small">Northwind · SaaS B2B</span>
+      </div>
+      <h1 class="proj-detail-title">Spec moteur v3</h1>
+      <p class="proj-detail-desc u-text-2">Refonte du moteur d'arbitrage pour gérer les multi‑projets simultanés. La décision archi (monolithe vs services) bloque depuis 11 jours.</p>
+      <div class="proj-detail-meta">
+        <span class="proj-card-state alert">Alerte</span>
+        <span class="u-text-3 small">Actif depuis 47 j</span>
+        <span class="u-text-3 small">·</span>
+        <span class="u-text-3 small">Échéance v3 : 28 mai</span>
+        <span class="u-text-3 small">·</span>
+        <span class="avatar-stack"><span class="avatar xs">AH</span><span class="avatar xs">SC</span><span class="avatar xs">MD</span><span class="avatar xs">+2</span></span>
+      </div>
+    </section>
+
+    <!-- KPIs -->
+    <section class="proj-kpis">
+      <div class="card proj-kpi">
+        <span class="u-text-3 small">Avancement</span>
+        <strong class="proj-kpi-value u-tnum">62%</strong>
+        <div class="bar"><div class="fill" style="width:62%;background:var(--rose-600)"></div></div>
+      </div>
+      <div class="card proj-kpi">
+        <span class="u-text-3 small">Jalons</span>
+        <strong class="proj-kpi-value u-tnum">3<span class="frac">/5</span></strong>
+        <span class="u-text-3 xs">1 en retard</span>
+      </div>
+      <div class="card proj-kpi">
+        <span class="u-text-3 small">Décisions tranchées</span>
+        <strong class="proj-kpi-value u-tnum">8</strong>
+        <span class="u-text-3 xs">2 en attente</span>
+      </div>
+      <div class="card proj-kpi">
+        <span class="u-text-3 small">Heures investies</span>
+        <strong class="proj-kpi-value u-tnum">142h</strong>
+        <span class="u-text-3 xs">28h cette semaine</span>
+      </div>
+    </section>
+
+    <!-- 2-col layout -->
+    <div class="proj-detail-cols">
+      <!-- LEFT -->
+      <div class="proj-col">
+
+        <!-- Jalons -->
+        <section class="card proj-section">
+          <header class="proj-section-head">
+            <h2 class="card-title">Jalons</h2>
+            <button class="btn ghost small"><svg class="ico" width="12" height="12"><use href="#i-plus"/></svg>Ajouter</button>
+          </header>
+          <ol class="proj-milestones">
+            <li class="proj-ms done">
+              <span class="proj-ms-dot"></span>
+              <div class="proj-ms-body">
+                <h4 class="proj-ms-title">Cadrage du périmètre</h4>
+                <span class="u-text-3 xs">Bouclé le 14 mars</span>
+              </div>
+            </li>
+            <li class="proj-ms done">
+              <span class="proj-ms-dot"></span>
+              <div class="proj-ms-body">
+                <h4 class="proj-ms-title">Audit du moteur v2</h4>
+                <span class="u-text-3 xs">Bouclé le 28 mars</span>
+              </div>
+            </li>
+            <li class="proj-ms done">
+              <span class="proj-ms-dot"></span>
+              <div class="proj-ms-body">
+                <h4 class="proj-ms-title">3 hypothèses architecturales</h4>
+                <span class="u-text-3 xs">Bouclé le 18 avril</span>
+              </div>
+            </li>
+            <li class="proj-ms current alert">
+              <span class="proj-ms-dot"></span>
+              <div class="proj-ms-body">
+                <h4 class="proj-ms-title">Décision archi tranchée</h4>
+                <span class="u-text-3 xs late">⚠ En retard de 11 jours · prévu 17 avr</span>
+              </div>
+              <button class="btn ghost small">Trancher</button>
+            </li>
+            <li class="proj-ms upcoming">
+              <span class="proj-ms-dot"></span>
+              <div class="proj-ms-body">
+                <h4 class="proj-ms-title">Spec écrite & validée équipe</h4>
+                <span class="u-text-3 xs">Prévu 15 mai</span>
+              </div>
+            </li>
+          </ol>
+        </section>
+
+        <!-- Journal -->
+        <section class="card proj-section">
+          <header class="proj-section-head">
+            <h2 class="card-title">Journal du projet</h2>
+            <span class="u-text-3 small">23 entrées</span>
+          </header>
+          <ul class="proj-journal" role="list">
+            <li class="pj-entry">
+              <span class="pj-entry-time">Aujourd'hui · 10:24</span>
+              <h4 class="pj-entry-title">Sarah a poussé pour trancher cette semaine</h4>
+              <p class="u-text-2 small">« On peut pas continuer sans le go archi. L'équipe back tourne en rond. »</p>
+            </li>
+            <li class="pj-entry">
+              <span class="pj-entry-time">Hier · 17:42</span>
+              <h4 class="pj-entry-title">Capté en soirée</h4>
+              <p class="u-text-2 small">« J'ai tranché la spec Northwind sans demander 4 avis. C'était la bonne semaine pour ça. » <em>— mais l'archi est encore ouverte</em></p>
+            </li>
+            <li class="pj-entry">
+              <span class="pj-entry-time">Lundi 28 · 11:08</span>
+              <h4 class="pj-entry-title">Note après 1‑à‑1 avec Marc</h4>
+              <p class="u-text-2 small">Marc penche services. Argument : équipe à recruter, plus simple à staffer en parallèle.</p>
+            </li>
+            <li class="pj-entry">
+              <span class="pj-entry-time">25 avr · 09:14</span>
+              <h4 class="pj-entry-title">Hypothèse C écartée</h4>
+              <p class="u-text-2 small">Trop coûteuse en infra. Reste A (monolithe modulaire) et B (services).</p>
+            </li>
+            <li class="pj-entry">
+              <span class="pj-entry-time">22 avr · 16:30</span>
+              <h4 class="pj-entry-title">RFC v0.1 partagée</h4>
+              <p class="u-text-2 small">3 commentaires de Sarah, 1 de Marc. <a href="#">Voir le doc</a></p>
+            </li>
+          </ul>
+          <button class="btn ghost small" style="margin-block-start: var(--space-3)">Voir les 18 entrées plus anciennes →</button>
+        </section>
+
+      </div>
+
+      <!-- RIGHT -->
+      <div class="proj-col">
+
+        <!-- Question ouverte -->
+        <section class="card proj-section accent">
+          <header class="proj-section-head"><h2 class="card-title">Question ouverte</h2></header>
+          <blockquote class="proj-question">« Monolithe modulaire ou services ? »</blockquote>
+          <p class="u-text-2 small">Ouverte depuis 11 jours. Deux avis internes (Sarah → mono, Marc → services). Pas de critère de tranchage écrit.</p>
+          <div class="proj-question-actions">
+            <button class="btn primary small">Trancher maintenant</button>
+            <button class="btn ghost small">Demander à l'assistant</button>
+          </div>
+        </section>
+
+        <!-- Équipe -->
+        <section class="card proj-section">
+          <header class="proj-section-head">
+            <h2 class="card-title">Équipe engagée</h2>
+            <span class="u-text-3 small">5 personnes</span>
+          </header>
+          <ul class="proj-team" role="list">
+            <li class="proj-tm">
+              <span class="avatar sm" data-house="solstice">AH</span>
+              <div><span class="proj-tm-name">Aubrielle</span><span class="u-text-3 xs">CEO · sponsor</span></div>
+            </li>
+            <li class="proj-tm">
+              <span class="avatar sm">SC</span>
+              <div><span class="proj-tm-name">Sarah Chen</span><span class="u-text-3 xs">Tech lead · porte le projet</span></div>
+            </li>
+            <li class="proj-tm">
+              <span class="avatar sm">MD</span>
+              <div><span class="proj-tm-name">Marc Diallo</span><span class="u-text-3 xs">Eng manager</span></div>
+            </li>
+            <li class="proj-tm">
+              <span class="avatar sm">PR</span>
+              <div><span class="proj-tm-name">Priya R.</span><span class="u-text-3 xs">Backend</span></div>
+            </li>
+            <li class="proj-tm">
+              <span class="avatar sm">JM</span>
+              <div><span class="proj-tm-name">Jules M.</span><span class="u-text-3 xs">Backend</span></div>
+            </li>
+          </ul>
+        </section>
+
+        <!-- Décisions liées -->
+        <section class="card proj-section">
+          <header class="proj-section-head">
+            <h2 class="card-title">Décisions liées</h2>
+            <a href="decisions.html" class="u-text-3 xs">Voir toutes →</a>
+          </header>
+          <ul class="proj-decisions" role="list">
+            <li class="proj-dec done">
+              <span class="proj-dec-marker">✓</span>
+              <div>
+                <span class="proj-dec-title">Refonte plutôt que patch</span>
+                <span class="u-text-3 xs">12 mars</span>
+              </div>
+            </li>
+            <li class="proj-dec done">
+              <span class="proj-dec-marker">✓</span>
+              <div>
+                <span class="proj-dec-title">Échéance v3 : fin mai</span>
+                <span class="u-text-3 xs">22 mars</span>
+              </div>
+            </li>
+            <li class="proj-dec done">
+              <span class="proj-dec-marker">✓</span>
+              <div>
+                <span class="proj-dec-title">Hypothèse C écartée</span>
+                <span class="u-text-3 xs">25 avril</span>
+              </div>
+            </li>
+            <li class="proj-dec pending">
+              <span class="proj-dec-marker">?</span>
+              <div>
+                <span class="proj-dec-title">Mono vs services</span>
+                <span class="u-text-3 xs">en attente · 11 j</span>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <!-- Connaissance -->
+        <section class="card proj-section">
+          <header class="proj-section-head">
+            <h2 class="card-title">Documents & connaissance</h2>
+            <span class="u-text-3 small">7 éléments</span>
+          </header>
+          <ul class="proj-docs" role="list">
+            <li class="proj-doc"><svg class="ico" width="14" height="14"><use href="#i-file"/></svg><span>RFC v0.1 — Spec moteur v3</span><span class="u-text-3 xs">22 avr</span></li>
+            <li class="proj-doc"><svg class="ico" width="14" height="14"><use href="#i-file"/></svg><span>Audit du moteur v2</span><span class="u-text-3 xs">28 mars</span></li>
+            <li class="proj-doc"><svg class="ico" width="14" height="14"><use href="#i-knowledge"/></svg><span>Critères RFP Northwind</span><span class="u-text-3 xs">10:19</span></li>
+            <li class="proj-doc"><svg class="ico" width="14" height="14"><use href="#i-file"/></svg><span>3 hypothèses archi — comparatif</span><span class="u-text-3 xs">18 avr</span></li>
+          </ul>
+        </section>
+
+      </div>
+    </div>
+
+    <footer class="app-footer">
+      <p class="strategic-q">Un projet en alerte depuis 11 jours, c'est un projet qui pose une question. Laquelle ?</p>
+      <div class="footer-meta"><span>aiCEO v0.5</span><span>·</span><span>Projet</span></div>
+    </footer>
+  </main>
+</div>
+
+<nav class="bottom-tab-nav">
+  <a href="index.html" class="bottom-tab"><svg class="ico"><use href="#i-home"/></svg><span>Cockpit</span></a>
+  <a href="arbitrage.html" class="bottom-tab"><svg class="ico"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
+  <button class="bottom-tab fab-trigger"><span class="fab-circle"><svg class="ico"><use href="#i-mic"/></svg></span><span style="margin-top:30px">Capter</span></button>
+  <a href="projets.html" class="bottom-tab is-active"><svg class="ico"><use href="#i-projects"/></svg><span>Projets</span></a>
+  <a href="evening.html" class="bottom-tab"><svg class="ico"><use href="#i-evening"/></svg><span>Soirée</span></a>
+</nav>
+
+<style>
+.breadcrumb { display: flex; align-items: center; gap: 8px; font-size: var(--fs-sm); color: var(--text-3); }
+.breadcrumb a { color: var(--text-2); text-decoration: none; }
+.breadcrumb a:hover { color: var(--text); text-decoration: underline; }
+.breadcrumb span:last-child { color: var(--text); font-weight: var(--fw-semi); }
+
+.proj-detail-head {
+  padding: var(--space-6) var(--space-5);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  border-inline-start: 4px solid var(--house-northwind);
+  margin-block: var(--space-4);
+}
+.proj-detail-house { display: flex; align-items: center; gap: 8px; margin-block-end: var(--space-2); }
+.proj-detail-house .dot.lg { width: 12px; height: 12px; border-radius: 50%; }
+.proj-detail-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.4vw, 44px);
+  font-weight: var(--fw-bold);
+  margin: 0 0 var(--space-2);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+.proj-detail-desc { max-width: 60ch; line-height: 1.5; margin-block-end: var(--space-3); }
+.proj-detail-meta { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+
+.proj-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); }
+.proj-kpi { padding: var(--space-3) var(--space-4); display: flex; flex-direction: column; gap: 4px; }
+.proj-kpi-value {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.proj-kpi-value .frac { font-size: 0.5em; color: var(--text-3); font-weight: var(--fw-medium); }
+.proj-kpi .bar { height: 4px; background: var(--surface-3); border-radius: var(--radius-pill); overflow: hidden; margin-block-start: 4px; }
+.proj-kpi .bar .fill { height: 100%; }
+
+.proj-detail-cols { display: grid; grid-template-columns: 1fr 360px; gap: var(--space-4); margin-block-start: var(--space-5); align-items: start; }
+.proj-col { display: flex; flex-direction: column; gap: var(--space-4); }
+.proj-section { padding: var(--space-4) var(--space-5); }
+.proj-section.accent { background: var(--charcoal-50); }
+.proj-section-head { display: flex; align-items: center; justify-content: space-between; padding-block-end: var(--space-2); border-block-end: 1px solid var(--border); margin-block-end: var(--space-3); }
+
+.proj-milestones { list-style: none; padding: 0; margin: 0; position: relative; }
+.proj-milestones::before { content: ''; position: absolute; inset-inline-start: 9px; top: 14px; bottom: 14px; width: 2px; background: var(--border); }
+.proj-ms { position: relative; display: grid; grid-template-columns: 28px 1fr auto; gap: var(--space-2); padding-block: var(--space-2); align-items: center; }
+.proj-ms-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--surface); border: 2px solid var(--border-2); margin-inline-start: 2px; z-index: 1; position: relative; }
+.proj-ms.done .proj-ms-dot { background: var(--emerald); border-color: var(--emerald); }
+.proj-ms.current.alert .proj-ms-dot { background: var(--rose-600); border-color: var(--rose-600); box-shadow: 0 0 0 4px var(--rose-50); }
+.proj-ms.upcoming .proj-ms-dot { background: var(--surface-2); }
+.proj-ms-title { font-size: var(--fs-body); font-weight: var(--fw-semi); margin: 0 0 2px; letter-spacing: var(--tracking-card); }
+.proj-ms.upcoming .proj-ms-title { color: var(--text-3); }
+.proj-ms .late { color: var(--rose-800); font-weight: var(--fw-bold); }
+
+.proj-journal { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+.pj-entry { padding: var(--space-3); background: var(--surface-2); border-radius: var(--radius-md); border-inline-start: 2px solid var(--border-2); }
+.pj-entry-time { display: block; font-size: 11px; font-weight: var(--fw-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-3); margin-block-end: 4px; font-variant-numeric: tabular-nums; }
+.pj-entry-title { font-size: var(--fs-body); font-weight: var(--fw-semi); margin: 0 0 4px; letter-spacing: var(--tracking-card); }
+
+.proj-question { font-family: var(--font-display); font-size: clamp(18px, 1.8vw, 22px); line-height: 1.3; margin: 0 0 var(--space-3); font-weight: var(--fw-medium); padding-inline-start: var(--space-3); border-inline-start: 3px solid var(--rose-600); }
+.proj-question-actions { display: flex; gap: var(--space-2); margin-block-start: var(--space-3); flex-wrap: wrap; }
+
+.proj-team { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.proj-tm { display: grid; grid-template-columns: 32px 1fr; gap: var(--space-2); align-items: center; padding: 6px; border-radius: var(--radius-sm); }
+.proj-tm:hover { background: var(--surface-2); }
+.proj-tm-name { display: block; font-size: var(--fs-sm); font-weight: var(--fw-semi); }
+
+.proj-decisions { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.proj-dec { display: grid; grid-template-columns: 22px 1fr; gap: 8px; padding: 6px; align-items: center; }
+.proj-dec-marker { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: var(--fw-extrabold); }
+.proj-dec.done .proj-dec-marker { background: var(--emerald); color: white; }
+.proj-dec.pending .proj-dec-marker { background: var(--rose-600); color: white; }
+.proj-dec-title { display: block; font-size: var(--fs-sm); font-weight: var(--fw-semi); }
+
+.proj-docs { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
+.proj-doc { display: grid; grid-template-columns: 18px 1fr auto; gap: 8px; padding: 6px 8px; border-radius: var(--radius-sm); font-size: var(--fs-sm); cursor: pointer; }
+.proj-doc:hover { background: var(--surface-2); }
+
+@media (max-width: 1100px) { .proj-detail-cols { grid-template-columns: 1fr; } .proj-kpis { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 600px) { .proj-kpis { grid-template-columns: 1fr 1fr; } }
+</style>
+
+<script src="_shared/app.js"></script>
+<script>
+fetch('_shared/icons.svg.html').then(r => r.text()).then(t => document.getElementById('icons-host').innerHTML = t);
+App.setupTweaks(
+  () => ({ locale: 'fr' }),
+  {
+    render: (s) => `<section class="tweaks-section"><div class="tweaks-section-title">Langue</div><div class="tweak-row"><label>Locale</label><select data-tweak="locale"><option value="fr" ${s.locale==='fr'?'selected':''}>FR</option><option value="en" ${s.locale==='en'?'selected':''}>EN</option></select></div></section>`,
+    apply: (s) => { App.setLocale(s.locale); }
+  }
+);
+</script>
+</body>
+</html>

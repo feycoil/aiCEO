@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="fr" data-locale="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>aiCEO — Soirée · Clôturer la journée</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css?v=2">
+<link rel="stylesheet" href="_shared/app.css?v=2">
+<link rel="stylesheet" href="_shared/tweaks.css?v=2">
+</head>
+<body data-route="evening" data-mood="calm">
+
+<div id="icons-host" hidden></div>
+<a class="skip-link" href="#main-content">Aller au contenu</a>
+
+<div class="app" data-drawer="expanded">
+
+  <aside class="drawer" aria-label="Navigation principale">
+    <div class="drawer-logo">
+      <span class="logo-mark">a</span>
+      <span class="logo-text">aiCEO</span>
+    </div>
+    <button class="drawer-tenant" aria-label="Changer d'espace">
+      <span class="tenant-mark" aria-hidden="true">A</span>
+      <span class="tenant-name">Aubrielle Hayes</span>
+      <svg class="ico" width="14" height="14" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+    </button>
+    <nav class="drawer-nav" aria-label="Sections">
+      <div class="drawer-section">Pilotage</div>
+      <a href="index.html" class="drawer-item" data-nav="home"><svg class="ico" width="18" height="18"><use href="#i-home"/></svg><span class="label">Cockpit</span></a>
+      <a href="arbitrage.html" class="drawer-item" data-nav="arbitrage"><svg class="ico" width="18" height="18"><use href="#i-arbitrage"/></svg><span class="label">Arbitrage</span><span class="badge">3</span></a>
+      <a href="evening.html" class="drawer-item is-active" data-nav="evening" aria-current="page"><svg class="ico" width="18" height="18"><use href="#i-evening"/></svg><span class="label">Soirée</span></a>
+      <div class="drawer-section">Travail</div>
+      <a href="projets.html" class="drawer-item" data-nav="projects"><svg class="ico" width="18" height="18"><use href="#i-projects"/></svg><span class="label">Projets</span></a>
+      <a href="taches.html" class="drawer-item" data-nav="actions"><svg class="ico" width="18" height="18"><use href="#i-actions"/></svg><span class="label">Actions</span><span class="badge">12</span></a>
+      <a href="agenda.html" class="drawer-item" data-nav="agenda"><svg class="ico" width="18" height="18"><use href="#i-clock"/></svg><span class="label">Agenda</span></a>
+      <a href="assistant.html" class="drawer-item" data-nav="assistant"><svg class="ico" width="18" height="18"><use href="#i-sparkle"/></svg><span class="label">Assistant</span></a>
+      <a href="equipe.html" class="drawer-item" data-nav="people"><svg class="ico" width="18" height="18"><use href="#i-people"/></svg><span class="label">Équipe</span></a>
+      <div class="drawer-section">Capital</div>
+      <a href="connaissance.html" class="drawer-item" data-nav="knowledge"><svg class="ico" width="18" height="18"><use href="#i-knowledge"/></svg><span class="label">Connaissance</span></a>
+      <a href="coaching.html" class="drawer-item" data-nav="coaching"><svg class="ico" width="18" height="18"><use href="#i-coaching"/></svg><span class="label">Coaching</span></a>
+      <a href="revues.html" class="drawer-item" data-nav="revues"><svg class="ico" width="18" height="18"><use href="#i-folder"/></svg><span class="label">Revues</span></a>
+      <a href="decisions.html" class="drawer-item" data-nav="decisions"><svg class="ico" width="18" height="18"><use href="#i-target"/></svg><span class="label">Décisions</span></a>
+    </nav>
+    <div class="drawer-footer">
+      <button class="drawer-locale" aria-label="Langue">
+        <svg class="ico" width="16" height="16"><use href="#i-globe"/></svg>
+        <span class="locale-name">Français</span>
+      </button>
+      <a href="settings.html" class="drawer-item" data-nav="settings">
+        <svg class="ico" width="18" height="18"><use href="#i-settings"/></svg>
+        <span class="label">Réglages</span>
+      </a>
+      <button class="drawer-user" aria-label="Profil">
+        <span class="avatar md" data-house="solstice">AH</span>
+        <span class="meta">
+          <span class="name">Aubrielle Hayes</span>
+          <span class="role">Fondatrice · CEO</span>
+        </span>
+      </button>
+    </div>
+
+    <button class="drawer-collapse-btn" aria-label="Réduire le menu">
+      <svg class="ico" width="14" height="14"><use href="#i-chevron-left"/></svg>
+    </button>
+  </aside>
+
+  <main class="app-main soiree" id="main-content">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-title-block">
+        <div class="topbar-title-eyebrow">Soirée · 18:42</div>
+      </div>
+      <div class="topbar-cluster u-hidden-mobile">
+        <span class="pill outline" style="font-weight:var(--fw-medium)">
+          <svg class="ico" width="13" height="13"><use href="#i-sun"/></svg>
+          Mode calme activé
+        </span>
+        <button class="btn ghost"><svg class="ico" width="14" height="14"><use href="#i-x"/></svg>Plus tard</button>
+      </div>
+    </header>
+
+    <!-- ═══ HERO — Posture + invitation ═══════════════════ -->
+    <section class="card hero soiree-hero">
+      <div class="soiree-hero-grid">
+        <div>
+          <p class="eyebrow">Bonsoir</p>
+          <h1 class="greeting hero">Une chose <span class="accent">à la fois</span></h1>
+          <p class="lead u-mt-2" style="max-width:46ch">
+            Vous avez eu une journée dense. Avant de fermer, on regarde ensemble — sans juger.
+            <strong>4 minutes</strong>, puis vous coupez.
+          </p>
+
+          <div class="o-cluster u-mt-4" style="gap:10px">
+            <span class="pill outline">
+              <svg class="ico" width="13" height="13" style="color:var(--emerald-800)"><use href="#i-check"/></svg>
+              7 actions sur 9
+            </span>
+            <span class="pill outline">
+              <svg class="ico" width="13" height="13" style="color:var(--rose-800)"><use href="#i-target"/></svg>
+              2 décisions tranchées
+            </span>
+            <span class="pill outline u-tnum">9h32 d'écran</span>
+          </div>
+        </div>
+
+        <aside class="health-side">
+          <div class="health-card">
+            <span class="eyebrow">Note de la journée</span>
+            <div class="thin xl u-tnum" style="font-size:88px;line-height:1;margin-top:8px">
+              7<span style="color:var(--text-3);font-size:48px">/10</span>
+            </div>
+            <p class="small u-text-2 u-mt-2">Bonne cadence, mais Northwind a pesé.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ═══ STEPS ═══════════════════════════════════════ -->
+    <section class="soiree-steps">
+
+      <!-- Step 1: Bilan rapide -->
+      <article class="card panel soiree-step" data-step="1">
+        <header class="soiree-step-head">
+          <span class="step-num">01</span>
+          <div>
+            <h2 class="card-title">Ce qui s'est <em>vraiment</em> passé</h2>
+            <p class="small u-text-3 u-mt-2" style="margin:0">3 moments clés que le système a captés.</p>
+          </div>
+        </header>
+
+        <ul class="moments" role="list">
+          <li class="moment-row" data-pos="up">
+            <span class="moment-time u-tnum">10:14</span>
+            <span class="moment-tag">↑</span>
+            <div>
+              <h3 class="moment-title">Vous avez tranché RFP Hôpital — solo.</h3>
+              <p class="moment-sub">Vous y pensiez depuis 9 jours. Ça libère 4h cette semaine.</p>
+            </div>
+          </li>
+          <li class="moment-row" data-pos="flat">
+            <span class="moment-time u-tnum">11:30</span>
+            <span class="moment-tag">→</span>
+            <div>
+              <h3 class="moment-title">1‑à‑1 avec Helene · 42 minutes</h3>
+              <p class="moment-sub">Elle a parlé périmètre. Vous avez écouté. Pas de décision — c'est OK.</p>
+            </div>
+          </li>
+          <li class="moment-row" data-pos="down">
+            <span class="moment-time u-tnum">15:47</span>
+            <span class="moment-tag">↓</span>
+            <div>
+              <h3 class="moment-title">Vous avez repoussé le spec Northwind v3.</h3>
+              <p class="moment-sub">3ᵉ jour. Si demain encore, le système vous proposera un coaching dédié.</p>
+            </div>
+          </li>
+        </ul>
+      </article>
+
+      <!-- Step 2: Ce qui glisse -->
+      <article class="card panel soiree-step" data-step="2">
+        <header class="soiree-step-head">
+          <span class="step-num">02</span>
+          <div>
+            <h2 class="card-title">Ce qui glisse vers demain</h2>
+            <p class="small u-text-3 u-mt-2" style="margin:0">2 actions qui ne sont pas faites. Vous décidez.</p>
+          </div>
+        </header>
+
+        <ul class="slipping" role="list">
+          <li class="slip-row">
+            <div class="slip-main">
+              <h3 class="slip-title">Trancher le spec Northwind v3</h3>
+              <div class="o-cluster" style="gap:8px;margin-top:4px">
+                <span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span>
+                <span class="pill priority p0 sm">P0</span>
+                <span class="pill outline sm">3ᵉ report</span>
+              </div>
+            </div>
+            <div class="slip-actions">
+              <select class="slip-select">
+                <option>Demain matin (recommandé)</option>
+                <option>Mercredi</option>
+                <option>Cette semaine</option>
+                <option>Déléguer à Marc</option>
+              </select>
+            </div>
+          </li>
+
+          <li class="slip-row">
+            <div class="slip-main">
+              <h3 class="slip-title">Préparer la négo Solstice — round 3</h3>
+              <div class="o-cluster" style="gap:8px;margin-top:4px">
+                <span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span>
+                <span class="pill priority p1 sm">P1</span>
+                <span class="pill outline sm">Échéance jeu.</span>
+              </div>
+            </div>
+            <div class="slip-actions">
+              <select class="slip-select">
+                <option>Demain matin</option>
+                <option>Mercredi soir (recommandé)</option>
+                <option>Reporter à jeudi</option>
+              </select>
+            </div>
+          </li>
+        </ul>
+      </article>
+
+      <!-- Step 3: Ce qui tient -->
+      <article class="card panel soiree-step" data-step="3">
+        <header class="soiree-step-head">
+          <span class="step-num">03</span>
+          <div>
+            <h2 class="card-title">Ce qui tient</h2>
+            <p class="small u-text-3 u-mt-2" style="margin:0">Les engagements qui restent fermes pour demain.</p>
+          </div>
+        </header>
+
+        <div class="kept-grid">
+          <div class="kept-cell">
+            <span class="eyebrow">Premier acte</span>
+            <p class="kept-line">Trancher Northwind <strong>avant 10h</strong>.</p>
+          </div>
+          <div class="kept-cell">
+            <span class="eyebrow">Bloc deep</span>
+            <p class="kept-line">14:00–15:30 — sans interruption.</p>
+          </div>
+          <div class="kept-cell">
+            <span class="eyebrow">Coup de fil</span>
+            <p class="kept-line">Marc à 16:00 (5 min, retour Solstice).</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Step 4: Coaching -->
+      <article class="card panel soiree-step coaching-step" data-step="4">
+        <header class="soiree-step-head">
+          <span class="step-num">04</span>
+          <div>
+            <h2 class="card-title">Une question — pas une réponse</h2>
+            <p class="small u-text-3 u-mt-2" style="margin:0">Vous lirez. Vous laisserez décanter. C'est tout.</p>
+          </div>
+        </header>
+
+        <blockquote class="coaching-q">
+          Aujourd'hui vous avez repoussé 3 fois la même décision.
+          <strong>Qu'est‑ce que vous attendez vraiment</strong> pour la prendre ?
+        </blockquote>
+
+        <div class="coaching-foot o-cluster" style="gap:8px;justify-content:flex-end">
+          <button class="btn ghost sm">Je note ça</button>
+          <button class="btn ghost sm">Une autre question</button>
+        </div>
+      </article>
+
+      <!-- Final action -->
+      <article class="card hero soiree-close">
+        <div class="o-stack" style="--stack-gap:16px">
+          <p class="eyebrow">Et maintenant</p>
+          <h2 class="greeting" style="font-size:64px;line-height:1">À demain.</h2>
+          <p class="lead" style="max-width:42ch">
+            On bascule en mode calme : notifications coupées jusqu'à 7h, écran adouci, agenda gelé.
+          </p>
+          <div class="o-cluster" style="gap:10px;margin-top:8px">
+            <button class="btn primary lg" id="finish-btn">
+              <svg class="ico" width="16" height="16"><use href="#i-evening"/></svg>
+              Clôturer la journée
+            </button>
+            <button class="btn lg ghost">
+              <svg class="ico" width="14" height="14"><use href="#i-undo"/></svg>
+              Une dernière chose
+            </button>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p class="strategic-q">
+        Si demain ressemblait à aujourd'hui, est‑ce que ça vous conviendrait ?
+      </p>
+      <div class="footer-meta">
+        <span>aiCEO v0.5</span>
+        <span>·</span>
+        <span>Soirée · Aubrielle</span>
+        <span>·</span>
+        <span class="autosave"><span class="pulse"></span>Auto‑sauvegardé</span>
+      </div>
+    </footer>
+  </main>
+</div>
+
+<nav class="bottom-tab-nav" aria-label="Navigation mobile">
+  <a href="index.html" class="bottom-tab"><svg class="ico"><use href="#i-home"/></svg><span>Cockpit</span></a>
+  <a href="arbitrage.html" class="bottom-tab"><svg class="ico"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
+  <button class="bottom-tab fab-trigger"><span class="fab-circle"><svg class="ico"><use href="#i-mic"/></svg></span><span style="margin-top:30px">Capter</span></button>
+  <a href="#" class="bottom-tab"><svg class="ico"><use href="#i-projects"/></svg><span>Projets</span></a>
+  <a href="#" class="bottom-tab is-active"><svg class="ico"><use href="#i-evening"/></svg><span>Soirée</span></a>
+</nav>
+
+<style>
+/* Soirée mood : warm, slow, calm */
+body[data-mood="calm"] .soiree {
+  background: linear-gradient(180deg, #fbf9f5 0%, #f6efe5 100%);
+}
+.soiree-hero { background: linear-gradient(135deg, #fff7ed 0%, #fde6d3 100%); }
+
+.soiree-hero-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: var(--space-8);
+  align-items: center;
+}
+@media (max-width: 1023px) { .soiree-hero-grid { grid-template-columns: 1fr; } }
+
+.health-side { display: flex; justify-content: center; }
+.health-card {
+  background: var(--surface-2);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  text-align: center;
+  box-shadow: var(--shadow-card);
+  min-width: 200px;
+}
+
+/* Steps */
+.soiree-steps {
+  display: flex; flex-direction: column;
+  gap: var(--space-5);
+  max-width: 880px;
+  margin: 0 auto;
+  width: 100%;
+}
+.soiree-step { padding: var(--space-6); }
+.soiree-step-head {
+  display: flex; gap: var(--space-4);
+  align-items: flex-start;
+  margin-block-end: var(--space-4);
+}
+.step-num {
+  font-family: var(--font-thin);
+  font-weight: var(--fw-thin);
+  font-size: 56px;
+  line-height: 1;
+  color: var(--text-3);
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  width: 64px;
+}
+.soiree-step-head h2 em { font-style: italic; color: var(--rose-800); }
+
+/* Moments */
+.moments { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0; }
+.moment-row {
+  display: grid;
+  grid-template-columns: 56px 28px 1fr;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-block-end: 1px solid var(--border);
+  align-items: flex-start;
+}
+.moment-row:last-child { border-block-end: 0; }
+.moment-time {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  color: var(--text-2);
+  padding-top: 2px;
+}
+.moment-tag {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  font-weight: var(--fw-extrabold);
+  font-size: 12px;
+  background: var(--surface-3);
+  color: var(--text-2);
+}
+.moment-row[data-pos="up"] .moment-tag   { background: var(--emerald-50); color: var(--emerald-800); }
+.moment-row[data-pos="down"] .moment-tag { background: var(--rose-50); color: var(--rose-800); }
+.moment-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semi);
+  margin: 0 0 4px;
+  line-height: 1.4;
+}
+.moment-sub {
+  font-size: var(--fs-sm);
+  color: var(--text-2);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Slipping */
+.slipping { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+.slip-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  align-items: center;
+}
+@media (max-width: 720px) { .slip-row { grid-template-columns: 1fr; } }
+.slip-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semi);
+  margin: 0;
+  letter-spacing: var(--tracking-card);
+}
+.slip-select {
+  padding: 8px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: var(--fs-sm);
+  font-family: inherit;
+  color: var(--text);
+  min-width: 220px;
+  cursor: pointer;
+}
+
+/* Kept grid */
+.kept-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+@media (max-width: 720px) { .kept-grid { grid-template-columns: 1fr; } }
+.kept-cell {
+  padding: var(--space-4);
+  background: var(--emerald-bg);
+  border-radius: var(--radius);
+  border-inline-start: 3px solid var(--emerald);
+}
+.kept-line {
+  font-size: var(--fs-body);
+  margin: 4px 0 0;
+  line-height: 1.4;
+  color: var(--text);
+}
+.kept-cell .eyebrow { color: var(--emerald-800); }
+
+/* Coaching step */
+.coaching-step { border-inline-start: 4px solid var(--coaching); background: var(--coaching-bg); }
+.coaching-q {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-medium);
+  font-style: italic;
+  color: var(--text);
+  line-height: 1.4;
+  margin: 0;
+  padding: var(--space-3) 0 var(--space-3) var(--space-4);
+  border-inline-start: 3px solid var(--coaching);
+  text-wrap: balance;
+}
+.coaching-q strong { font-weight: var(--fw-bold); color: var(--violet-800); font-style: normal; }
+
+/* Soiree close */
+.soiree-close {
+  background: linear-gradient(135deg, #fff 0%, #fef3e9 100%);
+  text-align: start;
+}
+</style>
+
+<script src="_shared/app.js"></script>
+<script>
+fetch('_shared/icons.svg.html').then(r => r.text()).then(t => {
+  document.getElementById('icons-host').innerHTML = t;
+});
+
+document.getElementById('finish-btn')?.addEventListener('click', () => {
+  document.body.style.transition = 'background 1s ease';
+  document.body.style.background = '#1a1d24';
+  document.querySelector('.soiree').style.transition = 'opacity 800ms ease';
+  document.querySelector('.soiree').style.opacity = '0.05';
+  setTimeout(() => {
+    App.modal({
+      title: '✦ Bonsoir, Aubrielle',
+      size: 'compact',
+      body: `<p style="line-height:1.6;color:var(--text-2);text-align:center;font-size:var(--fs-body)">Mode calme actif jusqu'à <strong>06:30</strong>.<br>Aucune notification ne percera.</p><p style="color:var(--text-3);text-align:center;font-size:var(--fs-sm);margin-top:8px">À demain.</p>`,
+      footer: `<button class="btn primary full" data-close>Fermer</button>`,
+      onMount: (r, c) => {
+        r.querySelector('[data-close]').addEventListener('click', () => {
+          c();
+          location.href = 'index.html';
+        });
+      }
+    });
+  }, 700);
+});
+
+App.setupTweaks(
+  () => ({
+    state: 'normal',
+    locale: 'fr',
+    tone: 'warm',
+  }),
+  {
+    render: (s) => `
+      <section class="tweaks-section">
+        <div class="tweaks-section-title">État</div>
+        <div class="tweak-row tweak-radio">
+          <input type="radio" name="st" id="st-normal" value="normal" data-tweak="state" ${s.state==='normal'?'checked':''}>
+          <label for="st-normal">Normal</label>
+          <input type="radio" name="st" id="st-skipped" value="skipped" data-tweak="state" ${s.state==='skipped'?'checked':''}>
+          <label for="st-skipped">Sauté hier</label>
+          <input type="radio" name="st" id="st-zero" value="zero" data-tweak="state" ${s.state==='zero'?'checked':''}>
+          <label for="st-zero">Tout fait</label>
+        </div>
+      </section>
+      <section class="tweaks-section">
+        <div class="tweaks-section-title">Tonalité</div>
+        <div class="tweak-row tweak-radio">
+          <input type="radio" name="tn" id="tn-warm" value="warm" data-tweak="tone" ${s.tone==='warm'?'checked':''}>
+          <label for="tn-warm">Chaleureuse</label>
+          <input type="radio" name="tn" id="tn-neutral" value="neutral" data-tweak="tone" ${s.tone==='neutral'?'checked':''}>
+          <label for="tn-neutral">Neutre</label>
+        </div>
+      </section>
+      <section class="tweaks-section">
+        <div class="tweaks-section-title">Langue</div>
+        <div class="tweak-row">
+          <label>Locale</label>
+          <select data-tweak="locale">
+            <option value="fr" ${s.locale==='fr'?'selected':''}>Français</option>
+            <option value="en" ${s.locale==='en'?'selected':''}>English</option>
+            <option value="ar" ${s.locale==='ar'?'selected':''}>العربية</option>
+          </select>
+        </div>
+      </section>
+      <div class="tweak-help">
+        Soirée doit donner envie de rentrer chez soi. Ni reproche, ni emphase. Une page calme.
+      </div>
+    `,
+    apply: (s) => {
+      App.setLocale(s.locale);
+      const main = document.querySelector('.soiree');
+      const hero = document.querySelector('.soiree-hero');
+      if (s.tone === 'neutral') {
+        main.style.background = 'var(--bg)';
+        hero.style.background = 'var(--surface-2)';
+      } else {
+        main.style.background = '';
+        hero.style.background = '';
+      }
+      // States
+      const heroH1 = document.querySelector('.soiree-hero h1');
+      const lead = document.querySelector('.soiree-hero .lead');
+      if (s.state === 'skipped') {
+        heroH1.innerHTML = 'Vous avez <span class="accent">sauté</span> hier soir';
+        lead.innerHTML = 'Pas grave. On reprend doucement aujourd\'hui — <strong>3 minutes</strong>, et on enchaîne.';
+      } else if (s.state === 'zero') {
+        heroH1.innerHTML = 'Tout est <span class="accent">à sa place</span>';
+        lead.innerHTML = 'Aucun glissement. Belle journée. Vous pouvez fermer maintenant.';
+        document.querySelector('[data-step="2"]').style.display = 'none';
+      } else {
+        heroH1.innerHTML = 'Une chose <span class="accent">à la fois</span>';
+        lead.innerHTML = 'Vous avez eu une journée dense. Avant de fermer, on regarde ensemble — sans juger. <strong>4 minutes</strong>, puis vous coupez.';
+        document.querySelector('[data-step="2"]').style.display = '';
+      }
+    }
+  }
+);
+</script>
+</body>
+</html>

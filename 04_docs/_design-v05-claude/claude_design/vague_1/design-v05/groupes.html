@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>aiCEO — Sociétés</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css"/>
+<link rel="stylesheet" href="_shared/app.css"/>
+<style>
+  .grp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+  .gcard { background: var(--surface-2); border: 1px solid var(--border); border-radius: 18px; padding: 24px; box-shadow: var(--shadow-card); display: flex; flex-direction: column; }
+  .gcard-h { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .gcard .tag { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; border-radius: 8px; font: 800 12px var(--font-sans); letter-spacing: -.005em; }
+  .gcard .name { font: 800 22px var(--font-sans); letter-spacing: -.025em; margin: 4px 0 4px; }
+  .gcard .role { font: 500 12.5px var(--font-sans); color: var(--text-2); }
+  .gcard .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; padding: 14px 0; border-top: 1px dashed var(--border); border-bottom: 1px dashed var(--border); margin: 14px 0; }
+  .gcard .stats .v { font-family: var(--font-thin); font-weight: 100; font-size: 36px; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .gcard .stats .l { font: 700 10px var(--font-sans); text-transform: uppercase; letter-spacing: .08em; color: var(--text-3); margin-top: 4px; }
+  .gcard .next { font: 500 13px/1.5 var(--font-sans); color: var(--text-2); }
+  .gcard .next b { color: var(--text); }
+  .gcard .foot { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 14px; }
+</style>
+</head>
+<body data-nav="groupes">
+<div class="app">
+  <div id="sidebar-slot"></div>
+  <main class="main">
+    <header class="topbar">
+      <div class="crumbs"><a href="index.html">Cockpit</a><span class="sep">›</span><span class="current">Sociétés du groupe</span><span class="sep">·</span><span class="muted tabular">4 entités · 10 projets actifs</span></div>
+      <div class="topbar-actions">
+        <button class="btn">Vue consolidée</button>
+        <button class="btn primary">+ Société</button>
+      </div>
+    </header>
+    <div class="page">
+      <div class="page-h">
+        <div>
+          <h1>Sociétés du groupe Terres Rouges</h1>
+          <div class="sub">Vue d'ensemble. Chaque société regroupe ses projets, contacts, et décisions ouvertes.</div>
+        </div>
+      </div>
+
+      <div class="grp-grid">
+        <div class="gcard">
+          <div class="gcard-h">
+            <span class="tag c-AMP">AMP · BTP & promotion</span>
+            <span class="badge amber">3 chantiers actifs</span>
+          </div>
+          <div class="name">AMP — Atelier Métropolitain Promoteur</div>
+          <div class="role">SAS · 12 salariés · vous : Président · Karim COO</div>
+          <div class="stats">
+            <div><div class="v">3</div><div class="l">Projets</div></div>
+            <div><div class="v">9</div><div class="l">Tâches</div></div>
+            <div><div class="v">4</div><div class="l">Décisions</div></div>
+          </div>
+          <div class="next">Prochain jalon · <b>Pamandzi 09 phase 2 · livraison été 2026</b>. Big Rock S17 actif.</div>
+          <div class="foot">
+            <span class="muted tiny">3 mails ce matin</span>
+            <a class="btn" href="projets.html">Voir projets →</a>
+          </div>
+        </div>
+
+        <div class="gcard">
+          <div class="gcard-h">
+            <span class="tag c-SCIS">SCIS · Foncier</span>
+            <span class="badge rose">tirage banque en cours</span>
+          </div>
+          <div class="name">SCIS Bretagne</div>
+          <div class="role">SCI · 4 actionnaires · vous : gérant majoritaire</div>
+          <div class="stats">
+            <div><div class="v">2</div><div class="l">Projets</div></div>
+            <div><div class="v">5</div><div class="l">Tâches</div></div>
+            <div><div class="v">2</div><div class="l">Décisions</div></div>
+          </div>
+          <div class="next">Prochain jalon · <b>tirage CA Bretagne 30/04</b> · Big Rock S17 #1.</div>
+          <div class="foot">
+            <span class="muted tiny">CA Tessier · ven.</span>
+            <a class="btn" href="projets.html">Voir projets →</a>
+          </div>
+        </div>
+
+        <div class="gcard">
+          <div class="gcard-h">
+            <span class="tag c-ETIC">ETIC · Conseil & SI</span>
+            <span class="badge emerald">stable</span>
+          </div>
+          <div class="name">ETIC Services</div>
+          <div class="role">SAS · 28 salariés · vous : Président · Lamiae COO</div>
+          <div class="stats">
+            <div><div class="v">4</div><div class="l">Projets</div></div>
+            <div><div class="v">11</div><div class="l">Tâches</div></div>
+            <div><div class="v">3</div><div class="l">Décisions</div></div>
+          </div>
+          <div class="next">Prochain jalon · <b>COPIL sprint 7 · mardi 14h</b>. Affejee soldé ✓.</div>
+          <div class="foot">
+            <span class="muted tiny">17 mails entrants</span>
+            <a class="btn" href="projets.html">Voir projets →</a>
+          </div>
+        </div>
+
+        <div class="gcard">
+          <div class="gcard-h">
+            <span class="tag c-ITH">ITH · Hôtellerie</span>
+            <span class="badge slate">consolide</span>
+          </div>
+          <div class="name">ITH — Investissement Terres Hôtelières</div>
+          <div class="role">Holding · 3 sites · vous : Président · COMEX 2/mois</div>
+          <div class="stats">
+            <div><div class="v">1</div><div class="l">Projets</div></div>
+            <div><div class="v">3</div><div class="l">Tâches</div></div>
+            <div><div class="v">3</div><div class="l">Décisions</div></div>
+          </div>
+          <div class="next">Prochain jalon · <b>revue mensuelle ven. 16h</b>. Saisonnalité S2 en hausse +12%.</div>
+          <div class="foot">
+            <span class="muted tiny">COMEX vendredi</span>
+            <a class="btn" href="projets.html">Voir projets →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="_shared/shell.js"></script>
+</body>
+</html>

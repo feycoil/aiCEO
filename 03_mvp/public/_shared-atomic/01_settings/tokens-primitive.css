@@ -1,0 +1,191 @@
+/**
+ * tokens-primitive.css — Niveau A : tokens primitifs
+ *
+ * Couleurs brutes, neutres, sans usage contextuel.
+ * Scales : couleurs (7 palettes), spacing (8 stops), radius (5), duration, easing, icon sizes, type.
+ *
+ * Source canonique : 02_design-system/tokens.json + 13-architecture-atomique.md
+ *
+ * Regle d'or (cf. CONTRIBUTING-V06.md §2) :
+ *   ↳ Un composant ne reference JAMAIS un primitive directement.
+ *   ↳ Toujours via tokens-semantic.css ou tokens-component.css.
+ */
+
+:root {
+
+  /* ═══════════════════════════════════════════════════════════════
+     COULEURS PRIMITIVES — 7 palettes
+     ═══════════════════════════════════════════════════════════════ */
+
+  /* Navy (brand primaire — DS Twisty) */
+  --color-navy-50:  #eceef1;
+  --color-navy-100: #d0d4dc;
+  --color-navy-500: #4a4f5a;
+  --color-navy-700: #2b3139;
+  --color-navy-900: #111418;
+
+  /* Cream (surfaces neutres warm — DS Twisty) */
+  --color-cream-50:  #faf7f1;
+  --color-cream-100: #f5f3ef;
+  --color-cream-200: #e7e3d9;
+  --color-cream-300: #d4cebf;
+  --color-cream-500: #b1aa97;
+
+  /* Rose (danger / coral / urgence — DS Twisty) */
+  --color-rose-50:  #fdecdf;
+  --color-rose-100: #fadccb;
+  --color-rose-500: #d96d3e;
+  --color-rose-700: #b35327;
+  --color-rose-800: #8a3b1b;
+
+  /* Emerald (success / sage / positif — DS Twisty) */
+  --color-emerald-50:  #e2ece8;
+  --color-emerald-100: #c5d8d0;
+  --color-emerald-500: #3d7363;
+  --color-emerald-700: #2d5749;
+  --color-emerald-800: #234236;
+
+  /* Amber (warning / attention — DS Twisty) */
+  --color-amber-50:  #f5e8d6;
+  --color-amber-100: #ead4a8;
+  --color-amber-500: #b88237;
+  --color-amber-700: #905f23;
+  --color-amber-800: #6d4816;
+
+  /* Sky (info / neutre froid — DS Twisty) */
+  --color-sky-50:  #e9eef4;
+  --color-sky-100: #cfd7e1;
+  --color-sky-500: #7790ae;
+  --color-sky-700: #5a708b;
+  --color-sky-800: #3b506a;
+
+  /* Violet (coaching / IA / spirit — DS Twisty) */
+  --color-violet-50:  #ece7f0;
+  --color-violet-100: #d3cadc;
+  --color-violet-500: #7a6a8a;
+  --color-violet-700: #5d4f6e;
+  --color-violet-800: #463a54;
+
+  /* Bg ambient (fond global lavande tres doux — DS Twisty) */
+  --color-bg-ambient: #a9adbe;
+
+  /* ═══════════════════════════════════════════════════════════════
+     SPACING SCALE — base 4px (cf. CONTRIBUTING-V06.md §5)
+     ═══════════════════════════════════════════════════════════════ */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* ═══════════════════════════════════════════════════════════════
+     RADIUS SCALE
+     ═══════════════════════════════════════════════════════════════ */
+  --radius-xs:   4px;
+  --radius-sm:   8px;
+  --radius-md:  12px;  /* default cards */
+  --radius-lg:  16px;  /* modals */
+  --radius-xl:  24px;  /* heros */
+  --radius-pill: 999px;
+
+  /* ═══════════════════════════════════════════════════════════════
+     DURATION SCALE (motion)
+     ═══════════════════════════════════════════════════════════════ */
+  --duration-instant:  100ms;
+  --duration-fast:     150ms;
+  --duration-normal:   250ms;
+  --duration-slow:     400ms;
+  --duration-celebr:   800ms;  /* celebrations rares (streak break, milestone) */
+
+  /* ═══════════════════════════════════════════════════════════════
+     EASING (motion)
+     ═══════════════════════════════════════════════════════════════ */
+  --ease-linear:    cubic-bezier(0, 0, 1, 1);
+  --ease-in:        cubic-bezier(0.4, 0, 1, 1);
+  --ease-out:       cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out:    cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce:    cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ═══════════════════════════════════════════════════════════════
+     ICON SIZES (cohérent SVG sprite Lucide stroke-width 1.5)
+     ═══════════════════════════════════════════════════════════════ */
+  --icon-xs: 12px;
+  --icon-sm: 16px;
+  --icon-md: 20px;  /* default */
+  --icon-lg: 24px;
+  --icon-xl: 32px;
+
+  /* ═══════════════════════════════════════════════════════════════
+     TYPE SCALE
+     Familles (chargees via assets/colors_and_type.css genere DS pipeline)
+     ═══════════════════════════════════════════════════════════════ */
+  --font-sans:   "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-script: "Aubrielle", "Brush Script MT", cursive;
+  --font-thin:   "Sol", "Fira Sans", sans-serif;
+  --font-mono:   ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Tailles (modular scale 1.25) */
+  --text-xs:  11px;
+  --text-sm:  13px;
+  --text-md:  15px;  /* default body */
+  --text-lg:  17px;
+  --text-h3:  19px;
+  --text-h2:  24px;
+  --text-h1:  32px;
+  --text-display-sm: 40px;  /* hero soir / matin */
+  --text-display-md: 56px;  /* salutations Aubrielle */
+  --text-display-lg: 72px;  /* chiffres Sol streaks */
+
+  /* Line-heights */
+  --leading-tight:  1.2;
+  --leading-snug:   1.35;
+  --leading-normal: 1.5;
+  --leading-loose:  1.75;
+
+  /* Letter-spacing */
+  --tracking-tight:  -0.02em;
+  --tracking-normal:  0;
+  --tracking-wide:    0.02em;
+  --tracking-display: 0.04em;  /* salutations Aubrielle */
+
+  /* Font-weights */
+  --weight-light:    300;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+
+  /* ═══════════════════════════════════════════════════════════════
+     SHADOWS (elevation system)
+     ═══════════════════════════════════════════════════════════════ */
+  --shadow-xs: 0 1px 2px rgba(17, 20, 24, 0.04);
+  --shadow-sm: 0 2px 4px rgba(17, 20, 24, 0.06);
+  --shadow-md: 0 4px 12px rgba(17, 20, 24, 0.08);
+  --shadow-lg: 0 8px 24px rgba(17, 20, 24, 0.12);
+  --shadow-xl: 0 16px 48px rgba(17, 20, 24, 0.16);
+
+  /* ═══════════════════════════════════════════════════════════════
+     Z-INDEX SCALE
+     ═══════════════════════════════════════════════════════════════ */
+  --z-base:        0;
+  --z-sticky:    100;
+  --z-drawer:    200;
+  --z-dropdown:  300;
+  --z-modal:     400;
+  --z-toast:     500;
+  --z-tooltip:   600;
+  --z-debug:    9999;
+
+  /* ═══════════════════════════════════════════════════════════════
+     BREAKPOINTS (utilises via @media — pas variables CSS natives)
+     Documentes ici comme reference (var --bp-* non utilisable en @media)
+     ═══════════════════════════════════════════════════════════════ */
+  /* --bp-mobile:  640px  — single column, drawer overlay */
+  /* --bp-tablet:  768px  — drawer collapsed by default */
+  /* --bp-desktop: 1024px — drawer expanded */
+  /* --bp-wide:    1440px — max content width */
+
+}

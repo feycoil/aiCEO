@@ -1,0 +1,38 @@
+/**
+ * c-badge — Numeric badge / dot / status indicator
+ * Variants : count | dot
+ * Source   : 06-composants-catalogue.md (S6.1.2)
+ */
+
+.c-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-xs);
+  line-height: 1;
+  border-radius: var(--radius-pill);
+  background: var(--color-danger);
+  color: var(--color-text-on-brand);
+  padding: 2px 6px;
+  min-width: 18px;
+  height: 18px;
+  user-select: none;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Variant: dot (sans chiffre) */
+.c-badge--dot {
+  width: 8px;
+  height: 8px;
+  min-width: 0;
+  padding: 0;
+  border-radius: 50%;
+}
+
+/* Variant: status colors */
+.c-badge--success { background: var(--color-success); }
+.c-badge--warning { background: var(--color-warning); color: var(--color-warning-text); }
+.c-badge--info    { background: var(--color-info); }
+.c-badge--neutral { background: var(--color-text-3); }

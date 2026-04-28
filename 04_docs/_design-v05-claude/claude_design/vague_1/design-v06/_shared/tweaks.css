@@ -1,0 +1,140 @@
+/* ════════════════════════════════════════════════════════════════
+   aiCEO v0.5 — TWEAKS PANEL (in-page knobs)
+   Style aligné avec le reste du shell. Ne jamais utiliser hors
+   du toggle Tweaks de la toolbar.
+   ════════════════════════════════════════════════════════════════ */
+.tweaks-panel {
+  position: fixed;
+  top: 80px;
+  inset-inline-end: 16px;
+  width: 320px;
+  max-height: calc(100dvh - 100px);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-app);
+  z-index: var(--z-tweaks);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: var(--font-sans);
+}
+.tweaks-panel.is-open { display: flex; }
+
+.tweaks-head {
+  display: flex; align-items: center;
+  padding: 14px 16px;
+  border-block-end: 1px solid var(--border);
+  background: var(--surface-3);
+}
+.tweaks-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--tracking-card);
+}
+.tweaks-close {
+  margin-inline-start: auto;
+  background: transparent; border: 0;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--text-3);
+  display: grid; place-items: center;
+}
+.tweaks-close:hover { color: var(--text); }
+.tweaks-close svg { width: 16px; height: 16px; }
+
+.tweaks-body {
+  padding: 14px 16px 18px;
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+  gap: 16px;
+}
+
+.tweaks-section {
+  display: flex; flex-direction: column;
+  gap: 10px;
+}
+.tweaks-section-title {
+  font-size: var(--fs-tiny);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-caption);
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-block-end: 2px;
+}
+
+.tweak-row {
+  display: flex; align-items: center;
+  gap: 10px;
+  font-size: var(--fs-sm);
+}
+.tweak-row label {
+  flex: 1;
+  font-weight: var(--fw-medium);
+  color: var(--text-2);
+}
+.tweak-row select,
+.tweak-row input[type="text"],
+.tweak-row input[type="number"] {
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-2);
+  font-size: var(--fs-xs);
+  font-family: inherit;
+  color: var(--text);
+  min-width: 120px;
+}
+.tweak-row input[type="range"] {
+  flex: 1;
+  accent-color: var(--brand);
+}
+.tweak-row .range-value {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-tiny);
+  color: var(--text-3);
+  min-width: 32px;
+  text-align: end;
+}
+
+.tweak-radio {
+  display: inline-flex;
+  background: var(--surface-3);
+  padding: 2px;
+  border-radius: 7px;
+}
+.tweak-radio label {
+  flex: initial;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: var(--fs-tiny);
+  font-weight: var(--fw-semi);
+  color: var(--text-3);
+  cursor: pointer;
+}
+.tweak-radio input { display: none; }
+.tweak-radio input:checked + label,
+.tweak-radio label:has(input:checked) {
+  background: var(--surface-2);
+  color: var(--text);
+  box-shadow: var(--shadow-card);
+}
+
+.tweak-help {
+  font-size: var(--fs-tiny);
+  color: var(--text-3);
+  line-height: 1.5;
+  padding: 8px 10px;
+  background: var(--surface-3);
+  border-radius: 6px;
+  border-inline-start: 3px solid var(--violet);
+}
+
+@media (max-width: 1023px) {
+  .tweaks-panel {
+    inset-inline-end: 8px;
+    inset-inline-start: 8px;
+    width: auto;
+    top: 64px;
+  }
+}

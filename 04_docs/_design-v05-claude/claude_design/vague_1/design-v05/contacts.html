@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>aiCEO — Contacts</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css"/>
+<link rel="stylesheet" href="_shared/app.css"/>
+<style>
+  .ct-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .ct { background: var(--surface-2); border: 1px solid var(--border); border-radius: 16px; padding: 18px; box-shadow: var(--shadow-xs); cursor: pointer; }
+  .ct:hover { border-color: var(--text); transform: translateY(-1px); box-shadow: var(--shadow-card); }
+  .ct .top { display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
+  .ct .av { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #b88237, #d96d3e); color: #fff; font: 800 14px var(--font-sans); display: grid; place-items: center; }
+  .ct .av.l { background: linear-gradient(135deg,#7a6a8a,#463a54); }
+  .ct .av.k { background: linear-gradient(135deg,#3d7363,#234236); }
+  .ct .av.n { background: linear-gradient(135deg,#7790ae,#3b506a); }
+  .ct .av.t { background: linear-gradient(135deg,#d96d3e,#8a3b1b); }
+  .ct .name { font: 800 14.5px var(--font-sans); letter-spacing: -.015em; }
+  .ct .role { font: 500 12px var(--font-sans); color: var(--text-2); margin-top: 2px; }
+  .ct .stats { display: flex; gap: 10px; padding: 10px 0 0; border-top: 1px dashed var(--border); font: 500 11.5px var(--font-sans); color: var(--text-2); }
+  .ct .stats b { color: var(--text); font-weight: 700; }
+  .ct .last { font: 500 11.5px var(--font-sans); color: var(--text-3); margin-top: 8px; }
+  .ct .last b { color: var(--text); }
+
+  .ct-filters { display: flex; gap: 8px; padding: 14px 0 18px; border-bottom: 1px dashed var(--border); margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
+</style>
+</head>
+<body data-nav="contacts">
+<div class="app">
+  <div id="sidebar-slot"></div>
+  <main class="main">
+    <header class="topbar">
+      <div class="crumbs"><a href="index.html">Cockpit</a><span class="sep">›</span><span class="current">Contacts</span><span class="sep">·</span><span class="muted tabular">62 actifs · 8 prioritaires · 12 internes</span></div>
+      <div class="topbar-actions">
+        <button class="btn">Importer</button>
+        <button class="btn primary">+ Contact</button>
+      </div>
+    </header>
+    <div class="page">
+      <div class="page-h"><div><h1>Contacts</h1><div class="sub">Personnes croisées par mail, RV ou décision dans les 90 derniers jours.</div></div></div>
+
+      <div class="ct-filters">
+        <button class="chipf active">Tous · 62</button>
+        <button class="chipf">Internes · 12</button>
+        <button class="chipf">Externes · 50</button>
+        <button class="chipf">Prioritaires · 8</button>
+        <button class="chipf">Banque · 6</button>
+        <button class="chipf">Chantier · 14</button>
+        <span style="margin-left:auto" class="muted tiny">trier · récence</span>
+      </div>
+
+      <div class="ct-grid">
+        <div class="ct">
+          <div class="top"><div class="av l">L</div><div><div class="name">Lamiae Bensaïd</div><div class="role">COO ETIC · interne</div></div></div>
+          <div class="last">Dernier échange · <b>il y a 2h</b> · délégation NDF T1</div>
+          <div class="stats"><span><b>11</b> tâches</span><span><b>4</b> projets</span><span><b>charge S17 60%</b></span></div>
+        </div>
+        <div class="ct">
+          <div class="top"><div class="av k">K</div><div><div class="name">Karim El Mansouri</div><div class="role">COO AMP · interne · co-actionnaire SCIS</div></div></div>
+          <div class="last">Dernier échange · <b>auj. 11:30</b> · RV chantier Pamandzi</div>
+          <div class="stats"><span><b>9</b> tâches</span><span><b>3</b> projets</span><span><b>2</b> décisions</span></div>
+        </div>
+        <div class="ct">
+          <div class="top"><div class="av n">N</div><div><div class="name">Naïma Ouazzane</div><div class="role">Chef de projet ITH · interne</div></div></div>
+          <div class="last">Dernier échange · <b>ven. 17h</b> · briefing saisonnalité</div>
+          <div class="stats"><span><b>5</b> tâches</span><span><b>1</b> projet</span></div>
+        </div>
+        <div class="ct">
+          <div class="top"><div class="av t">CT</div><div><div class="name">Christine Tessier</div><div class="role">CA Bretagne · banque</div></div></div>
+          <div class="last">Dernier échange · <b>ven. 18:14</b> · décalage tirage 30/04</div>
+          <div class="stats"><span><b>1</b> projet · SCIS</span><span><b style="color:var(--rose)">échéance mar.</b></span></div>
+        </div>
+        <div class="ct">
+          <div class="top"><div class="av">NS</div><div><div class="name">Naïr Saïd</div><div class="role">Architecte · cabinet libre</div></div></div>
+          <div class="last">Dernier échange · <b>sam. 11:02</b> · planning phase 2</div>
+          <div class="stats"><span><b>1</b> projet · AMP</span><span><b style="color:var(--rose)">avenant 9j</b></span></div>
+        </div>
+        <div class="ct">
+          <div class="top"><div class="av">JG</div><div><div class="name">Jean Gilbert</div><div class="role">Expert-comptable · cabinet Gilbert</div></div></div>
+          <div class="last">Dernier échange · <b>jeu. 09:12</b> · URSSAF T4</div>
+          <div class="stats"><span><b>3</b> sociétés</span><span><b>2</b> tâches</span></div>
+        </div>
+        <div class="ct">
+          <div class="top"><div class="av">PB</div><div><div class="name">Pierre-Yves Bourdier</div><div class="role">Directeur Affejee · cabinet expert</div></div></div>
+          <div class="last">Dernier échange · <b>auj. 17:08</b> · honoraires soldés</div>
+          <div class="stats"><span><b>1</b> projet · ETIC</span><span><b style="color:var(--emerald)">clos</b></span></div>
+        </div>
+        <div class="ct">
+          <div class="top"><div class="av">SM</div><div><div class="name">Sophie Martin-Dubreil</div><div class="role">DG cabinet conseil · ITH partenaire</div></div></div>
+          <div class="last">Dernier échange · <b>il y a 4j</b> · proposition refonte SI</div>
+          <div class="stats"><span><b>1</b> projet</span></div>
+        </div>
+        <div class="ct">
+          <div class="top"><div class="av">FA</div><div><div class="name">Frédéric Asselineau</div><div class="role">Apave · contrôle technique</div></div></div>
+          <div class="last">Dernier échange · <b>il y a 8j</b> · planning visites</div>
+          <div class="stats"><span><b>1</b> projet · AMP</span></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="_shared/shell.js"></script>
+</body>
+</html>

@@ -78,6 +78,16 @@ router.get('/health', (req, res) => {
   }
 });
 
+router.post('/sync-outlook', (req, res) => {
+  // Stub : la sync Outlook réelle se fait via scripts/sync-outlook.ps1 (Windows)
+  // Pour l'instant on retourne une réponse explicite que l'UI peut consommer
+  res.status(501).json({
+    error: 'not_implemented',
+    message: 'La synchronisation Outlook automatique arrive bientôt. En attendant, lancez manuellement scripts/sync-outlook.ps1 depuis PowerShell.',
+    manual_command: 'pwsh -File scripts/sync-outlook.ps1'
+  });
+});
+
 module.exports = router;
 module.exports.getLastSyncStatus = getLastSyncStatus;
 module.exports.THRESHOLD_WARN_MIN = THRESHOLD_WARN_MIN;

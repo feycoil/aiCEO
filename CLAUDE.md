@@ -2,7 +2,7 @@
 
 > **Lis ce fichier en premier** quand tu démarres une nouvelle session sur ce projet. Il consolide le contexte, les conventions, les pièges connus et les workflows types pour t'éviter de tout redécouvrir.
 
-**Version** : 26/04/2026 (post v0.5 livrée)
+**Version** : 28/04/2026 PM (post-S6.4 — câblage v0.6 réel sur SQLite + sync Outlook emails)
 **À jour à chaque clôture de sprint** ou décision structurante (cf. § 8 Maintenance).
 
 ---
@@ -11,11 +11,22 @@
 
 **aiCEO** = copilote IA exécutif local pour CEO. Cockpit + arbitrage matin + bilan soir + revue hebdo + assistant chat live (Claude streaming SSE) + portefeuille (groupes/projets/contacts/décisions). 100 % local, SQLite mono-instance, zéro cloud applicatif. Intégrations : Outlook (sync 2h via schtasks), Anthropic Claude API, GitHub.
 
-**Trajectoire** : v0.4 (app statique) → v0.5 (internalisée fonctionnelle) → V1 (multi-tenant + équipes + intégrations + mobile, ~300 k€).
+**Trajectoire (ROADMAP v3.2)** : v0.4 (app statique) → v0.5 (internalisée fonctionnelle ✅) → **v0.6 (Interface finalisée selon bundle Claude Design v3.1, ~8 k€ binôme, ~2-3 sem)** → V1 (SaaS + équipes + mobile, ~46 k€ binôme/6 mois) → V2 (commercial intl + i18n + SOC 2, 800 k€) → V3 (coach + offline + multi-CEO, 600 k€).
 
-**Statut au 26/04/2026** : **v0.5 internalisée TERMINÉE**. 5 sprints livrés (S1+S2+S3+S4+S5) en ~16 h chrono cumulées dogfood par binôme CEO + Claude. 110 k€ / 110 k€ = 100% budget consommé. Tag `v0.5` posé, GitHub Release publiée.
+**Statut au 28/04/2026 (PM)** :
+- **v0.5 internalisée TERMINÉE** : 5 sprints livrés. Tag `v0.5` posé. **110 k€ engagés / 97,4 k€ dépensés (88,5%) / 12,6 k€ provision V1**.
+- **v0.6 Phase A (DS Claude Design)** : maquette 17 écrans déployée dans `03_mvp/public/v06/`. Pages v0.5 historiques toujours présentes.
+- **v0.6 Phase B — Câblage réel (S6.4 LIVRÉ 28/04 PM)** :
+  - **Backend 100% SQLite** : 14 routes API REST, 20 tables, 4 migrations (init + s4-assistant + s6-preferences + **2026-04-28-emails**).
+  - **Sync Outlook → SQLite** : table `emails` (id Outlook PK + 14 colonnes), `scripts/normalize-emails.js` patché (ingestion DB + JSON rétro-compat), `scripts/ingest-emails.js` (rattrapage standalone). 1052 emails ingérés en DB.
+  - **Bootstrap auto** : `scripts/bootstrap-from-emails.js` crée 13 projets (depuis `inferred_project` distincts) + 77 contacts (top expéditeurs ≥3 emails). Idempotent. Endpoint `POST /api/arbitrage/bootstrap-from-emails` exposé.
+  - **Route `POST /api/arbitrage/analyze-emails`** réécrite SQL : scoring `flagged*100 + unread*30 + has_attach*5 + recence_bonus`, top 8 propositions.
+  - **13/17 pages frontend câblées sur API** : cockpit (KPIs + Cap stratégique + dot-chart 7j + projects-houses + Top3), arbitrage (file emails + focus + board kanban drag-drop SQL), projets (auto-status alerte/à-surveiller/sain heuristique), équipe (avatars uniformes + recence), décisions (liste + tri + summary), tâches (buckets temporels + chips filtres dynamiques + tri + toggle done), revues (CTA "Démarrer la revue"), evening, settings, onboarding, projet, hub, components.
+  - **3 pages preview annoncées** : assistant.html (v0.7), connaissance.html (v0.7), coaching.html (v0.8) — banners ambres, démo masquée.
+  - **Auto-suggestions aiCEO rule-based** : projet status (volume emails 30j + récence), arbitrage scoring SQL, KPIs cockpit. **LLM Anthropic disponible côté serveur (4 routes SSE) mais non branché en UI v0.6** — décision délibérée : nécessite validation `ANTHROPIC_API_KEY` en prod.
+- **Tags Git** : `v0.5` (final v0.5), `v0.6-s6.1` (DS atomic archivé). À poser : `v0.6-s6.4` post-recette.
 
-**Prochaine étape** : recette ExCom puis décision GO V1.
+**Prochaine étape** : recette CEO + ExCom → GO câblage v0.7 LLM (coaching + auto-draft + decision-recommend) + sync events Outlook + tag `v0.6-s6.4`.
 
 ---
 
@@ -41,15 +52,56 @@
 
 ### Backend (`03_mvp/`)
 - Express + **node:sqlite** (Node 24, pas better-sqlite3 cf. ADR S1.13)
-- 11 routers REST CRUD (`/api/{tasks,decisions,contacts,projects,groups,events,cockpit,arbitrage,evening,weekly-reviews,big-rocks,system,assistant}`)
+- **14 routers REST CRUD** (`/api/{tasks,decisions,contacts,projects,groups,events,cockpit,arbitrage,evening,weekly-reviews,big-rocks,system,preferences,assistant}`)
 - 4 routes assistant streaming SSE via `messages.stream` Anthropic SDK
 - SSE bus EventEmitter + `GET /api/cockpit/stream` (S3.05)
-- Migrations versionnées (`data/migrations/*.sql` + tracking `schema_migrations` table)
-- Mode démo automatique sans `ANTHROPIC_API_KEY`
+- **20 tables SQLite** : tasks, decisions, contacts, projects, groups, events, **emails** (S6.4 nouveau), arbitrage_sessions, evening_sessions, weekly_reviews, weeks, big_rocks, task_events, contacts_projects, delegations, settings, user_preferences, assistant_conversations, assistant_messages, schema_migrations
+- **4 migrations** appliquées : `2026-04-25-init-schema.sql` + `2026-04-26-s4-assistant.sql` + `2026-04-27-s6-preferences.sql` + **`2026-04-28-emails.sql` (S6.4)**
+- Mode démo automatique sans `ANTHROPIC_API_KEY` (LLM routes répondent stub)
 - Isolation tests via env `AICEO_DB_OVERRIDE=/path/to/test.db`
 - Port défaut **4747** (pas 3001 — historique S2.00 mais wrapper Variante D utilise 4747)
+- **Endpoints S6.4 ajoutés** :
+  - `POST /api/arbitrage/analyze-emails` → scoring SQL emails non lus/flagged/récents (top 8 propositions)
+  - `POST /api/arbitrage/bootstrap-from-emails` → auto-création projets (depuis `inferred_project` distincts) + contacts (expéditeurs ≥3 emails). Idempotent.
 
-### Frontend (12 pages, `03_mvp/public/`)
+### Frontend Claude Design v0.6 (17 pages, `03_mvp/public/v06/`) — **CIBLE OFFICIELLE + CÂBLÉE S6.4**
+
+| Page | URL | Bind | Statut S6.4 |
+|---|---|---|---|
+| Hub | `/v06/hub.html` | — | Static (navigation centrale) |
+| Cockpit | `/v06/index.html` | `bind-cockpit.js` | ✅ KPIs + Cap stratégique + dot-chart 7j + projects-houses + Top3 (real API) |
+| Arbitrage | `/v06/arbitrage.html` | `bind-arbitrage(-queue/-focus/-board).js` | ✅ File emails (POST `/analyze-emails`) + focus mode (decisions DB) + board mode (drag-drop SQL persist via `PATCH /api/decisions/:id`) |
+| Projets | `/v06/projets.html` | `bind-projets.js` v4 | ✅ 13 projets + auto-status alerte/à-surveiller/sain (heuristique volume emails 30j) + summary header |
+| Équipe | `/v06/equipe.html` | `bind-equipe.js` v4 | ✅ 77 contacts + avatars uniformes gris + recence + volume mails |
+| Décisions | `/v06/decisions.html` | `bind-decisions.js` v4 | ✅ Liste + tri (ouvertes 1er) + summary "X à trancher · Y tranchées · Z gelées" |
+| Actions | `/v06/taches.html` | `bind-taches.js` v5 | ✅ Buckets temporels + chips filtres (groupes dynamiques fetch `/api/groups`) + tri + toggle done + bouton "Nouvelle action" |
+| Revues | `/v06/revues.html` | `bind-revues.js` v4 | ✅ Liste + CTA "Démarrer la revue de la semaine" (POST `/api/weekly-reviews`) |
+| Agenda | `/v06/agenda.html` | `bind-agenda.js` | ⚠ Lit `/api/events` mais sync events Outlook **manquante** — feature **v0.7** |
+| Soirée | `/v06/evening.html` | `bind-evening.js` | ✅ Rituel humeur/énergie/top3/streak |
+| Onboarding | `/v06/onboarding.html` | `bind-onboarding.js` | ✅ Wizard 3 étapes (firstName, tenantName, première maison) |
+| Settings | `/v06/settings.html` | `bind-settings.js` | ✅ 8 onglets (Général/Langue/Maisons/Rituels/Coaching/Données/Apparence/Zone sensible). Bouton sync Outlook désactivé v0.7. |
+| Projet | `/v06/projet.html` | `bind-projet.js` | ✅ Détail projet (param `?id=`) + KPIs + tasks + décisions liées |
+| Aide | `/v06/aide.html` | — | Static (7 sections PowerShell commandes) |
+| Components | `/v06/components.html` | — | Static (Storybook 27 atomes) |
+| Assistant | `/v06/assistant.html` | `bind-assistant.js` | ⚠ **Preview v0.7** (banner ambre, chat SSE désactivé sans `ANTHROPIC_API_KEY`) |
+| Connaissance | `/v06/connaissance.html` | — | ⚠ **Preview v0.7** (banner ambre) |
+| Coaching | `/v06/coaching.html` | — | ⚠ **Preview v0.8** (banner ambre) |
+
+DS partagé : `/v06/_shared/colors_and_type.css` + `/v06/_shared/app.css` + `/v06/_shared/tweaks.css` (1700+ lignes, 5 blocs UX 28/04) + `/v06/_shared/theme.js` (avec globals `aiceoArbStart/ManualPicker/ArbAccept/ArbIgnore/ArbToggleQueue` + Toggle file). 19 bind-*.js + sprite icônes. PWA : `/v06/manifest.webmanifest` + `/v06/sw.js`.
+
+**Cache busting** : `?v=92` (449 occurrences sur 18 fichiers HTML — bumpé à chaque release JS/CSS).
+
+### Scripts S6.4 nouveaux
+
+- `scripts/normalize-emails.js` — patché : produit JSON `data/emails.json` + ingère table SQLite `emails` (idempotent INSERT OR REPLACE)
+- `scripts/ingest-emails.js` — rattrapage standalone : ingère `data/emails.json` existant en DB sans relancer Outlook
+- `scripts/bootstrap-from-emails.js` — auto-création projets distincts + contacts récurrents depuis emails ingérés. Idempotent.
+
+### Frontend S6.1 atomic ARCHIVÉ (`03_mvp/public/_shared-atomic/`)
+
+Archive de référence pour V2/V3 (DS BEM strict + ITCSS 7 couches + 27 composants). Storybook accessible sur `/components-atomic.html`. Ne sera pas branché en v0.6 mais code valide réutilisable plus tard.
+
+### Frontend v0.5 historique (12 pages, `03_mvp/public/`) — inchangé
 | Page | Sprint | Particularité |
 |---|---|---|
 | `/` cockpit | S2 | 5 cards intention + big rocks + tâches + décisions + alertes |
@@ -68,7 +120,9 @@
 **ADR fondatrice S2.00** : **zéro localStorage applicatif**. Front lit/écrit toujours via REST. SQLite serveur = source de vérité unique. Seules tolérées : préférences UI volatiles dans clé réservée `aiCEO.uiPrefs`.
 
 ### Tests
-- **~95 verts** : 78 unit/intégration (`npm test` natif `node:test`) + 7 smoke HTTP `pages.test.js` + ~12 E2E Playwright (`tests-e2e/`)
+- **~91 tests verts en sandbox Linux** : 84 unit/intégration (`npm test` natif `node:test`) + 7 smoke HTTP (`pages.test.js`)
+- **~103 tests verts cumulés Windows** : +~12 E2E Playwright (`tests-e2e/`, P1 matin, P2 soir, P3 hebdo, P4 portefeuille, P5 assistant streaming, P6 install smoke 12 pages)
+- Critère minimal recette CEO S4 = 84 verts (cf. RECETTE-CEO-v0.5-s4.md). Plage cible : ≥ 91 sandbox / ≥ 103 Windows.
 - E2E Playwright **Windows uniquement** (Chromium infaisable sur sandbox Linux)
 
 ### Infrastructure Windows
@@ -169,10 +223,14 @@ Quand tu cherches…
 
 | Tu cherches | Lis |
 |---|---|
-| Une décision passée (technique, méthode, livraison) | `00_BOUSSOLE/DECISIONS.md` (31 ADRs, format léger : Statut + Contexte + Décision + Conséquences + Sources) |
+| Une décision passée (technique, méthode, livraison) | `00_BOUSSOLE/DECISIONS.md` (**22+ ADRs datés au 26/04 PM**, format léger : Statut + Contexte + Décision + Conséquences + Sources) |
 | L'historique chronologique du projet | `04_docs/11-roadmap-map.html` onglet 4 « Journal & écarts » (JOURNAL[]) |
 | L'état d'un sprint passé | `04_docs/_release-notes/v0.5-sX.md` ou `04_docs/DOSSIER-SPRINT-SX.md` |
 | Comment installer sur un nouveau poste | `04_docs/INSTALL-WINDOWS.md` (9 sections, troubleshooting 8 cas) |
+| Bundle design Claude Design (cible visuelle V1) | `04_docs/_design-v05-claude/` (16 ressources + prompt v3.1 + 7 ADR) |
+| Cadrage features × version (v0.5/v0.6/V1/V2/V3) | `04_docs/_design-v05-claude/ressources-a-joindre/17-cadrage-livraison-par-version.md` |
+| Roadmap interactive avec GitGraph + KPIs | `04_docs/11-roadmap-map.html` (onglet "Vue d'ensemble" par défaut) |
+| ROADMAP officielle versionnée | `04_docs/08-roadmap.md` v3.2 (réalignement modèle binôme + insertion v0.6) |
 | Comment onboarder un CEO pair | `04_docs/ONBOARDING-CEO-PAIR.md` (7 sections, apprentissages réels v0.5) |
 | Comment passer la recette CEO post-install | `04_docs/RECETTE-CEO-v0.5-s4.md` (8 sections, 25 minutes, 6/6 critères pour GO) |
 | Comment présenter à l'ExCom | `04_docs/RECETTE-EXCOM-v0.5.md` (scénario démo 30 min, Q&R 8 questions, décision GO V1) |
@@ -197,13 +255,33 @@ Mettre à jour ce fichier à chaque :
 
 - [ ] **Recette CEO Windows v0.5 complète** : passer `RECETTE-CEO-v0.5-s4.md` + nouveaux endpoints S5 (`/api/health` enrichi, `smoke-all.ps1`, tests E2E Playwright)
 - [ ] **Recette ExCom v0.5** : suivre `RECETTE-EXCOM-v0.5.md` § 5 checklist 12 cases, répéter scénario démo seul en chrono < 16 minutes
-- [ ] **ExCom décision GO V1** : présenter, décider entre 3 options (recommandation Option A : multi-tenant + équipes + intégrations + mobile + backup auto + logs winston, ordre de grandeur 300 k€ sur 6 mois)
-- [ ] **Si GO V1** : kickoff Sprint V1.1 (multi-tenant Supabase + RLS + auth Microsoft Entra)
+- [ ] **ExCom 04/05 — 4 décisions à acter** :
+  1. **GO v0.6** (~8 k€ absorbé provision V1, ~2-3 sem binôme, mai 2026)
+  2. **GO V1 modèle binôme** (46 k€) post-v0.6
+  3. **Réallocation 254 k€ option β** (anticipation V2 : marketing 80 + success/sales 40 + provision SOC 2 50 + trésorerie 85)
+  4. **CEO pair suppléant Lamiae** pour résilience binôme V1
+- [ ] **Si GO v0.6** : kickoff Sprint S6.1 (DS atomic 3 niveaux + 16 composants UI + drawer/header/footer + components gallery)
+- [ ] **Si GO V1** : kickoff Sprint V1.1 post-v0.6 (multi-tenant Supabase + RLS + auth Microsoft Entra)
+- [ ] **Prompt Claude Design v3.1** : posté quand opportun pour générer la maquette ~62 vues qui sert de cible visuelle v0.6 → V1
+
+### Démarche bundle design Claude Design (post-v0.5, pré-v0.6)
+- Dossier dédié : `04_docs/_design-v05-claude/`
+- 16 ressources prêtes (image étalon Twisty + tokens DS + 14 docs spécialisés)
+- Prompt unique v3.1 ~16 k chars (`PROMPT-FINAL.md`)
+- 7 ADR de gouvernance (`decisions/00` à `07`) traçant arbitrages, audit roadmap, choix v0.6
+- Modèle "vue dev" : annotations HTML `[target: v0.5/v0.6/V1/V2/V3]` pour guider l'équipe binôme
+- Audit conformité ROADMAP v3.2 : la maquette est cible visuelle V1, implémentée en 2 paliers (v0.6 UI + V1 features fonctionnelles)
 
 ### Risques résiduels v0.5 (cf. ADR « v0.5 internalisée terminée »)
 - **R1** — Backup auto SQLite manquant (S5.04 reporté V1.5). Mitigation : push Git après chaque session significative + snapshot manuel hebdo
 - **R2** — Logs non structurés (S5.05 reporté V1.6). Pas de prod externe avant V1.6
 - **R3** — Stockage local pur (depuis ADR « Projet hors OneDrive »). Bloquant pour équipes V1.2
+
+### Risques résiduels modèle binôme V1
+- **R4** — Dépendance unique à Feycoil. Mitigation : CEO pair suppléant Lamiae à former mois 1 V1
+- **R5** — Pas de tests utilisateur externes pendant dev. Mitigation : onboarder 1er CEO pair francophone mi-V1 (mois 4-5)
+- **R6** — Pas de pen-testing externe. Mitigation : audit prestataire en sortie V1 (~15 k€)
+- **R7** — Biais auto-évaluation Claude designant lui-même. Mitigation : externalisation review au moins 1× par milestone
 
 ---
 
@@ -217,6 +295,27 @@ Mettre à jour ce fichier à chaque :
 6. **Toujours tuer les serveurs fantômes** (`Get-NetTCPConnection -LocalPort 4747 \| Stop-Process -Force`) avant `npm test` ou `npm run db:reset`
 7. **Mettre à jour ce CLAUDE.md** quand tu apprends un nouveau piège ou changes une convention
 8. **À la fin d'une session significative**, proposer un commit + push pour ne rien perdre (le projet n'a pas de backup auto pré-V1.5)
+
+---
+
+## §11 — Sources de vérité par domaine (canonical)
+
+Pour éviter les divergences entre docs, voici la **source unique** par information :
+
+| Information | Source canonique | Évite désynchro avec |
+|---|---|---|
+| Budget v0.5 (110 k€ engagés, 97,4 k€ dépensés, 12,6 k€ provision V1) | `04_docs/_release-notes/v0.5.md` | CLAUDE.md §1, DOSSIER-SPRINT-S5.md, 08-roadmap.md |
+| Nombre tests verts (91 sandbox / 103 Windows) | `04_docs/_release-notes/v0.5.md` | CLAUDE.md §3, RECETTE-CEO-v0.5-s4.md (critère minimal 84) |
+| Liste 12 pages frontend v0.5 | `04_docs/_release-notes/v0.5.md` (table architecture) | CLAUDE.md §3 (table v0.5) |
+| Liste 7 pages frontend v0.6 | CLAUDE.md §3 (cible officielle Claude Design depuis 26/04 PM) | DOSSIER-V06.md (à venir S6.2) |
+| Liste 70 routes API (par router) | `04_docs/api/INDEX.md` (à créer Q5) | `03_mvp/server.js` + `src/routes/*.js` |
+| Décisions architecture / méthode / livraisons | `00_BOUSSOLE/DECISIONS.md` (22+ ADRs datés) | CLAUDE.md, release-notes, JOURNAL roadmap |
+| État chronologique projet | `04_docs/11-roadmap-map.html` JOURNAL[] | DECISIONS.md (livraisons), CLAUDE.md §1 (statut) |
+| Statut sprint courant | `04_docs/11-roadmap-map.html` Sprint entries | CLAUDE.md §1 (Statut au), gate-pills onglet 2 |
+| Tags Git posés | `git tag --list 'v0.5*'` (5 tags : v0.5-s1, s2, s3, s4, v0.5) | RELEASES rn-mvp-* dans roadmap-map.html |
+| Trajectoire ROADMAP v3.2 (v0.4 → v0.5 → v0.6 → V1 → V2 → V3) | `00_BOUSSOLE/ROADMAP.md` + `04_docs/08-roadmap.md` | CLAUDE.md §1, DECISIONS.md (ADR Insertion v0.6) |
+
+**Règle d'or** : si tu observes une divergence chiffre/fait entre docs, la source canonique ci-dessus tranche. Mettre à jour les autres docs en cascade et lancer `consistence-dump.ps1` pour vérifier.
 
 ---
 

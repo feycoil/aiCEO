@@ -1,0 +1,42 @@
+{
+  "extends": [
+    "stylelint-config-standard"
+  ],
+  "plugins": [
+    "stylelint-selector-bem-pattern"
+  ],
+  "rules": {
+    "indentation": 2,
+    "string-quotes": "double",
+    "color-hex-case": "lower",
+    "color-hex-length": "long",
+    "color-no-invalid-hex": true,
+    "declaration-block-trailing-semicolon": "always",
+    "declaration-block-single-line-max-declarations": 1,
+    "rule-empty-line-before": ["always-multi-line", {
+      "except": ["first-nested"],
+      "ignore": ["after-comment"]
+    }],
+    "selector-attribute-quotes": "always",
+    "selector-class-pattern": [
+      "^(c|o|u|t|is|has)-[a-z0-9]+(-[a-z0-9]+)*(__[a-z0-9]+(-[a-z0-9]+)*)?(--[a-z0-9]+(-[a-z0-9]+)*)?$",
+      {
+        "message": "Selector must follow BEM naming with prefixes c-/o-/u-/t-/is-/has- (see _shared/CONTRIBUTING-V06.md)"
+      }
+    ],
+    "max-nesting-depth": 1,
+    "no-descending-specificity": null,
+    "comment-empty-line-before": ["always", {
+      "except": ["first-nested"],
+      "ignore": ["stylelint-commands"]
+    }],
+    "declaration-no-important": [true, {
+      "severity": "warning",
+      "message": "Avoid !important except in 07_utilities/ (see _shared/CONTRIBUTING-V06.md)"
+    }]
+  },
+  "ignoreFiles": [
+    "public/assets/colors_and_type.css",
+    "node_modules/**/*"
+  ]
+}

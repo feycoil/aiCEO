@@ -1,0 +1,86 @@
+/**
+ * tokens-component.css — Niveau C : tokens par composant (optionnel)
+ *
+ * Specifique a un composant — utile pour isoler le theming d'un bloc particulier.
+ * Permet de surcharger un composant sans toucher au semantic global.
+ *
+ * Source canonique : 13-architecture-atomique.md §3
+ *
+ * Usage : declarer ici les tokens par composant. Les composants (06_components/c-*.css)
+ * referencent ces variables via var(--button-primary-bg) plutot que directement
+ * var(--color-brand). Avantage : plus tard, theming par tenant peut surcharger juste
+ * --button-primary-bg sans toucher --color-brand global.
+ *
+ * S6.1.0 : placeholder minimal — les composants S6.1.2/3/4 viendront enrichir.
+ * Si un composant n'a pas besoin de token component (cas frequent), il reference
+ * directement le semantic. Pas obligatoire de tout dupliquer ici.
+ */
+
+:root {
+
+  /* ═══════════════════════════════════════════════════════════════
+     COMPONENT TOKENS — Button (a enrichir en S6.1.2)
+     ═══════════════════════════════════════════════════════════════ */
+  --button-primary-bg:        var(--color-brand);
+  --button-primary-bg-hover:  var(--color-brand-hover);
+  --button-primary-text:      var(--color-text-on-brand);
+  --button-secondary-bg:      var(--color-surface-2);
+  --button-secondary-text:    var(--color-text);
+  --button-secondary-border:  var(--color-border-2);
+  --button-ghost-bg:          transparent;
+  --button-ghost-text:        var(--color-text-2);
+  --button-danger-bg:         var(--color-danger);
+  --button-danger-text:       var(--color-text-on-brand);
+  --button-radius:            var(--radius-button);
+  --button-padding-x-sm:      var(--space-3);
+  --button-padding-x-md:      var(--space-4);
+  --button-padding-x-lg:      var(--space-5);
+  --button-padding-y-sm:      var(--space-1);
+  --button-padding-y-md:      var(--space-2);
+  --button-padding-y-lg:      var(--space-3);
+
+  /* ═══════════════════════════════════════════════════════════════
+     COMPONENT TOKENS — Modal (a enrichir en S6.1.4)
+     ═══════════════════════════════════════════════════════════════ */
+  --modal-backdrop-bg:    var(--color-overlay);
+  --modal-bg:             var(--color-surface-2);
+  --modal-radius:         var(--radius-modal);
+  --modal-padding:        var(--space-5);
+  --modal-shadow:         var(--shadow-modal);
+  --modal-width-sm:       400px;
+  --modal-width-md:       640px;
+  --modal-width-lg:       880px;
+
+  /* ═══════════════════════════════════════════════════════════════
+     COMPONENT TOKENS — Drawer collapsible (a enrichir en S6.1.4)
+     ═══════════════════════════════════════════════════════════════ */
+  --drawer-width-expanded:  240px;
+  --drawer-width-collapsed: 60px;
+  --drawer-bg:              var(--color-surface);
+  --drawer-border:          var(--color-border);
+  --drawer-item-padding:    var(--space-3);
+  --drawer-item-radius:     var(--radius-sm);
+
+  /* ═══════════════════════════════════════════════════════════════
+     COMPONENT TOKENS — Card (a enrichir en S6.1.4)
+     ═══════════════════════════════════════════════════════════════ */
+  --card-bg:        var(--color-surface-2);
+  --card-border:    var(--color-border);
+  --card-radius:    var(--radius-card);
+  --card-padding:   var(--space-card-padding);
+  --card-shadow:    var(--shadow-card);
+
+  /* ═══════════════════════════════════════════════════════════════
+     COMPONENT TOKENS — Toast (a enrichir en S6.1.3)
+     ═══════════════════════════════════════════════════════════════ */
+  --toast-bg:       var(--color-surface-2);
+  --toast-border:   var(--color-border);
+  --toast-radius:   var(--radius-md);
+  --toast-padding:  var(--space-3) var(--space-4);
+  --toast-shadow:   var(--shadow-popover);
+
+  /* Note : les composants atoms (S6.1.2) qui n'ont pas besoin de tokens
+     specifiques utilisent directement les semantic. Ce fichier sera enrichi
+     au fur et a mesure des besoins reels en S6.1.2/3/4. */
+
+}

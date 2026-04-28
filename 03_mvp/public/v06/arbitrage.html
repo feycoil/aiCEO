@@ -1,0 +1,1075 @@
+<!doctype html>
+<html lang="fr" data-locale="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>aiCEO — Arbitrage · 3 décisions à trancher</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css?v=92">
+<link rel="stylesheet" href="_shared/app.css?v=92">
+<link rel="stylesheet" href="_shared/tweaks.css?v=92">
+<script src="_shared/theme.js?v=92"></script>
+</head>
+<body data-route="arbitrage">
+<script>
+/* Restore drawer state ASAP (avant defer scripts) — évite le flash */
+(function(){
+  try {
+    var p = localStorage.getItem('aiCEO.uiPrefs.drawerCollapsed');
+    if (p !== '1' && p !== '0') return;
+    /* Quand .app sera dans le DOM, appliquer l'état */
+    var apply = function(){
+      var a = document.querySelector('.app');
+      if (a) a.dataset.drawer = (p === '1') ? 'collapsed' : 'expanded';
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', apply, { once: true });
+    } else {
+      apply();
+    }
+  } catch(e){}
+})();
+</script>
+
+
+<div id="icons-host" hidden></div>
+<!-- icons sprite inlined (S6.2 fix) -->
+<!--
+  aiCEO v0.5 — ICONS SPRITE
+  Inline SVG sprite. Use via <svg class="ico"><use href="#i-X"/></svg>
+  Style stroke: currentColor, 1.6–2px, rounded, lucide-inspired.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 11l9-7 9 7v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2v-9z"/>
+    </symbol>
+    <symbol id="i-arbitrage" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M16 3l5 5-5 5"/><path d="M21 8H8a5 5 0 0 0-5 5v0"/>
+      <path d="M8 21l-5-5 5-5"/><path d="M3 16h13a5 5 0 0 0 5-5"/>
+    </symbol>
+    <symbol id="i-projects" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="4" width="18" height="16" rx="2"/>
+      <path d="M3 9h18"/><path d="M9 4v16"/>
+    </symbol>
+    <symbol id="i-actions" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 11l3 3L22 4"/>
+      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+    </symbol>
+    <symbol id="i-people" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    </symbol>
+    <symbol id="i-evening" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </symbol>
+    <symbol id="i-knowledge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+    </symbol>
+    <symbol id="i-coaching" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2l2.39 4.84L20 8l-4 3.91.94 5.5L12 14.77l-4.94 2.64L8 11.91 4 8l5.61-1.16z"/>
+    </symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </symbol>
+    <symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+    </symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+    </symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 5v14M5 12h14"/>
+    </symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 12h14M13 5l7 7-7 7"/>
+    </symbol>
+    <symbol id="i-arrow-up-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M7 17L17 7"/><path d="M7 7h10v10"/>
+    </symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 9l6 6 6-6"/>
+    </symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 6l6 6-6 6"/>
+    </symbol>
+    <symbol id="i-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 6l-6 6 6 6"/>
+    </symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 6L6 18M6 6l12 12"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 12l5 5L20 7"/>
+    </symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+    </symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+    </symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="9" y="2" width="6" height="12" rx="3"/>
+      <path d="M19 10a7 7 0 0 1-14 0"/>
+      <path d="M12 19v3"/>
+    </symbol>
+    <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+    </symbol>
+    <symbol id="i-trending-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/>
+    </symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+    </symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3l1.9 5.8L20 11l-5.8 1.9L12 19l-1.9-5.8L4 11l6.1-2.2z"/>
+      <path d="M19 3v4M21 5h-4"/>
+    </symbol>
+    <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+    </symbol>
+    <symbol id="i-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="4" width="20" height="5" rx="1"/>
+      <path d="M4 9v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9"/>
+      <path d="M10 13h4"/>
+    </symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+      <path d="M10 11v6M14 11v6"/>
+    </symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/>
+    </symbol>
+    <symbol id="i-grip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="9" cy="6" r="1.2"/><circle cx="9" cy="12" r="1.2"/><circle cx="9" cy="18" r="1.2"/>
+      <circle cx="15" cy="6" r="1.2"/><circle cx="15" cy="12" r="1.2"/><circle cx="15" cy="18" r="1.2"/>
+    </symbol>
+    <symbol id="i-more-h" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/>
+    </symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/>
+    </symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+    </symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+    </symbol>
+    <symbol id="i-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2"/>
+      <path d="M16 2v4M8 2v4M3 10h18"/>
+    </symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+    </symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 12h18M3 6h18M3 18h18"/>
+    </symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 3H2l8 9.46V19l4 2v-8.54z"/>
+    </symbol>
+    <symbol id="i-sort" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 6h18M6 12h12M10 18h4"/>
+    </symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/>
+      <path d="M2 21c0-3 1.85-5.36 5.08-6"/>
+    </symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/>
+    </symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="4" width="20" height="16" rx="2"/>
+      <path d="M22 6l-10 7L2 6"/>
+    </symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 16.92V21a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 3h4.09a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.91 11.09a16 16 0 0 0 6 6l1.45-1.54a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+    </symbol>
+    <symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="2" width="16" height="20" rx="1"/>
+      <path d="M9 22v-4h6v4M8 6h.01M16 6h.01M8 10h.01M16 10h.01M8 14h.01M16 14h.01"/>
+    </symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+    </symbol>
+    <symbol id="i-warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <path d="M12 9v4M12 17h.01"/>
+    </symbol>
+    <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>
+    </symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+      <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+    </symbol>
+    <symbol id="i-kanban" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="6" height="18"/><rect x="11" y="3" width="6" height="11"/>
+      <rect x="19" y="3" width="2" height="7"/>
+    </symbol>
+    <symbol id="i-snowflake" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2v20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07M2 12h20"/>
+    </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="4"/>
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+    </symbol>
+    <symbol id="i
+<a class="skip-link" href="#main-content">Aller au contenu</a>
+
+<div class="app" data-drawer="expanded">
+
+  <!-- DRAWER (identique au cockpit) -->
+  <aside class="drawer" aria-label="Navigation principale">
+    <div class="drawer-logo">
+      <span class="logo-mark">a</span>
+      <span class="logo-text">aiCEO</span>
+      <span class="logo-version" style="font-size:9px;font-weight:600;color:var(--text-3,#888);background:var(--surface-3,#ebe7df);padding:2px 6px;border-radius:4px;margin-left:6px;letter-spacing:0.04em;text-transform:uppercase">v0.6</span>
+    </div>
+    <button class="drawer-tenant" aria-label="Changer d'espace">
+      <span class="tenant-mark" aria-hidden="true">A</span>
+      <span class="tenant-name">Aubrielle Hayes</span>
+      <svg class="ico" width="14" height="14" aria-hidden="true"><use href="#i-chevron-down"/><symbol id="i-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+  </symbol>
+  </svg>
+    </button>
+    <nav class="drawer-nav" aria-label="Sections">
+      <div class="drawer-section">Pilotage</div>
+      <a href="index.html" class="drawer-item" data-nav="home"><svg class="ico" width="18" height="18"><use href="#i-home"/></svg><span class="label">Cockpit</span></a>
+      <a href="arbitrage.html" class="drawer-item is-active" data-nav="arbitrage" aria-current="page"><svg class="ico" width="18" height="18"><use href="#i-arbitrage"/></svg><span class="label">Arbitrage</span><span class="badge">3</span></a>
+      <a href="evening.html" class="drawer-item" data-nav="evening"><svg class="ico" width="18" height="18"><use href="#i-evening"/></svg><span class="label">Soirée</span></a>
+      <div class="drawer-section">Travail</div>
+      <a href="projets.html" class="drawer-item" data-nav="projects"><svg class="ico" width="18" height="18"><use href="#i-projects"/></svg><span class="label">Projets</span></a>
+      <a href="taches.html" class="drawer-item" data-nav="actions"><svg class="ico" width="18" height="18"><use href="#i-actions"/></svg><span class="label">Actions</span><span class="badge">12</span></a>
+      <a href="agenda.html" class="drawer-item" data-nav="agenda"><svg class="ico" width="18" height="18"><use href="#i-clock"/></svg><span class="label">Agenda</span></a>
+      <a href="assistant.html" class="drawer-item" data-nav="assistant"><svg class="ico" width="18" height="18"><use href="#i-sparkle"/></svg><span class="label">Assistant</span></a>
+      <a href="equipe.html" class="drawer-item" data-nav="people"><svg class="ico" width="18" height="18"><use href="#i-people"/></svg><span class="label">Équipe</span></a>
+      <div class="drawer-section">Capital</div>
+      <a href="connaissance.html" class="drawer-item" data-nav="knowledge"><svg class="ico" width="18" height="18"><use href="#i-knowledge"/></svg><span class="label">Connaissance</span></a>
+      <a href="coaching.html" class="drawer-item" data-nav="coaching"><svg class="ico" width="18" height="18"><use href="#i-coaching"/></svg><span class="label">Coaching</span></a>
+      <a href="revues.html" class="drawer-item" data-nav="revues"><svg class="ico" width="18" height="18"><use href="#i-folder"/></svg><span class="label">Revues</span></a>
+      <a href="decisions.html" class="drawer-item" data-nav="decisions"><svg class="ico" width="18" height="18"><use href="#i-target"/></svg><span class="label">Décisions</span></a>
+    </nav>
+    <div class="drawer-footer">
+      <button class="drawer-locale" aria-label="Langue">
+        <svg class="ico" width="16" height="16"><use href="#i-globe"/></svg>
+        <span class="locale-name">Français</span>
+      </button>
+      <a href="aide.html" class="drawer-item" data-nav="aide"><svg class="ico" width="18" height="18"><use href="#i-help"/></svg><span class="label">Aide</span></a>
+      <a href="settings.html" class="drawer-item" data-nav="settings">
+        <svg class="ico" width="18" height="18"><use href="#i-settings"/></svg>
+        <span class="label">Réglages</span>
+      </a>
+      <button class="drawer-user" aria-label="Profil">
+        <span class="avatar md" data-house="solstice">AH</span>
+        <span class="meta">
+          <span class="name">Aubrielle Hayes</span>
+          <span class="role">Fondatrice · CEO</span>
+        </span>
+      </button>
+    </div>
+
+    <button class="drawer-collapse-btn" onclick="return window.toggleAiceoDrawer && window.toggleAiceoDrawer();" aria-label="Réduire le menu">
+      <svg class="ico" width="14" height="14"><use href="#i-chevron-left"/></svg>
+    </button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="app-main" id="main-content">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-title-block">
+        <div class="topbar-title-eyebrow">Arbitrage · 3 décisions</div>
+        <h1 class="section-title" style="margin-top:4px">Trancher</h1>
+      </div>
+      <div class="topbar-cluster u-hidden-mobile">
+        <div class="toggle-group" id="mode-toggle" role="tablist">
+          <button class="toggle-btn is-active" data-mode="focus" role="tab">
+            <svg class="ico" width="13" height="13" style="vertical-align:-2px;margin-right:4px"><use href="#i-target"/></svg>
+            Focus
+          </button>
+          <button class="toggle-btn" data-mode="board" role="tab">
+            <svg class="ico" width="13" height="13" style="vertical-align:-2px;margin-right:4px"><use href="#i-kanban"/></svg>
+            Tableau
+          </button>
+        </div>
+        <button class="btn ghost"><svg class="ico" width="14" height="14"><use href="#i-clock"/></svg>Reporter tout</button>
+      </div>
+    </header>
+
+    <!-- Mobile mode toggle (mirror) -->
+    <div class="u-only-mobile">
+      <div class="toggle-group" id="mode-toggle-m" style="width:100%">
+        <button class="toggle-btn is-active" data-mode="focus" style="flex:1">Focus</button>
+        <button class="toggle-btn" data-mode="board" style="flex:1">Tableau</button>
+      </div>
+    </div>
+
+    <!-- ═══ FOCUS MODE ═══════════════════════════════════ -->
+    <section id="focus-mode" class="arb-focus">
+
+      <!-- Stack header — progression -->
+      <header class="arb-stack-head">
+        <div class="o-cluster" style="gap:8px">
+          <span class="eyebrow">Décision</span>
+          <span class="thin md u-tnum" style="font-size:24px">01<span class="u-text-3" style="font-weight:var(--fw-thin)"> / 03</span></span>
+        </div>
+        <div class="arb-progress" aria-hidden="true">
+          <div class="arb-progress-step is-current"></div>
+          <div class="arb-progress-step"></div>
+          <div class="arb-progress-step"></div>
+        </div>
+        <div class="o-cluster" style="gap:6px;margin-left:auto">
+          <button class="icon-btn" id="prev-card" aria-label="Précédent" style="opacity:.4;pointer-events:none"><svg class="ico" width="16" height="16"><use href="#i-chevron-left"/></svg></button>
+          <button class="icon-btn" id="next-card" aria-label="Suivant"><svg class="ico" width="16" height="16"><use href="#i-chevron-right"/></svg></button>
+        </div>
+      </header>
+
+      <!-- The decision card — generous, Twisty-inspired -->
+      <article class="decision-card" data-house="northwind">
+        <header class="decision-head">
+          <div class="o-cluster" style="gap:8px">
+            <span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span>
+            <span class="pill priority p0">P0 · Urgent</span>
+            <span class="pill outline sm">
+              <svg class="ico" width="11" height="11"><use href="#i-clock"/></svg>
+              Posée vendredi · 4 jours d'attente
+            </span>
+          </div>
+          <button class="icon-btn" aria-label="Plus" style="margin-left:auto">
+            <svg class="ico" width="16" height="16"><use href="#i-more-h"/></svg>
+          </button>
+        </header>
+
+        <h2 class="decision-question">
+          On <em>réduit</em> le scope Northwind v3 pour tenir le 15 mai,
+          ou on <em>décale</em> de 3 semaines pour garder le module Patient ?
+        </h2>
+
+        <p class="decision-context">
+          Marc dit que c'est faisable de réduire, mais qu'on perd l'angle différenciant.
+          Helene pense qu'un retard de 3 semaines décale aussi la négo Solstice — celle qui finance la moitié de l'année.
+        </p>
+
+        <!-- Options -->
+        <div class="decision-options">
+
+          <button class="decision-option" data-choice="reduce">
+            <header class="opt-head">
+              <span class="opt-letter">A</span>
+              <h3 class="opt-title">Réduire le scope</h3>
+              <span class="pill outline sm u-ml-auto">Recommandé · 68 %</span>
+            </header>
+            <p class="opt-desc">On livre le 15 mai sans le module Patient. On garde la cadence et on nourrit la suite en juillet.</p>
+            <ul class="opt-effects">
+              <li><span class="effect-tag pos">+</span>Tient l'engagement client</li>
+              <li><span class="effect-tag pos">+</span>Soulage l'équipe Studio</li>
+              <li><span class="effect-tag neg">−</span>On perd 1 différenciant clé</li>
+            </ul>
+          </button>
+
+          <button class="decision-option" data-choice="delay">
+            <header class="opt-head">
+              <span class="opt-letter">B</span>
+              <h3 class="opt-title">Décaler de 3 semaines</h3>
+            </header>
+            <p class="opt-desc">On livre v3 complet le 5 juin. On préserve l'avantage produit, mais on déplace Solstice.</p>
+            <ul class="opt-effects">
+              <li><span class="effect-tag pos">+</span>Produit complet, pas d'amputation</li>
+              <li><span class="effect-tag neg">−</span>Décale Solstice de 2 sem.</li>
+              <li><span class="effect-tag neg">−</span>Risque de glissement supplémentaire</li>
+            </ul>
+          </button>
+
+          <button class="decision-option ghost" data-choice="other">
+            <header class="opt-head">
+              <span class="opt-letter">C</span>
+              <h3 class="opt-title">Autre option…</h3>
+            </header>
+            <p class="opt-desc">Décrivez votre arbitrage. L'IA proposera 1‑2 effets pour valider.</p>
+          </button>
+        </div>
+
+        <!-- Coaching strip -->
+        <aside class="decision-coach">
+          <div class="coach-mark"><svg class="ico" width="16" height="16"><use href="#i-coaching"/></svg></div>
+          <div class="coach-body">
+            <p class="coach-q">
+              <strong>Coaching :</strong> Vous tranchez souvent par défaut sur la voie « tenir l'engagement ».
+              Est‑ce que vous savez encore <em>pourquoi</em> ce client compte ?
+            </p>
+            <div class="o-cluster" style="gap:6px;margin-top:8px">
+              <button class="btn ghost sm">C'est juste</button>
+              <button class="btn ghost sm">Pas maintenant</button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Action bar -->
+        <footer class="decision-actions">
+          <div class="o-cluster" style="gap:8px">
+            <button class="btn ghost"><svg class="ico" width="14" height="14"><use href="#i-clock"/></svg>Reporter</button>
+            <button class="btn ghost"><svg class="ico" width="14" height="14"><use href="#i-archive"/></svg>Déléguer</button>
+            <button class="btn ghost"><svg class="ico" width="14" height="14"><use href="#i-snowflake"/></svg>Geler</button>
+          </div>
+          <button class="btn primary lg" id="trancher-btn" disabled>
+            <svg class="ico" width="16" height="16"><use href="#i-check"/></svg>
+            Trancher
+          </button>
+        </footer>
+      </article>
+
+      <!-- Sidebar context (hidden mobile) -->
+      <aside class="arb-context u-hidden-mobile">
+        <article class="card panel compact">
+          <h3 class="card-title" style="font-size:var(--fs-body)">Contexte</h3>
+          <ul class="context-list">
+            <li><span class="ctx-key">Maison</span><span class="ctx-val"><span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span></span></li>
+            <li><span class="ctx-key">Projet</span><span class="ctx-val">Spec produit v3</span></li>
+            <li><span class="ctx-key">Échéance</span><span class="ctx-val u-tnum">15 mai · J‑17</span></li>
+            <li><span class="ctx-key">Équipe</span><span class="ctx-val"><span class="avatar-stack"><span class="avatar xs">MD</span><span class="avatar xs">LP</span><span class="avatar xs">HE</span></span> 6 pers.</span></li>
+            <li><span class="ctx-key">Budget</span><span class="ctx-val u-tnum">€ 142 K · 38 %</span></li>
+          </ul>
+        </article>
+
+        <article class="card panel compact">
+          <h3 class="card-title" style="font-size:var(--fs-body)">Décisions liées</h3>
+          <ul class="related-list">
+            <li>
+              <span class="rel-tag" data-house="solstice"></span>
+              <a href="#" class="rel-link">Cadre négo Solstice — round 3</a>
+            </li>
+            <li>
+              <span class="rel-tag" data-house="northwind"></span>
+              <a href="#" class="rel-link">Recrutement front senior</a>
+            </li>
+          </ul>
+        </article>
+
+        <article class="card panel compact">
+          <h3 class="card-title" style="font-size:var(--fs-body)">Si vous tranchez A</h3>
+          <ul class="effects-list">
+            <li><svg class="ico" width="14" height="14" style="color:var(--emerald-800)"><use href="#i-check"/></svg>Backlog v3 retombe à 14 items</li>
+            <li><svg class="ico" width="14" height="14" style="color:var(--emerald-800)"><use href="#i-check"/></svg>Nouvelle entrée Coaching: « décisions par engagement »</li>
+            <li><svg class="ico" width="14" height="14" style="color:var(--amber-800)"><use href="#i-warning"/></svg>1 jalon Helix se déplace de 1 sem.</li>
+          </ul>
+        </article>
+      </aside>
+    </section>
+
+    <!-- ═══ BOARD MODE (Kanban + drag & drop) ═══════════ -->
+    <section id="board-mode" class="arb-board" hidden>
+      <header class="board-head">
+        <p class="lead">
+          Glissez chaque décision dans une colonne. Vous pouvez aussi en saisir une nouvelle ↓
+        </p>
+        <button class="btn">
+          <svg class="ico" width="13" height="13"><use href="#i-plus"/></svg>
+          Ajouter une décision
+        </button>
+      </header>
+
+      <div class="board-grid" id="board-grid">
+        <!-- Bin: à trancher -->
+        <div class="board-col" data-bin="todo" data-dropzone="true">
+          <header class="board-col-head">
+            <span class="board-col-name">À trancher</span>
+            <span class="board-col-count">3</span>
+          </header>
+          <div class="board-col-body">
+            <article class="mini-card" data-draggable="true" data-id="d1" data-house="northwind">
+              <div class="mini-card-head">
+                <span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span>
+                <span class="pill priority p0 sm">P0</span>
+                <button class="grip-handle" aria-label="Déplacer"><svg class="ico" width="12" height="12"><use href="#i-grip"/></svg></button>
+              </div>
+              <h4 class="mini-card-title">Spec v3 — réduire ou décaler ?</h4>
+              <footer class="mini-card-foot">
+                <span class="u-tnum">J‑17</span>
+                <span>·</span>
+                <span>Posée vendredi</span>
+              </footer>
+            </article>
+
+            <article class="mini-card" data-draggable="true" data-id="d2" data-house="solstice">
+              <div class="mini-card-head">
+                <span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span>
+                <span class="pill priority p1 sm">P1</span>
+                <button class="grip-handle"><svg class="ico" width="12" height="12"><use href="#i-grip"/></svg></button>
+              </div>
+              <h4 class="mini-card-title">Faut‑il accepter la clause d'exclusivité 12 mois ?</h4>
+              <footer class="mini-card-foot">
+                <span class="u-tnum">Jeu. 14:00</span>
+                <span>·</span>
+                <span>Avec Marc</span>
+              </footer>
+            </article>
+
+            <article class="mini-card" data-draggable="true" data-id="d3" data-house="helix">
+              <div class="mini-card-head">
+                <span class="pill house" data-house="helix"><span class="dot"></span>Helix</span>
+                <span class="pill priority p2 sm">P2</span>
+                <button class="grip-handle"><svg class="ico" width="12" height="12"><use href="#i-grip"/></svg></button>
+              </div>
+              <h4 class="mini-card-title">Garder Helene sur Helix ou la basculer ?</h4>
+              <footer class="mini-card-foot">
+                <span>1‑à‑1 ce matin</span>
+              </footer>
+            </article>
+          </div>
+        </div>
+
+        <!-- Bin: tranché -->
+        <div class="board-col" data-bin="done" data-dropzone="true">
+          <header class="board-col-head">
+            <span class="board-col-name">
+              <svg class="ico" width="14" height="14" style="color:var(--emerald-800);vertical-align:-2px"><use href="#i-check"/></svg>
+              Tranché
+            </span>
+            <span class="board-col-count">2</span>
+          </header>
+          <div class="board-col-body">
+            <article class="mini-card is-done">
+              <div class="mini-card-head">
+                <span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span>
+                <span class="pill outline sm">A</span>
+              </div>
+              <h4 class="mini-card-title">RFP Hôpital — répondre seul ou en consortium</h4>
+              <footer class="mini-card-foot">Tranché lun. 18:42 · Solo</footer>
+            </article>
+            <article class="mini-card is-done">
+              <div class="mini-card-head">
+                <span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span>
+                <span class="pill outline sm">B</span>
+              </div>
+              <h4 class="mini-card-title">Augmentation Lin — accepter la fourchette haute</h4>
+              <footer class="mini-card-foot">Tranché ven. · +12 %</footer>
+            </article>
+          </div>
+        </div>
+
+        <!-- Bin: reporté -->
+        <div class="board-col" data-bin="later" data-dropzone="true">
+          <header class="board-col-head">
+            <span class="board-col-name">
+              <svg class="ico" width="14" height="14" style="color:var(--text-3);vertical-align:-2px"><use href="#i-clock"/></svg>
+              Reporté
+            </span>
+            <span class="board-col-count">1</span>
+          </header>
+          <div class="board-col-body">
+            <article class="mini-card is-later">
+              <div class="mini-card-head">
+                <span class="pill house" data-house="helix"><span class="dot"></span>Helix</span>
+                <span class="pill outline sm">→ S19</span>
+              </div>
+              <h4 class="mini-card-title">Pricing v0 du proto Helix‑0</h4>
+              <footer class="mini-card-foot">À reprendre lundi prochain</footer>
+            </article>
+          </div>
+        </div>
+
+        <!-- Bin: gelé -->
+        <div class="board-col" data-bin="frozen" data-dropzone="true">
+          <header class="board-col-head">
+            <span class="board-col-name">
+              <svg class="ico" width="14" height="14" style="color:var(--sky-800);vertical-align:-2px"><use href="#i-snowflake"/></svg>
+              Gelé
+            </span>
+            <span class="board-col-count">0</span>
+          </header>
+          <div class="board-col-body">
+            <p class="empty-bin">
+              Glissez ici ce qui n'est <em>plus</em> votre arbitrage. La maison concernée sera notifiée.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p class="strategic-q" data-arb-demo="journal">
+        En 2026, qu'est‑ce que vous voudrez vous rappeler d'avoir tranché ce mardi ?
+      </p>
+      <div class="footer-meta">
+        <span>aiCEO v0.5</span>
+        <span>·</span>
+        <span>Arbitrage</span>
+        <span>·</span>
+        <span class="autosave"><span class="pulse"></span>Auto‑sauvegardé 09:34</span>
+      </div>
+    </footer>
+  </main>
+</div>
+
+<!-- Bottom tab -->
+<nav class="bottom-tab-nav" aria-label="Navigation mobile">
+  <a href="index.html" class="bottom-tab"><svg class="ico"><use href="#i-home"/></svg><span>Cockpit</span></a>
+  <a href="#" class="bottom-tab is-active"><svg class="ico"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
+  <button class="bottom-tab fab-trigger"><span class="fab-circle"><svg class="ico"><use href="#i-mic"/></svg></span><span style="margin-top:30px">Capter</span></button>
+  <a href="#" class="bottom-tab"><svg class="ico"><use href="#i-projects"/></svg><span>Projets</span></a>
+  <a href="evening.html" class="bottom-tab"><svg class="ico"><use href="#i-evening"/></svg><span>Soirée</span></a>
+</nav>
+
+<style>
+/* ═══ FOCUS MODE LAYOUT ═══ */
+.arb-focus {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: var(--space-6);
+  align-items: start;
+}
+.arb-stack-head {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; gap: var(--space-4);
+  padding-block-end: var(--space-2);
+}
+.arb-progress {
+  display: flex; gap: 4px; flex: 0 1 200px;
+}
+.arb-progress-step {
+  flex: 1; height: 3px;
+  background: var(--surface-3);
+  border-radius: 2px;
+}
+.arb-progress-step.is-current {
+  background: var(--brand);
+}
+.arb-progress-step.is-done { background: var(--emerald); }
+
+@media (max-width: 1023px) {
+  .arb-focus { grid-template-columns: 1fr; }
+}
+
+/* ═══ DECISION CARD ═══ */
+.decision-card {
+  background: var(--surface-2);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-app);
+  display: flex; flex-direction: column;
+  gap: var(--space-5);
+  position: relative;
+  border-inline-start: 6px solid var(--house-northwind);
+}
+@media (max-width: 1023px) {
+  .decision-card { padding: var(--space-6); border-radius: var(--radius-lg); }
+}
+.decision-card[data-house="solstice"]  { border-inline-start-color: var(--house-solstice); }
+.decision-card[data-house="helix"]     { border-inline-start-color: var(--house-helix); }
+
+.decision-head {
+  display: flex; align-items: center; gap: var(--space-3);
+}
+
+.decision-question {
+  font-family: var(--font-sans);
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--tracking-h1);
+  line-height: 1.2;
+  color: var(--text);
+  margin: 0;
+  text-wrap: balance;
+}
+.decision-question em {
+  font-style: italic;
+  color: var(--rose-800);
+  font-weight: var(--fw-extrabold);
+}
+
+.decision-context {
+  font-size: var(--fs-lead);
+  color: var(--text-2);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 60ch;
+}
+
+/* Options */
+.decision-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-block-start: var(--space-2);
+}
+@media (max-width: 720px) { .decision-options { grid-template-columns: 1fr; } }
+
+.decision-option {
+  display: flex; flex-direction: column;
+  gap: 10px;
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  text-align: start;
+  cursor: pointer;
+  transition: border-color .14s, transform .14s;
+  font-family: inherit;
+  color: inherit;
+}
+.decision-option:hover {
+  border-color: var(--text-3);
+  transform: translateY(-2px);
+}
+.decision-option.is-selected {
+  border-color: var(--brand);
+  background: var(--brand-50);
+  box-shadow: var(--shadow-card);
+}
+.decision-option.ghost {
+  background: transparent;
+  border-style: dashed;
+  border-color: var(--border-2);
+}
+.decision-option.ghost:hover { border-color: var(--text-3); }
+
+.opt-head {
+  display: flex; align-items: center; gap: 10px;
+}
+.opt-letter {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: var(--surface-3);
+  color: var(--text-2);
+  display: grid; place-items: center;
+  font-weight: var(--fw-extrabold);
+  font-size: 14px;
+}
+.decision-option.is-selected .opt-letter { background: var(--brand); color: #fff; }
+.opt-title {
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-bold);
+  margin: 0;
+  letter-spacing: var(--tracking-card);
+}
+.opt-desc {
+  font-size: var(--fs-sm);
+  color: var(--text-2);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.opt-effects {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 4px;
+  font-size: var(--fs-xs);
+  color: var(--text-2);
+}
+.opt-effects li { display: flex; align-items: center; gap: 8px; }
+.effect-tag {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  font-weight: var(--fw-extrabold);
+  font-size: 10px;
+  flex-shrink: 0;
+}
+.effect-tag.pos { background: var(--emerald-50); color: var(--emerald-800); }
+.effect-tag.neg { background: var(--rose-50); color: var(--rose-800); }
+
+/* Coaching strip */
+.decision-coach {
+  display: flex; gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--coaching-bg);
+  border-radius: var(--radius);
+  border-inline-start: 4px solid var(--coaching);
+}
+.coach-mark {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--coaching);
+  color: #fff;
+  display: grid; place-items: center;
+  flex-shrink: 0;
+}
+.coach-q {
+  font-size: var(--fs-sm);
+  color: var(--text);
+  margin: 0;
+  line-height: 1.55;
+}
+.coach-q em { color: var(--violet-800); font-style: italic; }
+
+/* Action bar */
+.decision-actions {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding-block-start: var(--space-3);
+  border-block-start: 1px solid var(--border);
+  gap: var(--space-3);
+}
+@media (max-width: 720px) {
+  .decision-actions { flex-direction: column; align-items: stretch; }
+  .decision-actions > .o-cluster { justify-content: center; }
+  .decision-actions .btn.primary.lg { width: 100%; justify-content: center; }
+}
+
+/* Sidebar context */
+.arb-context { display: flex; flex-direction: column; gap: var(--space-4); position: sticky; top: var(--space-4); }
+.context-list, .related-list, .effects-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column;
+  gap: 8px;
+  font-size: var(--fs-sm);
+}
+.context-list li {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 0;
+  border-block-end: 1px solid var(--border);
+}
+.context-list li:last-child { border-block-end: 0; }
+.ctx-key {
+  width: 78px; flex-shrink: 0;
+  font-size: var(--fs-tiny);
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caption);
+  font-weight: var(--fw-bold);
+}
+.ctx-val { flex: 1; min-width: 0; font-weight: var(--fw-medium); }
+.related-list li { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+.rel-tag {
+  width: 4px; height: 18px; border-radius: 2px;
+  background: var(--text-3);
+  flex-shrink: 0;
+}
+.rel-tag[data-house="northwind"] { background: var(--house-northwind); }
+.rel-tag[data-house="solstice"]  { background: var(--house-solstice); }
+.rel-tag[data-house="helix"]     { background: var(--house-helix); }
+.rel-link { color: var(--text); text-decoration: underline; text-decoration-color: var(--border-2); text-underline-offset: 3px; }
+.rel-link:hover { text-decoration-color: var(--brand); }
+.effects-list li { display: flex; align-items: center; gap: 8px; padding: 4px 0; line-height: 1.4; }
+
+/* ═══ BOARD MODE ═══ */
+.arb-board { display: flex; flex-direction: column; gap: var(--space-4); }
+.board-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-3);
+}
+.board-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+@media (max-width: 1023px) { .board-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px)  { .board-grid { grid-template-columns: 1fr; } }
+
+.board-col {
+  background: var(--surface-3);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+  min-height: 280px;
+  transition: background .14s, outline-color .14s;
+}
+.board-col.drop-target {
+  background: var(--brand-50);
+  outline: 2px dashed var(--brand);
+  outline-offset: -4px;
+}
+.board-col-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 4px 6px var(--space-3);
+}
+.board-col-name {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-caption);
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+.board-col-count {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: var(--fs-tiny);
+  font-weight: var(--fw-bold);
+  padding: 1px 8px;
+  border-radius: var(--radius-pill);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-2);
+}
+.board-col-body { display: flex; flex-direction: column; gap: 8px; }
+
+.mini-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  cursor: grab;
+  transition: box-shadow .14s, transform .14s, border-color .14s;
+  border-inline-start: 4px solid var(--text-3);
+}
+.mini-card:hover { box-shadow: var(--shadow-card); transform: translateY(-1px); }
+.mini-card[data-house="northwind"] { border-inline-start-color: var(--house-northwind); }
+.mini-card[data-house="solstice"]  { border-inline-start-color: var(--house-solstice); }
+.mini-card[data-house="helix"]     { border-inline-start-color: var(--house-helix); }
+.mini-card.is-done { opacity: 0.7; }
+.mini-card.is-later { opacity: 0.85; border-style: dashed; }
+.mini-card-head {
+  display: flex; align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.mini-card-head .grip-handle {
+  margin-left: auto;
+  background: transparent; border: 0;
+  cursor: grab;
+  color: var(--text-3);
+  padding: 2px;
+}
+.mini-card-title {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semi);
+  letter-spacing: var(--tracking-card);
+  margin: 0 0 6px;
+  line-height: 1.35;
+}
+.mini-card-foot {
+  font-size: var(--fs-tiny);
+  color: var(--text-3);
+  display: flex; gap: 6px; align-items: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.empty-bin {
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+  text-align: center;
+  padding: var(--space-4) var(--space-3);
+  font-style: italic;
+  line-height: 1.5;
+}
+.empty-bin em { color: var(--text-2); font-style: italic; }
+
+/* Mobile-only mode toggle */
+.u-only-mobile { display: none; }
+@media (max-width: 1023px) {
+  .u-only-mobile { display: block; }
+}
+</style>
+
+<script src="_shared/app.js"></script>
+<script>
+/* sprite already inlined */
+
+// Mode toggle
+function setMode(mode) {
+  document.querySelectorAll('[data-mode]').forEach(b => {
+    b.classList.toggle('is-active', b.dataset.mode === mode);
+  });
+  document.getElementById('focus-mode').hidden = mode !== 'focus';
+  document.getElementById('board-mode').hidden = mode !== 'board';
+}
+document.querySelectorAll('[data-mode]').forEach(b => {
+  b.addEventListener('click', () => setMode(b.dataset.mode));
+});
+
+// Decision option selection
+let selected = null;
+document.querySelectorAll('.decision-option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    document.querySelectorAll('.decision-option').forEach(o => o.classList.remove('is-selected'));
+    if (opt.dataset.choice === 'other') {
+      App.modal({
+        title: 'Décrire votre arbitrage',
+        size: 'medium',
+        body: `<div class="field"><label class="field-label">Votre choix</label><textarea class="input" rows="4" placeholder="Je tranche ainsi : …"></textarea><span class="field-help">Soyez bref. L'IA proposera 1‑2 effets que vous validerez.</span></div>`,
+        footer: `<button class="btn ghost" data-close>Annuler</button><button class="btn primary" data-save>Continuer</button>`,
+        onMount: (root, close) => {
+          root.querySelector('[data-close]').addEventListener('click', close);
+          root.querySelector('[data-save]').addEventListener('click', () => {
+            close();
+            opt.classList.add('is-selected');
+            selected = 'other';
+            document.getElementById('trancher-btn').disabled = false;
+          });
+        }
+      });
+      return;
+    }
+    opt.classList.add('is-selected');
+    selected = opt.dataset.choice;
+    document.getElementById('trancher-btn').disabled = false;
+  });
+});
+
+// Trancher
+document.getElementById('trancher-btn')?.addEventListener('click', () => {
+  App.toast('Décision tranchée. Effets propagés à 4 endroits.', {
+    kind: 'success',
+    action: 'Annuler',
+    onAction: () => App.toast('Annulée.', { kind: 'info' })
+  });
+  // Advance to next card
+  document.querySelector('.arb-progress-step.is-current').classList.replace('is-current', 'is-done');
+});
+
+// Drag & drop on board
+const board = document.getElementById('board-grid');
+App.makeDraggable(board, {
+  onDrop: (item, zone) => {
+    zone.querySelector('.board-col-body').appendChild(item);
+    // Update counts
+    board.querySelectorAll('.board-col').forEach(col => {
+      const cnt = col.querySelectorAll('.mini-card').length;
+      col.querySelector('.board-col-count').textContent = cnt;
+    });
+    // House label for toast
+    const bin = zone.dataset.bin;
+    const map = { todo: 'À trancher', done: 'Tranché', later: 'Reporté', frozen: 'Gelé' };
+    App.toast(`Décision déplacée vers « ${map[bin]} »`, { kind: 'info', duration: 2400 });
+  }
+});
+
+// Tweaks
+</script>
+<!-- aiCEO Convergence v0.6 (S6.2) -->
+<script src="_shared/shell.js?v=92" defer></script>
+<script src="_shared/clear-demo.js?v=92" defer></script>
+<script src="_shared/command-palette.js?v=92" defer></script>
+<script src="_shared/mobile.js?v=92" defer></script>
+<script src="_shared/polish.js?v=92" defer></script>
+<script src="_shared/states.js?v=92" defer></script>
+<script src="_shared/a11y.js?v=92" defer></script>
+<script src="_shared/filters.js?v=92" defer></script>
+<script src="_shared/bulk-actions.js?v=92" defer></script>
+<script src="_shared/breadcrumbs.js?v=92" defer></script>
+<script src="_shared/bind-drawer-extras.js?v=92" defer></script>
+  <script src="_shared/bind-active-nav.js?v=92" defer></script>
+  <script src="_shared/bind-drawer-badges.js?v=92" defer></script>
+<script src="_shared/responsive-mobile.js?v=92" defer></script>
+<script src="_shared/microcopy.js?v=92" defer></script>
+<script src="_shared/settings-actions.js?v=92" defer></script>
+<script src="_shared/profile-menu.js?v=92" defer></script>
+<script src="_shared/modal.js?v=92" defer></script>
+<script src="_shared/crud-modals.js?v=92" defer></script>
+<script src="_shared/workflow.js?v=92" defer></script>
+<script src="_shared/bind-arbitrage.js?v=92" defer></script>
+<script src="_shared/bind-arbitrage-queue.js?v=92" defer></script>
+<script src="_shared/bind-arbitrage-focus.js?v=92" defer></script>
+<script src="_shared/bind-arbitrage-board.js?v=92" defer></script>
+<script src="_sh

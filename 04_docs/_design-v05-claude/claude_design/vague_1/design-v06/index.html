@@ -1,0 +1,840 @@
+<!doctype html>
+<html lang="fr" data-locale="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>aiCEO — Cockpit · Aubrielle</title>
+<meta name="description" content="Le cockpit du dirigeant : posture, top‑3 du jour, projets actifs, transitions calmes.">
+<link rel="stylesheet" href="_shared/colors_and_type.css?v=2">
+<link rel="stylesheet" href="_shared/app.css?v=2">
+<link rel="stylesheet" href="_shared/tweaks.css?v=2">
+</head>
+<body data-route="home">
+
+<!-- include sprite via fetch -->
+<div id="icons-host" hidden></div>
+
+<a class="skip-link" href="#main-content">Aller au contenu</a>
+
+<div class="app" data-drawer="expanded">
+
+  <!-- ═══ DRAWER ═══════════════════════════════════════ -->
+  <aside class="drawer" aria-label="Navigation principale">
+    <div class="drawer-logo">
+      <span class="logo-mark">a</span>
+      <span class="logo-text">aiCEO</span>
+    </div>
+    <button class="drawer-tenant" aria-label="Changer d'espace">
+      <span class="tenant-mark" aria-hidden="true">A</span>
+      <span class="tenant-name">Aubrielle Hayes</span>
+      <svg class="ico" width="14" height="14" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+    </button>
+    <nav class="drawer-nav" aria-label="Sections">
+      <div class="drawer-section">Pilotage</div>
+      <a href="index.html" class="drawer-item is-active" data-nav="home" aria-current="page"><svg class="ico" width="18" height="18"><use href="#i-home"/></svg><span class="label">Cockpit</span></a>
+      <a href="arbitrage.html" class="drawer-item" data-nav="arbitrage"><svg class="ico" width="18" height="18"><use href="#i-arbitrage"/></svg><span class="label">Arbitrage</span><span class="badge">3</span></a>
+      <a href="evening.html" class="drawer-item" data-nav="evening"><svg class="ico" width="18" height="18"><use href="#i-evening"/></svg><span class="label">Soirée</span></a>
+      <div class="drawer-section">Travail</div>
+      <a href="projets.html" class="drawer-item" data-nav="projects"><svg class="ico" width="18" height="18"><use href="#i-projects"/></svg><span class="label">Projets</span></a>
+      <a href="taches.html" class="drawer-item" data-nav="actions"><svg class="ico" width="18" height="18"><use href="#i-actions"/></svg><span class="label">Actions</span><span class="badge">12</span></a>
+      <a href="agenda.html" class="drawer-item" data-nav="agenda"><svg class="ico" width="18" height="18"><use href="#i-clock"/></svg><span class="label">Agenda</span></a>
+      <a href="assistant.html" class="drawer-item" data-nav="assistant"><svg class="ico" width="18" height="18"><use href="#i-sparkle"/></svg><span class="label">Assistant</span></a>
+      <a href="equipe.html" class="drawer-item" data-nav="people"><svg class="ico" width="18" height="18"><use href="#i-people"/></svg><span class="label">Équipe</span></a>
+      <div class="drawer-section">Capital</div>
+      <a href="connaissance.html" class="drawer-item" data-nav="knowledge"><svg class="ico" width="18" height="18"><use href="#i-knowledge"/></svg><span class="label">Connaissance</span></a>
+      <a href="coaching.html" class="drawer-item" data-nav="coaching"><svg class="ico" width="18" height="18"><use href="#i-coaching"/></svg><span class="label">Coaching</span></a>
+      <a href="revues.html" class="drawer-item" data-nav="revues"><svg class="ico" width="18" height="18"><use href="#i-folder"/></svg><span class="label">Revues</span></a>
+      <a href="decisions.html" class="drawer-item" data-nav="decisions"><svg class="ico" width="18" height="18"><use href="#i-target"/></svg><span class="label">Décisions</span></a>
+    </nav>
+    <div class="drawer-footer">
+      <button class="drawer-locale" aria-label="Langue">
+        <svg class="ico" width="16" height="16"><use href="#i-globe"/></svg>
+        <span class="locale-name">Français</span>
+      </button>
+      <a href="settings.html" class="drawer-item" data-nav="settings">
+        <svg class="ico" width="18" height="18"><use href="#i-settings"/></svg>
+        <span class="label">Réglages</span>
+      </a>
+      <button class="drawer-user" aria-label="Profil">
+        <span class="avatar md" data-house="solstice">AH</span>
+        <span class="meta">
+          <span class="name">Aubrielle Hayes</span>
+          <span class="role">Fondatrice · CEO</span>
+        </span>
+      </button>
+    </div>
+
+    <button class="drawer-collapse-btn" aria-label="Réduire le menu">
+      <svg class="ico" width="14" height="14"><use href="#i-chevron-left"/></svg>
+    </button>
+  </aside>
+
+  <!-- ═══ MAIN ═════════════════════════════════════════ -->
+  <main class="app-main" id="main-content">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-title-block">
+        <div class="topbar-title-eyebrow">Mardi 28 avril · Semaine 18</div>
+      </div>
+      <div class="topbar-cluster u-hidden-mobile">
+        <div class="search-pill" role="search">
+          <svg class="ico ico-s" width="16" height="16"><use href="#i-search"/></svg>
+          <input type="search" placeholder="Chercher un projet, une décision, une personne…" aria-label="Recherche">
+          <kbd>⌘K</kbd>
+        </div>
+        <button class="icon-btn" aria-label="Notifications">
+          <svg class="ico" width="18" height="18"><use href="#i-bell"/></svg>
+          <span class="dot"></span>
+        </button>
+        <button class="btn primary" id="capture-btn">
+          <svg class="ico" width="14" height="14"><use href="#i-mic"/></svg>
+          Capter
+        </button>
+      </div>
+    </header>
+
+    <!-- ═══ HERO POSTURE ═════════════════════════════════ -->
+    <section class="card hero" data-target="v0.5-A">
+      <div class="hero-grid">
+        <div class="hero-greeting">
+          <p class="eyebrow">Bonjour</p>
+          <h1 class="greeting hero">Bonjour <span class="accent">Aubrielle</span></h1>
+          <p class="lead u-mt-2" style="max-width:46ch;">
+            Aujourd'hui, l'enjeu est de <strong>protéger Northwind</strong> sans saboter les négos Solstice.
+            Trois décisions vous attendent — la première vaut la matinée.
+          </p>
+
+          <div class="o-cluster u-mt-4" style="gap:10px">
+            <span class="pill status hot">
+              <span class="dot" style="background:var(--rose)"></span>
+              Tension : Northwind ↗
+            </span>
+            <span class="pill outline">
+              <svg class="ico" width="13" height="13" style="color:var(--violet)"><use href="#i-coaching"/></svg>
+              Coaching dispo
+            </span>
+            <span class="pill outline u-tnum">07:42 énergie haute</span>
+          </div>
+
+          <div class="o-cluster u-mt-6" style="gap:10px">
+            <button class="btn primary lg">
+              <svg class="ico" width="16" height="16"><use href="#i-arrow-right"/></svg>
+              Ouvrir l'arbitrage
+            </button>
+            <button class="btn lg">
+              <svg class="ico" width="14" height="14"><use href="#i-clock"/></svg>
+              Plus tard
+            </button>
+          </div>
+        </div>
+
+        <!-- Hero side stat — Twisty-inspired -->
+        <aside class="hero-side">
+          <div class="hero-stat-card">
+            <header class="hero-stat-head">
+              <span class="eyebrow">Cap stratégique</span>
+              <span class="value-pill">+ 4 sem.</span>
+            </header>
+            <div class="stat-hero u-mt-2">
+              <div class="stat-hero-value">
+                72<span class="unit">%</span>
+              </div>
+              <div class="stat-hero-label">de votre attention sur les bons sujets cette semaine.</div>
+            </div>
+
+            <div class="dot-chart u-mt-4" aria-hidden="true">
+              <div class="dot-chart-col" data-h="40"><div class="stem"></div><div class="dot"></div></div>
+              <div class="dot-chart-col" data-h="60"><div class="stem"></div><div class="dot"></div></div>
+              <div class="dot-chart-col" data-h="50"><div class="stem"></div><div class="dot"></div></div>
+              <div class="dot-chart-col" data-h="80"><div class="stem"></div><div class="dot"></div></div>
+              <div class="dot-chart-col is-peak" data-h="100"><div class="stem"></div><div class="dot"></div></div>
+              <div class="dot-chart-col" data-h="60"><div class="stem"></div><div class="dot"></div></div>
+              <div class="dot-chart-col" data-h="20"><div class="stem"></div><div class="dot"></div></div>
+            </div>
+            <div class="day-pills u-mt-2">
+              <button class="day-pill is-done" aria-label="Lundi fait">L</button>
+              <button class="day-pill is-active" aria-label="Mardi (aujourd'hui)">M</button>
+              <button class="day-pill" aria-label="Mercredi">M</button>
+              <button class="day-pill" aria-label="Jeudi">J</button>
+              <button class="day-pill" aria-label="Vendredi">V</button>
+              <button class="day-pill is-empty" aria-label="Samedi">S</button>
+              <button class="day-pill is-empty" aria-label="Dimanche">D</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ═══ KPI ROW ══════════════════════════════════════ -->
+    <section class="kpi-row" aria-label="Indicateurs">
+      <div class="kpi tinted rose">
+        <span class="kpi-label">Tension active</span>
+        <span class="kpi-value">3</span>
+        <span class="kpi-sub">décisions à arbitrer aujourd'hui</span>
+      </div>
+      <div class="kpi tinted emerald">
+        <span class="kpi-label">Cadence projets</span>
+        <span class="kpi-value">7<span style="font-size:18px;color:var(--text-3);font-weight:var(--fw-medium);"> / 9</span></span>
+        <span class="kpi-sub">jalons tenus cette semaine</span>
+      </div>
+      <div class="kpi tinted sky">
+        <span class="kpi-label">Capital équipe</span>
+        <span class="kpi-value">4.6<span style="font-size:18px;color:var(--text-3);font-weight:var(--fw-medium);"> / 5</span></span>
+        <span class="kpi-sub">moral pondéré · 28 retours</span>
+      </div>
+      <div class="kpi tinted violet">
+        <span class="kpi-label">Coaching</span>
+        <span class="kpi-value">2</span>
+        <span class="kpi-sub">questions ouvertes en attente</span>
+      </div>
+    </section>
+
+    <!-- ═══ TODAY GRID ═══════════════════════════════════ -->
+    <section class="today-grid">
+
+      <!-- Top‑3 du jour -->
+      <article class="card">
+        <div class="card-header">
+          <h2 class="card-title">Top‑3 du jour</h2>
+          <span class="pill outline sm">Posté à 07:18</span>
+          <div class="card-actions">
+            <button class="btn ghost sm">Réviser</button>
+          </div>
+        </div>
+
+        <ol class="top3-list" role="list">
+          <li class="top3-row">
+            <span class="top3-rank">01</span>
+            <div class="top3-main">
+              <h3 class="top3-title">Trancher le spec Northwind v3</h3>
+              <p class="top3-sub">Bloque l'équipe Studio depuis vendredi. 32 min estimées.</p>
+              <div class="o-cluster" style="gap:8px;margin-top:8px">
+                <span class="pill priority p0">P0</span>
+                <span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span>
+                <span class="pill outline sm">
+                  <svg class="ico" width="11" height="11"><use href="#i-clock"/></svg>
+                  ~32 min
+                </span>
+              </div>
+            </div>
+            <button class="btn primary sm">Ouvrir</button>
+          </li>
+
+          <li class="top3-row">
+            <span class="top3-rank">02</span>
+            <div class="top3-main">
+              <h3 class="top3-title">Préparer la négo Solstice (jeudi)</h3>
+              <p class="top3-sub">Draft de cadre + 2 scénarios de prix. Avec Marc.</p>
+              <div class="o-cluster" style="gap:8px;margin-top:8px">
+                <span class="pill priority p1">P1</span>
+                <span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span>
+                <span class="avatar-stack">
+                  <span class="avatar xs">MD</span>
+                </span>
+              </div>
+            </div>
+            <button class="btn sm">Préparer</button>
+          </li>
+
+          <li class="top3-row">
+            <span class="top3-rank">03</span>
+            <div class="top3-main">
+              <h3 class="top3-title">1‑à‑1 Helene · feedback de mi‑étape</h3>
+              <p class="top3-sub">Elle veut clarifier son périmètre. Préparez votre intention.</p>
+              <div class="o-cluster" style="gap:8px;margin-top:8px">
+                <span class="pill priority p2">P2</span>
+                <span class="pill house" data-house="helix"><span class="dot"></span>Helix</span>
+                <span class="pill status coaching">
+                  <svg class="ico" width="11" height="11"><use href="#i-coaching"/></svg>
+                  Coaching suggéré
+                </span>
+              </div>
+            </div>
+            <button class="btn sm">Préparer</button>
+          </li>
+        </ol>
+
+        <footer class="top3-foot">
+          <span class="autosave"><span class="pulse"></span>Synchronisé · 2 min</span>
+          <button class="btn ghost sm">Voir les 12 actions →</button>
+        </footer>
+      </article>
+
+      <!-- Aside : agenda + posture -->
+      <aside class="today-aside">
+
+        <article class="card panel">
+          <header class="card-header">
+            <h2 class="card-title">Agenda</h2>
+            <button class="btn ghost sm card-actions">Mardi</button>
+          </header>
+          <ul class="agenda" role="list">
+            <li class="agenda-row" data-now="true">
+              <span class="agenda-time u-tnum">09:30</span>
+              <span class="agenda-bar" aria-hidden="true"></span>
+              <span class="agenda-main">
+                <strong>Comité produit Northwind</strong>
+                <span class="agenda-sub">45 min · Studio · 6 personnes</span>
+              </span>
+            </li>
+            <li class="agenda-row">
+              <span class="agenda-time u-tnum">11:00</span>
+              <span class="agenda-bar" aria-hidden="true"></span>
+              <span class="agenda-main">
+                <strong>1‑à‑1 Helene</strong>
+                <span class="agenda-sub">30 min · Coaching</span>
+              </span>
+            </li>
+            <li class="agenda-row">
+              <span class="agenda-time u-tnum">14:00</span>
+              <span class="agenda-bar" aria-hidden="true"></span>
+              <span class="agenda-main">
+                <strong>Bloc deep work — spec Northwind</strong>
+                <span class="agenda-sub">90 min · Sans interruption</span>
+              </span>
+            </li>
+            <li class="agenda-row">
+              <span class="agenda-time u-tnum">17:30</span>
+              <span class="agenda-bar" aria-hidden="true"></span>
+              <span class="agenda-main">
+                <strong>Bilan du jour</strong>
+                <span class="agenda-sub">15 min · Soirée calme</span>
+              </span>
+            </li>
+          </ul>
+        </article>
+
+        <article class="card panel posture-card">
+          <header class="card-header">
+            <span class="eyebrow">Votre posture</span>
+            <span class="pill status coaching" style="margin-left:auto">
+              <svg class="ico" width="11" height="11"><use href="#i-sparkle"/></svg>
+              Coaching
+            </span>
+          </header>
+          <p class="posture-quote">
+            « Vous êtes à <strong>4 jours d'affilée</strong> en mode protection. Aujourd'hui,
+            est‑ce que vous décidez <em>parce que c'est dur</em>, ou parce que c'est juste ? »
+          </p>
+          <footer class="o-cluster" style="margin-top:12px;gap:8px">
+            <button class="btn sm pill">Reformuler</button>
+            <button class="btn ghost sm">Plus tard</button>
+          </footer>
+        </article>
+
+      </aside>
+    </section>
+
+    <!-- ═══ PROJECTS ROW ═════════════════════════════════ -->
+    <section class="card">
+      <header class="card-header">
+        <h2 class="card-title">Projets actifs</h2>
+        <div class="o-cluster card-actions" style="gap:8px">
+          <div class="toggle-group" role="tablist">
+            <button class="toggle-btn is-active" role="tab">Maisons</button>
+            <button class="toggle-btn" role="tab">Tous</button>
+            <button class="toggle-btn" role="tab">À risque</button>
+          </div>
+          <button class="btn sm">
+            <svg class="ico" width="13" height="13"><use href="#i-plus"/></svg>
+            Nouveau
+          </button>
+        </div>
+      </header>
+
+      <div class="projects-houses">
+        <!-- Northwind -->
+        <div class="house-col" data-house="northwind">
+          <header class="house-head">
+            <span class="house-bar" style="background:var(--house-northwind)"></span>
+            <span class="house-name">Northwind</span>
+            <span class="pill status hot">Tension</span>
+            <span class="u-tnum u-text-3" style="margin-left:auto;font-size:var(--fs-xs)">3 projets</span>
+          </header>
+          <ul class="list-card" role="list">
+            <li class="list-row">
+              <span class="row-icon" data-house="northwind"><svg class="ico" width="16" height="16"><use href="#i-folder"/></svg></span>
+              <div class="row-main">
+                <h4 class="row-title">Spec produit v3 — Cadre & contraintes</h4>
+                <div class="row-meta">
+                  <span class="pill priority p0 sm">P0</span>
+                  <span>·</span>
+                  <span>Marc, Lin, Helene</span>
+                </div>
+              </div>
+              <div class="row-actions">
+                <span class="progress" style="width:80px"><span class="progress-fill" style="width:62%"></span></span>
+                <button class="icon-btn" aria-label="Plus" style="width:28px;height:28px"><svg class="ico" width="14" height="14"><use href="#i-arrow-right"/></svg></button>
+              </div>
+            </li>
+            <li class="list-row">
+              <span class="row-icon" data-house="northwind"><svg class="ico" width="16" height="16"><use href="#i-doc"/></svg></span>
+              <div class="row-main">
+                <h4 class="row-title">Réponse RFP — Hôpital régional Sud</h4>
+                <div class="row-meta">
+                  <span class="pill priority p1 sm">P1</span>
+                  <span>·</span>
+                  <span>Échéance 02 mai</span>
+                </div>
+              </div>
+              <div class="row-actions">
+                <span class="progress" style="width:80px"><span class="progress-fill tinted-amber" style="width:40%"></span></span>
+              </div>
+            </li>
+            <li class="list-row">
+              <span class="row-icon" data-house="northwind"><svg class="ico" width="16" height="16"><use href="#i-target"/></svg></span>
+              <div class="row-main">
+                <h4 class="row-title">Refonte du parcours d'onboarding clinicien</h4>
+                <div class="row-meta">
+                  <span class="pill priority p2 sm">P2</span>
+                  <span>·</span>
+                  <span>4 commits cette semaine</span>
+                </div>
+              </div>
+              <div class="row-actions">
+                <span class="progress" style="width:80px"><span class="progress-fill tinted-emerald" style="width:88%"></span></span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Solstice -->
+        <div class="house-col" data-house="solstice">
+          <header class="house-head">
+            <span class="house-bar" style="background:var(--house-solstice)"></span>
+            <span class="house-name">Solstice</span>
+            <span class="pill status active">Cadence</span>
+            <span class="u-tnum u-text-3" style="margin-left:auto;font-size:var(--fs-xs)">2 projets</span>
+          </header>
+          <ul class="list-card" role="list">
+            <li class="list-row">
+              <span class="row-icon" data-house="solstice"><svg class="ico" width="16" height="16"><use href="#i-message"/></svg></span>
+              <div class="row-main">
+                <h4 class="row-title">Négo cadre Solstice — Round 3</h4>
+                <div class="row-meta">
+                  <span class="pill priority p1 sm">P1</span>
+                  <span>·</span>
+                  <span>Jeu. 14:00 · Préparer ce matin</span>
+                </div>
+              </div>
+              <div class="row-actions">
+                <span class="progress" style="width:80px"><span class="progress-fill tinted-rose" style="width:55%"></span></span>
+              </div>
+            </li>
+            <li class="list-row">
+              <span class="row-icon" data-house="solstice"><svg class="ico" width="16" height="16"><use href="#i-leaf"/></svg></span>
+              <div class="row-main">
+                <h4 class="row-title">Audit RGPD partenaire — clôture</h4>
+                <div class="row-meta">
+                  <span class="pill priority p2 sm">P2</span>
+                  <span>·</span>
+                  <span>Clean — 0 ouvert</span>
+                </div>
+              </div>
+              <div class="row-actions">
+                <span class="progress" style="width:80px"><span class="progress-fill tinted-emerald" style="width:96%"></span></span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Helix -->
+        <div class="house-col" data-house="helix">
+          <header class="house-head">
+            <span class="house-bar" style="background:var(--house-helix)"></span>
+            <span class="house-name">Helix</span>
+            <span class="pill status new">Émergence</span>
+            <span class="u-tnum u-text-3" style="margin-left:auto;font-size:var(--fs-xs)">1 projet</span>
+          </header>
+          <ul class="list-card" role="list">
+            <li class="list-row">
+              <span class="row-icon" data-house="helix"><svg class="ico" width="16" height="16"><use href="#i-sparkle"/></svg></span>
+              <div class="row-main">
+                <h4 class="row-title">Recherche utilisateur · prototype Helix‑0</h4>
+                <div class="row-meta">
+                  <span class="pill priority p2 sm">P2</span>
+                  <span>·</span>
+                  <span>3 entretiens cette semaine</span>
+                </div>
+              </div>
+              <div class="row-actions">
+                <span class="progress" style="width:80px"><span class="progress-fill tinted-sky" style="width:30%"></span></span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ FOOTER ═══════════════════════════════════════ -->
+    <footer class="app-footer">
+      <p class="strategic-q">
+        Si vous deviez n'avancer qu'<em>une seule</em> chose ce trimestre, est‑ce que ce serait Northwind v3 ?
+      </p>
+      <div class="footer-meta">
+        <span>aiCEO v0.5</span>
+        <span>·</span>
+        <span>Cockpit · Aubrielle</span>
+        <span>·</span>
+        <span class="autosave"><span class="pulse"></span>Auto‑sauvegardé 09:21</span>
+        <span>·</span>
+        <span>Mardi 28 avril · S18</span>
+      </div>
+    </footer>
+  </main>
+</div>
+
+<!-- ═══ Bottom tab (mobile) ═══ -->
+<nav class="bottom-tab-nav" aria-label="Navigation mobile">
+  <a href="#" class="bottom-tab is-active">
+    <svg class="ico"><use href="#i-home"/></svg>
+    <span>Cockpit</span>
+  </a>
+  <a href="#" class="bottom-tab">
+    <svg class="ico"><use href="#i-arbitrage"/></svg>
+    <span>Arbitrage</span>
+  </a>
+  <button class="bottom-tab fab-trigger" aria-label="Capter">
+    <span class="fab-circle"><svg class="ico"><use href="#i-mic"/></svg></span>
+    <span style="margin-top:30px">Capter</span>
+  </button>
+  <a href="#" class="bottom-tab">
+    <svg class="ico"><use href="#i-projects"/></svg>
+    <span>Projets</span>
+  </a>
+  <a href="#" class="bottom-tab">
+    <svg class="ico"><use href="#i-evening"/></svg>
+    <span>Soirée</span>
+  </a>
+</nav>
+
+<!-- ═══ STYLES SPÉCIFIQUES À CETTE PAGE ═══ -->
+<style>
+/* Hero grid */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--space-8);
+  align-items: stretch;
+}
+@media (max-width: 1023px) {
+  .hero-grid { grid-template-columns: 1fr; gap: var(--space-6); }
+}
+.hero-greeting { display: flex; flex-direction: column; }
+.hero-side { display: flex; }
+
+.hero-stat-card {
+  flex: 1;
+  background: var(--surface-2);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-card);
+  display: flex; flex-direction: column;
+}
+.hero-stat-head {
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+/* KPI row */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+@media (max-width: 1023px) {
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .kpi-row { grid-template-columns: 1fr; }
+}
+
+/* Today grid */
+.today-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: var(--space-6);
+}
+@media (max-width: 1023px) {
+  .today-grid { grid-template-columns: 1fr; }
+}
+
+/* Top‑3 list */
+.top3-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0; }
+.top3-row {
+  display: flex; gap: var(--space-4);
+  padding: var(--space-4) 0;
+  align-items: flex-start;
+  border-block-end: 1px solid var(--border);
+}
+.top3-row:last-child { border-block-end: 0; }
+.top3-rank {
+  font-family: var(--font-thin);
+  font-weight: var(--fw-thin);
+  font-size: 36px;
+  letter-spacing: -0.04em;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  width: 48px;
+  flex-shrink: 0;
+  padding-top: 4px;
+}
+.top3-main { flex: 1; min-width: 0; }
+.top3-title {
+  font-size: var(--fs-h4);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-card);
+  margin: 0 0 4px;
+}
+.top3-sub {
+  font-size: var(--fs-sm);
+  color: var(--text-2);
+  margin: 0;
+  line-height: 1.5;
+}
+.top3-foot {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding-block-start: var(--space-3);
+  margin-block-start: var(--space-2);
+}
+
+/* Today aside */
+.today-aside { display: flex; flex-direction: column; gap: var(--space-4); }
+
+/* Agenda */
+.agenda { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0; }
+.agenda-row {
+  display: grid;
+  grid-template-columns: 50px 8px 1fr;
+  gap: var(--space-3);
+  padding: 10px 0;
+  border-block-end: 1px solid var(--border);
+  align-items: flex-start;
+}
+.agenda-row:last-child { border-block-end: 0; }
+.agenda-time {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  color: var(--text-2);
+  letter-spacing: 0.02em;
+  padding-top: 1px;
+}
+.agenda-bar {
+  width: 3px;
+  background: var(--border-2);
+  border-radius: 2px;
+  align-self: stretch;
+  min-height: 22px;
+  margin-top: 2px;
+}
+.agenda-row[data-now="true"] .agenda-bar { background: var(--rose); }
+.agenda-row[data-now="true"] .agenda-time { color: var(--rose-800); }
+.agenda-main {
+  display: flex; flex-direction: column;
+  gap: 1px;
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+}
+.agenda-main strong { font-weight: var(--fw-semi); color: var(--text); }
+.agenda-sub { color: var(--text-3); font-size: var(--fs-xs); }
+
+/* Posture card */
+.posture-card { border-inline-start: 4px solid var(--violet); }
+.posture-quote {
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  color: var(--text);
+  margin: 0;
+  font-weight: var(--fw-medium);
+}
+.posture-quote em {
+  font-style: italic;
+  color: var(--violet-800);
+}
+
+/* Projects houses */
+.projects-houses {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+}
+@media (max-width: 1023px) { .projects-houses { grid-template-columns: 1fr; gap: var(--space-5); } }
+.house-col { display: flex; flex-direction: column; }
+.house-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 0 var(--space-3);
+  border-block-end: 2px solid var(--border);
+  margin-block-end: 4px;
+  position: relative;
+}
+.house-bar {
+  width: 14px; height: 14px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.house-name {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--tracking-card);
+}
+
+/* Hero card override */
+.card.hero { padding: var(--space-8); }
+@media (max-width: 1023px) {
+  .card.hero { padding: var(--space-6); }
+  .greeting.hero { font-size: 64px; }
+}
+@media (max-width: 480px) {
+  .greeting.hero { font-size: 52px; }
+}
+</style>
+
+<script src="_shared/app.js"></script>
+<script>
+// Inline icons sprite
+fetch('_shared/icons.svg.html').then(r => r.text()).then(t => {
+  document.getElementById('icons-host').innerHTML = t;
+});
+
+// Top‑3 row clicks
+document.querySelectorAll('.top3-row .btn').forEach(b => {
+  b.addEventListener('click', () => {
+    App.toast('Ouverture de l\'arbitrage…', { kind: 'info', duration: 2000 });
+  });
+});
+
+// Capture button — voice draft
+document.getElementById('capture-btn')?.addEventListener('click', () => {
+  App.modal({
+    title: 'Capter une intention',
+    size: 'medium',
+    body: `
+      <div class="field">
+        <label class="field-label">Pour aujourd'hui, je veux…</label>
+        <textarea class="input" rows="3" placeholder="Décider, écrire, appeler…"></textarea>
+        <span class="field-help">Astuce : commencez par un verbe d'action. Le système devine la maison.</span>
+      </div>
+      <div class="o-cluster" style="gap:8px">
+        <button class="btn pill sm">Northwind</button>
+        <button class="btn pill sm">Solstice</button>
+        <button class="btn pill sm">Helix</button>
+        <button class="btn ghost sm">Aucune</button>
+      </div>
+    `,
+    footer: `
+      <button class="btn ghost" data-close>Annuler</button>
+      <button class="btn primary" data-save>
+        <svg class="ico" width="14" height="14"><use href="#i-check"/></svg>
+        Capter
+      </button>`,
+    onMount: (root, close) => {
+      root.querySelector('[data-close]').addEventListener('click', close);
+      root.querySelector('[data-save]').addEventListener('click', () => {
+        close();
+        App.toast('Capté · sera proposé demain matin.', { kind: 'success' });
+      });
+    }
+  });
+});
+
+// Tweaks (state switcher)
+App.setupTweaks(
+  () => ({
+    state: 'morning',
+    locale: 'fr',
+    density: 'comfortable',
+    showCoaching: true,
+    showFooterQ: true,
+  }),
+  {
+    render: (s, ICON) => `
+      <section class="tweaks-section">
+        <div class="tweaks-section-title">État de la page</div>
+        <div class="tweak-row tweak-radio">
+          <input type="radio" name="state" id="st-loading" value="loading" data-tweak="state" ${s.state==='loading'?'checked':''}>
+          <label for="st-loading">Loading</label>
+          <input type="radio" name="state" id="st-morning" value="morning" data-tweak="state" ${s.state==='morning'?'checked':''}>
+          <label for="st-morning">Matin</label>
+          <input type="radio" name="state" id="st-day" value="day" data-tweak="state" ${s.state==='day'?'checked':''}>
+          <label for="st-day">Jour</label>
+          <input type="radio" name="state" id="st-empty" value="empty" data-tweak="state" ${s.state==='empty'?'checked':''}>
+          <label for="st-empty">Vierge</label>
+        </div>
+      </section>
+
+      <section class="tweaks-section">
+        <div class="tweaks-section-title">Langue</div>
+        <div class="tweak-row">
+          <label>Locale</label>
+          <select data-tweak="locale">
+            <option value="fr" ${s.locale==='fr'?'selected':''}>Français</option>
+            <option value="en" ${s.locale==='en'?'selected':''}>English</option>
+            <option value="ar" ${s.locale==='ar'?'selected':''}>العربية (RTL)</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="tweaks-section">
+        <div class="tweaks-section-title">Layout</div>
+        <div class="tweak-row">
+          <label>Densité</label>
+          <select data-tweak="density">
+            <option value="comfortable" ${s.density==='comfortable'?'selected':''}>Confortable</option>
+            <option value="compact" ${s.density==='compact'?'selected':''}>Compact</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="tweaks-section">
+        <div class="tweaks-section-title">Affichage</div>
+        <div class="tweak-row">
+          <label>Bandeau coaching</label>
+          <input type="checkbox" data-tweak="showCoaching" ${s.showCoaching?'checked':''}>
+        </div>
+        <div class="tweak-row">
+          <label>Question stratégique</label>
+          <input type="checkbox" data-tweak="showFooterQ" ${s.showFooterQ?'checked':''}>
+        </div>
+      </section>
+
+      <div class="tweak-help">
+        Le cockpit se relit en 6 secondes : posture · top‑3 · agenda · projets. Le reste, c'est l'intendance.
+      </div>
+    `,
+    apply: (s, key) => {
+      // State
+      const empty = document.querySelector('.posture-card');
+      if (s.state === 'loading') {
+        document.body.dataset.state = 'loading';
+        document.querySelectorAll('.kpi-value').forEach(el => {
+          if (!el.dataset.orig) el.dataset.orig = el.innerHTML;
+          el.innerHTML = '<span class="skel skel-line lg" style="width:48px"></span>';
+        });
+      } else {
+        document.querySelectorAll('.kpi-value').forEach(el => {
+          if (el.dataset.orig) el.innerHTML = el.dataset.orig;
+        });
+      }
+      if (s.state === 'empty') {
+        document.querySelectorAll('.top3-row').forEach((r,i) => r.style.display = i===0 ? '' : 'none');
+        document.querySelector('.top3-row .top3-title').textContent = "Aucune décision ne vous attend.";
+        document.querySelector('.top3-row .top3-sub').textContent = "Profitez‑en pour respirer ou capter une intention.";
+      } else if (key === 'state') {
+        document.querySelectorAll('.top3-row').forEach(r => r.style.display = '');
+      }
+      // Locale
+      App.setLocale(s.locale);
+      // Density
+      document.body.dataset.density = s.density;
+      // Coaching banner
+      if (empty) empty.style.display = s.showCoaching ? '' : 'none';
+      const fq = document.querySelector('.app-footer .strategic-q');
+      if (fq) fq.style.display = s.showFooterQ ? '' : 'none';
+    }
+  }
+);
+</script>
+</body>
+</html>

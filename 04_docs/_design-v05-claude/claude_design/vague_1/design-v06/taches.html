@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="fr" data-locale="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>aiCEO — Tâches · 12 actions</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css?v=2">
+<link rel="stylesheet" href="_shared/app.css?v=2">
+<link rel="stylesheet" href="_shared/tweaks.css?v=2">
+</head>
+<body data-route="taches">
+<div id="icons-host" hidden></div>
+<a class="skip-link" href="#main-content">Aller au contenu</a>
+
+<div class="app" data-drawer="expanded">
+  <aside class="drawer" aria-label="Navigation principale">
+    <div class="drawer-logo">
+      <span class="logo-mark">a</span>
+      <span class="logo-text">aiCEO</span>
+    </div>
+    <button class="drawer-tenant" aria-label="Changer d'espace">
+      <span class="tenant-mark" aria-hidden="true">A</span>
+      <span class="tenant-name">Aubrielle Hayes</span>
+      <svg class="ico" width="14" height="14" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+    </button>
+    <nav class="drawer-nav" aria-label="Sections">
+      <div class="drawer-section">Pilotage</div>
+      <a href="index.html" class="drawer-item" data-nav="home"><svg class="ico" width="18" height="18"><use href="#i-home"/></svg><span class="label">Cockpit</span></a>
+      <a href="arbitrage.html" class="drawer-item" data-nav="arbitrage"><svg class="ico" width="18" height="18"><use href="#i-arbitrage"/></svg><span class="label">Arbitrage</span><span class="badge">3</span></a>
+      <a href="evening.html" class="drawer-item" data-nav="evening"><svg class="ico" width="18" height="18"><use href="#i-evening"/></svg><span class="label">Soirée</span></a>
+      <div class="drawer-section">Travail</div>
+      <a href="projets.html" class="drawer-item" data-nav="projects"><svg class="ico" width="18" height="18"><use href="#i-projects"/></svg><span class="label">Projets</span></a>
+      <a href="taches.html" class="drawer-item is-active" data-nav="actions" aria-current="page"><svg class="ico" width="18" height="18"><use href="#i-actions"/></svg><span class="label">Actions</span><span class="badge">12</span></a>
+      <a href="agenda.html" class="drawer-item" data-nav="agenda"><svg class="ico" width="18" height="18"><use href="#i-clock"/></svg><span class="label">Agenda</span></a>
+      <a href="assistant.html" class="drawer-item" data-nav="assistant"><svg class="ico" width="18" height="18"><use href="#i-sparkle"/></svg><span class="label">Assistant</span></a>
+      <a href="equipe.html" class="drawer-item" data-nav="people"><svg class="ico" width="18" height="18"><use href="#i-people"/></svg><span class="label">Équipe</span></a>
+      <div class="drawer-section">Capital</div>
+      <a href="connaissance.html" class="drawer-item" data-nav="knowledge"><svg class="ico" width="18" height="18"><use href="#i-knowledge"/></svg><span class="label">Connaissance</span></a>
+      <a href="coaching.html" class="drawer-item" data-nav="coaching"><svg class="ico" width="18" height="18"><use href="#i-coaching"/></svg><span class="label">Coaching</span></a>
+      <a href="revues.html" class="drawer-item" data-nav="revues"><svg class="ico" width="18" height="18"><use href="#i-folder"/></svg><span class="label">Revues</span></a>
+      <a href="decisions.html" class="drawer-item" data-nav="decisions"><svg class="ico" width="18" height="18"><use href="#i-target"/></svg><span class="label">Décisions</span></a>
+    </nav>
+    <div class="drawer-footer">
+      <button class="drawer-locale" aria-label="Langue">
+        <svg class="ico" width="16" height="16"><use href="#i-globe"/></svg>
+        <span class="locale-name">Français</span>
+      </button>
+      <a href="settings.html" class="drawer-item" data-nav="settings">
+        <svg class="ico" width="18" height="18"><use href="#i-settings"/></svg>
+        <span class="label">Réglages</span>
+      </a>
+      <button class="drawer-user" aria-label="Profil">
+        <span class="avatar md" data-house="solstice">AH</span>
+        <span class="meta">
+          <span class="name">Aubrielle Hayes</span>
+          <span class="role">Fondatrice · CEO</span>
+        </span>
+      </button>
+    </div>
+
+    <button class="drawer-collapse-btn" aria-label="Réduire le menu">
+      <svg class="ico" width="14" height="14"><use href="#i-chevron-left"/></svg>
+    </button>
+  </aside>
+
+  <main class="app-main" id="main-content">
+    <header class="topbar">
+      <div class="topbar-title-block">
+        <div class="topbar-title-eyebrow">Actions</div>
+        <h1 class="section-title">12 choses à faire</h1>
+      </div>
+      <div class="topbar-cluster u-hidden-mobile">
+        <div class="search-pill" role="search">
+          <svg class="ico ico-s" width="16" height="16"><use href="#i-search"/></svg>
+          <input type="search" placeholder="Filtrer…" aria-label="Recherche">
+        </div>
+        <button class="btn primary"><svg class="ico" width="14" height="14"><use href="#i-plus"/></svg>Nouvelle action</button>
+      </div>
+    </header>
+
+    <!-- Filter bar -->
+    <section class="filter-bar">
+      <div class="filter-chips">
+        <button class="chip is-active" data-filter="all">Tout <span class="chip-count">12</span></button>
+        <button class="chip" data-filter="today">Aujourd'hui <span class="chip-count">3</span></button>
+        <button class="chip" data-filter="week">Cette semaine <span class="chip-count">7</span></button>
+        <button class="chip" data-filter="late">En retard <span class="chip-count">2</span></button>
+        <span class="chip-sep"></span>
+        <button class="chip" data-filter="northwind"><span class="dot" style="background:var(--house-northwind)"></span>Northwind</button>
+        <button class="chip" data-filter="solstice"><span class="dot" style="background:var(--house-solstice)"></span>Solstice</button>
+        <button class="chip" data-filter="helix"><span class="dot" style="background:var(--house-helix)"></span>Helix</button>
+      </div>
+      <div class="filter-meta">
+        <select class="input" style="min-width:160px">
+          <option>Trier : priorité</option>
+          <option>Trier : échéance</option>
+          <option>Trier : maison</option>
+          <option>Trier : récent</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Task groups -->
+    <section class="task-groups">
+
+      <article class="task-group">
+        <header class="task-group-head">
+          <h2 class="card-title" style="font-size:var(--fs-h4)">Aujourd'hui</h2>
+          <span class="u-text-3 small">3 actions · ~1h40 estimées</span>
+        </header>
+        <ul class="task-list" role="list">
+          <li class="task-row" data-house="northwind">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p0">P0</span>
+            <div class="task-main">
+              <h3 class="task-title">Trancher le spec Northwind v3</h3>
+              <div class="task-meta">
+                <span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span>
+                <span class="u-tnum">~32 min</span>
+                <span>·</span>
+                <span class="task-due">Avant 10h</span>
+              </div>
+            </div>
+            <button class="icon-btn" aria-label="Plus"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+          <li class="task-row" data-house="solstice">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p1">P1</span>
+            <div class="task-main">
+              <h3 class="task-title">Préparer la négo Solstice — round 3</h3>
+              <div class="task-meta">
+                <span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span>
+                <span class="avatar-stack"><span class="avatar xs">MD</span></span>
+                <span class="u-tnum">~45 min</span>
+              </div>
+            </div>
+            <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+          <li class="task-row" data-house="helix">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p2">P2</span>
+            <div class="task-main">
+              <h3 class="task-title">1‑à‑1 Helene · feedback de mi‑étape</h3>
+              <div class="task-meta">
+                <span class="pill house" data-house="helix"><span class="dot"></span>Helix</span>
+                <span class="u-tnum">11:00 · 30 min</span>
+              </div>
+            </div>
+            <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+        </ul>
+      </article>
+
+      <article class="task-group">
+        <header class="task-group-head">
+          <h2 class="card-title" style="font-size:var(--fs-h4)">Cette semaine</h2>
+          <span class="u-text-3 small">7 actions</span>
+        </header>
+        <ul class="task-list" role="list">
+          <li class="task-row" data-house="northwind">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p1">P1</span>
+            <div class="task-main">
+              <h3 class="task-title">Réponse RFP — Hôpital régional Sud</h3>
+              <div class="task-meta">
+                <span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span>
+                <span class="task-due late">02 mai · J‑4</span>
+              </div>
+            </div>
+            <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+          <li class="task-row" data-house="solstice">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p2">P2</span>
+            <div class="task-main">
+              <h3 class="task-title">Relire le contrat partenaire Solstice</h3>
+              <div class="task-meta"><span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span><span class="u-tnum">~25 min</span></div>
+            </div>
+            <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+          <li class="task-row" data-house="northwind">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p2">P2</span>
+            <div class="task-main">
+              <h3 class="task-title">Relancer 3 candidats front senior</h3>
+              <div class="task-meta"><span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span><span class="avatar-stack"><span class="avatar xs">+3</span></span></div>
+            </div>
+            <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+          <li class="task-row" data-house="helix">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p2">P2</span>
+            <div class="task-main">
+              <h3 class="task-title">Synthétiser les 3 entretiens utilisateur</h3>
+              <div class="task-meta"><span class="pill house" data-house="helix"><span class="dot"></span>Helix</span><span class="u-tnum">~1h</span></div>
+            </div>
+            <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+          <li class="task-row" data-house="solstice">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p3">P3</span>
+            <div class="task-main">
+              <h3 class="task-title">Mettre à jour le pitch deck — slides 4‑7</h3>
+              <div class="task-meta"><span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span></div>
+            </div>
+            <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+        </ul>
+      </article>
+
+      <article class="task-group">
+        <header class="task-group-head">
+          <h2 class="card-title" style="font-size:var(--fs-h4)">Plus tard</h2>
+          <span class="u-text-3 small">2 actions · sans date ferme</span>
+        </header>
+        <ul class="task-list" role="list">
+          <li class="task-row">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p3">P3</span>
+            <div class="task-main">
+              <h3 class="task-title">Lire le rapport CB Insights — santé numérique</h3>
+              <div class="task-meta"><span class="u-text-3">Sans maison</span><span class="u-tnum">~40 min</span></div>
+            </div>
+            <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+          <li class="task-row" data-house="helix">
+            <button class="task-check" aria-label="Cocher"></button>
+            <span class="task-prio p3">P3</span>
+            <div class="task-main">
+              <h3 class="task-title">Réfléchir au nom de marque Helix</h3>
+              <div class="task-meta"><span class="pill house" data-house="helix"><span class="dot"></span>Helix</span><span>Brainstorm libre</span></div>
+            </div>
+            <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+          </li>
+        </ul>
+      </article>
+
+    </section>
+
+    <footer class="app-footer">
+      <p class="strategic-q">12 actions, c'est <em>plus</em> que ce que vous ferez aujourd'hui. Lesquelles peuvent attendre vraiment ?</p>
+      <div class="footer-meta"><span>aiCEO v0.5</span><span>·</span><span>Actions</span></div>
+    </footer>
+  </main>
+</div>
+
+<nav class="bottom-tab-nav">
+  <a href="index.html" class="bottom-tab"><svg class="ico"><use href="#i-home"/></svg><span>Cockpit</span></a>
+  <a href="arbitrage.html" class="bottom-tab"><svg class="ico"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
+  <button class="bottom-tab fab-trigger"><span class="fab-circle"><svg class="ico"><use href="#i-mic"/></svg></span><span style="margin-top:30px">Capter</span></button>
+  <a href="taches.html" class="bottom-tab is-active"><svg class="ico"><use href="#i-actions"/></svg><span>Actions</span></a>
+  <a href="evening.html" class="bottom-tab"><svg class="ico"><use href="#i-evening"/></svg><span>Soirée</span></a>
+</nav>
+
+<style>
+.filter-bar {
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-3) 0;
+  flex-wrap: wrap;
+}
+.filter-chips {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  flex: 1;
+}
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all .12s;
+  font-family: inherit;
+}
+.chip:hover { background: var(--surface-3); color: var(--text); }
+.chip.is-active { background: var(--text); color: var(--surface); border-color: var(--text); }
+.chip .dot { width:8px;height:8px;border-radius:50%; }
+.chip-count {
+  font-size: 11px; font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+.chip-sep {
+  width: 1px; height: 18px; background: var(--border-2);
+  margin: 0 4px;
+}
+.filter-meta { flex-shrink: 0; }
+
+.task-groups { display: flex; flex-direction: column; gap: var(--space-6); }
+.task-group-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding-block-end: var(--space-2);
+  border-block-end: 2px solid var(--border);
+  margin-block-end: var(--space-2);
+}
+
+.task-list { list-style: none; padding: 0; margin: 0; }
+.task-row {
+  display: grid;
+  grid-template-columns: 24px 36px 1fr 28px;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-2);
+  border-block-end: 1px solid var(--border);
+  align-items: center;
+  border-inline-start: 3px solid transparent;
+  transition: background .12s;
+}
+.task-row:hover { background: var(--surface-2); }
+.task-row[data-house="northwind"] { border-inline-start-color: var(--house-northwind); }
+.task-row[data-house="solstice"]  { border-inline-start-color: var(--house-solstice); }
+.task-row[data-house="helix"]     { border-inline-start-color: var(--house-helix); }
+
+.task-check {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--border-2);
+  background: transparent;
+  cursor: pointer;
+  transition: all .14s;
+}
+.task-check:hover { border-color: var(--brand); }
+.task-check.is-done {
+  background: var(--emerald);
+  border-color: var(--emerald);
+}
+
+.task-prio {
+  font-size: 10px;
+  font-weight: var(--fw-extrabold);
+  text-align: center;
+  padding: 3px 0;
+  border-radius: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.task-prio.p0 { background: var(--rose); color: #fff; }
+.task-prio.p1 { background: var(--rose-50); color: var(--rose-800); }
+.task-prio.p2 { background: var(--surface-3); color: var(--text-2); }
+.task-prio.p3 { background: transparent; color: var(--text-3); border: 1px solid var(--border); }
+
+.task-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semi);
+  margin: 0 0 2px;
+  letter-spacing: var(--tracking-card);
+  line-height: 1.35;
+}
+.task-meta {
+  display: flex; gap: 8px; align-items: center;
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+  flex-wrap: wrap;
+}
+.task-due { font-weight: var(--fw-bold); color: var(--text-2); }
+.task-due.late { color: var(--rose-800); }
+</style>
+
+<script src="_shared/app.js"></script>
+<script>
+fetch('_shared/icons.svg.html').then(r => r.text()).then(t => document.getElementById('icons-host').innerHTML = t);
+
+document.querySelectorAll('.task-check').forEach(c => {
+  c.addEventListener('click', e => {
+    e.stopPropagation();
+    c.classList.toggle('is-done');
+    const row = c.closest('.task-row');
+    row.style.opacity = c.classList.contains('is-done') ? '0.4' : '';
+    if (c.classList.contains('is-done')) App.toast('Action validée.', { kind: 'success', duration: 1800, action: 'Annuler', onAction: () => { c.classList.remove('is-done'); row.style.opacity = ''; } });
+  });
+});
+document.querySelectorAll('.chip').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('.chip').forEach(o => o.classList.remove('is-active'));
+    c.classList.add('is-active');
+  });
+});
+
+App.setupTweaks(
+  () => ({ state: 'normal', locale: 'fr' }),
+  {
+    render: (s) => `
+      <section class="tweaks-section">
+        <div class="tweaks-section-title">État</div>
+        <div class="tweak-row tweak-radio">
+          <input type="radio" name="st" id="st-n" value="normal" data-tweak="state" ${s.state==='normal'?'checked':''}><label for="st-n">12 actions</label>
+          <input type="radio" name="st" id="st-e" value="empty" data-tweak="state" ${s.state==='empty'?'checked':''}><label for="st-e">Inbox zero</label>
+          <input type="radio" name="st" id="st-l" value="loading" data-tweak="state" ${s.state==='loading'?'checked':''}><label for="st-l">Loading</label>
+        </div>
+      </section>
+      <section class="tweaks-section">
+        <div class="tweaks-section-title">Langue</div>
+        <div class="tweak-row"><label>Locale</label>
+          <select data-tweak="locale">
+            <option value="fr" ${s.locale==='fr'?'selected':''}>FR</option>
+            <option value="en" ${s.locale==='en'?'selected':''}>EN</option>
+            <option value="ar" ${s.locale==='ar'?'selected':''}>AR (RTL)</option>
+          </select>
+        </div>
+      </section>
+    `,
+    apply: (s) => {
+      App.setLocale(s.locale);
+      const groups = document.querySelector('.task-groups');
+      if (s.state === 'empty') {
+        groups.innerHTML = `<div class="empty-state" style="margin:60px auto;max-width:480px;text-align:center"><div style="font-size:64px">✦</div><h3 class="card-title" style="margin-top:12px">Aucune action en attente</h3><p class="small u-text-2 u-mt-2">Vous avez tout traité. C'est rare. Profitez‑en.</p></div>`;
+      } else if (s.state === 'loading') {
+        groups.querySelectorAll('.task-row').forEach(r => r.style.opacity = '0.4');
+      }
+    }
+  }
+);
+</script>
+</body>
+</html>

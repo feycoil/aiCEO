@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="fr" data-locale="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>aiCEO — Décisions · Historique</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css?v=2">
+<link rel="stylesheet" href="_shared/app.css?v=2">
+<link rel="stylesheet" href="_shared/tweaks.css?v=2">
+</head>
+<body data-route="decisions">
+<div id="icons-host" hidden></div>
+<a class="skip-link" href="#main-content">Aller au contenu</a>
+
+<div class="app" data-drawer="expanded">
+  <aside class="drawer" aria-label="Navigation principale">
+    <div class="drawer-logo">
+      <span class="logo-mark">a</span>
+      <span class="logo-text">aiCEO</span>
+    </div>
+    <button class="drawer-tenant" aria-label="Changer d'espace">
+      <span class="tenant-mark" aria-hidden="true">A</span>
+      <span class="tenant-name">Aubrielle Hayes</span>
+      <svg class="ico" width="14" height="14" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+    </button>
+    <nav class="drawer-nav" aria-label="Sections">
+      <div class="drawer-section">Pilotage</div>
+      <a href="index.html" class="drawer-item" data-nav="home"><svg class="ico" width="18" height="18"><use href="#i-home"/></svg><span class="label">Cockpit</span></a>
+      <a href="arbitrage.html" class="drawer-item" data-nav="arbitrage"><svg class="ico" width="18" height="18"><use href="#i-arbitrage"/></svg><span class="label">Arbitrage</span><span class="badge">3</span></a>
+      <a href="evening.html" class="drawer-item" data-nav="evening"><svg class="ico" width="18" height="18"><use href="#i-evening"/></svg><span class="label">Soirée</span></a>
+      <div class="drawer-section">Travail</div>
+      <a href="projets.html" class="drawer-item" data-nav="projects"><svg class="ico" width="18" height="18"><use href="#i-projects"/></svg><span class="label">Projets</span></a>
+      <a href="taches.html" class="drawer-item" data-nav="actions"><svg class="ico" width="18" height="18"><use href="#i-actions"/></svg><span class="label">Actions</span><span class="badge">12</span></a>
+      <a href="agenda.html" class="drawer-item" data-nav="agenda"><svg class="ico" width="18" height="18"><use href="#i-clock"/></svg><span class="label">Agenda</span></a>
+      <a href="assistant.html" class="drawer-item" data-nav="assistant"><svg class="ico" width="18" height="18"><use href="#i-sparkle"/></svg><span class="label">Assistant</span></a>
+      <a href="equipe.html" class="drawer-item" data-nav="people"><svg class="ico" width="18" height="18"><use href="#i-people"/></svg><span class="label">Équipe</span></a>
+      <div class="drawer-section">Capital</div>
+      <a href="connaissance.html" class="drawer-item" data-nav="knowledge"><svg class="ico" width="18" height="18"><use href="#i-knowledge"/></svg><span class="label">Connaissance</span></a>
+      <a href="coaching.html" class="drawer-item" data-nav="coaching"><svg class="ico" width="18" height="18"><use href="#i-coaching"/></svg><span class="label">Coaching</span></a>
+      <a href="revues.html" class="drawer-item" data-nav="revues"><svg class="ico" width="18" height="18"><use href="#i-folder"/></svg><span class="label">Revues</span></a>
+      <a href="decisions.html" class="drawer-item is-active" data-nav="decisions" aria-current="page"><svg class="ico" width="18" height="18"><use href="#i-target"/></svg><span class="label">Décisions</span></a>
+    </nav>
+    <div class="drawer-footer">
+      <button class="drawer-locale" aria-label="Langue">
+        <svg class="ico" width="16" height="16"><use href="#i-globe"/></svg>
+        <span class="locale-name">Français</span>
+      </button>
+      <a href="settings.html" class="drawer-item" data-nav="settings">
+        <svg class="ico" width="18" height="18"><use href="#i-settings"/></svg>
+        <span class="label">Réglages</span>
+      </a>
+      <button class="drawer-user" aria-label="Profil">
+        <span class="avatar md" data-house="solstice">AH</span>
+        <span class="meta">
+          <span class="name">Aubrielle Hayes</span>
+          <span class="role">Fondatrice · CEO</span>
+        </span>
+      </button>
+    </div>
+
+    <button class="drawer-collapse-btn" aria-label="Réduire le menu">
+      <svg class="ico" width="14" height="14"><use href="#i-chevron-left"/></svg>
+    </button>
+  </aside>
+
+  <main class="app-main" id="main-content">
+    <header class="topbar">
+      <div class="topbar-title-block">
+        <div class="topbar-title-eyebrow">Décisions · 47 tranchées</div>
+        <h1 class="section-title">Ce que vous avez choisi de faire — et de ne pas faire</h1>
+      </div>
+      <div class="topbar-cluster u-hidden-mobile">
+        <div class="search-pill"><svg class="ico ico-s" width="16" height="16"><use href="#i-search"/></svg><input type="search" placeholder="Chercher une décision…"></div>
+        <button class="btn ghost"><svg class="ico" width="14" height="14"><use href="#i-archive"/></svg>Exporter</button>
+      </div>
+    </header>
+
+    <section class="dec-pulse">
+      <div class="dec-pulse-card"><span class="dec-pulse-num">47</span><span class="dec-pulse-lbl">décisions tranchées</span></div>
+      <div class="dec-pulse-card"><span class="dec-pulse-num">8</span><span class="dec-pulse-lbl">en attente d'effet</span></div>
+      <div class="dec-pulse-card"><span class="dec-pulse-num">3</span><span class="dec-pulse-lbl">infirmées rétrospectivement</span></div>
+      <div class="dec-pulse-card"><span class="dec-pulse-num">12</span><span class="dec-pulse-lbl">à revisiter sous 30 j</span></div>
+    </section>
+
+    <section class="dec-filters">
+      <div class="seg" role="tablist">
+        <button class="seg-btn is-active">Toutes</button>
+        <button class="seg-btn">Stratégiques</button>
+        <button class="seg-btn">Opérationnelles</button>
+        <button class="seg-btn">Posture</button>
+      </div>
+      <div class="seg" role="tablist">
+        <button class="seg-btn is-active">Tout horizon</button>
+        <button class="seg-btn">30 j</button>
+        <button class="seg-btn">90 j</button>
+        <button class="seg-btn">1 an</button>
+      </div>
+      <span class="dec-filter-meta u-text-3 small">Triées par date · les plus récentes en haut</span>
+    </section>
+
+    <section class="dec-timeline">
+      <article class="dec-card" data-house="northwind" data-status="active">
+        <div class="dec-card-rail"><span class="dec-card-date">Aujourd'hui</span><span class="dec-card-time">10:19</span></div>
+        <div class="dec-card-body">
+          <header class="dec-card-head"><span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span><span class="pill type">Stratégique</span><span class="pill status active">Active</span></header>
+          <h3 class="dec-card-title">3 critères pour qualifier les RFP publics avant proposition</h3>
+          <p class="dec-card-rationale">Tranché ce matin avec l'Assistant après une question d'arbitrage. <strong>Réutilisabilité ≥ 80 %, sponsor interne aligné, marge ≥ 35 %.</strong> Permet de répondre en 2 jours au lieu de 5.</p>
+          <div class="dec-card-effects">
+            <div class="dec-effect"><span class="dec-effect-lbl">Effet projeté</span><span class="dec-effect-val">−40 % temps RFP · gain 0,5 j/sem</span></div>
+            <div class="dec-effect"><span class="dec-effect-lbl">À revisiter</span><span class="dec-effect-val">Dans 90 j · ou si 2 RFP perdus</span></div>
+          </div>
+          <footer class="dec-card-foot"><span class="dec-card-source">Source : <a href="arbitrage.html">Arbitrage du 28 avril</a></span><button class="btn ghost xs">Ouvrir →</button></footer>
+        </div>
+      </article>
+
+      <article class="dec-card" data-house="solstice" data-status="active">
+        <div class="dec-card-rail"><span class="dec-card-date">22 avr</span><span class="dec-card-time">23:14</span></div>
+        <div class="dec-card-body">
+          <header class="dec-card-head"><span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span><span class="pill type">Stratégique</span><span class="pill status active">Active</span><span class="pill pinned"><svg class="ico" width="11" height="11"><use href="#i-pin"/></svg>Épinglée</span></header>
+          <h3 class="dec-card-title">Ne pas négocier la valuation à la baisse en round 3</h3>
+          <p class="dec-card-rationale">Tranché le 22 mars après une nuit de doute. <strong>Tenir la posture</strong> : si l'investisseur insiste, on cherche un autre lead. Re‑confirmé le 22 avril.</p>
+          <div class="dec-card-effects">
+            <div class="dec-effect"><span class="dec-effect-lbl">Validée</span><span class="dec-effect-val">3 fois depuis le 22 mars</span></div>
+            <div class="dec-effect"><span class="dec-effect-lbl">Risque résiduel</span><span class="dec-effect-val">Round décalé de 4 à 6 sem</span></div>
+          </div>
+          <footer class="dec-card-foot"><span class="dec-card-source">Source : Soirée du 22 mars · Coaching</span><button class="btn ghost xs">Ouvrir →</button></footer>
+        </div>
+      </article>
+
+      <article class="dec-card" data-house="helix" data-status="active">
+        <div class="dec-card-rail"><span class="dec-card-date">18 avr</span><span class="dec-card-time">14:30</span></div>
+        <div class="dec-card-body">
+          <header class="dec-card-head"><span class="pill house" data-house="helix"><span class="dot"></span>Helix</span><span class="pill type">Opérationnelle</span><span class="pill status active">Active</span></header>
+          <h3 class="dec-card-title">Geler le segment A pendant 6 semaines, focus segment B</h3>
+          <p class="dec-card-rationale">Après 3 entretiens utilisateur, segment B 2,5× plus mûr. <strong>Pas de pivot</strong> — juste un focus temporaire sur B pour tester la traction.</p>
+          <div class="dec-card-effects">
+            <div class="dec-effect"><span class="dec-effect-lbl">Effet observé</span><span class="dec-effect-val">Demo→signup 12 % → 28 %</span></div>
+            <div class="dec-effect"><span class="dec-effect-lbl">Échéance</span><span class="dec-effect-val">Revisiter le 30 mai</span></div>
+          </div>
+          <footer class="dec-card-foot"><span class="dec-card-source">Source : Discovery + Revue hebdo</span><button class="btn ghost xs">Ouvrir →</button></footer>
+        </div>
+      </article>
+
+      <article class="dec-card" data-status="reverted">
+        <div class="dec-card-rail"><span class="dec-card-date">02 avr</span><span class="dec-card-time">09:00</span></div>
+        <div class="dec-card-body">
+          <header class="dec-card-head"><span class="pill"><span class="dot" style="background:var(--text-3)"></span>Transverse</span><span class="pill type">Posture</span><span class="pill status reverted">Infirmée</span></header>
+          <h3 class="dec-card-title">Plus de réunions internes avant 11 h pendant 30 jours</h3>
+          <p class="dec-card-rationale">Tenu 11 jours sur 30. <strong>Infirmée le 22 avril</strong> : trop rigide avec un comex en levée. Remplacée par « pas de réunion &lt; 30 min avant 11 h ».</p>
+          <div class="dec-card-effects">
+            <div class="dec-effect"><span class="dec-effect-lbl">Apprentissage</span><span class="dec-effect-val">Posture → règle souple, pas absolue</span></div>
+            <div class="dec-effect"><span class="dec-effect-lbl">Remplacée par</span><span class="dec-effect-val"><a href="#">Décision #44</a></span></div>
+          </div>
+          <footer class="dec-card-foot"><span class="dec-card-source">Source : Soirée du 1ᵉʳ avril</span><button class="btn ghost xs">Ouvrir →</button></footer>
+        </div>
+      </article>
+
+      <article class="dec-card" data-house="northwind" data-status="active">
+        <div class="dec-card-rail"><span class="dec-card-date">28 mar</span><span class="dec-card-time">17:42</span></div>
+        <div class="dec-card-body">
+          <header class="dec-card-head"><span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span><span class="pill type">Opérationnelle</span><span class="pill status active">Active</span></header>
+          <h3 class="dec-card-title">Recruter un Lead BD plutôt qu'un VP Sales</h3>
+          <p class="dec-card-rationale">Le marché public exige du sur-mesure, pas du process scalable. <strong>Senior individual contributor</strong>, pas un manager d'équipe — on n'a pas l'équipe à manager.</p>
+          <div class="dec-card-effects">
+            <div class="dec-effect"><span class="dec-effect-lbl">Effet observé</span><span class="dec-effect-val">2 finalistes sourcés en 4 sem</span></div>
+            <div class="dec-effect"><span class="dec-effect-lbl">À revisiter</span><span class="dec-effect-val">Quand 3 BD en place</span></div>
+          </div>
+          <footer class="dec-card-foot"><span class="dec-card-source">Source : Sparring Nora K. · 26 mars</span><button class="btn ghost xs">Ouvrir →</button></footer>
+        </div>
+      </article>
+
+      <article class="dec-card" data-house="solstice" data-status="frozen">
+        <div class="dec-card-rail"><span class="dec-card-date">14 mar</span><span class="dec-card-time">11:08</span></div>
+        <div class="dec-card-body">
+          <header class="dec-card-head"><span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span><span class="pill type">Stratégique</span><span class="pill status frozen">Gelée</span></header>
+          <h3 class="dec-card-title">Pas d'expansion EU avant la Series B</h3>
+          <p class="dec-card-rationale">Décision tactique : le focus sur la Series A passe avant l'expansion géographique. Gelée jusqu'à closing.</p>
+          <div class="dec-card-effects">
+            <div class="dec-effect"><span class="dec-effect-lbl">Statut</span><span class="dec-effect-val">Active jusqu'à closing Series A</span></div>
+            <div class="dec-effect"><span class="dec-effect-lbl">Réveil prévu</span><span class="dec-effect-val">Q3 — post-closing</span></div>
+          </div>
+          <footer class="dec-card-foot"><span class="dec-card-source">Source : Comex du 12 mars</span><button class="btn ghost xs">Ouvrir →</button></footer>
+        </div>
+      </article>
+
+      <button class="btn ghost small" style="align-self: center; margin-block-start: var(--space-3)">Voir 41 décisions plus anciennes →</button>
+    </section>
+
+    <footer class="app-footer">
+      <p class="strategic-q">Une décision claire, c'est une décision qu'on peut citer trois mois plus tard sans rougir.</p>
+      <div class="footer-meta"><span>aiCEO v0.5</span><span>·</span><span>Décisions</span></div>
+    </footer>
+  </main>
+</div>
+
+<nav class="bottom-tab-nav">
+  <a href="index.html" class="bottom-tab"><svg class="ico"><use href="#i-home"/></svg><span>Cockpit</span></a>
+  <a href="arbitrage.html" class="bottom-tab"><svg class="ico"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
+  <button class="bottom-tab fab-trigger"><span class="fab-circle"><svg class="ico"><use href="#i-mic"/></svg></span><span style="margin-top:30px">Capter</span></button>
+  <a href="decisions.html" class="bottom-tab is-active"><svg class="ico"><use href="#i-target"/></svg><span>Décisions</span></a>
+  <a href="evening.html" class="bottom-tab"><svg class="ico"><use href="#i-evening"/></svg><span>Soirée</span></a>
+</nav>
+
+<style>
+.dec-pulse { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); margin-block-start: var(--space-4); }
+.dec-pulse-card { padding: var(--space-3) var(--space-4); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); display: flex; flex-direction: column; gap: 4px; }
+.dec-pulse-num { font-family: var(--font-display); font-size: 32px; font-weight: var(--fw-bold); line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.dec-pulse-lbl { font-size: var(--fs-sm); color: var(--text-2); }
+@media (max-width: 720px) { .dec-pulse { grid-template-columns: repeat(2, 1fr); } }
+
+.dec-filters { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; margin-block-start: var(--space-4); padding-block-end: var(--space-2); border-block-end: 2px solid var(--border); }
+.dec-filter-meta { margin-inline-start: auto; }
+
+.dec-timeline { display: flex; flex-direction: column; gap: var(--space-3); margin-block-start: var(--space-4); }
+
+.dec-card { display: grid; grid-template-columns: 90px 1fr; gap: var(--space-4); padding: var(--space-4); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); border-inline-start: 4px solid var(--text-3); }
+.dec-card[data-house="northwind"] { border-inline-start-color: var(--house-northwind); }
+.dec-card[data-house="solstice"]  { border-inline-start-color: var(--house-solstice); }
+.dec-card[data-house="helix"]     { border-inline-start-color: var(--house-helix); }
+.dec-card[data-status="reverted"] { opacity: 0.7; }
+.dec-card[data-status="reverted"] .dec-card-title { text-decoration: line-through; text-decoration-color: var(--text-3); text-decoration-thickness: 1px; }
+
+.dec-card-rail { display: flex; flex-direction: column; gap: 2px; padding-block-start: 4px; }
+.dec-card-date { font-family: var(--font-display); font-size: 18px; font-weight: var(--fw-bold); letter-spacing: -0.01em; }
+.dec-card-time { font-size: 11px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+
+.dec-card-body { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
+.dec-card-head { display: flex; gap: 6px; flex-wrap: wrap; }
+.dec-card-title { font-family: var(--font-display); font-size: var(--fs-h4); font-weight: var(--fw-bold); margin: 0; line-height: 1.2; letter-spacing: -0.005em; text-wrap: pretty; }
+.dec-card-rationale { font-size: var(--fs-sm); color: var(--text-2); margin: 0; line-height: 1.5; }
+
+.dec-card-effects { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-2); padding: var(--space-3); background: var(--surface-2); border-radius: var(--radius-sm); margin-block-start: var(--space-1); }
+.dec-effect { display: flex; flex-direction: column; gap: 2px; }
+.dec-effect-lbl { font-size: 10px; font-weight: var(--fw-bold); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-3); }
+.dec-effect-val { font-size: var(--fs-sm); color: var(--text); font-weight: var(--fw-medium); }
+.dec-effect-val a { color: var(--accent-link); text-decoration: underline; }
+
+.dec-card-foot { display: flex; justify-content: space-between; align-items: center; padding-block-start: var(--space-2); border-block-start: 1px solid var(--border); margin-block-start: var(--space-1); }
+.dec-card-source { font-size: 11px; color: var(--text-3); }
+.dec-card-source a { color: var(--accent-link); text-decoration: underline; }
+
+.pill.type { background: var(--surface-3); color: var(--text-2); }
+.pill.status { font-weight: var(--fw-bold); text-transform: uppercase; letter-spacing: 0.04em; font-size: 10px; padding: 2px 8px; }
+.pill.status.active { background: oklch(0.94 0.04 145); color: oklch(0.32 0.08 145); }
+.pill.status.frozen { background: oklch(0.94 0.02 240); color: oklch(0.40 0.06 240); }
+.pill.status.reverted { background: oklch(0.94 0.04 25); color: oklch(0.40 0.10 25); }
+.pill.pinned { background: oklch(0.95 0.05 80); color: oklch(0.40 0.12 80); display: inline-flex; align-items: center; gap: 4px; }
+
+@media (max-width: 720px) {
+  .dec-card { grid-template-columns: 1fr; gap: var(--space-2); }
+  .dec-card-rail { flex-direction: row; gap: var(--space-2); }
+  .dec-card-effects { grid-template-columns: 1fr; }
+}
+</style>
+
+<script src="_shared/app.js"></script>
+<script>
+fetch('_shared/icons.svg.html').then(r => r.text()).then(t => document.getElementById('icons-host').innerHTML = t);
+document.querySelectorAll('.seg').forEach(seg => seg.querySelectorAll('.seg-btn').forEach(b => b.addEventListener('click', () => { seg.querySelectorAll('.seg-btn').forEach(o => o.classList.remove('is-active')); b.classList.add('is-active'); })));
+App.setupTweaks(
+  () => ({ locale: 'fr' }),
+  {
+    render: (s) => `<section class="tweaks-section"><div class="tweaks-section-title">Langue</div><div class="tweak-row"><label>Locale</label><select data-tweak="locale"><option value="fr" ${s.locale==='fr'?'selected':''}>FR</option><option value="en" ${s.locale==='en'?'selected':''}>EN</option></select></div></section>`,
+    apply: (s) => { App.setLocale(s.locale); }
+  }
+);
+</script>
+</body>
+</html>

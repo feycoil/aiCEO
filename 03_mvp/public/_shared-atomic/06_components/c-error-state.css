@@ -1,0 +1,126 @@
+/**
+ * c-error-state.css — Organism ErrorState (etat erreur recuperable)
+ *
+ * Pattern : icone alerte + titre + message + CTA reessayer.
+ *
+ * Variants :
+ *   .c-error-state              (default — danger)
+ *   .c-error-state--warning     (degrade gracieux)
+ *   .c-error-state--inline      (compact dans une carte)
+ *
+ * Accessibilite :
+ *   - role="alert" ou role="status" selon severite
+ *   - <h2> ou <h3> pour titre
+ *   - aria-live="assertive" pour erreurs fatales, "polite" pour warning
+ */
+
+.c-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-7) var(--space-5);
+  gap: var(--space-3);
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.c-error-state__icon {
+  width: 64px;
+  height: 64px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-danger-bg);
+  border-radius: var(--radius-pill);
+  color: var(--color-danger);
+  margin-bottom: var(--space-2);
+}
+
+.c-error-state__icon svg {
+  width: var(--icon-xl);
+  height: var(--icon-xl);
+}
+
+.c-error-state__title {
+  font-family: var(--font-sans);
+  font-size: var(--text-h3);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  margin: 0;
+  line-height: var(--leading-snug);
+}
+
+.c-error-state__message {
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  color: var(--color-text-2);
+  margin: 0;
+  line-height: var(--leading-normal);
+}
+
+.c-error-state__details {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-3);
+  background-color: var(--color-surface-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  margin-top: var(--space-2);
+  max-width: 100%;
+  overflow-x: auto;
+  text-align: left;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.c-error-state__actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+/* Warning variant (degrade gracieux) */
+.c-error-state--warning .c-error-state__icon {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+/* Inline variant */
+.c-error-state--inline {
+  padding: var(--space-4);
+  gap: var(--space-2);
+  flex-direction: row;
+  text-align: left;
+  align-items: flex-start;
+  background-color: var(--color-danger-bg);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-md);
+  max-width: 100%;
+}
+
+.c-error-state--inline .c-error-state__icon {
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.c-error-state--inline .c-error-state__icon svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
+}
+
+.c-error-state--inline .c-error-state__title {
+  font-size: var(--text-md);
+}
+
+.c-error-state--inline .c-error-state__message {
+  font-size: var(--text-sm);
+}
+
+.c-error-state--inline .c-error-state__actions {
+  margin-top: var(--space-2);
+}

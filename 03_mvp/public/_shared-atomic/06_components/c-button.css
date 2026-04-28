@@ -1,0 +1,98 @@
+/**
+ * c-button — Button
+ * Variants : primary | secondary | ghost | danger
+ * Sizes    : sm | md | lg
+ * Etats    : default, hover, focus-visible, active, disabled, loading
+ * Source   : 06-composants-catalogue.md (S6.1.2)
+ */
+
+.c-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--button-radius);
+  font-family: var(--font-sans);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--duration-hover) var(--ease-out),
+              border-color var(--duration-hover) var(--ease-out),
+              transform var(--duration-instant) var(--ease-out);
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* Sizes */
+.c-button--sm { padding: var(--button-padding-y-sm) var(--button-padding-x-sm); font-size: var(--text-sm); min-height: 28px; }
+.c-button--md { padding: var(--button-padding-y-md) var(--button-padding-x-md); font-size: var(--text-md); min-height: 36px; }
+.c-button--lg { padding: var(--button-padding-y-lg) var(--button-padding-x-lg); font-size: var(--text-lg); min-height: 44px; }
+
+/* Variant: primary */
+.c-button--primary {
+  background: var(--button-primary-bg);
+  color: var(--button-primary-text);
+}
+.c-button--primary:hover { background: var(--button-primary-bg-hover); }
+
+/* Variant: secondary */
+.c-button--secondary {
+  background: var(--button-secondary-bg);
+  color: var(--button-secondary-text);
+  border-color: var(--button-secondary-border);
+}
+.c-button--secondary:hover { background: var(--color-surface-3); }
+
+/* Variant: ghost */
+.c-button--ghost {
+  background: var(--button-ghost-bg);
+  color: var(--button-ghost-text);
+}
+.c-button--ghost:hover { background: var(--color-surface-3); color: var(--color-text); }
+
+/* Variant: danger */
+.c-button--danger {
+  background: var(--button-danger-bg);
+  color: var(--button-danger-text);
+}
+.c-button--danger:hover { background: var(--color-rose-700); }
+
+/* Etat: focus-visible (WCAG AA) */
+.c-button:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-focus);
+}
+
+/* Etat: active */
+.c-button:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+/* Etat: disabled */
+.c-button:disabled,
+.c-button.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Etat: loading (spinner inline) */
+.c-button.is-loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+.c-button__spinner {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+  display: inline-block;
+}
+
+/* Element: icon-only (square) */
+.c-button--icon-only {
+  padding: 0;
+  width: 36px;
+  height: 36px;
+}
+.c-button--icon-only.c-button--sm { width: 28px; height: 28px; }
+.c-button--icon-only.c-button--lg { width: 44px; height: 44px; }

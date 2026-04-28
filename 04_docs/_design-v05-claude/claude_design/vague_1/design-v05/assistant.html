@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>aiCEO — Assistant</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css"/>
+<link rel="stylesheet" href="_shared/app.css"/>
+<style>
+  .ass { display: grid; grid-template-columns: 240px 1fr 320px; min-height: calc(100vh - 64px - 40px); }
+  .ass-side { border-right: 1px solid var(--border); padding: 18px 14px; overflow-y: auto; }
+  .ass-side h4 { font: 800 10px var(--font-sans); text-transform: uppercase; letter-spacing: .1em; color: var(--text-3); margin: 12px 8px 6px; }
+  .conv { padding: 8px 10px; border-radius: 8px; cursor: pointer; margin-bottom: 2px; font: 500 12px var(--font-sans); color: var(--text-2); }
+  .conv:hover { background: var(--surface-3); }
+  .conv.active { background: var(--text); color: #fff; }
+  .conv .t { font-weight: 700; letter-spacing: -.005em; margin-bottom: 2px; line-height: 1.3; }
+  .conv .m { font-size: 10.5px; color: var(--text-3); }
+  .conv.active .m { color: rgba(255,255,255,.7); }
+
+  .ass-thread { display: flex; flex-direction: column; min-width: 0; }
+  .thread-head { padding: 18px 28px; border-bottom: 1px solid var(--border); }
+  .thread-head h2 { font: 800 18px var(--font-sans); letter-spacing: -.015em; margin: 0; }
+  .thread-head .m { font: 500 12px var(--font-mono); color: var(--text-3); margin-top: 4px; letter-spacing: .04em; }
+  .thread-body { flex: 1; padding: 24px 28px; overflow-y: auto; }
+  .msg { margin-bottom: 18px; max-width: 80ch; }
+  .msg .who { display: flex; align-items: center; gap: 8px; font: 800 11px var(--font-sans); text-transform: uppercase; letter-spacing: .08em; color: var(--text-3); margin-bottom: 6px; }
+  .msg .av { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font: 800 10px var(--font-sans); color: #fff; }
+  .msg.user .av { background: linear-gradient(135deg,#b88237,#d96d3e); }
+  .msg.ai .av { background: var(--violet); }
+  .msg.user .who { color: var(--rose); }
+  .msg.ai .who { color: var(--violet); }
+  .msg .body { font: 500 14px/1.6 var(--font-sans); color: var(--text); }
+  .msg .body p { margin: 0 0 8px; }
+  .msg .body p:last-child { margin-bottom: 0; }
+  .msg.ai .body { background: var(--surface); border: 1px solid var(--border); padding: 14px 18px; border-radius: 14px; }
+
+  /* Action card embedded in AI msg */
+  .ac-card { margin-top: 12px; background: #fff; border: 1px solid #ddd2e3; border-left: 3px solid var(--violet); border-radius: 0 12px 12px 0; padding: 14px 16px; }
+  .ac-card .lbl { font: 800 10px var(--font-sans); text-transform: uppercase; letter-spacing: .12em; color: var(--violet); margin-bottom: 6px; }
+  .ac-card .t { font: 700 14px var(--font-sans); margin-bottom: 6px; letter-spacing: -.01em; }
+  .ac-card .meta { font: 500 12px var(--font-sans); color: var(--text-2); margin-bottom: 10px; }
+  .ac-card .acts { display: flex; gap: 6px; }
+
+  /* Composer */
+  .composer { padding: 16px 28px 24px; border-top: 1px solid var(--border); }
+  .composer-box { background: var(--surface-2); border: 1px solid var(--border-2); border-radius: 16px; padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow-card); }
+  .composer-box textarea { border: 0; background: transparent; font: 500 14px var(--font-sans); color: var(--text); width: 100%; resize: none; outline: none; min-height: 56px; }
+  .composer-actions { display: flex; gap: 8px; align-items: center; }
+  .composer-actions .left { display: flex; gap: 6px; }
+  .composer-actions .left .btn { font-size: 11px; padding: 6px 10px; }
+  .composer-actions .right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+
+  /* Side panel */
+  .ass-ctx { background: var(--surface); border-left: 1px solid var(--border); padding: 22px 22px 28px; overflow-y: auto; }
+  .ass-ctx h4 { font: 800 11px var(--font-sans); text-transform: uppercase; letter-spacing: .1em; color: var(--text-3); margin: 18px 0 8px; }
+  .ass-ctx h4:first-child { margin-top: 0; }
+  .ctx-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px; font: 500 12px/1.5 var(--font-sans); color: var(--text-2); margin-bottom: 8px; }
+  .ctx-card .t { font: 700 12.5px var(--font-sans); color: var(--text); margin-bottom: 4px; letter-spacing: -.005em; }
+</style>
+</head>
+<body data-nav="assistant">
+<div class="app">
+  <div id="sidebar-slot"></div>
+  <main class="main">
+    <header class="topbar">
+      <div class="crumbs"><a href="index.html">Cockpit</a><span class="sep">›</span><span class="current">Assistant</span><span class="sep">·</span><span class="muted tabular">contexte chargé · 4 sociétés · 28 tâches · 12 décisions</span></div>
+      <div class="topbar-actions">
+        <button class="btn">Historique</button>
+        <button class="btn primary">+ Nouveau fil</button>
+      </div>
+    </header>
+
+    <div class="ass">
+      <aside class="ass-side">
+        <button class="btn primary" style="width:100%; justify-content:center; margin-bottom:14px">+ Nouveau fil</button>
+        <h4>Aujourd'hui</h4>
+        <div class="conv active"><div class="t">Préparer dossier banque Bretagne</div><div class="m">il y a 2 min</div></div>
+        <div class="conv"><div class="t">Ré-écrire mail Naïr — ton plus ferme</div><div class="m">il y a 18 min</div></div>
+        <div class="conv"><div class="t">Résumer 47 mails de WE</div><div class="m">08:43</div></div>
+        <h4>Cette semaine</h4>
+        <div class="conv"><div class="t">Synthèse FF&amp;E Pamandzi</div><div class="m">ven. 17 avr.</div></div>
+        <div class="conv"><div class="t">Brouillon délégation NDF T1</div><div class="m">jeu. 16 avr.</div></div>
+        <div class="conv"><div class="t">Plan revue COMEX ITH</div><div class="m">mer. 15 avr.</div></div>
+        <h4>Plus ancien</h4>
+        <div class="conv"><div class="t">Argumentaire CA SCIS S15</div><div class="m">7 avr.</div></div>
+        <div class="conv"><div class="t">Trame onboarding chargé travaux</div><div class="m">2 avr.</div></div>
+      </aside>
+
+      <section class="ass-thread">
+        <div class="thread-head">
+          <h2>Préparer dossier banque Bretagne</h2>
+          <div class="m">SCIS · contexte tirage 30/04 · 6 messages · 1 action en attente</div>
+        </div>
+        <div class="thread-body">
+          <div class="msg user">
+            <div class="who"><span class="av">FM</span>Feyçoil · 18:42</div>
+            <div class="body"><p>Tessier veut le dossier complet mardi 28 avril 17h. Aide-moi à le préparer. Qu'est-ce qu'il me manque ?</p></div>
+          </div>
+
+          <div class="msg ai">
+            <div class="who"><span class="av">ai</span>aiCEO · Haiku 4.5 · 612 ms</div>
+            <div class="body">
+              <p>D'après vos tirages précédents (Pamandzi 09 phase 1, mai 2025), le dossier banque Bretagne contient 6 pièces. Je viens de scanner votre Drive et vos mails — voici l'état :</p>
+              <p><b>✓ Prêt</b> — KBIS SCIS Bretagne (à jour 02/2026), compromis signé (sept. 2025), dernier bilan ETIC consolidé.</p>
+              <p><b>⚠ À actualiser</b> — Plan de financement (version sept. 2025, ne reflète plus le décalage planning), tableau d'amortissement (formule à corriger), lettre d'engagement actionnaires (Karim signature manquante).</p>
+              <p>Mardi 14h-15h30 vous suffit pour les 3 pièces si Lamiae prépare le plan de financement en amont (réutilisable depuis Pamandzi 09). Karim signe en 5 min en visio.</p>
+
+              <div class="ac-card">
+                <div class="lbl">Action proposée · 1-clic</div>
+                <div class="t">Déléguer "Mettre à jour plan de financement Bretagne" → Lamiae · échéance lundi 27 17h</div>
+                <div class="meta">Charge Lamiae S17 : 60% · capacité OK · template Pamandzi 09 attaché</div>
+                <div class="acts">
+                  <button class="btn primary">Envoyer délégation</button>
+                  <button class="btn">Voir le brouillon</button>
+                  <button class="btn ghost">Plus tard</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="msg user">
+            <div class="who"><span class="av">FM</span>Feyçoil · 18:44</div>
+            <div class="body"><p>Pour la lettre actionnaires, je préfère écrire à Karim moi-même — ton direct mais pas sec. Trois lignes max.</p></div>
+          </div>
+
+          <div class="msg ai">
+            <div class="who"><span class="av">ai</span>aiCEO · 482 ms</div>
+            <div class="body">
+              <p>Voici une proposition, en m'appuyant sur votre style "directif court" (vu sur 28 derniers mails à Karim) :</p>
+              <div style="background: var(--surface); border-radius: 10px; padding: 12px 14px; font-family: var(--font-mono); font-size: 12.5px; color: var(--text); line-height: 1.6; margin-bottom: 8px;">
+                Karim,<br/><br/>
+                Banque Bretagne demande la lettre d'engagement actionnaires pour mardi 28 17h.<br/>
+                Peux-tu me la signer demain — visio rapide à 11h ?<br/>
+                Mêmes termes que Pamandzi 09 phase 1, je te l'attache.<br/><br/>
+                F.
+              </div>
+              <div style="display:flex; gap:8px;">
+                <button class="btn primary">Copier</button>
+                <button class="btn">Plus chaleureux</button>
+                <button class="btn">Plus court</button>
+                <button class="btn">Envoyer via Outlook</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="composer">
+          <div class="composer-box">
+            <textarea placeholder="Demandez, brouillonnez, déléguez… (⌘⏎ envoyer)"></textarea>
+            <div class="composer-actions">
+              <div class="left">
+                <button class="btn">＠ contexte</button>
+                <button class="btn">📎 fichier</button>
+                <button class="btn">🪨 Big Rock</button>
+              </div>
+              <div class="right">
+                <span class="muted tiny tabular">Haiku 4.5 · streaming</span>
+                <button class="btn primary">Envoyer <kbd class="kbd">⌘⏎</kbd></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="ass-ctx">
+        <h4>Contexte du fil</h4>
+        <div class="ctx-card">
+          <div class="t">🪨 Big Rock #1 · S17</div>
+          Tirage CA Bretagne — décaler au 30/04
+        </div>
+        <div class="ctx-card">
+          <div class="t">SCIS Bretagne</div>
+          Société civile · 4 actionnaires · projet Pamandzi 09 phase 2
+        </div>
+        <h4>Sources actives</h4>
+        <div class="ctx-card">
+          <div class="t">📧 Mail Tessier · ven. 18:14</div>
+          "Décalage tirage CA — confirmation 30/04"
+        </div>
+        <div class="ctx-card">
+          <div class="t">📁 Drive · Pamandzi-09 / Banque</div>
+          12 fichiers · dernière modif 06/04
+        </div>
+        <div class="ctx-card">
+          <div class="t">📅 Slot mardi 14:00</div>
+          90 min libres · pas encore bloqué
+        </div>
+        <h4>Personnes</h4>
+        <div class="ctx-card"><div class="t">Christine Tessier</div>CA Bretagne · contact direct depuis 2024</div>
+        <div class="ctx-card"><div class="t">Lamiae Bensaïd</div>ETIC · charge S17 60%</div>
+        <div class="ctx-card"><div class="t">Karim El Mansouri</div>AMP COO · co-actionnaire SCIS</div>
+      </aside>
+    </div>
+  </main>
+</div>
+<script src="_shared/shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+/**
+ * c-icon — Wrapper SVG sprite Lucide
+ * Sizes  : xs | sm | md | lg | xl
+ * Source : 06-composants-catalogue.md (S6.1.2) + 08-patterns-techniques.md §2 Iconographie
+ *
+ * Usage HTML :
+ *   <svg class="c-icon c-icon--md"><use href="/_shared/icons.svg#icon-home"/></svg>
+ */
+
+.c-icon {
+  display: inline-block;
+  vertical-align: middle;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+/* Sizes */
+.c-icon--xs { width: var(--icon-xs); height: var(--icon-xs); }
+.c-icon--sm { width: var(--icon-sm); height: var(--icon-sm); }
+.c-icon--md { width: var(--icon-md); height: var(--icon-md); }
+.c-icon--lg { width: var(--icon-lg); height: var(--icon-lg); }
+.c-icon--xl { width: var(--icon-xl); height: var(--icon-xl); }

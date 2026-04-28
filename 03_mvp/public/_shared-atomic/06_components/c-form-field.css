@@ -1,0 +1,90 @@
+/**
+ * c-form-field.css — Molecule FormField (label + input + helper/error)
+ *
+ * Compose :
+ *   .c-form-field
+ *     .c-form-field__label
+ *     .c-form-field__control  (slot pour .c-input, .c-select, etc.)
+ *     .c-form-field__helper   (texte d'aide neutre)
+ *     .c-form-field__error    (texte d'erreur — rose-700)
+ *
+ * Etats :
+ *   .c-form-field--required   : ajoute asterisque rouge apres label
+ *   .c-form-field--inline     : label + control sur la meme ligne
+ *   .is-error                 : applique aux enfants pour styling rouge
+ *
+ * Accessibilite :
+ *   - <label for="id"> obligatoire
+ *   - aria-describedby="id-helper id-error" sur input
+ *   - aria-invalid="true" sur input quand .is-error
+ */
+
+.c-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 100%;
+}
+
+.c-form-field__label {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  line-height: var(--leading-snug);
+}
+
+.c-form-field--required .c-form-field__label::after {
+  content: " *";
+  color: var(--color-danger);
+  font-weight: var(--weight-bold);
+}
+
+.c-form-field__control {
+  display: flex;
+  width: 100%;
+}
+
+.c-form-field__helper {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  color: var(--color-text-3);
+  line-height: var(--leading-snug);
+  margin-top: var(--space-1);
+}
+
+.c-form-field__error {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-danger-text);
+  line-height: var(--leading-snug);
+  margin-top: var(--space-1);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* Inline variant */
+.c-form-field--inline {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.c-form-field--inline .c-form-field__label {
+  flex-shrink: 0;
+  min-width: 120px;
+}
+
+.c-form-field--inline .c-form-field__control {
+  flex: 1;
+}
+
+/* Error state propage aux enfants */
+.c-form-field.is-error .c-input,
+.c-form-field.is-error .c-input--text,
+.c-form-field.is-error .c-input--textarea {
+  border-color: var(--color-danger);
+  box-shadow: var(--ring-error);
+}

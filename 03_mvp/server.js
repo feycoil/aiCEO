@@ -1,16 +1,16 @@
-/**
+﻿/**
 
 
- * server.js — backend Express local pour aiCEO v0.5.
+ * server.js â€” backend Express local pour aiCEO v0.5.
 
 
- * Usage : npm start → http://localhost:3001
+ * Usage : npm start â†’ http://localhost:3001
 
 
  *
 
 
- * Port 3001 aligné sur DOSSIER-SPRINT-S2 §1 (contrat dogfood) — ADR S2.00.
+ * Port 3001 alignÃ© sur DOSSIER-SPRINT-S2 Â§1 (contrat dogfood) â€” ADR S2.00.
 
 
  */
@@ -83,6 +83,7 @@ const systemRouter        = require("./src/routes/system");
 
 
 const assistantRouter     = require("./src/routes/assistant");
+const preferencesRouter   = require("./src/routes/preferences");
 
 
 
@@ -95,24 +96,47 @@ const PORT = Number(process.env.PORT) || 3001;
 
 
 
+
+// === Sécurité headers (S6.5 Lot 8) ===
+app.use((req, res, next) => {
+  // Local mono-user, headers minimum sain
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(self), geolocation=()');
+  // CSP : permissif pour MVP local, restrictif via inline scripts/styles autorises
+  res.setHeader('Content-Security-Policy',
+    "default-src 'self'; " +
+    "script-src 'self' 'unsafe-inline'; " +  // unsafe-inline car Claude Design a des scripts inline
+    "style-src 'self' 'unsafe-inline'; " +    // styles inline aussi
+    "img-src 'self' data:; " +
+    "font-src 'self' data:; " +
+    "connect-src 'self'; " +
+    "frame-ancestors 'none';"
+  );
+  next();
+});
+
 app.use(express.json({ limit: "2mb" }));
 
 
+// Convergence v0.6 (S6.2)  redirect / vers hub avant le static
+app.get("/", (req, res) => res.redirect("/v06/index.html"));
 app.use(express.static(path.join(__dirname, "public")));
 
 
 
 
 
-// --- Routes pages cockpit (S2) — URLs propres ---
+// --- Routes pages cockpit (S2) â€” URLs propres ---
 
 
-app.get("/", (req, res) => {
-
-
+// Alias routes principales â†’ v0.6
+app.get("/cockpit", (req, res) => res.redirect("/v06/index.html"));
+app.get("/hub",     (req, res) => res.redirect("/v06/hub.html"));
+app.get("/legacy",  (req, res) => {
+  // ConservÃ© pour accÃ¨s debug aux pages v0.5
   res.sendFile(path.join(__dirname, "public", "index.html"));
-
-
 });
 
 
@@ -189,7 +213,7 @@ app.get("/decisions", (req, res) => {
 
 
 app.get("/api/health", (req, res) => {
-  // S5.03 — Health enrichi (uptime + memory + db size + counts + last sync Outlook)
+  // S5.03 â€” Health enrichi (uptime + memory + db size + counts + last sync Outlook)
   const result = {
     ok: true,
     demo: !process.env.ANTHROPIC_API_KEY || process.env.DEMO_MODE === "1",
@@ -277,6 +301,7 @@ app.use("/api/big-rocks",      bigRocksRouter);
 
 
 app.use("/api/system",         systemRouter);
+app.use("/api/preferences",    preferencesRouter);
 
 
 app.use("/api/assistant",      assistantRouter);
@@ -703,12 +728,6 @@ app.listen(PORT, () => {
   console.log(`  -> API REST SQLite : /api/{tasks,decisions,contacts,projects,groups,events}`);
 
 
-  console.log(`--------------------------------------\n`);
-
-
+  console.log(`-----------------------------------------`);
+  console.log(`  -> http://localhost:${PORT}/legacy   (debug pages v0.5)`);
 });
-
-
-
-
-

@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="fr" data-locale="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>aiCEO — Mini storybook</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css?v=2">
+<link rel="stylesheet" href="_shared/app.css?v=2">
+</head>
+<body data-route="components">
+
+<div id="icons-host" hidden></div>
+
+<header class="sb-top">
+  <div class="o-cluster">
+    <a href="hub.html" class="logo-mark" style="text-decoration:none">a</a>
+    <div>
+      <h1 style="font-size:var(--fs-h3);font-weight:var(--fw-extrabold);margin:0">Composants — référence visuelle</h1>
+      <p class="small u-text-3" style="margin:2px 0 0">Tous les composants utilisés dans aiCEO v0.5. Cliquez pour copier la classe.</p>
+    </div>
+  </div>
+  <div class="o-cluster">
+    <a href="hub.html" class="btn ghost sm">← Hub</a>
+    <a href="index.html" class="btn sm">Cockpit</a>
+  </div>
+</header>
+
+<main class="sb-main">
+
+  <!-- ── Type ───────────────────────────────── -->
+  <section class="sb-section" id="type">
+    <header class="sb-section-head">
+      <h2>Typographie</h2>
+      <p>Fira Sans (texte) · Aubrielle (script) · Sol (numéraux fins).</p>
+    </header>
+    <div class="sb-grid">
+      <div class="sb-block">
+        <span class="display">Display 56 / Fira Sans ExtraBold</span>
+        <span class="sb-tag">.display</span>
+      </div>
+      <div class="sb-block">
+        <h1 class="h1">Titre H1 — la voix du cockpit</h1>
+        <span class="sb-tag">.h1</span>
+      </div>
+      <div class="sb-block">
+        <h2 class="h2">Titre H2 — pour les sections</h2>
+        <span class="sb-tag">.h2</span>
+      </div>
+      <div class="sb-block">
+        <p class="lead">Lead — pour cadrer le sujet d'une section, plus aéré que le corps.</p>
+        <span class="sb-tag">.lead</span>
+      </div>
+      <div class="sb-block">
+        <p class="body">Corps — pour la lecture courante. Ligne 1.55, 16 px, calé sur Fira Sans Regular.</p>
+        <span class="sb-tag">.body</span>
+      </div>
+      <div class="sb-block">
+        <p class="small">Small — pour les métadonnées discrètes.</p>
+        <span class="sb-tag">.small</span>
+      </div>
+      <div class="sb-block">
+        <span class="overline">Overline / eyebrow</span>
+        <span class="sb-tag">.overline / .eyebrow</span>
+      </div>
+      <div class="sb-block">
+        <span class="script script-accent">Bonjour Aubrielle</span>
+        <span class="sb-tag">.script.script-accent</span>
+      </div>
+      <div class="sb-block" style="display:flex;align-items:baseline;gap:8px">
+        <span class="thin xl u-tnum">72</span>
+        <span class="thin md u-tnum">42</span>
+        <span class="sb-tag">.thin (Sol)</span>
+      </div>
+      <div class="sb-block">
+        <code>code{ color: tokens; }</code>
+        <span class="sb-tag">code, .mono</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Colors ─────────────────────────────── -->
+  <section class="sb-section" id="colors">
+    <header class="sb-section-head">
+      <h2>Palette</h2>
+      <p>Neutres calés sur l'ivoire de Twisty. Accents calmes, jamais saturés.</p>
+    </header>
+    <div class="sb-swatches">
+      <div class="sw" style="background:var(--bg)"><span>--bg</span></div>
+      <div class="sw" style="background:var(--surface)"><span>--surface</span></div>
+      <div class="sw" style="background:var(--surface-2)"><span>--surface-2</span></div>
+      <div class="sw" style="background:var(--surface-3)"><span>--surface-3</span></div>
+      <div class="sw on" style="background:var(--text)"><span>--text</span></div>
+      <div class="sw on" style="background:var(--brand)"><span>--brand</span></div>
+      <div class="sw on" style="background:var(--rose)"><span>--rose</span></div>
+      <div class="sw on" style="background:var(--emerald)"><span>--emerald</span></div>
+      <div class="sw on" style="background:var(--amber)"><span>--amber</span></div>
+      <div class="sw on" style="background:var(--sky)"><span>--sky</span></div>
+      <div class="sw on" style="background:var(--violet)"><span>--violet</span></div>
+    </div>
+    <h3 class="sb-sub">Maisons</h3>
+    <div class="sb-swatches">
+      <div class="sw on" style="background:var(--house-northwind)"><span>Northwind</span></div>
+      <div class="sw on" style="background:var(--house-solstice)"><span>Solstice</span></div>
+      <div class="sw on" style="background:var(--house-helix)"><span>Helix</span></div>
+    </div>
+  </section>
+
+  <!-- ── Buttons ────────────────────────────── -->
+  <section class="sb-section" id="buttons">
+    <header class="sb-section-head"><h2>Boutons</h2></header>
+    <div class="sb-row">
+      <button class="btn primary lg">Primary lg</button>
+      <button class="btn primary">Primary</button>
+      <button class="btn primary sm">Primary sm</button>
+      <button class="btn">Default</button>
+      <button class="btn ghost">Ghost</button>
+      <button class="btn ghost sm">Ghost sm</button>
+      <button class="btn pill sm">Pill sm</button>
+      <button class="btn danger sm">Danger</button>
+      <button class="btn primary" disabled>Disabled</button>
+    </div>
+    <h3 class="sb-sub">Avec icônes</h3>
+    <div class="sb-row">
+      <button class="btn primary"><svg class="ico" width="14" height="14"><use href="#i-check"/></svg>Confirmer</button>
+      <button class="btn"><svg class="ico" width="14" height="14"><use href="#i-clock"/></svg>Reporter</button>
+      <button class="btn ghost"><svg class="ico" width="14" height="14"><use href="#i-arrow-right"/></svg>Continuer</button>
+      <button class="icon-btn" aria-label="Plus"><svg class="ico" width="16" height="16"><use href="#i-more-h"/></svg></button>
+    </div>
+  </section>
+
+  <!-- ── Pills & badges ─────────────────────── -->
+  <section class="sb-section" id="pills">
+    <header class="sb-section-head"><h2>Pills & badges</h2></header>
+    <div class="sb-row">
+      <span class="pill">Default</span>
+      <span class="pill outline">Outline</span>
+      <span class="pill outline sm">Outline sm</span>
+      <span class="pill priority p0">P0</span>
+      <span class="pill priority p1">P1</span>
+      <span class="pill priority p2">P2</span>
+      <span class="pill priority p3">P3</span>
+      <span class="pill status hot"><span class="dot"></span>Tension</span>
+      <span class="pill status active">Cadence</span>
+      <span class="pill status new">Émergence</span>
+      <span class="pill status coaching"><svg class="ico" width="11" height="11"><use href="#i-coaching"/></svg>Coaching</span>
+      <span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span>
+      <span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span>
+      <span class="pill house" data-house="helix"><span class="dot"></span>Helix</span>
+    </div>
+  </section>
+
+  <!-- ── Forms ──────────────────────────────── -->
+  <section class="sb-section" id="forms">
+    <header class="sb-section-head"><h2>Formulaire</h2></header>
+    <div class="sb-grid" style="grid-template-columns:1fr 1fr">
+      <div class="field">
+        <label class="field-label">Texte simple</label>
+        <input class="input" placeholder="Tapez ici…">
+        <span class="field-help">Aide contextuelle, courte.</span>
+      </div>
+      <div class="field">
+        <label class="field-label">Avec erreur</label>
+        <input class="input has-error" value="—">
+        <span class="field-help error">Cette valeur ne tient pas. Réessayez.</span>
+      </div>
+      <div class="field">
+        <label class="field-label">Select</label>
+        <select class="input"><option>Option A</option><option>Option B</option></select>
+      </div>
+      <div class="field">
+        <label class="field-label">Textarea</label>
+        <textarea class="input" rows="3" placeholder="Décrivez en 1‑2 phrases…"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">Toggle</label>
+        <div class="toggle-group">
+          <button class="toggle-btn is-active">Option 1</button>
+          <button class="toggle-btn">Option 2</button>
+          <button class="toggle-btn">Option 3</button>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Switch</label>
+        <label class="switch"><input type="checkbox" checked><span class="switch-track"><span class="switch-thumb"></span></span></label>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Avatars ────────────────────────────── -->
+  <section class="sb-section" id="avatars">
+    <header class="sb-section-head"><h2>Avatars</h2></header>
+    <div class="sb-row" style="align-items:center">
+      <span class="avatar xs">AH</span>
+      <span class="avatar sm">AH</span>
+      <span class="avatar md">AH</span>
+      <span class="avatar lg">AH</span>
+      <span class="avatar md" data-house="northwind">MD</span>
+      <span class="avatar md" data-house="solstice">LP</span>
+      <span class="avatar md" data-house="helix">HE</span>
+      <span class="avatar-stack">
+        <span class="avatar sm">A</span>
+        <span class="avatar sm">B</span>
+        <span class="avatar sm">C</span>
+        <span class="avatar sm">+4</span>
+      </span>
+    </div>
+  </section>
+
+  <!-- ── Cards ──────────────────────────────── -->
+  <section class="sb-section" id="cards">
+    <header class="sb-section-head"><h2>Cartes</h2></header>
+    <div class="sb-grid">
+      <article class="card panel">
+        <h3 class="card-title">Card panel</h3>
+        <p class="small u-text-3 u-mt-2">Le conteneur de base, avec ombre douce.</p>
+      </article>
+      <article class="card panel compact">
+        <h3 class="card-title">Card panel compact</h3>
+        <p class="small u-text-3 u-mt-2">Padding réduit, pour les sidebars.</p>
+      </article>
+      <article class="kpi tinted rose">
+        <span class="kpi-label">KPI tinted rose</span>
+        <span class="kpi-value">3</span>
+        <span class="kpi-sub">éléments en attente</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── Lists ──────────────────────────────── -->
+  <section class="sb-section" id="lists">
+    <header class="sb-section-head"><h2>Listes</h2></header>
+    <ul class="list-card" style="max-width:540px">
+      <li class="list-row">
+        <span class="row-icon" data-house="northwind"><svg class="ico" width="16" height="16"><use href="#i-folder"/></svg></span>
+        <div class="row-main">
+          <h4 class="row-title">Spec produit v3</h4>
+          <div class="row-meta"><span>Northwind</span><span>·</span><span>3 jours</span></div>
+        </div>
+        <div class="row-actions">
+          <span class="progress" style="width:80px"><span class="progress-fill" style="width:62%"></span></span>
+        </div>
+      </li>
+      <li class="list-row">
+        <span class="row-icon" data-house="solstice"><svg class="ico" width="16" height="16"><use href="#i-target"/></svg></span>
+        <div class="row-main">
+          <h4 class="row-title">Négo Solstice round 3</h4>
+          <div class="row-meta"><span>Solstice</span><span>·</span><span>Jeu. 14:00</span></div>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ── Progress & Skeleton ────────────────── -->
+  <section class="sb-section" id="loading">
+    <header class="sb-section-head"><h2>Chargement</h2></header>
+    <div class="sb-row" style="gap:32px">
+      <div>
+        <p class="small u-text-3">Progress</p>
+        <span class="progress" style="width:160px"><span class="progress-fill" style="width:62%"></span></span>
+      </div>
+      <div>
+        <p class="small u-text-3">Skeleton</p>
+        <div style="display:flex;flex-direction:column;gap:6px;width:200px">
+          <span class="skel skel-line lg"></span>
+          <span class="skel skel-line"></span>
+          <span class="skel skel-line" style="width:60%"></span>
+        </div>
+      </div>
+      <div>
+        <p class="small u-text-3">Spinner</p>
+        <div class="spinner" aria-label="Chargement"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Coaching strip ─────────────────────── -->
+  <section class="sb-section" id="coaching">
+    <header class="sb-section-head"><h2>Coaching strip</h2></header>
+    <div class="decision-coach" style="max-width:640px">
+      <div class="coach-mark"><svg class="ico" width="16" height="16"><use href="#i-coaching"/></svg></div>
+      <div class="coach-body">
+        <p class="coach-q"><strong>Coaching :</strong> Vous tranchez par <em>habitude</em>, pas par conviction. Et si vous laissiez décanter ?</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Toasts & modals (live) ─────────────── -->
+  <section class="sb-section" id="overlays">
+    <header class="sb-section-head"><h2>Toasts & modals</h2><p>Cliquez pour déclencher.</p></header>
+    <div class="sb-row">
+      <button class="btn" onclick="App.toast('Décision tranchée.', { kind: 'success' })">Toast success</button>
+      <button class="btn" onclick="App.toast('Pensez à votre 1‑à‑1 avec Helene.', { kind: 'info', action: 'Voir' })">Toast info + action</button>
+      <button class="btn" onclick="App.toast('Sync échouée. On reprend dans 30 s.', { kind: 'error' })">Toast error</button>
+      <button class="btn" onclick="App.modal({ title: 'Modal compact', size: 'compact', body: '<p>Une modale compacte pour confirmer.</p>', footer: '<button class=\\'btn ghost\\' data-close>Annuler</button><button class=\\'btn primary\\' data-close>OK</button>', onMount: (r,c) => r.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', c)) })">Modal</button>
+      <button class="btn" onclick="App.sheet({ title: 'Sheet mobile', body: '<p>Sheet bottom — swipe pour fermer.</p>' })">Sheet</button>
+    </div>
+  </section>
+
+  <!-- ── Dot chart (Twisty) ─────────────────── -->
+  <section class="sb-section" id="dotchart">
+    <header class="sb-section-head"><h2>Dot chart (Twisty‑inspired)</h2></header>
+    <div style="max-width:280px;background:var(--surface-2);padding:20px;border-radius:var(--radius-lg)">
+      <div class="dot-chart">
+        <div class="dot-chart-col" data-h="40"><div class="stem"></div><div class="dot"></div></div>
+        <div class="dot-chart-col" data-h="60"><div class="stem"></div><div class="dot"></div></div>
+        <div class="dot-chart-col is-peak" data-h="100"><div class="stem"></div><div class="dot"></div></div>
+        <div class="dot-chart-col" data-h="80"><div class="stem"></div><div class="dot"></div></div>
+        <div class="dot-chart-col" data-h="50"><div class="stem"></div><div class="dot"></div></div>
+        <div class="dot-chart-col" data-h="30"><div class="stem"></div><div class="dot"></div></div>
+        <div class="dot-chart-col" data-h="20"><div class="stem"></div><div class="dot"></div></div>
+      </div>
+      <div class="day-pills" style="margin-top:8px">
+        <button class="day-pill is-done">L</button>
+        <button class="day-pill is-active">M</button>
+        <button class="day-pill">M</button>
+        <button class="day-pill">J</button>
+        <button class="day-pill">V</button>
+        <button class="day-pill is-empty">S</button>
+        <button class="day-pill is-empty">D</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Empty states ───────────────────────── -->
+  <section class="sb-section" id="empty">
+    <header class="sb-section-head"><h2>Empty states</h2></header>
+    <div class="empty-state" style="max-width:480px">
+      <div class="empty-glyph">
+        <svg viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.4">
+          <circle cx="30" cy="30" r="18"/>
+          <path d="M22 30c3 4 13 4 16 0"/>
+        </svg>
+      </div>
+      <h3 class="card-title">Inbox zero</h3>
+      <p class="small u-text-2 u-mt-2">Aucune décision n'attend votre arbitrage. Profitez‑en pour respirer.</p>
+      <button class="btn primary u-mt-4">Capter une intention</button>
+    </div>
+  </section>
+
+</main>
+
+<style>
+.sb-top {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(8px);
+  border-block-end: 1px solid var(--border);
+}
+.sb-main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+  display: flex; flex-direction: column;
+  gap: var(--space-10);
+}
+.sb-section { padding-block-end: var(--space-6); border-block-end: 1px solid var(--border); }
+.sb-section-head { margin-block-end: var(--space-5); }
+.sb-section-head h2 {
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--tracking-h2);
+  margin: 0;
+}
+.sb-section-head p { font-size: var(--fs-sm); color: var(--text-3); margin: 4px 0 0; }
+.sb-sub {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caption);
+  color: var(--text-3);
+  margin: var(--space-5) 0 var(--space-3);
+}
+
+.sb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-3);
+}
+.sb-block {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: var(--space-4);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.sb-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-3);
+  background: var(--surface-3);
+  padding: 2px 6px;
+  border-radius: 4px;
+  align-self: flex-start;
+}
+
+.sb-row {
+  display: flex; flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.sb-swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--space-2);
+}
+.sw {
+  height: 64px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  display: flex; align-items: flex-end;
+  padding: 6px 10px;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text);
+}
+.sw.on { color: #fff; border-color: transparent; }
+</style>
+
+<script src="_shared/app.js"></script>
+<script>
+fetch('_shared/icons.svg.html').then(r => r.text()).then(t => {
+  document.getElementById('icons-host').innerHTML = t;
+});
+</script>
+</body>
+</html>

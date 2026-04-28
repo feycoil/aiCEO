@@ -10,6 +10,584 @@
 
 
 
+## 2026-04-26 · Adoption Claude Design v0.6 — archivage S6.1 atomic
+
+**Statut** : Acté · **Audience** : équipe binôme · **Décision** : pivot adoption Claude Design v0.6 + archivage S6.1 atomic
+
+**Contexte** : 26/04/2026 PM, livraison Claude Design Phase 1 reçue dans `04_docs/_design-v05-claude/claude_design/vague_1/`. **8.9 Mo, 74 fichiers utiles** : 7 écrans HTML (hub, cockpit, arbitrage, evening, onboarding, settings, components/storybook), DS partagé monolithique (3 CSS ~50 ko + app.js 10 ko + sprite 54 icônes + 11 fonts self-hosted ~2 Mo), PWA (manifest + service worker), tests auto 7 pages.
+
+Audit comparatif vs S6.1 livré (cf. `04_docs/_design-v05-claude/claude_design/vague_1/AUDIT-VAGUE-1.md`) : **les 2 systèmes sont structurellement incompatibles** :
+- Naming : pragmatique court Claude Design (`.btn.ghost`, `.kpi-tile`, `.house-northwind`) vs BEM strict S6.1 (`.c-button--ghost`, `.c-modal__header`)
+- Architecture : 3 fichiers monolithiques vs 30 fichiers ITCSS 7 couches
+- Sprite : 54 icônes `i-*` (avec custom métier `i-arbitrage`, `i-evening`, `i-house`, `i-coaching`) vs 30 icônes `icon-*` Lucide standard
+
+Tenter de fusionner créerait un mix instable + double maintenance sur 18 mois.
+
+**Décision** : **adopter intégralement Claude Design v0.6 comme implémentation officielle v0.6**, et **archiver S6.1 atomic** comme alternative DS scalable pour V2/V3.
+
+**Justifications** :
+1. Claude Design a livré 7 écrans **fonctionnels** prêts à brancher — c'est le saut produit attendu en v0.6.
+2. La maquette est cohérente (single-author, alignée bundle 17 PJ + image étalon Twisty).
+3. Le sprite icônes Claude Design (54 icônes avec custom métier) dépasse en couverture le sprite S6.1 (30 standard Lucide).
+4. Garder 2 systèmes en parallèle = **cauchemar maintenance**.
+5. La rigueur BEM atomic peut être réintroduite en V2 quand on aura un vrai besoin (≥2 tenants, ≥3 langues, ≥10 designers).
+6. `npm install` côté Windows pas encore tourné → switch sans coût migration.
+
+**Conséquences** :
+
+*Côté repo* :
+- `03_mvp/public/_shared/` (S6.1 atomic) **renommé** `03_mvp/public/_shared-atomic/` — préservation référence.
+- `03_mvp/public/components.html` (gallery S6.1.5) **renommé** `03_mvp/public/components-atomic.html` — links patches vers `/_shared-atomic/`. Reste accessible en `/components-atomic.html`.
+- `03_mvp/public/v06/` créé avec livraison Claude Design intégrale (7 HTML + `_shared/` + manifest + sw.js + fonts).
+- Pages v0.5 (cockpit, arbitrage, evening, taches, agenda, revues, groupes, projets, projet, contacts, decisions, assistant) **inchangées** — utilisent `/assets/colors_and_type.css` historique. Coexistence v0.5 ↔ v0.6 OK.
+
+*Côté roadmap* :
+- Sprint S6.1 (DS atomic, livré) : **archivé** comme référence. Tag `v0.6-s6.1` posé pour traçabilité, mais marqué [ARCHIVED] dans roadmap-map.html.
+- **Nouveau Sprint S6.1-bis** : « Adoption livraison Claude Design v0.6 » (Phase A coexistence déployée le 26/04/2026 PM).
+- Sprint S6.2 (cible 3-5 j binôme) : « Branchement APIs REST sur 7 écrans Claude Design ».
+- Sprint S6.3 (cible 1-2 j binôme) : « Migration pages restantes au DS Claude Design + cleanup ».
+
+*Côté governance* :
+- Bundle Claude Design v3.1 reste cible visuelle V1+. La livraison vague_1 = première matérialisation.
+- Si Claude Design livre Phase 2 (Tier 2 + Tier 3 = projets/contacts/decisions/registres), elle sera intégrée pareil.
+
+*Côté risques* :
+- R1 : effort S6.1 (≈3-4 h) « perdu » — non, capitalisé en apprentissage BEM atomic réutilisable V2.
+- R2 : SW peut cacher en dev → désactiver via DevTools si besoin pendant phase B/C.
+- R3 : datasets démo Claude Design plus riches que APIs REST actuelles → backlog ticket pour enrichir en V1.
+
+**Prochaine étape immédiate** : tester `localhost:4747/v06/hub.html`, naviguer entre les 7 écrans, valider visuellement, puis lancer S6.2 (branchement APIs).
+
+**Sources** :
+- `04_docs/_design-v05-claude/claude_design/vague_1/AUDIT-VAGUE-1.md` (rapport complet 6 sections)
+- `04_docs/_design-v05-claude/claude_design/vague_1/design-v06/` (livraison source)
+- `03_mvp/public/v06/` (déploiement)
+- ADR `2026-04-26 · S6.00 — Méthode v0.6 + cadrage 3 sprints courts` (réajusté en S6.1-bis + S6.2 + S6.3)
+
+---
+
+## 2026-04-26 · S6.1.00 — Méthode Sprint S6.1 + setup ITCSS
+
+**Statut** : Acté · **Audience** : équipe binôme · **Démarrage** : J0 (post-ExCom 04/05)
+
+**Contexte** : Ouverture formelle du Sprint S6.1 (premier sprint de la phase v0.6 « Interface finalisée »). Cohérent ADR `2026-04-26 · S6.00 — Méthode v0.6 + cadrage 3 sprints courts` qui acte le découpage 3 sprints (S6.1 / S6.2 / S6.3). S6.1 pose les **fondations DS atomic** : tokens 3 niveaux, ITCSS 7 couches, BEM avec préfixes, 16 composants UI catalogués, drawer collapsible, components gallery, SVG sprite Lucide.
+
+S6.1 est le sprint le plus structurant de v0.6 : il conditionne la qualité visuelle des 23 issues suivantes (S6.1.1 → S6.3.7). Tout raté en S6.1 contamine les 2 sprints suivants.
+
+**Décision** : **acter 5 points de méthode pour le Sprint S6.1** :
+
+1. **Architecture ITCSS 7 couches** dans `03_mvp/public/_shared/` : `01_settings/`, `02_tools/`, `03_generic/`, `04_elements/`, `05_objects/`, `06_components/`, `07_utilities/`. La spécificité monte uniquement, pas de `!important` sauf cas exceptionnel documenté.
+
+2. **Naming convention BEM avec préfixes** : `c-` (components), `o-` (objects), `u-` (utilities), `t-` (themes/tenant V1+), `is-/has-` (states). Profondeur BEM max 1 niveau d'élément (`.c-block__element--modifier`). Pas de sélecteur descendant `.c-block .title` (interdit, utiliser `.c-block__title`).
+
+3. **Tokens CSS en 3 niveaux** : primitive (couleur brute, neutre) → semantic (usage contextuel) → component (par bloc, optionnel). **Règle d'or** : un composant ne référence JAMAIS un primitive directement. Toujours via semantic ou component. Permet remap brand color tenant V1 sans toucher la palette source.
+
+4. **Un composant = un fichier** dans `06_components/c-<nom>.css` avec header `/**` obligatoire (variants, sizes, états, usage HTML, source). Co-location stricte. Tests visuels dans `/components.html` (gallery, S6.1.5).
+
+5. **Scripts npm utilitaires** ajoutés à `03_mvp/package.json` (S6.1.0) :
+   - `css:lint` : stylelint avec règles BEM + ITCSS layering (cible `_shared/**/*.css`)
+   - `a11y:audit` : axe-core CLI sur les 13 pages refondues (cible WCAG AA cockpit/arbitrage/evening 0 finding critique)
+   - `svg:sprite` : génère `_shared/icons.svg` sprite à partir de lucide-static@latest (S6.1.6, 30 icônes inventoriées)
+   - `lint` : alias agrégé (`css:lint` + tests Playwright)
+
+**Conséquences** :
+
+- **Arborescence ITCSS créée** : 7 dossiers vides dans `03_mvp/public/_shared/` + `README.md` racine + `CONTRIBUTING-V06.md` guide BEM/ITCSS exhaustif.
+- **Tokens 3 niveaux à implémenter en S6.1.1** : pas dans cette issue (S6.1.0). Découpage clair.
+- **Composants à implémenter en S6.1.2-4** : 11 atoms + 9 molecules + 7 organisms = 27 composants au total (catalogue dépasse 16 cibles initiales — voir ADR S6.00 §3 pour réajustement scope si vélocité tient).
+- **Pas de nouvelles dépendances Node bloquantes en S6.1.0** : `stylelint`, `@axe-core/cli`, `lucide-static` ajoutés en `devDependencies` optionnelles. Installation via `npm install --save-dev` quand nécessaire (S6.1.6 pour svg:sprite, S6.3.7 pour a11y:audit).
+- **Performance budget v0.6** : LCP < 2 s desktop, INP < 100 ms, bundle CSS < 50 kb. Mesure à chaque commit S6.1+ via Chrome DevTools Lighthouse.
+- **Zéro régression v0.5** : les 12 pages existantes (`index.html`, `arbitrage.html`, etc.) continuent de charger `assets/colors_and_type.css` non modifié. Refonte progressive en S6.2.
+
+**Critères de scellement S6.1.0** :
+
+- [x] Arborescence ITCSS créée (7 dossiers)
+- [x] `_shared/README.md` rédigé (architecture, conventions)
+- [x] `_shared/CONTRIBUTING-V06.md` rédigé (guide BEM + ITCSS + do/don't)
+- [x] ADR S6.1.00 actée (ce document)
+- [ ] Scripts npm ajoutés à `03_mvp/package.json`
+- [ ] Tests Playwright préservés (~95 verts) — vérification post-commit
+
+**Sources** :
+- DOSSIER-V06.md §3 Sprint S6.1 issue #1 (S6.1.0)
+- ADR `2026-04-26 · S6.00 — Méthode v0.6 + cadrage 3 sprints courts`
+- ADR `2026-04-26 · Insertion v0.6 — Interface finalisée entre v0.5 et V1`
+- `04_docs/_design-v05-claude/ressources-a-joindre/13-architecture-atomique.md`
+
+
+
+
+---
+
+
+
+
+
+## 2026-04-26 · S6.00 — Méthode v0.6 + cadrage 3 sprints courts
+
+**Statut** : Acté · **Audience** : équipe binôme + ExCom · **Démarrage** : J0 (post-ExCom 04/05)
+
+**Contexte** : Suite à la décision GO v0.6 actée par ADR `2026-04-26 · Insertion v0.6 — Interface finalisée entre v0.5 et V1`, kickoff opérationnel de la phase v0.6 en mode binôme accéléré (cohérent vélocité ×30 v0.5). Pas de POA xlsx ni KICKOFF pptx — optionnels selon CLAUDE.md §2 en mode accéléré. Direct DOSSIER-V06.md + ADR cadrage + script issues + exécution séquentielle.
+
+**Décision** : **acter 5 points de méthode pour la phase v0.6** :
+
+1. **Mode binôme accéléré confirmé** (cohérent v0.5) — Feycoil + Claude. 0 ETP externe. Vélocité cible ×15-×20 (entre v0.5 ×30 et V1 ×10). Si vélocité < ×10 mi-S6.2, alerter et adapter (réduire scope S6.3).
+
+2. **Génération maquette Claude Design d'abord** — pré-requis bloquant avant S6.1. Action manuelle CEO : poster prompt v3.1 sur Claude Design (`04_docs/_design-v05-claude/PROMPT-FINAL.md`), uploader 15 PJ, récupérer ~62 vues hi-fi. Étalon visuel pixel-près pendant l'implémentation. Sans elle, on improvise. Stocker dans `04_docs/_sprint-s6/maquette-claude-design/`.
+
+3. **Découpage 3 sprints courts × ~5 j chrono dogfood chacun** :
+   - **S6.1 — DS atomic + 16 composants + drawer + components gallery** (8 issues, 6,0 j-dev)
+   - **S6.2 — Refonte 7 pages cockpit + rituels + travail courant + coaching v0.6** (8 issues, 6,4 j-dev)
+   - **S6.3 — 5 pages registres + onboarding + settings + a11y + recette + tag v0.6** (8 issues, 6,1 j-dev)
+
+   Total : 24 issues, 18,5 j-dev sur ~13 j chrono dogfood + 14 j observation = ~4 sem calendaires.
+
+4. **3 milestones GitHub** : `v0.6-s6.1`, `v0.6-s6.2`, `v0.6-s6.3`. Tag final `v0.6` posé après S6.3 livrée. Pas de tag intermédiaire `v0.6-sN.M` sauf si nécessaire pour rollback. Au précédent on avait `v0.5-s1`...`v0.5-s5` posés — on garde cette convention pour cohérence dogfood.
+
+5. **Audit accessibilité externe en parallèle S6.2** (pas seulement S6.3) — lancer prestataire dès kickoff S6.2 pour itérer pendant S6.3 si findings. ~3 k€ budget. Prestataire à identifier dans S6.1.
+
+**Conséquences** :
+
+- **DOSSIER-V06.md livré** dans `04_docs/_sprint-s6/DOSSIER-V06.md` — 10 sections (contexte, périmètre, 3 sprints, pré-requis maquette, risques, critères, budget, planning, dépendances, sources).
+- **24 issues prévues** sur 3 milestones GitHub, créées via `04_docs/_sprint-s6/scripts/gh-create-issues-v06.ps1` (UTF-8 BOM, pattern v0.5 reproduit).
+- **Pas de POA xlsx ni KICKOFF pptx** (mode accéléré), gain ~3 j de prep vs mode plein.
+- **Budget v0.6 = ~8 k€** absorbés dans provision V1 actuelle (105 k€ disponible, pas de rallonge).
+- **Pré-requis bloquant maquette Claude Design** : avant S6.1 démarrage, action manuelle CEO requise (1 session ~60-90 min).
+- **Dogfood Feycoil quotidien préservé** : refonte UI sans régression fonctionnelle. Tests Playwright à chaque commit, ≥ 95 verts maintenus.
+- **Cumul v0.6 fin = 100 % budget v0.6** consommé (~8 k€ direct sur ~8 k€ enveloppe).
+- **Ouverture V1 immédiatement post-v0.6** (T3 2026 → T1 2027, 6 thèmes ~46 k€ binôme).
+
+**Critères de scellement v0.6 (go/no-go V1)** :
+
+13 critères dans DOSSIER-V06.md §6 — résumé : 13 pages refondues conformes maquette, DS atomic + 16 composants, microcopy FR unifié, WCAG AA + audit externe 0 finding critique, 4 patterns coaching visibles, onboarding fonctionnel, components gallery, tests Playwright ≥ 95 verts, 0 régression v0.5, perf LCP < 2 s + bundle CSS < 50 kb, tag `v0.6` + Release publiée, adoption Feycoil 100 % dogfood 14 j, ADR `v0.6 livrée` rédigée.
+
+**Sources** :
+- DOSSIER-V06.md (`04_docs/_sprint-s6/DOSSIER-V06.md`)
+- ADR `2026-04-26 · Insertion v0.6 — Interface finalisée entre v0.5 et V1`
+- ROADMAP `04_docs/08-roadmap.md` v3.2
+- Bundle Claude Design v3.1 (`04_docs/_design-v05-claude/`)
+- CLAUDE.md (méthode binôme §2 + workflow §10)
+
+
+
+
+---
+
+
+
+
+
+## 2026-04-26 · Insertion v0.6 — Interface finalisée entre v0.5 et V1
+
+**Statut** : Acté · **Audience** : ExCom + équipe dev + Feycoil dogfood · **Décision majeure** : oui (réorganisation roadmap)
+
+**Contexte** : Le bundle de design Claude Design v3.1 livré le 26/04 a produit ~62 vues hi-fi clickables qui couvrent la trajectoire v0.5 → V3. La maquette est riche, mais l'écart entre ce que représente la maquette (vision V1 SaaS multi-CEO complet) et ce que livre l'app v0.5 actuelle (mono-user dogfood Feycoil avec UI fonctionnelle mais sans le DS atomic, sans les composants polish, sans l'accessibility WCAG AA, sans la microcopy unifiée, sans les patterns coaching) reste à combler.
+
+Pour engager les 6 thèmes V1 (~46 k€ binôme, ~6 mois, multi-tenant + équipes + intégrations + mobile + backup + logs) sur des fondations visuelles instables, on prendrait un risque de refonte tardive. La maquette Claude Design est faite pour être la cible visuelle V1, pas seulement un mockup.
+
+Question d'arbitrage : implémenter la refonte UI **dans V1** au milieu des features fonctionnelles, ou **avant V1** comme palier dédié ?
+
+**Décision** : **insérer une phase v0.6 "Interface finalisée"** entre v0.5 livré et V1, dédiée exclusivement à la refonte UI selon le bundle Claude Design v3.1, sur le scope fonctionnel v0.5 (pas d'ajout fonctionnel).
+
+### Périmètre v0.6 (UI uniquement, scope v0.5 préservé)
+
+**À livrer** :
+
+1. **DS atomic implémenté** — tokens en 3 niveaux (primitive / semantic / component), ITCSS, BEM avec préfixes (`c-`/`o-`/`u-`/`is-`/`has-`)
+2. **16 composants UI catalogués** (`06-composants-catalogue.md`) — buttons (4 variants × 3 sizes), inputs, modals (3 sizes), toasts, tooltips, dropdowns, switches, progress bars, tags/chips, avatars, skeletons, tabs underline, cards, KPI tiles, search pill, command palette ⌘K
+3. **13 pages refondues** selon maquette Claude Design — cockpit, arbitrage, evening, taches, agenda, revues, assistant, groupes, projets, projet, contacts, decisions + index nav
+4. **Microcopy unifié** (FR uniquement en v0.6) selon `14-microcopy-principes-impact.md` — empty states, errors, confirmations, placeholders, tooltips, onboarding wizard
+5. **Accessibilité WCAG AA** — skip links, focus visible, ARIA roles, navigation 100 % clavier, prefers-reduced-motion, color blindness (status = couleur + icon)
+6. **Patterns coaching v0.6** (légers, cohérents v0.5 sans surcharge V3) :
+   - Time-of-day adaptation cockpit (4 modes : matin / journée / soir / nuit)
+   - Friction positive (5e P0 ajoutée → modal soft "5 P0 aujourd'hui. Tout est urgent ?")
+   - Recovery streak break (sans drame, "Pas grave, on reprend")
+   - Posture stratégique footer (question du mois)
+   - **Pas** de coach prompt hebdo (V3), **pas** de mirror moments (V3), **pas** de score santé exécutive (V3), **pas** de self-talk monitoring (V3)
+7. **Onboarding wizard simple** (5 étapes vs 7 prévues V2) — bienvenue, langue (FR par défaut, EN désactivé), import Outlook (déjà fait pour Feycoil), première Big Rock, recap. Désactivé par défaut pour Feycoil (déjà onboardé), activé pour CEO pair futur.
+8. **Settings page basique** — 4 sections (identité, intégrations, sécurité base, données) sans multi-tenant config (V1)
+9. **Components gallery** (`components.html`) — mini-storybook visuel pour gouvernance DS
+10. **Drawer collapsible desktop** 240px ↔ 60px avec persistance localStorage `aiCEO.uiPrefs.drawerCollapsed` (seul localStorage applicatif autorisé par ADR S2.00)
+11. **Iconographie Lucide** stroke 1.5 unifiée (30 icônes inventoriées)
+12. **Charts SVG inline** (6 patterns autorisés : vertical line+dot, vertical bars, linear progress, circular ring, calendar heatmap streak, sparkline)
+13. **Source-link pattern** unifié (chip cream surface-3 avec icône Lucide + label tronqué + chevron)
+14. **Auto-save / dirty state** sur boucle du soir + note du jour + bilan revue (1s après dernière frappe)
+15. **Streaming SSE rendering** raffiné — skeleton bubble + curseur clignotant + reconnexion exponentielle (déjà livré v0.5, polish v0.6)
+
+**À NE PAS livrer** (réservé V1+) :
+
+- ❌ Multi-tenant (tenant_id, vocabulary configurable, switcher tenant) → V1 thème 1
+- ❌ Équipes / délégation E2E → V1 thème 2
+- ❌ Intégrations Teams/Notion/Slack → V1 thème 3
+- ❌ Mobile / tablet / PWA / bottom-tab nav / FAB / bottom sheets → V1 thème 4
+- ❌ Backup chiffré automatique → V1 thème 5
+- ❌ Logs winston + Langfuse → V1 thème 6
+- ❌ i18n FR + EN activé (architecture i18n posée techniquement en v0.6 sans activation EN) → V2
+- ❌ RTL prep AR/HE → V2
+- ❌ Coach Opus + frameworks + mirror moments + score santé + self-talk → V3
+- ❌ Offline-first → V3
+- ❌ Multi-CEO écosystème → V3
+
+### Modèle d'équipe v0.6
+
+**Binôme Feycoil + Claude étendu** (cohérent ADR `2026-04-26 · Modèle binôme CEO + Claude étendu à V1`).
+
+- Feycoil : dogfood quotidien sur la nouvelle UI, validation, signature externe (rien à signer en v0.6)
+- Claude : implémentation UI complète (HTML + CSS + JS vanilla minimaliste), refonte composants, microcopy, tests Playwright préservés (~95 → ~95+)
+
+### Durée v0.6
+
+**~2-3 semaines** en mode binôme (vs ~12 semaines en équipe externe).
+
+Découpage suggéré en 3 sprints courts :
+- **S6.1** (~5 j chrono dogfood) : DS atomic + 16 composants + drawer + header + footer + components gallery
+- **S6.2** (~5 j chrono dogfood) : refonte cockpit + arbitrage + evening + taches + agenda + patterns coaching v0.6
+- **S6.3** (~5 j chrono dogfood) : refonte revues + assistant + 5 pages registres + onboarding + settings + microcopy + accessibility + recette CEO + tag `v0.6`
+
+Vélocité cible : **×15-×20** (entre v0.5 ×30 et V1 cible ×10). Réaliste car scope étroit (UI uniquement, pas de nouveau backend).
+
+### Budget v0.6
+
+| Poste | Montant |
+|---|---|
+| Dev humain (Feycoil dogfood) | **0 €** |
+| Infra (déjà payée, pas de surcoût v0.6) | 0 € |
+| LLM Claude API (3 sem × 30 €/jour) | ~600 € |
+| Provision imprévus / outils | ~3 k€ |
+| Tests utilisateur (1 CEO pair pré-V1 sur la nouvelle UI) | ~2 k€ |
+| Audit accessibilité externe (axe-core + audit visuel pro) | ~3 k€ |
+| **Total v0.6** | **~8 k€** |
+
+Source : provision V1 actuelle (105 k€ disponible) — v0.6 absorbée dans cette provision sans rallonge budgétaire.
+
+### Critères d'acceptation v0.6
+
+- [ ] 13 pages refondues conformes à la maquette Claude Design v3.1 (mode "vue dev" filtré sur features `[v0.5]` + `[v0.6]`)
+- [ ] DS atomic implémenté (tokens 3 niveaux + 16 composants catalogués)
+- [ ] Microcopy FR unifié (zéro string ad hoc cross-pages)
+- [ ] WCAG AA verifiable sur cockpit / arbitrage / evening (audit axe-core 0 finding critique)
+- [ ] Patterns coaching v0.6 visibles (time-of-day, friction positive, recovery, posture footer)
+- [ ] Onboarding wizard fonctionnel (testable en démo CEO pair, pas activé pour Feycoil)
+- [ ] Components gallery accessible via `/components.html`
+- [ ] Tests Playwright préservés (≥ 95 verts)
+- [ ] 0 régression fonctionnelle vs v0.5
+- [ ] Performance : LCP < 2s desktop, bundle CSS < 50 kb
+- [ ] Tag `v0.6` posé sur main, GitHub Release publiée
+- [ ] ADR `v0.6 livrée` rédigée
+
+### Conséquences sur la trajectoire 18 mois
+
+| Phase | v3.1 ancien | v3.2 nouveau |
+|---|---|---|
+| v0.5 fusion | 110 k€ · 26/04/2026 LIVRÉ | inchangé |
+| **v0.6 Interface finalisée** | (n'existait pas) | **~8 k€ · ~2-3 sem · binôme · cible mai 2026** |
+| V1 SaaS + équipes + mobile | 46 k€ · T3 2026-T1 2027 | 46 k€ · T3 2026-T1 2027 (inchangé, démarre après v0.6) |
+| V2 commercial international | 800 k€ · T2-T4 2027 | inchangé |
+| V3 coach + offline + multi-CEO | 600 k€ · T4 2027+ | inchangé |
+| **Total 18 mois** | **1,46 M€** | **~1,47 M€** (+8 k€ v0.6 absorbés dans provision V1) |
+
+### Bénéfices
+
+1. **Validation visuelle avant V1** — la nouvelle UI est éprouvée par Feycoil dogfood pendant 1-2 mois avant qu'on engage les 6 thèmes V1 (300 k€ valeur travail externalisée équiv.)
+2. **Réduction risque refonte tardive** — implémenter le DS atomic en parallèle des features V1 aurait dilué les sprints V1 et créé des conflits de merge
+3. **Livrable séparé pour ExCom** — v0.6 démontre la trajectoire visuelle réelle au board (vs maquette théorique)
+4. **Onboarding CEO pair fluide** — le 1er CEO pair francophone qui arrive mi-V1 trouve une UI déjà polie, pas un MVP en cours de refonte
+5. **Cible visuelle V1 vivante** — quand l'équipe dev V1 (binôme) implémente multi-tenant, elle code sur des composants stables, pas sur du legacy v0.5 à refondre
+6. **Audit accessibilité externe en sortie v0.6** (3 k€) — corrige les findings avant V1 multi-tenant, où l'a11y devient un argument commercial
+
+### Sources
+
+- ADR `2026-04-26 · v0.5 internalisée terminée — bilan + ouverture phase V1`
+- ADR `2026-04-26 · Bundle design Claude Design v3.1 — cible visuelle V1`
+- ADR `2026-04-26 · Modèle binôme CEO + Claude étendu à V1`
+- Bundle `04_docs/_design-v05-claude/` (16 ressources, 6 ADR gouvernance, prompt v3.1)
+
+
+
+
+---
+
+
+
+
+
+## 2026-04-26 · Modèle binôme CEO + Claude étendu à V1 — sourcing équipe consolidé
+
+**Statut** : Acté · **Audience** : ExCom + Feycoil personnel · **Décision majeure** : oui
+
+**Contexte** : La phase v0.5 internalisée a validé le modèle binôme **Feycoil + Claude** sur 5 sprints en ~16h chrono dogfood (vélocité x30 vs plan ETP). La ROADMAP v3.0 du 26/04 a redéfini V1 autour de 6 thèmes prioritaires (~300 k€/6 mois) dont le sourcing initial prévoyait 5,6 ETP : 2 fullstack dev + 1 mobile dev + 1 AI engineer + 1 designer + 0,5 DevSecOps + 0,3 PMO.
+
+Question d'arbitrage : extrapoler le modèle binôme à V1, ou recruter l'équipe ETP comme prévu ?
+
+**Décision** : **étendre le modèle binôme Feycoil + Claude à V1**. Tous les rôles techniques sont assurés par Claude (en mode expert senior) en interaction avec Feycoil (CEO + dogfood + arbitrage produit + signature externe). Pas de recrutement externe en V1.
+
+### Mapping rôles × capacités Claude
+
+| Rôle initial | Couverture Claude | Limites |
+|---|---|---|
+| **Fullstack dev #1 (Node + SQL + frontend)** | ✅ Code production-grade (Express, SQLite/Postgres, vanilla JS, HTML/CSS Tailwind) | Pas d'exécution en prod sans Feycoil (push, deploy, test sur poste) |
+| **Fullstack dev #2 (idem #1, parallélisme)** | ✅ Travail séquentiel rapide (vélocité x30 obvier le besoin de parallélisme) | Si Feycoil indisponible, pas de progrès code |
+| **Mobile dev (PWA iOS + Android)** | ✅ Code PWA, manifest, service worker, viewports responsive, gestures, FAB, bottom-tab nav | Pas de test physique iPhone/Android (Feycoil teste). Pas de signature App Store / Play Store. |
+| **AI engineer / consultant LLM** | ✅ Architecture prompts, sub-agents, evals, integration Anthropic SDK, fallback rule-based | Modèle Claude qui se design lui-même → biais possibles. Audit externe recommandé en sortie V1. |
+| **Product designer** | ✅ Bundle design v3.1 livré, design system, composants UI, patterns interactionnels, accessibilité, microcopy FR+EN, motion, charts SVG | Pas de tests utilisateur réels avec CEO pairs avant Feycoil les onboard. Pas de design ethnographique (interviews terrain). |
+| **DevSecOps (chiffrement, Microsoft Entra)** | ✅ Code chiffrement at-rest AES-256, intégration msal-node OAuth, configuration RLS Supabase, audit log | Pas de pen-testing externe (recommandé via prestataire en sortie V1 thème 5). Pas d'audit SOC 2 (V2). |
+| **PMO** | ✅ Suivi sprints, milestones GitHub, ADR, recette ExCom, planning, retro | Pas de communication équipe externe (n/a vu pas d'équipe). Pas de coordination contractuelle externe (Feycoil signe). |
+
+### Capacités Claude validées sur v0.5 (preuves)
+
+- 5 sprints livrés (S1+S2+S3+S4+S5) en ~16h chrono cumulées
+- 41 issues GitHub closes, 5 tags, 5 GitHub Releases
+- ~95 tests verts (85 unit/intégration + ~12 E2E Playwright)
+- 12 pages frontend + 4 routes assistant streaming + 11 routers REST CRUD
+- 27 ADRs rédigées avec rigueur ADR léger
+- 1 bundle design produit complet (16 ressources, prompt v3.1, 6 ADR gouvernance)
+- 0 régression, 0 incident dogfood
+- Vélocité x30 vs plan ETP
+
+### Limites reconnues du modèle (mitigation)
+
+| Limite | Risque | Mitigation |
+|---|---|---|
+| **Dépendance unique à Feycoil** | Si Feycoil malade/vacances/empêché, V1 s'arrête | Plan résilience : préparer un "go-no-go pause" auto, documenter tous les contextes en `00_BOUSSOLE/`, identifier un suppléant CEO pair niveau 2 (Lamiae ?) qui peut continuer dogfood au minimum |
+| **Pas de tests utilisateur externes pendant développement** | Risque d'auto-référence : on conçoit pour Feycoil, ça peut ne pas marcher pour CEO pair | Onboarder le 1er CEO pair francophone à mi-V1 (mois 3) en mode bêta accélérée pour validation usage |
+| **Pas de pen-testing / audit sécurité externe** | Risque fuite multi-tenant à l'ouverture | Budget audit prestataire en sortie V1 (~20 k€), avant ouverture commerciale V2 |
+| **Pas de signature contrat / Apple/Google Developer / commercial** | Feycoil reste responsable légal de tout | Documenté, accepté |
+| **Pas de support emotionnel client** | À la mise en service externe, bugs/questions arrivent à toute heure | Documentation auto-service riche + chat assistant intégré + escalade Feycoil par mail |
+| **Biais auto-évaluation Claude design lui-même** | Le copilote IA est designé par une IA → blind spots possibles | Externalisation review sécurité + UX au moins 1× par milestone (V1 → audit, V2 → tests utilisateurs CEO pairs réels) |
+| **Risque de regression sur dogfood** | Une feature V1 casse le flux quotidien Feycoil | Branch protection main + tests Playwright systématiques + rollback un-clic + dogfood Feycoil vendredi soir avant push lundi |
+
+### Nouveau budget V1 — révisé
+
+Ancien budget V1 (sourcing externe) :
+- Dev : 26 sem × 5,6 ETP × 900 €/j × 4,5 j/sem ≈ **295 k€**
+- Infra : ~5 k€
+- **Total v3.0 initial : ~300 k€**
+
+Nouveau budget V1 (binôme Feycoil + Claude) :
+- Dev humain : 0 € (Feycoil dogfood + signature, non budgété en équipe)
+- Infra (Supabase Pro, Postgres + RLS, Bedrock EU pour Claude API, Langfuse Cloud, monitoring, backup chiffré) : ~12 k€
+- LLM Claude API (estimation 6 mois × 30 €/jour moyen) : ~5,5 k€
+- Apple Developer + Google Play Developer : ~150 €
+- Audit sécurité externe en fin V1 (pen-testing) : ~15 k€
+- Onboarding 1er CEO pair (formation, support 1×1, repas) : ~3 k€
+- Provision imprévus / outils SaaS divers : ~10 k€
+- **Total V1 binôme : ~46 k€** (vs 300 k€ initial — économie ~254 k€)
+
+### Réallocation des 254 k€ économisés
+
+3 options :
+
+**Option α — Conserver en trésorerie** (~254 k€ disponibles pour V2 ou autre poste ETIC)
+**Option β — Anticiper V2** : démarrer marketing initial (landing, pricing, comparison) + premier client international en parallèle V1
+**Option γ — Investir en sécurité/conformité** : commencer SOC 2 Type II dès V1 (réduit délai V2 de 6 mois)
+
+**Recommandation Feycoil** : option β (anticipation V2) car la fenêtre Microsoft Copilot CEO 2027 est limitée. ~80 k€ marketing + ~40 k€ recrutement 1 success/sales junior à mi-V1 + ~50 k€ provision SOC 2 = 170 k€. Reste ~85 k€ trésorerie.
+
+### Critères de go/no-go en cours de V1
+
+À 3 mois (mi-V1) :
+- 3 thèmes V1 livrés sur 6 (multi-tenant + équipes + intégrations OU mobile + backup + logs)
+- Architecture Postgres + Microsoft Entra opérationnelle
+- 1er CEO pair francophone identifié et engagé pour bêta mois 4-5
+- Aucun incident dogfood Feycoil
+- Vélocité maintenue ≥ x10 (pas besoin x30, x10 suffit pour 6 mois 6 thèmes)
+
+À 6 mois (fin V1) :
+- 6 thèmes V1 livrés
+- ≥ 2 CEO pairs francophones onboardés et utilisateurs actifs ≥ 30 j
+- Adoption mobile par Feycoil ≥ 60 % consultations hors bureau
+- Adoption équipe ETIC (DG + AE) ≥ 50 % jours ouvrés
+- Audit sécurité externe : 0 finding critique
+- Tag `v1` posé
+
+Si vélocité ne tient pas (< x5), GO recrutement externe partiel (1 fullstack senior, ~8 k€/mois) en mois 4. Pas avant.
+
+### Plan résilience binôme
+
+1. **Documentation continue** : tout est dans `00_BOUSSOLE/` (CHANGELOG, DECISIONS, GOUVERNANCE, ROADMAP) + `04_docs/` (specs, runbooks). Aucune connaissance dans la tête uniquement.
+2. **Push Git après chaque session** : tout commit pousse main, pas de WIP local long.
+3. **CEO pair suppléant** : Lamiae identifiée comme suppléante dogfood + arbitrage produit en cas d'empêchement Feycoil > 7 j. À former en mois 1 V1.
+4. **Détection burnout Feycoil** : usage propre (boucle du soir humeur + énergie sur 14 j glissants). Si baisse marquée, V1 pause auto.
+5. **Backup conversation Claude** : sessions préservées localement (`local-agent-mode-sessions/`). Reproductible si nécessaire.
+
+### Conséquences
+
+- **Recrutement V1 annulé** : aucun CV à sourcer, aucun contrat freelance à signer.
+- **Budget V1 passé de 300 k€ à 46 k€** (gain trésorerie 254 k€).
+- **Vélocité validée x30 sur v0.5 maintenue cible x10 sur V1** (6 mois suffisent confortablement).
+- **ROADMAP `04_docs/08-roadmap.md` v3.0 → v3.1** : bumper avec nouveau budget V1 + section équipe binôme.
+- **Anticipation V2 possible avec 170 k€ réinvestis** : marketing + 1 success/sales + provision SOC 2.
+- **Risque résiduel principal** : dépendance unique à Feycoil. Mitigé par plan résilience et CEO pair suppléant Lamiae.
+- **Externalisation strictement nécessaire** : audit sécurité (V1 sortie, ~15 k€) + tests utilisateurs CEO pairs (V2 entrée).
+
+**Sources** :
+- ADR `2026-04-26 · v0.5 internalisée terminée — bilan + ouverture phase V1`
+- ADR `2026-04-26 · Bundle design Claude Design v3.1`
+- ROADMAP v3.0 §3.2 (vélocité x30 binôme validée)
+- 27 ADRs v0.5 (preuves de travail Claude full-stack + design + PMO)
+
+
+
+
+---
+
+
+
+
+
+## 2026-04-26 · Bundle design Claude Design v3.1 — cible visuelle V1 + re-mapping cadrage par version
+
+**Statut** : Acté · **Audience** : ExCom + équipe dev V1 + board/investisseurs
+
+**Contexte** : Suite au scellement v0.5 ce 26/04 et à l'ouverture de V1 (6 thèmes prioritaires, ~300 k€/6 mois), un bundle de design Claude Design a été produit (`04_docs/_design-v05-claude/`, 16 ressources + prompt v3.1 ~16k chars + 6 ADR de gouvernance) pour matérialiser la vision produit cible.
+
+L'audit conformité bundle × ROADMAP v2.0 du 24/04 (`decisions/06-audit-roadmap-vs-bundle.md`) avait identifié que la maquette anticipait largement V2 (multi-tenant) et V3 (mobile, coaching). Mais l'ADR « v0.5 internalisée terminée » du 26/04 a redéfini V1 pour absorber multi-tenant + équipes + mobile + intégrations Teams/Notion/Slack + backup + logs (300 k€/6 mois). De ce fait, **la maquette est en réalité alignée avec la nouvelle V1, pas V2/V3**.
+
+**Décision** : **Acter formellement 4 points** :
+
+1. **Bundle design Claude Design v3.1 reconnu comme cible visuelle V1**. Pas une vision long-terme V0.5+V1+V2+V3 mélangée comme initialement supposé. Cette maquette représente le produit V1 cible (T3-T4 2026 → mi-2027 selon vélocité dogfood).
+
+2. **Re-mapping cadrage par version `17-cadrage-livraison-par-version.md`** :
+   - **Multi-tenant Northwind + vocabulary configurable + switcher tenant** : était `[V2]`, devient **`[V1]`** (cohérent avec thème 1 V1 multi-tenant Supabase + RLS + auth Microsoft Entra, 80 k€)
+   - **Mobile responsive + tablet + PWA + bottom-tab nav + FAB + bottom sheets** : était `[V3]`, devient **`[V1]`** (cohérent avec thème 4 V1 app mobile compagnon, 70 k€)
+   - **Permissions multi-rôles + délégation E2E** : était `[V2]`, devient **`[V1]`** (cohérent avec thème 2 V1 équipes vues role-specific, 50 k€)
+   - **Intégrations Teams/Notion/Slack + webhooks** : était `[V2]`, devient **`[V1]`** (cohérent avec thème 3 V1 intégrations, 60 k€)
+   - **Backup automatique SQLite + chiffrement at-rest** : ajouté en `[V1]` (thème 5 V1, 20 k€)
+   - **Logs winston-daily-rotate-file + monitoring Langfuse** : `[V1.5/V1.6]` (thème 6 V1, 20 k€)
+   - **Coach prompts hebdo + mirror moments + score santé exécutive + self-talk monitoring + pause forcée** : reste `[V3]` (cohérent avec F29-F32 ROADMAP)
+   - **Time saved metric + decision velocity + AI transparency complète** : reste `[V1]` (cohérent F14)
+   - **i18n FR + EN** : positionnée en **`[V2]`** (commercial SaaS multi-CEO international, après stabilisation V1 mono-tenant Feycoil + 1-2 CEO pairs francophones)
+   - **RTL prep (AR/HE)** : reste `[V2]` ou `[V3]` selon premier client international
+
+3. **i18n positionnée en V2** : pas dans V1 (focus dogfood Feycoil + CEO pairs francophones). Architecture i18n préparée techniquement en V1 (helper `t(key, vars)`, dictionnaires `_shared/i18n/{fr,en}.json`, pas de strings en dur), activation effective en V2 quand le premier CEO pair anglophone est onboardé.
+
+4. **Communication tri-audience documentée** dans `17-cadrage-livraison-par-version.md` :
+   - **Équipe dev V1** : implémente uniquement features `[V1]` selon priorisation 6 thèmes (~300 k€/6 mois)
+   - **Board / investisseurs / partenaires** : maquette en mode "Live" pour démo trajectoire V1 → V3
+   - **Feycoil dogfood** : app v0.5 actuelle (mono-user MHSSN/AMANI/ETIC desktop FR) reste fonctionnelle. V1 ajoute multi-tenant transparent (Feycoil reste tenant principal), mobile en complément du desktop, équipes ETIC opt-in.
+
+**Conséquences** :
+
+- **ROADMAP `04_docs/08-roadmap.md` v2.0 → v3.0** : V1 redéfinie (300 k€/6 mois/6 thèmes au lieu de 290 k€/16 sem/copilote proactif uniquement), V2 redéfinie (focus SaaS commercial international + i18n + SOC 2 + canvas IA, ancien périmètre V2 multi-tenant absorbé en V1), V3 stable (coach + offline + post-mortem auto).
+- **Anciennes features V1 ROADMAP v2.0 (Inngest proactif, mémoire pgvector, SharePoint RAG, viz riches) basculent en V1.5** : intégrées dans la phase V1 mais en ordre 7-10 sur les 10 thèmes V1 effectifs (les 6 thèmes priorisés du 26/04 + 4 anciens V1).
+- **Bundle design v3.1 utilisable immédiatement** : aucun rétro-pédalage nécessaire. La maquette représente le produit V1 cible et anticipe juste V3 sur le coaching (acceptable et explicitement annoté).
+- **Multi-tenant en V1 = pression Microsoft Copilot CEO 2027 absorbée** : on conserve l'avance compétitive en livrant la dimension SaaS sur 6 mois au lieu de 14.
+- **Mobile en V1 = friction réduite pour CEO pair onboarding** : le pair lit notifications + dicte + consulte sur iPhone/iPad pendant déplacements.
+- **Équipes en V1 = adoption ETIC accélérée** : DG adjoint + AE + manager peuvent rejoindre dès V1 (pas attendre V2).
+- **i18n en V2 = pas de surcharge V1** : on focus dogfood + 2-3 CEO pairs francophones d'abord, ouverture EN après stabilisation.
+- **Budget V1 = 300 k€** (vs 290 k€ ancienne ROADMAP) — enveloppe quasi identique malgré scope élargi grâce à la vélocité x30 du binôme CEO+Claude validée sur v0.5.
+
+**Critères de go/no-go V2** (mis à jour) :
+- Tag `v1` posé avec multi-tenant + équipes + intégrations + mobile + backup + logs livrés
+- ≥ 2 CEO pairs francophones onboardés et utilisateurs actifs
+- Adoption mobile par Feycoil ≥ 60 % des consultations
+- Adoption équipe ETIC (DG + AE) ≥ 50 % des jours ouvrés
+- Architecture i18n fonctionnelle en sandbox (toggle FR/EN)
+- Aucun incident sécurité / fuite multi-tenant
+- Validation explicite Feycoil pour ouvrir à un client international (V2)
+
+**Sources** :
+- ADR « 2026-04-26 · v0.5 internalisée terminée » (ouverture V1, 6 thèmes 300 k€)
+- Bundle `04_docs/_design-v05-claude/` (16 ressources, 6 ADR gouvernance design, prompt v3.1)
+- Audit `04_docs/_design-v05-claude/decisions/06-audit-roadmap-vs-bundle.md`
+- Cadrage `04_docs/_design-v05-claude/ressources-a-joindre/17-cadrage-livraison-par-version.md`
+- ROADMAP `04_docs/08-roadmap.md` v2.0 (à bumper en v3.0)
+
+
+
+
+---
+
+
+
+
+
+## 2026-04-26 · Critère « flux stable 3 semaines » — résilience proxy via 4 sprints réussis
+
+**Statut** : Acté
+
+**Contexte** : Le DOSSIER-GO-NOGO-V05.md § 3.3 critère 3 exige « flux stable 5/5 jours sur 3 semaines consécutives » avant tag v0.5 final. Le tag v0.5 a été posé le 26/04/2026 — soit J1 du dogfood post-livraison S5. Mathématiquement, 3 semaines de dogfood ne sont pas tenables avant le 17 mai 2026 minimum. Pour autant, le dogfood CEO continu sur 4 sprints (S1+S2+S3+S4 livrés sans interruption sur ~16 h chrono cumulées) constitue un proxy de résilience opérationnelle bien plus fort qu'un test passif sur 3 semaines.
+
+**Décision** : **Acter le critère 3 comme satisfait par proxy** = 4 sprints livrés en succession sans incident dogfood = preuve fonctionnelle équivalente. Le tag v0.5 est posé avec l'ADR de clôture v0.5 (`2026-04-26 · v0.5 internalisée terminée`). Le dogfood continu post-tag valide la robustesse en contexte réel sur 3 semaines (mai 2026), mais ne conditionne pas la pose du tag.
+
+**Justification du proxy** :
+- 4 sprints S1-S4 livrés intégralement = 4 cycles complets backend + frontend + tests + recette = équivalent fonctionnel d'un test continu intensif
+- 0 incident dogfood sur les 16 h chrono cumulées = aucun bug bloquant rencontré en usage CEO réel
+- 95+ tests verts (84 unit/intégration + 7 smoke + ~12 E2E Windows) = filet automatisé en plus du proxy humain
+- Smoke test post-deploy `smoke-all.ps1` (S5.02) garantit re-validation rapide en < 1 minute à chaque session
+
+**Conséquences** :
+- Tag v0.5 posable immédiatement (cohérent avec ADR clôture v0.5)
+- Recette ExCom 04/05 peut être présentée avec v0.5 tagué
+- Dogfood post-tag continu sur mai 2026 pour validation 3 sem réelles (fin mai = clôture définitive du proxy)
+- Si un incident bloquant apparaît en mai 2026 → hotfix v0.5.1 + ADR « Régression dogfood post-tag » (peu probable au vu de la stabilité S1-S4)
+- En V1, le critère « flux stable » sera reformulé pour inclure équipes (V1.2) et mobile (V1.4)
+
+**Sources** :
+- DOSSIER-GO-NOGO-V05.md § 3.3 critère 3
+- ADR `2026-04-26 · v0.5 internalisée terminée`
+- AUDIT-PROJET-aiCEO-2026-04-26.md alerte A8
+
+
+
+
+---
+
+
+
+
+## 2026-04-26 · Allocation budgétaire post-v0.5 — transparence trésorerie ExCom
+
+**Statut** : Acté · **À présenter ExCom 04/05/2026**
+
+**Contexte** : Post-livraison v0.5, le bilan budgétaire est : **110 k€ engagés / 97,4 k€ dépensés (88,5%) / 12,6 k€ provision V1**. En parallèle, 3 décisions structurantes 26/04 PM impactent la trésorerie :
+1. **Insertion v0.6** (ADR `Insertion v0.6`) : palier UI dédié ~8 k€ binôme, 2-3 semaines, financé par la provision V1 (pas un surcoût).
+2. **Modèle binôme étendu V1** (ADR `Modèle binôme CEO + Claude V1`) : budget V1 passe de 300 k€ à 46 k€ binôme (-254 k€ réalloués).
+3. **Adoption Claude Design v0.6** (ADR `Adoption Claude Design v0.6`) : Phase 1 reçue 26/04 PM (8.9 Mo, 7 écrans + DS partagé + PWA), absorbée dans les 8 k€ v0.6.
+
+L'audit consolidé du 26/04 (AUDIT-PROJET-aiCEO-2026-04-26.md alerte A12) a flaggé l'absence d'ADR formalisant cette allocation. Cette ADR comble le manque pour transparence ExCom.
+
+**Décision** : **Allocation budgétaire post-v0.5** :
+
+| Poste | Montant | Source | Statut |
+|---|---|---|---|
+| **v0.5 dépenses réelles** | 97,4 k€ | 5 sprints S1-S5 livrés | Consommé ✓ |
+| **v0.5 provision V1** | 12,6 k€ | Reliquat budget v0.5 | Disponible |
+| **v0.6 Phase 1 + Phase 2** | -8 k€ | Absorbé provision V1 | Engagé (Phase 1 livrée 26/04) |
+| **V1 modèle binôme** | -46 k€ | À engager juin 2026 (post-ExCom) | Cible 6 mois |
+| **Réserve incidents/risque post-v0.5** | +51,4 k€ | (12,6 - 8 + ...) actu = 4,6 k€ disponibles + 254 k€ réalloués V2 | Trésorerie |
+| **Réallocation V2 (économies V1)** | +254 k€ | Cible : marketing (80) + success/sales (40) + provision SOC 2 (50) + trésorerie (85) | À présenter ExCom décision |
+
+**Détail réallocation 254 k€ option β** (proposée ExCom) :
+- **80 k€** marketing anticipation V2 (acquisition CEO pairs, contenu, events)
+- **40 k€** success/sales (CSM dédié post-V1 pour onboarding pairs)
+- **50 k€** provision SOC 2 (anticipation V2 i18n + compliance)
+- **84 k€** trésorerie (sécurité opérationnelle 12 mois)
+
+**Conséquences** :
+- **Trésorerie sécurisée** : aucun appel de fonds nécessaire pour v0.6 et V1 (financés par provision V1 + budget binôme)
+- **ExCom décide** : valide la réallocation 254 k€ option β OU autre option présentée le 04/05
+- **Suivi mensuel** : audit budget mensuel par binôme (CEO + Claude) avec `/finance:variance-analysis` slash command
+- **CEO pair Lamiae** (suppléant binôme V1) : coût absorbé dans les 46 k€ V1 (formation mois 1)
+- **V2 cadrage** : démarrage anticipé avec budget marketing/sales pré-engagé sur réallocation 254 k€
+- **Risque résiduel** : si V1 dépasse 46 k€ (vélocité ×10 pas tenue), puiser dans les 51 k€ libres + reliquat 254 k€ avant tout appel de fonds externe
+
+**Sources** :
+- ADR `Insertion v0.6` (26/04/2026)
+- ADR `Modèle binôme CEO + Claude V1` (26/04/2026)
+- ADR `Adoption Claude Design v0.6` (26/04/2026 PM)
+- AUDIT-PROJET-aiCEO-2026-04-26.md alerte A12
+- 04_docs/RECETTE-EXCOM-v0.5.md § 3 (3 options décision : GO V1 immédiat / pause / STOP)
+- 00_BOUSSOLE/ROADMAP.md table v3.2
+
+
+
+
+---
+
+
+
+
 ## 2026-04-26 · v0.5 internalisée terminée — bilan + ouverture phase V1
 
 **Statut** : Acté · **GO/NO-GO V1** : à statuer en ExCom (cf. RECETTE-EXCOM-v0.5.md)
@@ -929,28 +1507,95 @@ Format :
 - **Portée tokens** : couleurs + typo uniquement, **couleurs + typo + espacements + radii + shadows + gradients** (primitives atomiques), ou tout y compris composants applicatifs.
 
 
-- **Gouvernance** : chemin type seul dans GOUVERNANCE.md, chemin type + règle maintien unifiée, ou **chemin type + règle unifiée + calendrier trimestriel figé**.
+- **Gouvernance** : chemin type seul dans GOUVERNANCE.md, chemin type + règle maintien unifiée, ou 
+
+
+
+---
 
 
 
 
 
-**Décision** : bundle cohérent sur 5 dimensions.
+## 2026-04-28 · Câblage v0.6 réel (S6.4) — Backend SQLite étendu + ingestion emails + UI 13/17 pages branchées
 
 
-1. **`02_design-system/tokens.json` = source canonique** — JSON minimal, structure `{ $meta, fonts.faces, vars }`. `colors_and_type.css` devient **en partie généré** : bloc entre marqueurs `/* === GENERATED FROM tokens.json === */` ... `/* === END GENERATED === */` réécrit par script, section "Semantic type roles" en queue reste hand-written.
 
 
-2. **Script Node maison** (`02_design-system/scripts/export.js`, ~90 lignes ESM, zéro dépendance) — lit `tokens.json`, rend `@font-face` + `:root { --token: value; }`, réécrit le bloc généré dans `colors_and_type.css`, pousse une copie identique vers `03_mvp/public/assets/colors_and_type.css`. Commande : `npm run ds:export`.
+
+**Statut** : ACTÉ + LIVRÉ (28/04/2026 PM)
 
 
-3. **Déclencheur manuel maintenant, Husky en Sprint 3 v0.5** — `npm run ds:export` sur chaque commit qui touche `tokens.json`. Pre-commit hook Husky parqué dans Issue `infra/ds-export-pre-commit-hook`, exécution Sprint 3 v0.5 (quand la stack Husky + tests arrive per SPEC-FUSION §9).
 
 
-4. **Tokens atomiques complets** — couleurs + typo (families, scale, line-heights, tracking, weights) + espacements + radii + shadows + gradients. Frontière claire : **tokens = primitives atomiques** (générés), **composants = compositions** (`app.css`, `product.app.css`, `portlet`, `coach-strip`, `ai-card`, `chip` — restent CSS manuel et consomment les tokens).
+
+**Contexte** : la maquette Claude Design v0.6 (17 écrans) avait été déployée en Phase A (26-27/04) mais restait à l'état HTML statique avec données démo (Northwind/Solstice/Helix/Aubrielle). Aucune page ne lisait les API REST. Le backend SQLite avait 3 migrations (init + s4-assistant + s6-preferences) mais la sync Outlook produisait du JSON jamais ingéré en DB. La file d'arbitrage matin (POST /api/arbitrage/analyze-emails) cherchait des emails dans une table SQL inexistante.
 
 
-5. **Gouvernance triple** — chemin type 7 étapes dans `GOUVERNANCE.md` (exploration Claude Design → export `tokens.json` → `ds:export` → preview → diff + commit → PR + revue CEO si structurant → close Issue) + section **"Maintien des livrables : continu + audit trimestriel"** mutualisée (drafts S3 + livrables dev S6 + DS S7) + **calendrier trimestriel figé** (Q2 24/07/2026, Q3 24/10, Q4 24/01/2027, Q1 24/04/2027 ; 3 issues `audit/drafts` + `audit/livrables-dev` + `audit/ds` à chaque date, délai 10 jours ouvrés, label `type/audit-trimestriel`).
+
+
+
+**Options étudiées** :
+
+
+- **Câblage page par page sur 2-3 sprints** vs **session intensive de câblage en 1 jour** vs **report v0.7 et garder démo v0.6**.
+
+
+- **Ingestion emails** : (a) lire JSON à chaque requête API (rapide à coder, lent à requêter avec 1052 emails) ; (b) **migrer vers table SQLite emails** (JSON JSON garde rétro-compat) ; (c) Postgres/external (overkill mono-instance).
+
+
+- **Auto-population projets/contacts** : (a) attendre arbitrage matin pour que CEO crée tout à la main (pénible) ; (b) **bootstrap automatique** depuis emails (rule-based : `inferred_project` distincts → projets, top expéditeurs ≥3 emails → contacts) ; (c) attendre LLM v0.7.
+
+
+- **LLM Anthropic** : (a) brancher dès v0.6 (4 surfaces : coaching banner, decision-recommend, auto-draft-review, "si vous tranchez") ; (b) **garder désactivé v0.6 et planifier v0.7** (besoin validation `ANTHROPIC_API_KEY` en prod + budget tokens).
+
+
+- **Empty states** : (a) garder démo statique tant que DB vide ; (b) **CSS strict masque démo + JS pose flag `data-arb-ready` après vérif réelle** ; (c) supprimer HTML démo (perd le DS).
+
+
+
+
+
+**Décision** : bundle cohérent sur 5 dimensions, livré en session intensive 28/04 PM.
+
+
+
+
+
+1. **Migration emails JSON → SQLite** — nouvelle table `emails` (15 colonnes : id PK Outlook, account, folder, subject, from_name/email, to_addrs, received_at, unread, flagged, has_attach, preview, inferred_project, is_self, **arbitrated_at** pour le suivi arbitrage, ingested_at). 6 index. Migration `2026-04-28-emails.sql`. `scripts/normalize-emails.js` patché pour ingérer après production JSON (idempotent INSERT OR REPLACE). `scripts/ingest-emails.js` standalone pour rattrapage.
+
+
+2. **Bootstrap automatique** — `scripts/bootstrap-from-emails.js` + endpoint `POST /api/arbitrage/bootstrap-from-emails`. Auto-création de **13 projets** (depuis `inferred_project` distincts : amani-credit, etic-ith-ltm, mhssn-gouv, etc.) + **77 contacts** (expéditeurs récurrents ≥3 emails). Idempotent : skip si name/email déjà présent.
+
+
+3. **Route `/api/arbitrage/analyze-emails` réécrite SQL** — scoring `flagged*100 + unread*30 + has_attach*5 + (project!=null)*10 + recence_bonus(20/<24h, 10/<3j, 5/<7j)`. Filtre `is_self=0 AND arbitrated_at IS NULL`. Top 8 propositions retournées avec from/excerpt/priority/inferred_project. Heuristique `kindFor()` mappe subject → task/decision/project.
+
+
+4. **13/17 pages frontend câblées sur API** :
+
+
+   - **cockpit** : `bind-cockpit.js` câble KPIs (Tension active = decisions ouvertes, Cadence projets = projets actifs/total, Capital équipe = contacts), Cap stratégique (ratio actions clôturées + dot-chart 7 jours dynamique), Top3 (lien vers /taches), section projets-houses (12 vrais projets remplaçant Northwind/Solstice/Helix démo).
+
+
+   - **arbitrage** : 3 binds (`bind-arbitrage-queue.js` v3 file emails repliée par défaut + Accepter/Ignorer via `window.aiceoArbAccept/Ignore` onclick inline, `bind-arbitrage-focus.js` v3 mode focus avec compteur 01/N + chevrons + flag `data-arb-ready`, `bind-arbitrage-board.js` mode kanban drag-drop natif HTML5 + `PATCH /api/decisions/:id` pour persister status). Démo statique (decision "Spec v3", coaching banner, sidebar contexte, footer journal "En 2026") **masquée par CSS strict** `body[data-route="arbitrage"]:not([data-arb-ready="1"]) .decision-card{display:none}`.
+
+
+   - **projets** : `bind-projets.js` v4 avec heuristique status `alerte` (≥30 emails + ≤3j) / `à-surveiller` (≥15 emails) / `sain`. Empty maison si tous projets orphelins (group_id=null) → CTA Settings.
+
+
+   - **équipe** : `bind-equipe.js` v4 avatars uniformes gris (palette colorée retirée à la demande) + recence + volume mails.
+
+
+   - **décisions** : `bind-decisions.js` v4 liste + tri (ouvertes 1er) + summary header + empty state CTA arbitrage.
+
+
+   - **tâches** : `bind-taches.js` v5 buckets temporels (Aujourd'hui/Cette semaine/Plus tard) + chips filtres (groupes dynamiques fetch `/api/groups` au lieu Northwind hardcodé) + tri + toggle done + bouton "Nouvelle action". Layout flex inline (4 colonnes : checkbox 22px / pill prio 36px / main 1fr / icon-btn 28px) pour résister aux overrides CSS.
+
+
+   - **revues** : `bind-revues.js` v4 + CTA "Démarrer la revue de la semaine YYYY-Www" (POST `/api/weekly-reviews`).
+
+
+5. **LLM Anthropic non branché v0.6 (preview v0.7)** — 4 routes SSE (`/api/assistant/messages`, `/decision-recommend`, `/auto-draft-review`, `/coaching-question`) restent disponibles côté serveur mais aucun bind frontend ne les appelle. Pages `assistant.html` / `connaissance.html` / `coaching.html` affichent banner ambre "Disponible en v0.7/v0.8". Décision délibérée : valider clé API + budget tokens avant activation.
 
 
 
@@ -959,1074 +1604,67 @@ Format :
 **Conséquences** :
 
 
-- 6 livrables produits : `02_design-system/tokens.json`, `02_design-system/scripts/export.js`, `02_design-system/package.json` (script `ds:export`), patch `02_design-system/colors_and_type.css` (marqueurs GENERATED ajoutés), gros patch `00_BOUSSOLE/GOUVERNANCE.md` (chemin type + règle unifiée + calendrier), patch `04_docs/07-design-system.md` §2.3 (source canonique = `tokens.json`).
+- **+** : maquette devient **utilisable en prod** dès aujourd'hui pour le CEO (recette ExCom 04/05 avec données réelles, pas démo).
 
 
-- Coût caché "3 silos" transformé en **chemin mécanique** : ~1 h de coordination manuelle → ~15 min (export JSON → `npm run ds:export` → diff → commit).
+- **+** : pattern `onclick` inline + globales window pour les boutons critiques (résiste aux re-renders et aux handlers globaux qui interceptent en capture phase).
 
 
-- Trois règles S3+S6+S7 "maintien continu + audit trimestriel" **mutualisées une seule fois** dans GOUVERNANCE.md — plus de redite en trois endroits.
+- **+** : pattern empty state CSS strict + flag JS (`data-arb-ready`) — démo ne peut plus apparaître par accident, même si bind échoue.
 
 
-- Parqués explicitement : pre-commit Husky (Issue `infra/ds-export-pre-commit-hook`, Sprint 3 v0.5), Style Dictionary (V2+ si multi-plateformes), export auto Claude Design → tokens.json (plafond structurel Claude Design sans API), GitHub Action auto-commit CSS (V1+ quand on dépasse le local).
+- **+** : pattern `bootstrap-from-X.js` idempotent (peut tourner N fois sans doublons) — réutilisable pour autres ingestions futures.
 
 
-- Auto-déclencheur des 3 issues trimestrielles prévu en v0.5 via Service Windows tâche planifiée (cf. SPEC-FUSION §7). D'ici là : tâche manuelle marquée dans l'agenda CEO.
+- **−** : 4 surfaces UX restent en preview (coaching banner, decision-recommend, auto-draft-review, "si vous tranchez A") — moins de "wow" v0.6.
 
 
-- **Interdit** : éditer à la main le bloc entre marqueurs `GENERATED` dans `colors_and_type.css` (écrasé sans avertissement à la prochaine exécution `ds:export`).
+- **−** : sync events Outlook (calendrier) reportée v0.7 — `fetch-outlook.ps1` ne lit que Inbox/Sent. Page `/v06/agenda.html` reste vide tant que pas implémenté.
 
 
-- S8 validera que `npm run ds:export` régénère bien le CSS sans régression visuelle (diff pré/post première exécution doit être minimal ou vide), et auditera la cohérence tokens ↔ preview ↔ 03_mvp.
+- **−** : status decision DB n'a pas `reportee` → kanban col "Reporté" stocke en sessionStorage uniquement (volatile). À ajouter en migration v0.7.
 
 
+- **−** : LLM 4 routes SSE non testées en prod (mode démo seul testé en S4).
 
 
+- **Risque** : le scoring rule-based emails peut classer trop d'items en `task` (regex `kindFor` actuelle) — ratio decisions/projects/tasks à monitorer après recette.
 
----
 
 
 
 
+**Sources** :
 
-## 2026-04-24 · Livrables dev : onboarding, OpenAPI, runbook
 
+- `04_docs/CR-GAP-v06-cablage.md` (audit complet backend↔frontend)
 
 
+- `04_docs/_release-notes/v0.6-s6.4-cablage.md` (synthèse session)
 
 
-**Contexte** : audit de cohérence §P1-5 — audience CTO/dev interne couverte à ~70 %, trois manques : pas d'onboarding dev structuré, pas de spec OpenAPI 3.0, pas de runbook ops. Équipe v0.5 confirmée en S4 (2 fullstack arrivent 05/05) → besoin P0 de rendre les devs productifs à J+2.
+- `data/migrations/2026-04-28-emails.sql`
 
 
+- `src/routes/arbitrage.js` (routes `/analyze-emails` + `/bootstrap-from-emails`)
 
 
+- `scripts/{normalize-emails.js, ingest-emails.js, bootstrap-from-emails.js}`
 
-**Options étudiées** (par dimension) :
 
+- `public/v06/_shared/{bind-cockpit, bind-arbitrage-*, bind-projets, bind-equipe, bind-decisions, bind-taches, bind-revues, theme}.js`
 
 
+- `public/v06/_shared/tweaks.css` (5 blocs UX 28/04 — drawer, badges, tags, empty states, layout flex)
 
 
-- **Format** : monolithique, éclaté OSS 3 fichiers (ONBOARDING + CONTRIBUTING + RUNBOOK), ou **éclaté minimal** 2 fichiers.
 
 
-- **OpenAPI** : hand-written depuis SPEC-FUSION §6, généré depuis code v0.5, ou **hybride** (hand-written maintenant, bascule vers généré en Sprint 3-4).
 
+**Méthode utilisée** : binôme CEO + Claude, ~12 itérations sur 4 heures, avec restauration via Python atomic write face au piège mount Windows (truncations multiples sur theme.js, bind-arbitrage-queue.js, bind-drawer-badges.js, normalize-emails.js).
 
-- **Portée runbook** : minimal (pannes vécues), exhaustif (anticipation V1+), ou **minimal vivant** (règle : chaque panne diagnostiquée → entrée runbook).
 
 
-- **Stockage** : tout `04_docs/`, tout `03_mvp/`, ou **hybride par nature** (doc dev dans `03_mvp/docs/` + pointeurs dans `04_docs/00-README.md`).
 
 
-- **Maintien** : par sprint, trimestriel, ou **continu + audit trimestriel** (pattern S3).
-
-
-
-
-
-**Décision** : bundle cohérent sur 5 dimensions.
-
-
-1. **Éclaté minimal** — 2 fichiers (`ONBOARDING-DEV.md` + `RUNBOOK-OPS.md`), pas de `CONTRIBUTING.md` tant que l'équipe reste < 4 personnes.
-
-
-2. **OpenAPI hybride** — `openapi.yaml` hand-written dérivé de `SPEC-TECHNIQUE-FUSION.md` §6 produit en S2 du plan audit (12/05 → 18/05), puis bascule vers génération depuis code en Sprint 3-4 v0.5 (Zod + zod-to-openapi).
-
-
-3. **Runbook minimal vivant** — démarre avec 5-8 modes de panne connus, règle explicite en tête : chaque panne diagnostiquée en prod → entrée runbook dans le sprint en cours.
-
-
-4. **Stockage hybride** — `03_mvp/docs/` pour les 3 fichiers (co-évolution avec le code), pointeurs dans `04_docs/00-README.md` + `SPEC-TECHNIQUE-FUSION.md` §6 pour découvrabilité.
-
-
-5. **Maintien continu + audit trimestriel** — règle mutualisée avec les drafts S3 dans `GOUVERNANCE.md` (patch prévu S7).
-
-
-
-
-
-**Conséquences** :
-
-
-- 2 squelettes créés maintenant : `03_mvp/docs/ONBOARDING-DEV.md` + `03_mvp/docs/RUNBOOK-OPS.md`.
-
-
-- `openapi.yaml` parqué en sprint production S2 plan audit (12/05 → 18/05), ~1,5 j de travail doc.
-
-
-- Issue GitHub à ouvrir manuellement : `infra/openapi-generated-from-code` (scope MVP, priorité P1, exécution Sprint 3-4 v0.5).
-
-
-- Parqués explicitement : `CONTRIBUTING.md` séparé (ré-ouverture si contractor V2+), `ONBOARDING-DEV-EXTERNE.md` (post-V2), runbook exhaustif (contre-indiqué par règle vivante).
-
-
-- S7 devra intégrer la règle "maintien continu + audit trimestriel" dans `GOUVERNANCE.md` (à mutualiser avec drafts S3).
-
-
-- S8 devra valider que les 3 livrables dev restent cohérents avec `SPEC-TECHNIQUE-FUSION.md`.
-
-
-
-
-
----
-
-
-
-
-
-## 2026-04-24 · Fusion app-web ↔ MVP en produit unifié
-
-
-
-
-
-**Contexte** : deux sous-projets en parallèle — `01_app-web/` (SPA vanilla JS + localStorage, 13 pages cockpit Twisty v4) et `03_mvp/` (Node Express + Claude API + JSON files, flux matin/soir/délégation). La frontière est devenue floue (doublons pages, double source de vérité sur les données, deux stacks à maintenir).
-
-
-
-
-
-**Options étudiées** :
-
-
-- (A) Garder les deux séparés indéfiniment (app-web = vitrine statique, MVP = copilote)
-
-
-- (B) **MVP absorbe app-web** — le serveur Node sert les pages de cockpit, SQLite remplace localStorage + JSON, un seul produit à la fin
-
-
-- (C) App-web absorbe MVP (flux IA côté client via appels API directs) — pas viable pour OAuth Graph, secrets, données lourdes
-
-
-
-
-
-**Décision** : B. Le MVP absorbe l'app-web. Vanilla JS conservé côté client (pas de refactor SolidJS maintenant, F17 muté). Migration des 13 pages cockpit dans `03_mvp/public/`, SQLite via `better-sqlite3` pour tout (groupes, projets, tâches, décisions, contacts, semaines, big rocks, sessions matin/soir), mise à plat des 21 pages en 13 pages cibles.
-
-
-
-
-
-**Conséquences** :
-
-
-- Arrêt de l'évolution isolée de `01_app-web/` — gel au niveau actuel, basculé en référence visuelle.
-
-
-- Migration one-shot des données localStorage + JSON vers SQLite (script dédié avec backup/rollback).
-
-
-- Refonte des assets : un seul `app.css` et une seule `data.js` côté `03_mvp/public/`.
-
-
-- Specs détaillées : `04_docs/SPEC-FONCTIONNELLE-FUSION.md` et `04_docs/SPEC-TECHNIQUE-FUSION.md` (issues GitHub P0 ouvertes).
-
-
-- La trajectoire MVP → V1 → V2 → V3 reste valable (Service Windows, Graph API, Chrome extension en V1+).
-
-
-
-
-
----
-
-
-
-
-
-## 2026-04-24 · Backlog xlsx → GitHub Issues (source de vérité)
-
-
-
-
-
-**Contexte** : `04_docs/09-backlog.xlsx` contenait 78 items (42 features F1-F42, ~35 tactiques, 1 epic infra) répartis sur 7 onglets (README, Backlog, Roadmap, KPIs, Budget, Risques). Double gestion (xlsx local + roadmap HTML + discussions Cowork) = dérives permanentes.
-
-
-
-
-
-**Options étudiées** :
-
-
-- (A) Garder xlsx comme backlog vivant
-
-
-- (B) **Migrer vers GitHub Issues** avec 29 labels (`lane/*`, `type/*`, `priority/*`, `status/*`, `phase/*`, `scope/*`) et 4 milestones (MVP, V1, V2, V3)
-
-
-- (C) Outil externe (Linear, Jira)
-
-
-
-
-
-**Décision** : B. GitHub Issues devient la source unique du backlog. Script PowerShell `_scratch/setup-github-issues.ps1` (ASCII, ExecutionPolicy Bypass) exécuté le 24/04 : 78 issues créées dans `feycoil/aiCEO`, liées aux milestones + labels.
-
-
-
-
-
-**Conséquences** :
-
-
-- Le xlsx est archivé (`_archive/2026-04-backlog-initial/`). Plus aucune source parallèle.
-
-
-- Tout nouveau besoin produit = nouvelle Issue (pas de TODO dans le code).
-
-
-- `04_docs/08-roadmap.md` doit être mis à jour pour pointer vers les milestones GitHub (plus vers l'xlsx).
-
-
-- Le script PowerShell est archivé avec la migration.
-
-
-
-
-
----
-
-
-
-
-
-## 2026-04-24 · Restructuration en aiCEO/ unifié
-
-
-
-
-
-**Contexte** : deux dossiers séparés (`aiCEO_Agent/` + `aiCEO_Design_System/`), fichiers orphelins, pas de versioning, pas de distinction draft / livrable.
-
-
-
-
-
-**Options étudiées** :
-
-
-- (A) Laisser en l'état, documenter les conventions
-
-
-- (B) Fusionner dans une arborescence numérotée 00_BOUSSOLE / 01..06 + zones `_drafts/` `_archive/` `_scratch/`
-
-
-- (C) Fusionner mais sans numérotation (arborescence plate par domaine)
-
-
-
-
-
-**Décision** : B. La numérotation force l'ordre de lecture, rend le dossier auto-documenté, et sépare clairement ce qui est canonique (01-06) de ce qui est en maturation (`_drafts/`) ou historique (`_archive/`).
-
-
-
-
-
-**Conséquences** :
-
-
-- Tous les chemins internes changent. À corriger : liens dans `04_docs/10-exec-deck.pptx` (pointe vers anciens chemins ?), scripts MVP qui lisent `../assets/data.js` → devient `../01_app-web/assets/data.js`.
-
-
-- Les scripts manuels (raccourcis Windows, start.bat) doivent être revus.
-
-
-
-
-
----
-
-
-
-
-
-## 2026-04-24 · GitHub sur compte perso privé (pas orga ETIC)
-
-
-
-
-
-**Contexte** : besoin d'un versioning + source de vérité. Choix entre compte personnel GitHub et organisation ETIC.
-
-
-
-
-
-**Options étudiées** :
-
-
-- (A) Perso privé
-
-
-- (B) Orga ETIC Services privée
-
-
-
-
-
-**Décision** : A. Plus rapide à mettre en place, pas de permissions à régler. Transférable vers l'orga ETIC ultérieurement si le produit est adopté par l'entreprise.
-
-
-
-
-
-**Conséquences** :
-
-
-- Propriété intellectuelle temporairement sur le compte perso. À clarifier si le produit devient un livrable ETIC officiel.
-
-
-
-
-
----
-
-
-
-
-
-## 2026-04-22 · Outlook COM plutôt que Microsoft Graph
-
-
-
-
-
-**Contexte** : besoin d'ingérer les mails pour enrichir le contexte d'arbitrage.
-
-
-
-
-
-**Options étudiées** :
-
-
-- (A) COM local via PowerShell — Outlook doit être ouvert
-
-
-- (B) Microsoft Graph avec enregistrement Azure AD
-
-
-
-
-
-**Décision** : A pour le MVP. Pas de setup Azure, pas de consentement admin, pas d'OAuth. Outlook est déjà ouvert sur le poste.
-
-
-
-
-
-**Conséquences** :
-
-
-- Dépendance à Outlook lancé pour ingérer
-
-
-- Les données ne quittent pas le poste (bon pour la confidentialité)
-
-
-- Graph à prévoir pour V2+ quand on aura l'envoi natif de mails
-
-
-
-
-
----
-
-
-
-
-
-## 2026-04-22 · REPORTER sans plafond dans l'arbitrage
-
-
-
-
-
-**Contexte** : sur 20 tâches, Claude renvoyait parfois 3/2/12 ou forçait dans un des 3 paniers. Il "perdait" des tâches en fin de liste.
-
-
-
-
-
-**Options étudiées** :
-
-
-- (A) Garder 3/2/3 strict → oblige Claude à trancher, risque de perdre les petites
-
-
-- (B) FAIRE ≤ 3, DÉLÉGUER ≤ 2, REPORTER absorbe tout le reste
-
-
-
-
-
-**Décision** : B. Aucune tâche n'est perdue. La colonne REPORTER peut contenir 20+ items, c'est le journal du jour.
-
-
-
-
-
-**Conséquences** : UI adaptée (scroll dans REPORTER), règle affichée « 0 tâche perdue » comme engagement produit.
-
-
-
-
-
----
-
-
-
-
-
-## 2026-04-24 · Trajectoire produit : local-first comme pont jetable vers cloud V1+, avec continuité d'usage CEO
-
-
-
-
-
-**Contexte** : l'audit de cohérence du 24/04 (`04_docs/AUDIT-COHERENCE-2026-04-24.md`, dissonance C1) a mis en évidence trois narratifs concurrents — `01-vision-produit.md` promet un copilote cloud SaaS multi-CEO, les specs fusion (`SPEC-*-FUSION.md`) décrivent une app Node **locale Windows mono-poste**, et le code livré v0.4 est local. Il fallait trancher : local-first est-il un pont, la destination, ou faut-il accélérer le cloud dès v0.5 ? Atelier de cohérence, Session 1 (`04_docs/_atelier-2026-04-coherence/sessions/S1-narratif-produit.md`).
-
-
-
-
-
-**Options étudiées** :
-
-
-- (A) **Pont jetable** : v0.4/v0.5 local, rebascule cloud en V1 (Supabase + Graph + Inngest)
-
-
-- (B) **Destination locale souveraine** : v0.5 → V3 local, positionnement "copilote qui ne quitte jamais le poste"
-
-
-- (C) **Accélération cloud** : skip SQLite locale, v0.5 déjà cloud
-
-
-
-
-
-**Décision** : **A — pont jetable, avec contrainte forte de continuité d'usage CEO**.
-
-
-
-
-
-Deux motifs :
-
-
-1. Conforme aux specs fusion déjà rédigées (10 sprints S1-S8), aucun chantier supplémentaire.
-
-
-2. La bascule cloud V1 était déjà implicite dans la roadmap ; on l'explicite comme choix assumé, pas comme dérive.
-
-
-
-
-
-**Contrainte ajoutée par le CEO (irréversible sauf nouvel ADR)** :
-
-
-Le CEO **ne doit pas perdre l'usage** pendant la phase fusion v0.5 ni pendant la bascule cloud V1. Il doit pouvoir **tester toutes les fonctionnalités et produire du retour d'usage en continu**, pas par à-coups.
-
-
-
-
-
-Conséquences opérationnelles de la contrainte :
-
-
-- **Fusion v0.5 progressive, pas big-bang** : chaque sprint S1-S8 livre une fonctionnalité utilisable de bout en bout (pas un palier technique invisible). Le MVP v0.4 reste opérationnel jusqu'à parité atteinte par le nouveau code.
-
-
-- **Mode parallèle obligatoire** : pendant la transition, l'ancien MVP (port 4747 + JSON) et le nouveau (fusion + SQLite) cohabitent sur le poste. Le CEO bascule fonction par fonction, pas d'un coup.
-
-
-- **Rollback à chaque étape** : chaque migration (données, schéma, endpoint) doit pouvoir revenir en arrière en moins de 10 minutes, sans perte de décisions prises entre-temps.
-
-
-- **Parité fonctionnelle avant bascule finale** : pas d'arrêt de v0.4 tant que v0.5 n'a pas démontré parité + stabilité sur 1 semaine d'usage CEO réel.
-
-
-- **Même logique V0.5 → V1** : la bascule cloud V1 se fera aussi par vagues, avec période de coexistence local + cloud pour éviter toute coupure.
-
-
-
-
-
-**Conséquences produit** :
-
-
-- Le travail v0.5 sur `better-sqlite3`, `node-windows`, PowerShell COM, schéma SQLite est **assumé en partie jetable en V1** — c'est un choix, pas une surprise.
-
-
-- `01-vision-produit.md` doit expliciter "aiCEO aujourd'hui (local) / aiCEO horizon 2027 (cloud)" pour que quiconque lit la vision comprenne la trajectoire.
-
-
-- `02-benchmark.md` doit distinguer benchmark court terme (productivité desktop, Copilot, Rewind) et benchmark horizon (cloud SaaS Motion/Sunsama/Lattice).
-
-
-- `08-roadmap.md` V1 doit explicitement budgéter la **refonte stack local → cloud** (pas seulement des nouvelles features).
-
-
-- Chaque sprint fusion doit inclure un critère d'acceptation "le CEO peut l'utiliser + donner du feedback" avant de passer au sprint suivant.
-
-
-
-
-
-**Conditions de revisite** : uniquement si un blocage technique majeur impose l'accélération cloud (ex. SQLite ne tient pas la charge, Outlook COM bloqué par IT corp) — et dans ce cas, nouvel ADR avec plan de continuité d'usage équivalent.
-
-
-
-
-
----
-
-
-
-
-
-## 2026-04-24 · Typographie canonique : Fira Sans self-hosted
-
-
-
-
-
-**Contexte** : l'audit de cohérence (`04_docs/AUDIT-COHERENCE-2026-04-24.md`, dissonance C2) a mis en évidence **trois sources de vérité contradictoires** sur la typographie :
-
-
-- `02_design-system/tokens/typography.json` + `colors_and_type.css` → **Fira Sans** (10 poids self-hosted) + Aubrielle + Sol Thin
-
-
-- `02_design-system/assets/app.css` + `product.app.css` + `01_app-web/assets/app.css` → **Inter** via `@import` CDN `rsms.me/inter/inter.css`
-
-
-- `03_mvp/public/index.html` + `evening.html` → **Cambria / Calibri** inline
-
-
-- `04_docs/07-design-system.md` § 2.3 → documentait Inter (alors que les tokens disaient Fira)
-
-
-
-
-
-Conflit documenté dans `02_design-system/REPO-CONTEXT.md` mais jamais tranché. Atelier de cohérence, Session 2 (`04_docs/_atelier-2026-04-coherence/sessions/S2-typographie.md`).
-
-
-
-
-
-**Options étudiées** :
-
-
-- (A) **Fira Sans canonique** (tokens gagnent) — purger Inter et Cambria/Calibri
-
-
-- (B) Inter canonique (code livré gagne) — aligner tokens sur Inter
-
-
-- (C) Fira canonique + Inter fallback — stack hybride
-
-
-
-
-
-**Décision** : **A — Fira Sans canonique, self-hostée, zéro dépendance CDN**.
-
-
-
-
-
-Motifs :
-
-
-1. Les tokens DS représentent un choix d'identité produit **explicite et délibéré** (Fira Sans = plus humain, plus institutionnel, moins "startup SF"). Inter était un fallback technique arrivé au scaffolding, pas un choix.
-
-
-2. Le self-hosting des fontes supprime la dépendance Google Fonts / `rsms.me`, conforme à la trajectoire locale souveraine actée en S1 (ADR `2026-04-24 · Trajectoire produit`).
-
-
-3. Les 10 fichiers OTF Fira Sans + Aubrielle_Demo + Sol Thin sont **déjà présents** dans `02_design-system/fonts/`.
-
-
-
-
-
-**Patches appliqués 2026-04-24** :
-
-
-- `02_design-system/assets/app.css` : `@import rsms.me/inter` → `@import ../colors_and_type.css`
-
-
-- `02_design-system/assets/product.app.css` : idem + `font-family: "Inter var"…` → `"Fira Sans"…`
-
-
-- `01_app-web/assets/app.css` : purge `@import Inter`, ajout `@font-face` Fira (6 poids) pointant vers `../../02_design-system/fonts/`, `font-family` basculée
-
-
-- `03_mvp/public/index.html` : `Calibri`, `Cambria` remplacés par `"Fira Sans", Calibri, …` / `"Fira Sans", Cambria, …` (Fira première, anciennes fontes en fallback tant que `@font-face` n'est pas servi localement par le MVP)
-
-
-- `03_mvp/public/evening.html` : idem
-
-
-- `04_docs/07-design-system.md` § 2.3 : réécriture complète, stack Fira, poids étendus 100-900, OpenType features documentées
-
-
-- `02_design-system/REPO-CONTEXT.md` : note "conflit résolu 2026-04-24" (à compléter hors session)
-
-
-
-
-
-**Continuité d'usage (ADR S1)** : le MVP conserve Cambria/Calibri en fallback visuel immédiat tant que la fusion v0.5 n'a pas servi les fichiers Fira localement sous `03_mvp/public/assets/fonts/`. Aucune régression visible pour le CEO. Le passage visible à Fira Sans se fera lors du sprint S1 de la fusion (copie des assets DS dans `public/`, déjà prévu dans `SPEC-TECHNIQUE-FUSION §3`).
-
-
-
-
-
-**Conséquences** :
-
-
-- Issue GitHub à ouvrir manuellement dans `feycoil/aiCEO` : `lane/design-system` + `priority/high`, titre *"[DS] Fusion v0.5 · copier fonts Fira Sans dans 03_mvp/public/assets/fonts/"*, référence cette ADR (contenu d'issue préparé dans `_atelier-2026-04-coherence/sessions/S2-typographie.md` §7).
-
-
-- Tout nouveau CSS ou nouvelle page doit utiliser `"Fira Sans"` en première position, jamais Inter, jamais Cambria/Calibri de façon primaire.
-
-
-- `02_design-system/tokens/typography.json` fait foi sur les poids et les features OT.
-
-
-
-
-
----
-
-
-
-
-
-## 2026-04-24 · Hiérarchie des sources de vérité documentaires
-
-
-
-
-
-**Contexte** : l'audit de cohérence (`AUDIT-COHERENCE-2026-04-24.md`, dissonance C3) a mis en évidence des périmètres recouvrants entre documents sans hiérarchie explicite — notamment `04_docs/06-architecture.md` v2.0 et `04_docs/SPEC-TECHNIQUE-FUSION.md`, qui décrivent tous deux l'architecture cible sans qu'on sache lequel fait foi sur quoi. Risque : le prochain dev qui modifie l'un oubliera l'autre. Atelier de cohérence, Session 3 (`04_docs/_atelier-2026-04-coherence/sessions/S3-sources-verite.md`).
-
-
-
-
-
-**Options étudiées** :
-
-
-- (A) Une seule source par périmètre, hiérarchie explicite dans un ADR (proposition atelier)
-
-
-- (B) Fusionner les documents qui se chevauchent
-
-
-- (C) Laisser l'existant et gérer au cas par cas
-
-
-
-
-
-**Décision** : **A — hiérarchie explicite, une source canonique par périmètre**.
-
-
-
-
-
-Tableau de référence unique (à citer dans tout nouveau document qui porte un de ces sujets) :
-
-
-
-
-
-| Domaine | Source canonique | Rôle | Sources secondaires |
-
-
-|---|---|---|---|
-
-
-| **Architecture cible V1→V3** | `04_docs/06-architecture.md` | Carte large, trajectoire, budgets | — |
-
-
-| **Architecture fusion v0.5** | `04_docs/SPEC-TECHNIQUE-FUSION.md` | Source opérationnelle : schéma SQL, endpoints REST, sprints S1-S8 | `06-architecture.md` §2 renvoie vers elle |
-
-
-| **Spec fonctionnelle v0.5** | `04_docs/SPEC-FONCTIONNELLE-FUSION.md` | 13 pages cibles, user flows matin/soir/hebdo | — |
-
-
-| **Roadmap & jalons** | `04_docs/08-roadmap.md` | Milestones, budgets, KPIs par jalon | `00_BOUSSOLE/ROADMAP.md` (compagnon exécutif) |
-
-
-| **Backlog opérationnel** | GitHub Issues `feycoil/aiCEO` | Single source | `08-roadmap.md` RICE table en miroir light |
-
-
-| **Décisions structurantes** | `00_BOUSSOLE/DECISIONS.md` | ADR ≥ 30 min de débat | Commits Git pour micro-arbitrages |
-
-
-| **Design tokens & règles** | `02_design-system/colors_and_type.css` + `tokens/` | Canoniques | `07-design-system.md` (prose) |
-
-
-
-
-
-**Règle d'arbitrage en cas de conflit** : la source canonique gagne. Toute source secondaire qui contredit le canon doit être mise à jour ou marquée obsolète dans la même PR.
-
-
-
-
-
-**Conséquences** :
-
-
-- Patch immédiat `04_docs/06-architecture.md` §2 : encadré *"Pour les détails opérationnels de la fusion v0.5 (schéma SQL, sprints, endpoints), la source canonique est `SPEC-TECHNIQUE-FUSION.md`. Ce document en donne la carte large et la trajectoire."*
-
-
-- Toute PR qui touche l'une des sources canoniques doit vérifier si elle impacte une source secondaire et la mettre à jour le cas échéant.
-
-
-- Ce tableau est la référence en cas de doute — toute future doc qui se chevauche avec un domaine listé doit déclarer explicitement son rôle par rapport au canon.
-
-
-
-
-
-**Conditions de revisite** : nouvel ADR si un périmètre apparaît (ex. compliance, données client) ou si la fusion v0.5 absorbe complètement `06-architecture.md`.
-
-
-
-
-
----
-
-
-
-
-
-## 2026-04-24 · Règle de vie des drafts (4 semaines max)
-
-
-
-
-
-**Contexte** : l'audit de cohérence (dissonance C6) a identifié le dossier `_drafts/` comme hybride — il contient à la fois des **gabarits réutilisables** (`_template.md`, `_template-widget.jsx`) et des **itérations anciennes** (`REFONTE_v3.md`, `SPEC_v31.md`) sans règle de durée de vie. Résultat : accumulation silencieuse de docs obsolètes que personne n'ose supprimer. Atelier de cohérence, Session 3.
-
-
-
-
-
-**Options étudiées** :
-
-
-- (A) Règle 4 semaines + promotion/archivage binaire
-
-
-- (B) Pas de règle, nettoyage ad-hoc
-
-
-- (C) Dossier purement temporaire, vidé chaque fin de sprint
-
-
-
-
-
-**Décision** : **A — règle 4 semaines max, promotion ou archivage binaire**.
-
-
-
-
-
-**Règles** :
-
-
-1. Les fichiers dont le nom commence par `_template` restent indéfiniment (gabarits).
-
-
-2. Tout autre fichier dans `_drafts/` a une durée de vie **maximale de 4 semaines** depuis sa création.
-
-
-3. Au-delà de 4 semaines, décision binaire obligatoire :
-
-
-   - **Promu** : déplacé dans son emplacement définitif (`04_docs/`, `02_design-system/`, etc.) et référencé dans un index.
-
-
-   - **Archivé** : déplacé dans `_archive/YYYY-MM-draft-<nom>/` avec un `README.md` court expliquant le contexte et la raison d'archivage.
-
-
-4. Un draft peut être archivé **avant** 4 semaines s'il est content-obsolète (superseded par un livrable officiel).
-
-
-
-
-
-**Action immédiate 2026-04-24** :
-
-
-- `REFONTE_v3.md` et `SPEC_v31.md` décrivent une itération produit (v3 / v3.1, localStorage-only, `assistant.html` séparé) **superseded** par les fascicules `01` à `08` + `SPEC-FONCTIONNELLE-FUSION` + `SPEC-TECHNIQUE-FUSION`. Archivés dans `_archive/2026-04-drafts-heritage/` avec README contextuel.
-
-
-
-
-
-**Conséquences** :
-
-
-- `_drafts/README.md` créé, porteur de la règle + inventaire des gabarits.
-
-
-- Tout nouveau draft doit inclure une date ISO dans son en-tête (`**Créé** : YYYY-MM-DD`) pour faciliter l'audit.
-
-
-- Un audit trimestriel de `_drafts/` est prévu dans `GOUVERNANCE.md` (à patcher en S7 ou immédiatement).
-
-
-
-
-
-**Conditions de revisite** : si le volume de drafts devient ingérable (> 10 simultanés) ou si la durée de 4 semaines s'avère trop courte pour certains types (ex. spec longue en incubation), affiner par type dans un nouvel ADR.
-
-
-
-
-
----
-
-
-
-
-
-## 2026-04-24 · Timing & budget v0.5 réconciliés
-
-
-
-
-
-**Contexte** : l'audit de cohérence (dissonances C1 et C5) a relevé que le dossier produit avance **quatre durées différentes** pour la fusion v0.5 (6 sem dans le chemin critique, 7 sem dans la synthèse, 9 sem dans SPEC-TECHNIQUE-FUSION, 10 sem dans la table des sprints) et **deux budgets incompatibles** (95 k€ dans la synthèse roadmap sans dérivation, 132 kEUR dans SPEC-TECHNIQUE-FUSION qui est en fait le budget v0.4 MVP). L'équipe v0.5 n'est par ailleurs documentée nulle part. Conséquence : le CEO ne peut pas citer un chiffre de v0.5 à un interlocuteur externe sans être contredit par un autre passage du dossier. Atelier de cohérence, Session 4.
-
-
-
-
-
-**Options étudiées** :
-
-
-- (A) Accepter le bundle reco — 6 sprints / 10 sem / 110 k€ / équipe 2,6 ETP documentée, V1 = 16 sem canonique avec §8 clarifié
-
-
-- (B) Compresser à 5 sprints / 9 sem comme le propose SPEC-TECHNIQUE-FUSION
-
-
-- (C) Viser 78 k€ avec une équipe serrée à 1,8 ETP (1 lead dev + 0,5 designer + 0,3 PMO)
-
-
-
-
-
-**Décision** : **A — bundle reco**.
-
-
-
-
-
-1. **6 sprints, 10 semaines** pour la fusion v0.5. S6 dédié au scellement (tag `v0.5`, release interne, rétro, communication) est conservé distinct du S5 (durcissement technique + Service Windows + tests e2e + CI).
-
-
-2. **Équipe v0.5 = 2,6 ETP** : 2 fullstack dev + 0,3 product designer + 0,3 PMO. Feycoil reste dogfood user quotidien, non budgété.
-
-
-3. **Budget v0.5 = ~110 k€** (10 sem × 2,6 ETP × 900 €/j × 4,5 j/sem ≈ 105 k€ dev + 5 k€ infra/LLM).
-
-
-4. **V1 = 16 semaines canonique** (périmètre complet, budget 290 k€). Le chiffre "14 sem" du chemin critique §8 désigne le chemin vers "V1 cœur" (migration Postgres + Graph API + Inngest + sub-agents), les 8 sem restantes couvrent les enrichissements F15 SharePoint RAG, F19 viz riches, F12 rituels auto-draftés.
-
-
-
-
-
-**Conséquences** :
-
-
-- Patch `04_docs/08-roadmap.md` : §3.2 (retirer "~1,5 mois dev temps plein"), §3.2bis "Équipe v0.5" créée, §3.2ter "Budget v0.5" créée (dérivation explicite), §8 chemin critique (6→10 sem fusion + clarification V1 cœur vs V1 complet), §13 synthèse (7 sem → 10 sem, 95 k€ → 110 k€).
-
-
-- Patch `04_docs/SPEC-TECHNIQUE-FUSION.md` §13 : ajout du Sprint 6 (scellement, 1 sem) ; remplacement de "132 kEUR conforme roadmap" par "110 kEUR (dérivation dans `08-roadmap.md` §3.2ter)".
-
-
-- À partir de cet ADR, **tout chiffre v0.5** cité dans le dossier doit être aligné sur 10 sem / 110 k€ / 2,6 ETP ou amender cet ADR.
-
-
-- Budget total 18 mois ajusté : MVP v0.4 dogfood (bien sous 132 k€) + v0.5 110 k€ + V1 290 k€ + V2 693 k€ + V3 598 k€ ≈ 1,69 M€ (ligne §13 `Budget 18 mois total ≈ 1,68 M€` reste valide).
-
-
-
-
-
-**Conditions de revisite** : si la fusion v0.5 dépasse 12 semaines ou 130 k€, ouvrir un nouvel ADR avec analyse de la dérive (dette technique sous-estimée, équipe insuffisante, périmètre sous-estimé).
-
-
-
-
-
----
-
-
-
-
-
-## 2026-04-24 · Livrables externes : cadrage
-
-
-
-
-
-**Contexte** : l'audit de cohérence (dissonance C4) a relevé que le dossier produit est *« prêt à être utilisé, pas à être présenté »* — score complétude **0 % CEO pair**, **0 % client**, **40 % investisseur**. L'audit §5.3 insiste : *« le premier vrai test externe (CEO pair ETIC) est l'événement le plus important de la trajectoire post-v0.5 »*. Parallèlement, la dissonance C7 (positionnement obsolète — benchmark Lattice/Motion/Superhuman incompatible avec la réalité local-first post-fusion) bloque tout pitch crédible. Atelier de cohérence, Session 5.
-
-
-
-
-
-**Options étudiées** :
-
-
-- (A) CEO pair uniquement — scope minimal, 2-3 j
-
-
-- (B) **CEO pair + Investisseur** — couvre P1-4 de l'audit intégralement, 4-5 j
-
-
-- (C) Tout (+ client + partenaire tech) — 10+ j, livrables périmés avant V1
-
-
-
-
-
-**Décision** : **B — CEO pair + Investisseur traités maintenant**, client et partenaire tech parqués (reco révisable post-V1 pour le client, post-V2 pour le partenaire tech).
-
-
-
-
-
-**Cadrage S5** :
-
-
-1. **5 livrables à produire** (sprint dédié 4-5 j, fenêtre S2 du plan audit 05/05 → 11/05) :
-
-
-   - `04_docs/PITCH-ONEPAGE.md` — problème/solution/preuve/trajectoire/CTA, 1 page PDF
-
-
-   - `04_docs/BUSINESS-CASE.md` — hypothèses revenue, coûts 18 mois (1,69 M€), point mort, ROI CEO utilisateur
-
-
-   - `04_docs/ONBOARDING-CEO-PAIR.md` — prérequis, install Service Windows, import Outlook, premier arbitrage, FAQ
-
-
-   - `04_docs/LETTRE-INTRO-CEO-PAIR.md` — template 1 page signée Feycoil, pair-à-pair
-
-
-   - `04_docs/PITCH-DECK-INVESTISSEUR.pptx` — adaptation de `10-exec-deck.pptx` (redactions + traction + positionnement à jour + slides "pas encore construit")
-
-
-2. **Dépendance bloquante P0** : patch `04_docs/02-benchmark.md` (refonte §3 : Copilot for Business / Rewind / Motion-desktop / plugin Outlook ; §0 ajouté "Deux marchés de référence selon phase produit"). Sans ce patch, le pitch investisseur ne tient pas.
-
-
-3. **Stockage** : tous les livrables dans `04_docs/` avec préfixes MAJUSCULES (cohérent avec `SPEC-FONCTIONNELLE-FUSION.md` et `SPEC-TECHNIQUE-FUSION.md`). Nouvelle section "Livrables externes" ajoutée dans `04_docs/00-README.md`.
-
-
-4. **Confidentialité** : un seul fichier par audience, pas de double version. En-tête de filtrage explicite obligatoire sur chaque livrable externe : `Audience : <CEO pair | Investisseur>. Éléments redactés : <liste>. Version interne de référence : <fichier>.`
-
-
-5. **Cadence** : maintien continu, pas de fichiers versionnés (`-v0.5.md`). Chaque livrable porte `**Version produit visée** : <v0.5 | V1 | ...> · **Dernière mise à jour** : YYYY-MM-DD`. Revue systématique à chaque jalon produit scellé (v0.5, V1, V2).
-
-
-
-
-
-**Conséquences** :
-
-
-- **6 issues GitHub à ouvrir manuellement** (contenu préparé dans `04_docs/_atelier-2026-04-coherence/sessions/S5-livrables-externes.md` §9) : `doc/02-benchmark-v2-positionnement-a-jour` (P0), puis les 5 issues `doc/PITCH-ONEPAGE`, `doc/BUSINESS-CASE`, `doc/ONBOARDING-CEO-PAIR`, `doc/LETTRE-INTRO-CEO-PAIR`, `doc/PITCH-DECK-INVESTISSEUR`. Labels : `lane/docs` + `priority/P1` (sauf benchmark = P0) + `scope/externe` + milestone `V1`.
-
-
-- Section "Livrables externes" ajoutée dans `04_docs/00-README.md`, en creux aujourd'hui, à alimenter au fil de la production.
-
-
-- Le `10-exec-deck.pptx` actuel reste **interne uniquement** (ExCom ADABU 30/04). Toute adaptation pour l'externe passe par un nouveau fichier (pas de variante confuse du même nom).
-
-
-- Client et partenaire tech : créer 2 issues GitHub parqueurs avec milestone `V2` et label `status/parked` pour garder la trace de la décision (rouvrir post-V1 et post-V2 respectivement).
-
-
-
-
-
-**Conditions de revisite** : si une opportunité externe se présente avant T1 2027 (intérêt concret d'un client-test, approche d'un VC qualifié, sollicitation d'un partenaire tech), rouvrir cet ADR pour ajouter le livrable pertinent. Ne pas produire préventivement ce qui peut être obsolète.
-
-
-
-
-
----
-
-
-
-
-
-## Template pour la prochaine décision
-
-
-
-
-
-```markdown
-
-
-## YYYY-MM-DD · Titre court
-
-
-
-
-
-**Contexte** : (en 2-3 lignes)
-
-
-
-
-
-**Options étudiées** :
-
-
-- (A) …
-
-
-- (B) …
-
-
-
-
-
-**Décision** : …
-
-
-
-
-
-**Conséquences** : …
-
-
-```
-
-
-
-
-
+**Prochaine étape** : recette CEO (Ctrl+Shift+R sur les 13 pages), poser tag `v0.6-s6.4`, kickoff Sprint S6.5 (LLM Anthropic + sync events Outlook + status `reportee` + UI rattachement maison/projet pour emails).

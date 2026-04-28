@@ -1,0 +1,345 @@
+/* aiCEO Design System — Colors & Typography Tokens
+   PRIMARY FACE: Fira Sans (100-900, self-hosted from ./fonts/).
+   DISPLAY ACCENT: Aubrielle — signature script for greetings, intention titles, hero moments.
+   ULTRA-LIGHT ACCENT: Sol Thin — used sparingly for huge numerals or stylised subtitles.
+
+   ──────────────────────────────────────────────────────
+   SOURCE CANONIQUE : tokens.json (ce fichier est en partie GÉNÉRÉ).
+   Pour modifier un token, édite tokens.json puis lance `npm run ds:export`
+   depuis 02_design-system/. Le bloc entre les marqueurs GENERATED est
+   réécrit à chaque export ; la section SEMANTIC TYPE ROLES en fin de
+   fichier (hand-written) est préservée telle quelle.
+   Chemin type complet : 00_BOUSSOLE/GOUVERNANCE.md §Chemin type.
+   ──────────────────────────────────────────────────────
+*/
+
+/* === GENERATED FROM tokens.json — do not edit by hand === */
+/* Généré automatiquement — ne pas éditer à la main. */
+/* Source : 02_design-system/tokens.json · Version : 1.0.0 · Dernière MAJ : 2026-04-24 */
+
+/* ── Webfonts (self-hosted, no CDN fallbacks needed) ── */
+@font-face {
+  font-family: "Fira Sans"; font-style: normal;
+  font-weight: 100;
+  src: url("./fonts/FiraSans-Thin.otf") format("opentype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fira Sans"; font-style: normal;
+  font-weight: 200;
+  src: url("./fonts/FiraSans-ExtraLight.otf") format("opentype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fira Sans"; font-style: normal;
+  font-weight: 300;
+  src: url("./fonts/FiraSans-Light.otf") format("opentype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fira Sans"; font-style: normal;
+  font-weight: 400;
+  src: url("./fonts/FiraSans-Regular.otf") format("opentype");
+  font-display: swap;
+}
+
+  /* Book — slightly heavier than Regular, treated as 450 */
+@font-face {
+  font-family: "Fira Sans"; font-style: normal;
+  font-weight: 450;
+  src: url("./fonts/FiraSans-Book.otf") format("opentype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fira Sans"; font-style: normal;
+  font-weight: 500;
+  src: url("./fonts/FiraSans-Medium.otf") format("opentype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fira Sans"; font-style: normal;
+  font-weight: 600;
+  src: url("./fonts/FiraSans-SemiBold.otf") format("opentype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fira Sans"; font-style: normal;
+  font-weight: 700;
+  src: url("./fonts/FiraSans-Bold.otf") format("opentype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fira Sans"; font-style: normal;
+  font-weight: 800;
+  src: url("./fonts/FiraSans-ExtraBold.otf") format("opentype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fira Sans"; font-style: normal;
+  font-weight: 900;
+  src: url("./fonts/FiraSans-Heavy.otf") format("opentype");
+  font-display: swap;
+}
+
+  /* Display script — greetings, hero only, min 36px */
+@font-face {
+  font-family: "Aubrielle"; font-style: normal;
+  font-weight: 400;
+  src: url("./fonts/Aubrielle_Demo.ttf") format("truetype");
+  font-display: swap;
+}
+
+  /* Ultra-light display numerals, 28px+ */
+@font-face {
+  font-family: "Sol"; font-style: normal;
+  font-weight: 100;
+  src: url("./fonts/SolThin.otf") format("opentype");
+  font-display: swap;
+}
+
+/* ── Design tokens (:root CSS custom properties) ── */
+:root {
+  /* Color — neutrals (warm cream throughout — page bg matches sidebar family) */
+  --bg: #efece5;
+  --surface: #f5f3ef;
+  --surface-2: #ffffff;
+  --surface-3: #eeebe4;
+  --border: #e4e1d9;
+  --border-2: #cfcbc1;
+  --text: #111418;
+  --text-2: #5b5e68;
+  --text-3: #9a9da8;
+
+  /* Color — brand (dark primary, not coral) */
+  --brand: #111418;
+  --brand-dark: #000000;
+  --brand-50: #eeebe4;
+  --brand-100: #dcd8cd;
+  --brand-700: #111418;
+
+  /* Color — accents (muted, desaturated — never candy) */
+  --rose: #d96d3e;
+  --rose-50: #fdecdf;
+  --rose-800: #8a3b1b;
+  --amber: #b88237;
+  --amber-50: #f5e8d6;
+  --amber-800: #6d4816;
+  --emerald: #3d7363;
+  --emerald-50: #e2ece8;
+  --emerald-800: #234236;
+  --sky: #7790ae;
+  --sky-50: #e9eef4;
+  --sky-800: #3b506a;
+  --violet: #7a6a8a;
+  --violet-50: #ece7f0;
+  --violet-800: #463a54;
+
+  /* Type — families */
+  --font-sans: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-script: "Aubrielle", "Apple Chancery", "Snell Roundhand", cursive;
+  --font-thin: "Sol", "Fira Sans", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-features: "kern","liga","calt";
+  --font-features-num: "tnum","lnum";
+
+  /* Type — scale (px) */
+  --fs-script-hero: 64px;
+  --fs-script: 44px;
+  --fs-display: 32px;
+  --fs-h1: 22px;
+  --fs-h2: 18px;
+  --fs-h3: 15px;
+  --fs-lead: 14px;
+  --fs-body: 14px;
+  --fs-sm: 13px;
+  --fs-xs: 12px;
+  --fs-tiny: 11px;
+  --fs-caption: 10px;
+
+  /* Type — line heights */
+  --lh-tight: 1.05;
+  --lh-snug: 1.3;
+  --lh-base: 1.5;
+  --lh-relaxed: 1.6;
+
+  /* Type — tracking */
+  --tracking-script: -0.01em;
+  --tracking-display: -0.025em;
+  --tracking-h1: -0.02em;
+  --tracking-h2: -0.015em;
+  --tracking-card: -0.01em;
+  --tracking-body: 0em;
+  --tracking-caption: 0.09em;
+  --tracking-kpi: -0.035em;
+
+  /* Type — weights */
+  --fw-thin: 100;
+  --fw-extralight: 200;
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-book: 450;
+  --fw-medium: 500;
+  --fw-semi: 600;
+  --fw-bold: 700;
+  --fw-extrabold: 800;
+  --fw-heavy: 900;
+
+  /* Shape — radius */
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 28px;
+
+  /* Shape — shadow */
+  --shadow-xs: 0 1px 2px rgba(17,20,24,.04);
+  --shadow-sm: 0 1px 3px rgba(17,20,24,.06);
+  --shadow: 0 4px 16px rgba(17,20,24,.06);
+  --shadow-card: 0 1px 2px rgba(17,20,24,.04), 0 10px 30px -14px rgba(17,20,24,.12);
+  --shadow-app: 0 30px 80px -20px rgba(17,20,24,.25);
+  --shadow-lg: 0 20px 60px -20px rgba(17,20,24,.3);
+  --shadow-hero: 0 1px 2px rgba(17,20,24,.04), 0 20px 50px -24px rgba(17,20,24,.18);
+
+  /* Shape — space */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+
+  /* Gradient & ring */
+  --gradient-brand: linear-gradient(135deg, #111418 0%, #2c2f36 100%);
+  --gradient-hero: linear-gradient(135deg, #ffffff 0%, #fbf9f5 60%, #f5f0e6 100%);
+  --ring: 0 0 0 4px rgba(17,20,24,.12);
+}
+
+/* === END GENERATED === */
+
+/* ══════════════════════════════════════════════════════
+   SEMANTIC TYPE ROLES
+   (hand-written — composants typographiques, consomment les tokens ci-dessus)
+   ══════════════════════════════════════════════════════ */
+html, body {
+  font-family: var(--font-sans);
+  font-feature-settings: var(--font-features);
+  font-size: var(--fs-body);
+  line-height: var(--lh-base);
+  letter-spacing: var(--tracking-body);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ── Display type (Fira Sans ExtraBold / Heavy) ─ */
+.display {
+  font-family: var(--font-sans);
+  font-size: var(--fs-display);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--lh-tight);
+  color: var(--text);
+}
+.h1 {
+  font-family: var(--font-sans);
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--tracking-h1);
+  color: var(--text);
+  margin: 0;
+}
+.h2 {
+  font-family: var(--font-sans);
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-h2);
+  color: var(--text);
+  margin: 0;
+}
+.h3, .card-title {
+  font-family: var(--font-sans);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--tracking-card);
+  color: var(--text);
+  margin: 0;
+}
+
+/* ── Body / secondary text ─ */
+.body   { font-family: var(--font-sans); font-size: var(--fs-body); color: var(--text); line-height: var(--lh-base); }
+.lead   { font-family: var(--font-sans); font-size: var(--fs-lead); color: var(--text-2); line-height: var(--lh-relaxed); font-weight: var(--fw-regular); }
+.small  { font-family: var(--font-sans); font-size: var(--fs-sm); color: var(--text-2); }
+.tiny   { font-family: var(--font-sans); font-size: var(--fs-tiny); color: var(--text-2); }
+.muted  { color: var(--text-3); }
+
+/* ── Overline / eyebrow / label ─ */
+.label, .overline {
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-caption);
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+/* ── KPI numerals (Fira Sans Heavy, tabular) ─ */
+.kpi-number {
+  font-family: var(--font-sans);
+  font-size: var(--fs-display);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--tracking-kpi);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: var(--font-features-num);
+  line-height: 1;
+  color: var(--text);
+}
+
+/* ── Script display (Aubrielle) — hero moments only ─ */
+.script-hero {
+  font-family: var(--font-script);
+  font-size: var(--fs-script-hero);
+  font-weight: var(--fw-regular);
+  letter-spacing: var(--tracking-script);
+  line-height: 1;
+  color: var(--text);
+}
+.script {
+  font-family: var(--font-script);
+  font-size: var(--fs-script);
+  font-weight: var(--fw-regular);
+  letter-spacing: var(--tracking-script);
+  line-height: 1.1;
+  color: var(--text);
+}
+.script-accent { color: var(--rose); }  /* coral script — hero greeting */
+
+/* ── Ultra-thin display (Sol) — numerals or light headings ─ */
+.thin {
+  font-family: var(--font-thin);
+  font-weight: var(--fw-thin);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--text);
+}
+.thin.xl  { font-size: 72px; }
+.thin.lg  { font-size: 48px; }
+.thin.md  { font-size: 32px; }
+
+/* ── Monospace / tabular ─ */
+code, .mono {
+  font-family: var(--font-mono);
+  font-size: .92em;
+}
+.tabular { font-variant-numeric: tabular-nums lining-nums; }
+
+::selection { background: var(--text); color: #fff; }

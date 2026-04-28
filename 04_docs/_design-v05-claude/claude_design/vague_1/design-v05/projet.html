@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>aiCEO — Pamandzi 09 phase 2</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css"/>
+<link rel="stylesheet" href="_shared/app.css"/>
+<style>
+  .pf-h { display: grid; grid-template-columns: 1.4fr 1fr; gap: 32px; padding: 8px 0 24px; border-bottom: 1px dashed var(--border); margin-bottom: 24px; }
+  .pf-h .eyebrow { margin-bottom: 8px; }
+  .pf-h h1 { font: 800 32px/1.15 var(--font-sans); letter-spacing: -.035em; margin: 0 0 14px; text-wrap: balance; }
+  .pf-h p { font: 500 14px/1.55 var(--font-sans); color: var(--text-2); margin: 0 0 14px; max-width: 60ch; }
+  .pf-h .meta { display: flex; flex-wrap: wrap; gap: 20px; font: 500 12.5px var(--font-sans); color: var(--text-2); }
+  .pf-h .meta b { color: var(--text); }
+  .pf-h .progress-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 18px; padding: 22px; }
+  .pf-h .progress-card .v { font-family: var(--font-thin); font-weight: 100; font-size: 88px; line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+  .pf-h .progress-card .lbl { font: 700 11px var(--font-sans); text-transform: uppercase; letter-spacing: .1em; color: var(--text-2); margin-bottom: 6px; }
+  .pf-h .progress-card .pbar { height: 6px; background: var(--surface-3); border-radius: 3px; margin: 14px 0; overflow: hidden; }
+  .pf-h .progress-card .pbar > div { height: 100%; background: var(--amber); }
+  .pf-h .progress-card .row { display: flex; justify-content: space-between; padding: 6px 0; font: 500 12px var(--font-sans); border-bottom: 1px dashed var(--border); }
+  .pf-h .progress-card .row:last-child { border-bottom: 0; }
+
+  .pf-tabs { display: flex; gap: 8px; padding: 4px 4px 18px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+  .pf-tabs button { font: 700 12.5px var(--font-sans); padding: 6px 14px; border: 0; border-radius: 999px; background: transparent; color: var(--text-2); cursor: pointer; }
+  .pf-tabs button.active { background: var(--text); color: #fff; }
+
+  .pf-grid { display: grid; grid-template-columns: 1fr 320px; gap: 28px; }
+  .pf-tline { background: var(--surface-2); border: 1px solid var(--border); border-radius: 18px; padding: 4px 22px; }
+  .pf-tline .ev { display: grid; grid-template-columns: 80px 1fr auto; gap: 14px; padding: 14px 0; border-bottom: 1px dashed var(--border); align-items: center; }
+  .pf-tline .ev:last-child { border-bottom: 0; }
+  .pf-tline .when { font: 800 12.5px var(--font-sans); font-variant-numeric: tabular-nums; }
+  .pf-tline .when small { display: block; font: 700 10px var(--font-sans); color: var(--text-3); margin-top: 2px; letter-spacing: .08em; text-transform: uppercase; }
+  .pf-tline .t { font: 700 13.5px var(--font-sans); letter-spacing: -.005em; }
+  .pf-tline .m { font: 500 11.5px var(--font-sans); color: var(--text-2); margin-top: 2px; }
+  .pf-tline .ev.done { opacity: .55; }
+  .pf-tline .ev.now { box-shadow: -3px 0 0 var(--rose); padding-left: 8px; }
+
+  .pf-side .card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+  .pf-side h4 { font: 800 11px var(--font-sans); text-transform: uppercase; letter-spacing: .1em; color: var(--text-2); margin: 0 0 10px; }
+  .pf-side .row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed var(--border); font: 500 12.5px var(--font-sans); }
+  .pf-side .row:last-child { border-bottom: 0; }
+  .pf-side .row b { color: var(--text); }
+</style>
+</head>
+<body data-nav="projets">
+<div class="app">
+  <div id="sidebar-slot"></div>
+  <main class="main">
+    <header class="topbar">
+      <div class="crumbs"><a href="index.html">Cockpit</a><span class="sep">›</span><a href="projets.html">Projets</a><span class="sep">›</span><span class="current">Pamandzi 09 — phase 2</span></div>
+      <div class="topbar-actions">
+        <button class="btn">Partager</button>
+        <button class="btn">Drive</button>
+        <button class="btn primary">+ Tâche projet</button>
+      </div>
+    </header>
+    <div class="page">
+
+      <div class="pf-h">
+        <div>
+          <div class="eyebrow">🪨 Big Rock #2 · S17 · <span class="company-chip c-AMP">AMP</span></div>
+          <h1>Pamandzi 09 — phase 2</h1>
+          <p>Résidence 24 logements à Mayotte. Phase 2 (gros œuvre fini) : FF&amp;E étage 2, finitions, livraison été 2026. Le sujet brûlant cette semaine : valider la commande mobilier étage 2 avant départ chantier mardi.</p>
+          <div class="meta">
+            <span><b>Pilote</b> · Karim El Mansouri</span>
+            <span><b>Architecte</b> · Naïr Saïd (cabinet libre)</span>
+            <span><b>Budget</b> · <span class="tabular">3.42 M€</span></span>
+            <span><b>Démarré</b> · sept. 2024</span>
+            <span><b>Livraison</b> · juill. 2026</span>
+          </div>
+        </div>
+        <div class="progress-card">
+          <div class="lbl">Avancement</div>
+          <div class="v tabular">55<span style="font-size: 32px">%</span></div>
+          <div class="pbar"><div style="width:55%"></div></div>
+          <div class="row"><span>Phase 1 · gros œuvre</span><b>✓ soldé</b></div>
+          <div class="row"><span>Phase 2 · finitions</span><b style="color:var(--amber)">en cours</b></div>
+          <div class="row"><span>Phase 3 · livraison</span><span class="muted">à venir</span></div>
+          <div class="row"><span>Réception client</span><span class="muted">juill. 2026</span></div>
+        </div>
+      </div>
+
+      <div class="pf-tabs">
+        <button class="active">Vue d'ensemble</button>
+        <button>Tâches · 9</button>
+        <button>Décisions · 3</button>
+        <button>Contacts · 7</button>
+        <button>Documents · 42</button>
+        <button>Journal · 28</button>
+      </div>
+
+      <div class="pf-grid">
+        <div class="pf-tline">
+          <div class="ev now">
+            <div class="when">Mar 22<small>cette sem.</small></div>
+            <div><div class="t">FF&amp;E commande étage 2 — clôture</div><div class="m">3 fournisseurs · arbitrage prix · Karim pilote</div></div>
+            <span class="badge rose">action ouverte</span>
+          </div>
+          <div class="ev">
+            <div class="when">Lun 27<small>S18</small></div>
+            <div><div class="t">RV matériaux Pamandzi · sur place</div><div class="m">vous + Karim + Naïr · 3h</div></div>
+            <span class="badge slate">planifié</span>
+          </div>
+          <div class="ev">
+            <div class="when">Avr 30<small>jeu.</small></div>
+            <div><div class="t">Décision avenant architecte Naïr</div><div class="m">décision dormante 9j · vote requis</div></div>
+            <span class="badge rose">dormant</span>
+          </div>
+          <div class="ev">
+            <div class="when">Mai 12<small>S20</small></div>
+            <div><div class="t">Visite contrôle technique · phase finitions</div><div class="m">bureau Apave · ½ journée</div></div>
+            <span class="badge slate">à confirmer</span>
+          </div>
+          <div class="ev done">
+            <div class="when">Avr 03<small>S15</small></div>
+            <div><div class="t">Validation plans étage 2</div><div class="m">avenant signé Naïr · ✓</div></div>
+            <span class="badge emerald">soldé</span>
+          </div>
+          <div class="ev done">
+            <div class="when">Mar 18<small>S12</small></div>
+            <div><div class="t">Phase 1 — réception gros œuvre</div><div class="m">PV signé · pas de réserve</div></div>
+            <span class="badge emerald">soldé</span>
+          </div>
+          <div class="ev done">
+            <div class="when">Sept 24<small>2024</small></div>
+            <div><div class="t">Démarrage chantier · phase 1</div><div class="m">acquisition terrain bouclée</div></div>
+            <span class="badge emerald">jalon</span>
+          </div>
+        </div>
+
+        <aside class="pf-side">
+          <div class="card">
+            <h4>Équipe</h4>
+            <div class="row"><span>Karim El M. · COO AMP</span><b>pilote</b></div>
+            <div class="row"><span>Naïr Saïd · architecte</span>cabinet</div>
+            <div class="row"><span>Lamiae B. · finance</span>support</div>
+            <div class="row"><span>Apave · contrôle</span>tiers</div>
+          </div>
+          <div class="card">
+            <h4>Décisions ouvertes</h4>
+            <div class="row"><span>Avenant architecte Naïr</span><b style="color:var(--rose)">9j</b></div>
+            <div class="row"><span>FF&amp;E fournisseur final</span>cette sem.</div>
+            <div class="row"><span>Recruter chargé travaux</span><b>14j</b></div>
+          </div>
+          <div class="card">
+            <h4>Indicateurs</h4>
+            <div class="row"><span>Coût engagé</span><b class="tabular">2.18 M€</b></div>
+            <div class="row"><span>Reste à engager</span><b class="tabular">1.24 M€</b></div>
+            <div class="row"><span>Glissement vs T0</span><b style="color:var(--amber)">+18 j</b></div>
+            <div class="row"><span>Marge cible</span><b class="tabular">12.5%</b></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="_shared/shell.js"></script>
+</body>
+</html>

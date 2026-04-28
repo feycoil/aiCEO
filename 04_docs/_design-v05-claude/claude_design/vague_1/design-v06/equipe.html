@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="fr" data-locale="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>aiCEO — Équipe · 14 personnes</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css?v=2">
+<link rel="stylesheet" href="_shared/app.css?v=2">
+<link rel="stylesheet" href="_shared/tweaks.css?v=2">
+</head>
+<body data-route="equipe">
+<div id="icons-host" hidden></div>
+<a class="skip-link" href="#main-content">Aller au contenu</a>
+
+<div class="app" data-drawer="expanded">
+  <aside class="drawer" aria-label="Navigation principale">
+    <div class="drawer-logo">
+      <span class="logo-mark">a</span>
+      <span class="logo-text">aiCEO</span>
+    </div>
+    <button class="drawer-tenant" aria-label="Changer d'espace">
+      <span class="tenant-mark" aria-hidden="true">A</span>
+      <span class="tenant-name">Aubrielle Hayes</span>
+      <svg class="ico" width="14" height="14" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+    </button>
+    <nav class="drawer-nav" aria-label="Sections">
+      <div class="drawer-section">Pilotage</div>
+      <a href="index.html" class="drawer-item" data-nav="home"><svg class="ico" width="18" height="18"><use href="#i-home"/></svg><span class="label">Cockpit</span></a>
+      <a href="arbitrage.html" class="drawer-item" data-nav="arbitrage"><svg class="ico" width="18" height="18"><use href="#i-arbitrage"/></svg><span class="label">Arbitrage</span><span class="badge">3</span></a>
+      <a href="evening.html" class="drawer-item" data-nav="evening"><svg class="ico" width="18" height="18"><use href="#i-evening"/></svg><span class="label">Soirée</span></a>
+      <div class="drawer-section">Travail</div>
+      <a href="projets.html" class="drawer-item" data-nav="projects"><svg class="ico" width="18" height="18"><use href="#i-projects"/></svg><span class="label">Projets</span></a>
+      <a href="taches.html" class="drawer-item" data-nav="actions"><svg class="ico" width="18" height="18"><use href="#i-actions"/></svg><span class="label">Actions</span><span class="badge">12</span></a>
+      <a href="agenda.html" class="drawer-item" data-nav="agenda"><svg class="ico" width="18" height="18"><use href="#i-clock"/></svg><span class="label">Agenda</span></a>
+      <a href="assistant.html" class="drawer-item" data-nav="assistant"><svg class="ico" width="18" height="18"><use href="#i-sparkle"/></svg><span class="label">Assistant</span></a>
+      <a href="equipe.html" class="drawer-item is-active" data-nav="people" aria-current="page"><svg class="ico" width="18" height="18"><use href="#i-people"/></svg><span class="label">Équipe</span></a>
+      <div class="drawer-section">Capital</div>
+      <a href="connaissance.html" class="drawer-item" data-nav="knowledge"><svg class="ico" width="18" height="18"><use href="#i-knowledge"/></svg><span class="label">Connaissance</span></a>
+      <a href="coaching.html" class="drawer-item" data-nav="coaching"><svg class="ico" width="18" height="18"><use href="#i-coaching"/></svg><span class="label">Coaching</span></a>
+      <a href="revues.html" class="drawer-item" data-nav="revues"><svg class="ico" width="18" height="18"><use href="#i-folder"/></svg><span class="label">Revues</span></a>
+      <a href="decisions.html" class="drawer-item" data-nav="decisions"><svg class="ico" width="18" height="18"><use href="#i-target"/></svg><span class="label">Décisions</span></a>
+    </nav>
+    <div class="drawer-footer">
+      <button class="drawer-locale" aria-label="Langue">
+        <svg class="ico" width="16" height="16"><use href="#i-globe"/></svg>
+        <span class="locale-name">Français</span>
+      </button>
+      <a href="settings.html" class="drawer-item" data-nav="settings">
+        <svg class="ico" width="18" height="18"><use href="#i-settings"/></svg>
+        <span class="label">Réglages</span>
+      </a>
+      <button class="drawer-user" aria-label="Profil">
+        <span class="avatar md" data-house="solstice">AH</span>
+        <span class="meta">
+          <span class="name">Aubrielle Hayes</span>
+          <span class="role">Fondatrice · CEO</span>
+        </span>
+      </button>
+    </div>
+
+    <button class="drawer-collapse-btn" aria-label="Réduire le menu">
+      <svg class="ico" width="14" height="14"><use href="#i-chevron-left"/></svg>
+    </button>
+  </aside>
+
+  <main class="app-main" id="main-content">
+    <header class="topbar">
+      <div class="topbar-title-block">
+        <div class="topbar-title-eyebrow">Équipe & contacts</div>
+        <h1 class="section-title">14 personnes dans l'orbite</h1>
+      </div>
+      <div class="topbar-cluster u-hidden-mobile">
+        <div class="search-pill"><svg class="ico ico-s" width="16" height="16"><use href="#i-search"/></svg><input type="search" placeholder="Chercher une personne…" aria-label="Recherche"></div>
+        <button class="btn primary"><svg class="ico" width="14" height="14"><use href="#i-plus"/></svg>Ajouter</button>
+      </div>
+    </header>
+
+    <!-- Filter -->
+    <section class="filter-bar">
+      <div class="filter-chips">
+        <button class="chip is-active">Tout <span class="chip-count">14</span></button>
+        <button class="chip">Équipes internes <span class="chip-count">9</span></button>
+        <button class="chip">Externes <span class="chip-count">5</span></button>
+        <span class="chip-sep"></span>
+        <button class="chip"><span class="dot" style="background:var(--house-northwind)"></span>Northwind</button>
+        <button class="chip"><span class="dot" style="background:var(--house-solstice)"></span>Solstice</button>
+        <button class="chip"><span class="dot" style="background:var(--house-helix)"></span>Helix</button>
+      </div>
+    </section>
+
+    <!-- Northwind team -->
+    <section class="team-group">
+      <header class="team-group-head">
+        <span class="dot lg" style="background:var(--house-northwind)"></span>
+        <h2 class="team-group-name">Northwind</h2>
+        <span class="u-text-3 small">Équipe interne · 5 personnes</span>
+      </header>
+      <div class="team-grid">
+        <article class="contact-card">
+          <span class="avatar lg" style="background:#3a3a3a;color:#fff">SC</span>
+          <div class="contact-card-body">
+            <h3 class="contact-card-name">Sarah Chen</h3>
+            <p class="contact-card-role">Tech lead · Engineering</p>
+            <div class="contact-card-meta">
+              <span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span>
+              <span class="u-text-3 xs">Dernière interaction · aujourd'hui</span>
+            </div>
+            <p class="u-text-2 small contact-card-note">Pousse pour trancher l'archi cette semaine. À écouter.</p>
+          </div>
+          <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+        </article>
+
+        <article class="contact-card">
+          <span class="avatar lg" style="background:#5a4a3a;color:#fff">MD</span>
+          <div class="contact-card-body">
+            <h3 class="contact-card-name">Marc Diallo</h3>
+            <p class="contact-card-role">Eng manager</p>
+            <div class="contact-card-meta">
+              <span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span>
+              <span class="u-text-3 xs">Dernier 1‑à‑1 · lundi 28</span>
+            </div>
+            <p class="u-text-2 small contact-card-note">Penche services pour l'archi. Prochain 1‑à‑1 mardi.</p>
+          </div>
+          <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+        </article>
+
+        <article class="contact-card">
+          <span class="avatar lg" style="background:#3a4a5a;color:#fff">PR</span>
+          <div class="contact-card-body">
+            <h3 class="contact-card-name">Priya Raman</h3>
+            <p class="contact-card-role">Backend senior</p>
+            <div class="contact-card-meta">
+              <span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span>
+              <span class="u-text-3 xs">Dernier 1‑à‑1 · 12 j</span>
+              <span class="contact-card-flag">À reprendre</span>
+            </div>
+          </div>
+          <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+        </article>
+
+        <article class="contact-card">
+          <span class="avatar lg" style="background:#4a5a3a;color:#fff">JM</span>
+          <div class="contact-card-body">
+            <h3 class="contact-card-name">Jules Moreau</h3>
+            <p class="contact-card-role">Backend</p>
+            <div class="contact-card-meta">
+              <span class="pill house" data-house="northwind"><span class="dot"></span>Northwind</span>
+              <span class="u-text-3 xs">Onboarding · J+18</span>
+            </div>
+          </div>
+          <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+        </article>
+      </div>
+    </section>
+
+    <!-- Solstice -->
+    <section class="team-group">
+      <header class="team-group-head">
+        <span class="dot lg" style="background:var(--house-solstice)"></span>
+        <h2 class="team-group-name">Solstice</h2>
+        <span class="u-text-3 small">Holding · 2 personnes</span>
+      </header>
+      <div class="team-grid">
+        <article class="contact-card">
+          <span class="avatar lg" style="background:#5a3a4a;color:#fff">LE</span>
+          <div class="contact-card-body">
+            <h3 class="contact-card-name">Léa Ekoué</h3>
+            <p class="contact-card-role">CFO partagée</p>
+            <div class="contact-card-meta">
+              <span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span>
+              <span class="u-text-3 xs">Dernière interaction · vendredi</span>
+            </div>
+          </div>
+          <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+        </article>
+        <article class="contact-card">
+          <span class="avatar lg" style="background:#3a5a4a;color:#fff">TB</span>
+          <div class="contact-card-body">
+            <h3 class="contact-card-name">Thomas Bauer</h3>
+            <p class="contact-card-role">Avocat · contrats</p>
+            <div class="contact-card-meta">
+              <span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span>
+              <span class="u-text-3 xs">Externe · cabinet B&P</span>
+            </div>
+          </div>
+          <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+        </article>
+      </div>
+    </section>
+
+    <!-- Helix -->
+    <section class="team-group">
+      <header class="team-group-head">
+        <span class="dot lg" style="background:var(--house-helix)"></span>
+        <h2 class="team-group-name">Helix</h2>
+        <span class="u-text-3 small">Recherche · 2 personnes</span>
+      </header>
+      <div class="team-grid">
+        <article class="contact-card">
+          <span class="avatar lg" style="background:#3a3a5a;color:#fff">HL</span>
+          <div class="contact-card-body">
+            <h3 class="contact-card-name">Helene Larsen</h3>
+            <p class="contact-card-role">Chercheuse · co‑fondatrice</p>
+            <div class="contact-card-meta">
+              <span class="pill house" data-house="helix"><span class="dot"></span>Helix</span>
+              <span class="u-text-3 xs">1‑à‑1 aujourd'hui · 11h</span>
+            </div>
+            <p class="u-text-2 small contact-card-note">Feedback de mi‑étape à donner. Notes prêtes.</p>
+          </div>
+          <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+        </article>
+        <article class="contact-card">
+          <span class="avatar lg" style="background:#5a5a3a;color:#fff">YK</span>
+          <div class="contact-card-body">
+            <h3 class="contact-card-name">Yuki Kawano</h3>
+            <p class="contact-card-role">Designer freelance</p>
+            <div class="contact-card-meta">
+              <span class="pill house" data-house="helix"><span class="dot"></span>Helix</span>
+              <span class="u-text-3 xs">Externe · contrat 6 mois</span>
+            </div>
+          </div>
+          <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+        </article>
+      </div>
+    </section>
+
+    <!-- Mentors / orbite -->
+    <section class="team-group">
+      <header class="team-group-head">
+        <span class="dot lg" style="background:var(--text-3)"></span>
+        <h2 class="team-group-name">Mentors & orbite</h2>
+        <span class="u-text-3 small">5 personnes</span>
+      </header>
+      <div class="team-grid">
+        <article class="contact-card">
+          <span class="avatar lg" style="background:var(--rose-600);color:#fff">CM</span>
+          <div class="contact-card-body">
+            <h3 class="contact-card-name">Camille M.</h3>
+            <p class="contact-card-role">Mentor · ex‑CEO santé</p>
+            <div class="contact-card-meta">
+              <span class="pill"><svg class="ico" width="10" height="10"><use href="#i-sparkle"/></svg>Coaching</span>
+              <span class="u-text-3 xs">Prochain rendez‑vous · jeudi</span>
+            </div>
+            <p class="u-text-2 small contact-card-note">Cité ce matin sur les RFP secteur public.</p>
+          </div>
+          <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+        </article>
+        <article class="contact-card">
+          <span class="avatar lg" style="background:#4a3a4a;color:#fff">AB</span>
+          <div class="contact-card-body">
+            <h3 class="contact-card-name">Arnaud Berger</h3>
+            <p class="contact-card-role">Investisseur lead Solstice</p>
+            <div class="contact-card-meta">
+              <span class="pill house" data-house="solstice"><span class="dot"></span>Solstice</span>
+              <span class="u-text-3 xs">Round 3 · mardi prochain</span>
+            </div>
+          </div>
+          <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+        </article>
+        <article class="contact-card">
+          <span class="avatar lg" style="background:#3a4a3a;color:#fff">NK</span>
+          <div class="contact-card-body">
+            <h3 class="contact-card-name">Nora Kahn</h3>
+            <p class="contact-card-role">CEO peer · sparring</p>
+            <div class="contact-card-meta">
+              <span class="u-text-3 xs">Dernier échange · 23 j</span>
+              <span class="contact-card-flag">À relancer</span>
+            </div>
+          </div>
+          <button class="icon-btn"><svg class="ico" width="14" height="14"><use href="#i-more-h"/></svg></button>
+        </article>
+      </div>
+    </section>
+
+    <footer class="app-footer">
+      <p class="strategic-q">Trois personnes dans l'orbite n'ont pas eu de signe depuis plus de 2 semaines. Lesquelles importent vraiment ?</p>
+      <div class="footer-meta"><span>aiCEO v0.5</span><span>·</span><span>Équipe</span></div>
+    </footer>
+  </main>
+</div>
+
+<nav class="bottom-tab-nav">
+  <a href="index.html" class="bottom-tab"><svg class="ico"><use href="#i-home"/></svg><span>Cockpit</span></a>
+  <a href="arbitrage.html" class="bottom-tab"><svg class="ico"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
+  <button class="bottom-tab fab-trigger"><span class="fab-circle"><svg class="ico"><use href="#i-mic"/></svg></span><span style="margin-top:30px">Capter</span></button>
+  <a href="equipe.html" class="bottom-tab is-active"><svg class="ico"><use href="#i-people"/></svg><span>Équipe</span></a>
+  <a href="evening.html" class="bottom-tab"><svg class="ico"><use href="#i-evening"/></svg><span>Soirée</span></a>
+</nav>
+
+<style>
+.filter-bar { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) 0; flex-wrap: wrap; margin-block-end: var(--space-3); }
+.filter-chips { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-pill); font-size: var(--fs-sm); font-weight: var(--fw-medium); color: var(--text-2); cursor: pointer; transition: all .12s; font-family: inherit; }
+.chip:hover { background: var(--surface-3); color: var(--text); }
+.chip.is-active { background: var(--text); color: var(--surface); border-color: var(--text); }
+.chip .dot { width:8px;height:8px;border-radius:50%; }
+.chip-count { font-size: 11px; font-weight: var(--fw-bold); font-variant-numeric: tabular-nums; opacity: 0.7; }
+.chip-sep { width: 1px; height: 18px; background: var(--border-2); margin: 0 4px; }
+
+.team-group { margin-block-end: var(--space-6); }
+.team-group-head { display: flex; align-items: center; gap: var(--space-3); padding-block-end: var(--space-2); border-block-end: 2px solid var(--border); margin-block-end: var(--space-3); }
+.team-group-head .dot.lg { width: 14px; height: 14px; border-radius: 50%; }
+.team-group-name { font-family: var(--font-display); font-size: var(--fs-h3); font-weight: var(--fw-bold); margin: 0; letter-spacing: -0.01em; }
+
+.team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: var(--space-3); }
+.contact-card { display: grid; grid-template-columns: 56px 1fr 28px; gap: var(--space-3); padding: var(--space-4); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); align-items: start; transition: border-color .12s, box-shadow .12s; }
+.contact-card:hover { border-color: var(--border-2); box-shadow: var(--shadow-sm); }
+.avatar.lg { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: var(--fw-bold); font-size: 18px; }
+.contact-card-name { font-family: var(--font-display); font-size: var(--fs-h4); font-weight: var(--fw-bold); margin: 0 0 2px; letter-spacing: -0.005em; }
+.contact-card-role { font-size: var(--fs-sm); color: var(--text-2); margin: 0 0 8px; }
+.contact-card-meta { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-block-end: 6px; }
+.contact-card-flag { font-size: 10px; font-weight: var(--fw-extrabold); padding: 2px 6px; border-radius: var(--radius-pill); background: var(--rose-50); color: var(--rose-800); text-transform: uppercase; letter-spacing: 0.06em; }
+.contact-card-note { line-height: 1.4; padding: 6px 0 0; border-top: 1px dashed var(--border); margin: 6px 0 0; }
+</style>
+
+<script src="_shared/app.js"></script>
+<script>
+fetch('_shared/icons.svg.html').then(r => r.text()).then(t => document.getElementById('icons-host').innerHTML = t);
+document.querySelectorAll('.chip').forEach(c => { c.addEventListener('click', () => { document.querySelectorAll('.chip').forEach(o => o.classList.remove('is-active')); c.classList.add('is-active'); }); });
+App.setupTweaks(
+  () => ({ locale: 'fr' }),
+  {
+    render: (s) => `<section class="tweaks-section"><div class="tweaks-section-title">Langue</div><div class="tweak-row"><label>Locale</label><select data-tweak="locale"><option value="fr" ${s.locale==='fr'?'selected':''}>FR</option><option value="en" ${s.locale==='en'?'selected':''}>EN</option></select></div></section>`,
+    apply: (s) => { App.setLocale(s.locale); }
+  }
+);
+</script>
+</body>
+</html>

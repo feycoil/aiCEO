@@ -233,3 +233,66 @@ console.log(`✓ ${clean.length} mails normalisés (filtré ${summary.totals.fil
 console.log(`  → ${OUT}`);
 console.log(`  → ${SUM}`);
 console.log(`  top expéditeurs : ${summary.top_senders.slice(0, 3).map(x => x.key + " (" + x.count + ")").join(", ")}`);
+
+
+// --- Ingestion SQLite -----------------------------------------------
+// Ajoute / met a jour chaque email dans la table `emails`. Idempotent
+// via INSERT OR REPLACE sur la PK id (entry_id Outlook stable).
+try {
+  const { DatabaseSync } = require("node:sqlite");
+  const dbPath = process.env.AICEO_DB_OVERRIDE || path.join(__dirname, "..", "data", "aiceo.db");
+  if (fs.existsSync(dbPath)) {
+    const db = new DatabaseSync(dbPath);
+    db.exec("PRAGMA journal_mode = WAL;");
+
+    // Table presente ? (la migration peut ne pas avoir tourne sur d'anciennes installs)
+    const hasTable = db
+      .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='emails'")
+      .get();
+    if (!hasTable) {
+      console.warn("  emails: table absente, skip ingestion DB (lancer node scripts/init-db.js)");
+    } else {
+      const stmt = db.prepare(
+        "INSERT OR REPLACE INTO emails " +
+        "(id, account, folder, subject, from_name, from_email, to_addrs, " +
+        " received_at, unread, flagged, has_attach, preview, inferred_project, is_self, ingested_at) " +
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))"
+      );
+      const tx = db.prepare("BEGIN");
+      const co = db.prepare("COMMIT");
+      tx.run();
+      let n = 0;
+      for (const m of clean) {
+        try {
+          stmt.run(
+            m.id || null,
+            m.account || null,
+            m.folder || null,
+            m.subject || null,
+            m.from_name || null,
+            m.from_email || null,
+            m.to || null,
+            m.received_at || null,
+            m.unread ? 1 : 0,
+            m.flagged ? 1 : 0,
+            m.has_attach ? 1 : 0,
+            (m.preview || "").slice(0, 500),
+            m.inferred_project || null,
+            m.is_self ? 1 : 0
+          );
+          n++;
+        } catch (e) {
+          // skip ligne malformee, continue
+        }
+      }
+      co.run();
+      console.log("  -> SQLite : " + n + " emails ingeres dans `emails`");
+      db.close();
+    }
+  } else {
+    console.warn("  DB absente (" + dbPath + "), skip ingestion SQLite");
+  }
+} catch (e) {
+  console.error("  ! Ingestion SQLite KO : " + e.message);
+}
+

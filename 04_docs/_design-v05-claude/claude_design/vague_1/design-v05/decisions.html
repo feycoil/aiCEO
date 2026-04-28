@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<title>aiCEO — Décisions</title>
+<link rel="stylesheet" href="_shared/colors_and_type.css"/>
+<link rel="stylesheet" href="_shared/app.css"/>
+<style>
+  .dec-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; align-items: flex-start; }
+  .dec-col h3 { font: 800 12px var(--font-sans); text-transform: uppercase; letter-spacing: .1em; color: var(--text-2); margin: 0 0 10px; padding: 0 4px; display: flex; justify-content: space-between; align-items: baseline; }
+  .dec-col h3 .n { font: 800 11px var(--font-mono); color: var(--text-3); }
+  .dec-col.ouvert h3 { color: var(--rose); }
+  .dec-col.attente h3 { color: var(--amber); }
+  .dec-col.tranchee h3 { color: var(--emerald); }
+  .dec-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; cursor: pointer; }
+  .dec-card:hover { border-color: var(--text); }
+  .dec-card .lbl { font: 700 10px var(--font-sans); text-transform: uppercase; letter-spacing: .08em; color: var(--text-3); margin-bottom: 6px; }
+  .dec-card .t { font: 700 14px/1.3 var(--font-sans); letter-spacing: -.01em; margin-bottom: 8px; }
+  .dec-card .m { font: 500 11.5px var(--font-sans); color: var(--text-2); margin-bottom: 8px; }
+  .dec-card .opts { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+  .dec-card .opt { display: flex; align-items: baseline; gap: 6px; font: 500 12px var(--font-sans); color: var(--text-2); padding: 4px 8px; border-radius: 6px; background: var(--surface); }
+  .dec-card .opt::before { content: "○"; color: var(--text-3); }
+  .dec-card .opt.win::before { content: "●"; color: var(--emerald); }
+  .dec-card .opt.win { color: var(--text); font-weight: 600; }
+  .dec-card .foot { display: flex; justify-content: space-between; align-items: center; font: 500 11px var(--font-mono); color: var(--text-3); padding-top: 8px; border-top: 1px dashed var(--border); }
+  .dec-card.dormant { border-left: 3px solid var(--rose); }
+  .dec-card.fresh { border-left: 3px solid var(--amber); }
+  .dec-card.done { opacity: .68; background: var(--surface); }
+</style>
+</head>
+<body data-nav="decisions">
+<div class="app">
+  <div id="sidebar-slot"></div>
+  <main class="main">
+    <header class="topbar">
+      <div class="crumbs"><a href="index.html">Cockpit</a><span class="sep">›</span><span class="current">Décisions</span><span class="sep">·</span><span class="muted tabular">12 ouvertes · 4 tranchées S16</span></div>
+      <div class="topbar-actions">
+        <button class="btn">Vue chronologique</button>
+        <button class="btn primary">+ Décision</button>
+      </div>
+    </header>
+    <div class="page">
+      <div class="page-h">
+        <div>
+          <h1>Décisions</h1>
+          <div class="sub">Toute question qui n'est pas une tâche : un arbitrage à trancher, une option à choisir. aiCEO suit l'ancienneté et signale les dormantes.</div>
+        </div>
+      </div>
+
+      <div class="dec-cols">
+        <div class="dec-col ouvert">
+          <h3><span>● Ouvertes</span><span class="n">5</span></h3>
+
+          <div class="dec-card dormant">
+            <div class="lbl"><span class="company-chip c-AMP">AMP</span> · ouverte 9j · dormante</div>
+            <div class="t">Avenant architecte Naïr — montant final ?</div>
+            <div class="m">Karim attend votre arbitrage. Ecart entre devis initial (32k) et révisé (47k) sur les finitions étage 2.</div>
+            <div class="opts">
+              <div class="opt">A · Valider révisé 47k · planning tenu</div>
+              <div class="opt">B · Négocier 38k · rallonge 2 sem.</div>
+              <div class="opt">C · Repartir consultation</div>
+            </div>
+            <div class="foot"><span>3 options · charge: vous</span><span style="color:var(--rose); font-weight:700">9j</span></div>
+          </div>
+
+          <div class="dec-card dormant">
+            <div class="lbl"><span class="company-chip c-AMP">AMP</span> · ouverte 14j · dormante</div>
+            <div class="t">Recruter chargé de travaux pour AMP ?</div>
+            <div class="m">3 candidats short-list. Charge prévisionnelle Karim S18 = 110%, recrutement urgent.</div>
+            <div class="opts">
+              <div class="opt">A · Embaucher Mehdi (CDI 48k)</div>
+              <div class="opt">B · Embaucher Audrey (CDI 52k · senior)</div>
+              <div class="opt">C · Repousser à juin</div>
+            </div>
+            <div class="foot"><span>3 candidats reçus</span><span style="color:var(--rose); font-weight:700">14j</span></div>
+          </div>
+
+          <div class="dec-card fresh">
+            <div class="lbl"><span class="company-chip c-AMP">AMP</span> · ouverte 2j</div>
+            <div class="t">FF&amp;E étage 2 — fournisseur final ?</div>
+            <div class="m">3 devis · écart 18%. Karim recommande B mais délai +1 sem.</div>
+            <div class="opts">
+              <div class="opt">A · Mobito (le moins cher)</div>
+              <div class="opt win">B · Tropic (recommandé Karim)</div>
+              <div class="opt">C · Heritage (premium)</div>
+            </div>
+            <div class="foot"><span>recommandation pré-établie</span><span>2j</span></div>
+          </div>
+
+          <div class="dec-card fresh">
+            <div class="lbl"><span class="company-chip c-ETIC">ETIC</span> · ouverte 4j</div>
+            <div class="t">COPIL ETIC mardi — repousser ?</div>
+            <div class="m">Conflit avec slot Big Rock #1 banque Bretagne. aiCEO suggère décalage à mer 14h.</div>
+            <div class="opts">
+              <div class="opt win">A · Décaler à mer 14h (slot libre)</div>
+              <div class="opt">B · Maintenir mar 14h, déléguer Bretagne</div>
+            </div>
+            <div class="foot"><span>impact équipe ETIC</span><span>4j</span></div>
+          </div>
+
+          <div class="dec-card fresh">
+            <div class="lbl"><span class="company-chip c-ITH">ITH</span> · ouverte 5j</div>
+            <div class="t">Tarification haute saison Mayotte — barème 2026</div>
+            <div class="m">Naïma propose +12% vs 2025. COMEX vendredi tranchera.</div>
+            <div class="opts">
+              <div class="opt">A · +8% (prudent)</div>
+              <div class="opt">B · +12% (proposition Naïma)</div>
+              <div class="opt">C · +15% (alignement marché)</div>
+            </div>
+            <div class="foot"><span>vote COMEX vendredi</span><span>5j</span></div>
+          </div>
+        </div>
+
+        <div class="dec-col attente">
+          <h3><span>◐ En attente d'info</span><span class="n">2</span></h3>
+          <div class="dec-card">
+            <div class="lbl"><span class="company-chip c-SCIS">SCIS</span> · attend chiffrage</div>
+            <div class="t">Pré-promesse Pamandzi 11 — formuler offre ?</div>
+            <div class="m">Étude faisabilité en cours par Karim. Décision quand chiffrage reçu (mi-mai).</div>
+            <div class="foot"><span>attend Karim · ~mi-mai</span><span>—</span></div>
+          </div>
+          <div class="dec-card">
+            <div class="lbl"><span class="company-chip c-ETIC">ETIC</span> · attend devis</div>
+            <div class="t">Outillage CRM — refonte vs amélioration ?</div>
+            <div class="m">Lamiae attend retour 2 prestataires avant arbitrage.</div>
+            <div class="foot"><span>retour devis ven.</span><span>—</span></div>
+          </div>
+        </div>
+
+        <div class="dec-col tranchee">
+          <h3><span>✓ Tranchées · S16</span><span class="n">4</span></h3>
+          <div class="dec-card done">
+            <div class="lbl"><span class="company-chip c-ETIC">ETIC</span> · tranchée mar 14</div>
+            <div class="t">Affejee — relance 3 ferme</div>
+            <div class="m">Décision : maintenir position, exiger paiement avant 25/04. Résultat : soldé auj. 17:08.</div>
+            <div class="foot"><span>résultat positif</span><span>résolu</span></div>
+          </div>
+          <div class="dec-card done">
+            <div class="lbl"><span class="company-chip c-AMP">AMP</span> · tranchée mer 15</div>
+            <div class="t">Plans étage 2 — validation</div>
+            <div class="m">Avenant signé Naïr. Plans verrouillés.</div>
+            <div class="foot"><span>signé</span><span>résolu</span></div>
+          </div>
+          <div class="dec-card done">
+            <div class="lbl"><span class="company-chip c-ITH">ITH</span> · tranchée jeu 16</div>
+            <div class="t">Site Mayotte 2 — saison fermée mai ?</div>
+            <div class="m">Maintenu ouvert avec équipe réduite. Test 6 sem.</div>
+            <div class="foot"><span>test 6 sem</span><span>résolu</span></div>
+          </div>
+          <div class="dec-card done">
+            <div class="lbl"><span class="company-chip c-ETIC">ETIC</span> · tranchée ven 17</div>
+            <div class="t">Lamiae · prime sprint 7</div>
+            <div class="m">Validée 1 500 €. Discutée en 1:1 ven 16h.</div>
+            <div class="foot"><span>versée</span><span>résolu</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="_shared/shell.js"></script>
+</body>
+</html>
