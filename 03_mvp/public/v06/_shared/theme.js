@@ -261,4 +261,23 @@ window.aiceoArbToggleQueue = function(ev) {
 
 console.log('[aiCEO] all globals installed: aiceoArbStart, aiceoManualPicker, aiceoArbAccept, aiceoArbIgnore, aiceoArbToggleQueue');
 
+
+// Settings tabs : switch panel via onclick inline (independant de bind-settings.js)
+window.aiceoSettingsTab = function(ev, target) {
+  if (ev) { try { ev.preventDefault(); ev.stopPropagation(); } catch(e){} }
+  if (!target) return false;
+  var tabs = document.querySelectorAll('.settings-tab[data-tab]');
+  var panels = document.querySelectorAll('[data-panel]');
+  tabs.forEach(function(t){ t.classList.remove('is-active'); });
+  panels.forEach(function(p){ p.classList.remove('is-visible'); });
+  var tab = document.querySelector('.settings-tab[data-tab="' + target + '"]');
+  var panel = document.querySelector('[data-panel="' + target + '"]');
+  if (tab) tab.classList.add('is-active');
+  if (panel) panel.classList.add('is-visible');
+  // Lazy loaders
+  if (target === 'logs' && window.aiceoLoadLogsButton) setTimeout(window.aiceoLoadLogsButton, 50);
+  if (target === 'releases' && window.aiceoLoadReleases) setTimeout(window.aiceoLoadReleases, 50);
+  return false;
+};
+
 })();

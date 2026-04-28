@@ -88,6 +88,167 @@ router.post('/sync-outlook', (req, res) => {
   });
 });
 
+// --- GET /logs --------------------------------------------------
+// Liste les fichiers de log disponibles + retourne le tail des derniers
+// (max 200 lignes) avec metadata (name, size, mtime, description).
+router.get("/logs", (req, res) => {
+  try {
+    const dataDir = path.resolve(__dirname, "..", "..", "data");
+    const LOG_FILES = [
+      { name: "aiCEO-server.log",     desc: "Logs du serveur Node.js (Express + SQLite)", source: "backend" },
+      { name: "sync-outlook.log",     desc: "Sync Outlook (fetch + normalize) - une entree par run schtasks", source: "powershell" },
+    ];
+    const files = LOG_FILES.map(function (f) {
+      const p = path.join(dataDir, f.name);
+      let meta = { name: f.name, desc: f.desc, source: f.source, exists: false };
+      if (fs.existsSync(p)) {
+        const stat = fs.statSync(p);
+        meta.exists = true;
+        meta.size = stat.size;
+        meta.mtime = stat.mtime.toISOString();
+        meta.ageMin = Math.round((Date.now() - stat.mtimeMs) / 60000);
+        // Lire les 200 dernieres lignes
+        try {
+          const content = fs.readFileSync(p, "utf-8");
+          const lines = content.split(/\r?\n/).filter(Boolean);
+          meta.lines = lines.slice(-200);
+          meta.totalLines = lines.length;
+        } catch (e) {
+          meta.lines = [];
+          meta.error = e.message;
+        }
+      }
+      return meta;
+    });
+    res.json({ logs: files, generated_at: new Date().toISOString() });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// --- GET /releases ----------------------------------------------
+// Retourne la liste des releases livrees + a venir (planifiees roadmap).
+// Source : statique (sera enrichi par git tags + roadmap-map.html futur).
+router.get("/releases", (req, res) => {
+  const released = [
+    {
+      version: "v0.5",
+      date: "2026-04-26",
+      title: "v0.5 internalisée",
+      summary: "5 sprints livrés. SQLite mono-instance. 12 pages frontend. Sync Outlook 2h. Assistant chat live SSE.",
+      features: [
+        "Cockpit + arbitrage matin + bilan soir",
+        "Portefeuille (groupes/projets/contacts/decisions)",
+        "Revues hebdo + Big Rocks max 3",
+        "Assistant chat live SSE Anthropic",
+        "Outlook autosync 2h via schtasks",
+        "Variante D autostart Windows + raccourci Bureau",
+      ],
+      tag: "v0.5",
+    },
+    {
+      version: "v0.5-s4",
+      date: "2026-04-26",
+      title: "Sprint S4 — Assistant + portefeuille",
+      summary: "Assistant chat SSE + 5 pages back-office (groupes/projets/contacts/decisions/projet template).",
+      features: [
+        "Tables assistant_conversations + assistant_messages",
+        "messages.stream Anthropic SDK",
+        "5 pages back-office migrees API",
+        "Polish service Windows (raccourci Bureau + rotation logs)",
+      ],
+      tag: "v0.5-s4",
+    },
+    {
+      version: "v0.6-s6.1",
+      date: "2026-04-26",
+      title: "Sprint S6.1 — DS atomic livre archive",
+      summary: "Design System BEM strict + ITCSS 7 couches + 27 composants (atoms/molecules/organisms). Archive reference V2/V3.",
+      features: [
+        "Tokens CSS 3 niveaux (primitive/semantic/component)",
+        "11 atoms + 9 molecules + 7 organisms",
+        "Components gallery /components-atomic.html",
+        "SVG sprite Lucide 30 icones",
+      ],
+      tag: "v0.6-s6.1",
+    },
+    {
+      version: "v0.6-s6.4",
+      date: "2026-04-28",
+      title: "Sprint S6.4 — Câblage v0.6 réel",
+      summary: "Backend SQLite étendu + 13/17 pages frontend câblées API + sync emails Outlook + bootstrap projets/contacts.",
+      features: [
+        "Migration emails JSON -> SQLite (table emails 15 cols)",
+        "Bootstrap auto 13 projets + 77 contacts depuis emails",
+        "Route /analyze-emails reecrite SQL (scoring flagged*100 + unread*30 + recence)",
+        "13 pages frontend cablees (cockpit, arbitrage, projets, equipe, decisions, taches, revues, evening, settings, onboarding, projet, hub, components)",
+        "Pattern globals theme.js (onclick inline) + flag data-arb-ready (CSS strict)",
+      ],
+      tag: "v0.6-s6.4",
+      current: true,
+    },
+  ];
+
+  const upcoming = [
+    {
+      version: "v0.7",
+      eta: "Mai 2026",
+      title: "LLM Anthropic + sync events Outlook + status reportee",
+      features: [
+        "Brancher LLM 4 surfaces UX (coaching banner, decision-recommend, auto-draft-review, 'Si vous tranchez A')",
+        "Script fetch-outlook-events.ps1 (calendrier Outlook olFolderCalendar)",
+        "Ingestion table events + page agenda peuplee",
+        "Migration : status decision 'reportee' (kanban col Reporte non volatile)",
+        "FK emails -> projects + UI rattachement maison/projet",
+        "Pages assistant.html / connaissance.html / coaching.html cablees",
+        "Validation ANTHROPIC_API_KEY en prod + budget tokens",
+      ],
+      effort: "3-4 sessions binôme (~12h chrono)",
+    },
+    {
+      version: "V1",
+      eta: "Été 2026",
+      title: "SaaS multi-tenant + équipes + mobile",
+      features: [
+        "Multi-tenant Supabase + RLS + auth Microsoft Entra (~80k)",
+        "Equipes : invitations + permissions + delegations (~50k)",
+        "Integrations etendues (Gmail, Calendar Google, Slack) (~60k)",
+        "App mobile React Native (iOS + Android, ~70k)",
+        "Backup auto SQLite (~20k)",
+        "Logs structures winston (~20k)",
+      ],
+      effort: "6 mois binôme, 46k€ budget",
+      blocked: ["GO ExCom 04/05", "GO post-recette v0.6"],
+    },
+    {
+      version: "V2",
+      eta: "2027",
+      title: "Commercial international + i18n + SOC 2",
+      features: [
+        "Multi-langue complet (FR / EN / AR / ES)",
+        "Compliance SOC 2 + ISO 27001",
+        "Marketing + success/sales (80k+40k+50k+85k = 254k€ realloue v0.5)",
+        "Pen-testing externe sortie V1 (~15k)",
+      ],
+      effort: "12 mois, ~800k€",
+    },
+    {
+      version: "V3",
+      eta: "2028",
+      title: "Coach IA + offline + multi-CEO",
+      features: [
+        "Coaching IA proactif (sessions hebdo dimanche soir)",
+        "Mode offline complet (sync différée)",
+        "Multi-CEO : portefeuille pour fonds / portfolio managers",
+        "API publique partenaires",
+      ],
+      effort: "18 mois, ~600k€",
+    },
+  ];
+
+  res.json({ released, upcoming, generated_at: new Date().toISOString() });
+});
+
 module.exports = router;
 module.exports.getLastSyncStatus = getLastSyncStatus;
 module.exports.THRESHOLD_WARN_MIN = THRESHOLD_WARN_MIN;

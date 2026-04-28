@@ -1,4 +1,4 @@
-/* bind-assistant.js v3 — chat IA streaming SSE */
+/* bind-assistant.js v4 — chat IA streaming SSE + LLM status banner v0.7 */
 (function () {
   'use strict';
   const $  = (s, r=document) => r.querySelector(s);
@@ -15,7 +15,6 @@
 
   let currentConvId = null;
 
-  // Charge la liste des conversations
   async function loadConversations() {
     const data = await tryJson('/api/assistant/conversations?limit=10');
     if (!data || !data.conversations) return;
@@ -33,7 +32,6 @@
     }).join('');
   }
 
-  // Append un message dans la zone messages
   function appendMessage(role, content) {
     const list = $('.msg-list, .as-messages');
     if (!list) return;
@@ -47,7 +45,6 @@
     return msg;
   }
 
-  // Envoie un message et stream la réponse SSE
   async function sendMessage(content) {
     appendMessage('user', content);
     const assistantMsg = appendMessage('assistant', '');
@@ -71,7 +68,6 @@
         const { value, done } = await reader.read();
         if (done) break;
         buf += decoder.decode(value, { stream: true });
-        // Parse SSE events séparés par \n\n
         const events = buf.split('\n\n');
         buf = events.pop() || '';
         for (const evt of events) {
@@ -130,7 +126,6 @@
       currentConvId = id;
       $$('.as-conv').forEach(c => c.classList.remove('is-active'));
       btn.classList.add('is-active');
-      // Charger les messages
       const data = await tryJson('/api/assistant/conversations/' + encodeURIComponent(id));
       if (data && data.messages) {
         const list = $('.msg-list, .as-messages');
@@ -142,8 +137,27 @@
     });
   }
 
+  // v0.7 — bandeau mode LLM (live ou rule-based fallback)
+  async function showLlmStatus() {
+    const s = await tryJson('/api/assistant/llm-status');
+    if (!s) return;
+    const main = $('main, .app-main');
+    if (!main) return;
+    if (document.getElementById('aiceo-llm-banner')) return;
+    const banner = document.createElement('div');
+    banner.id = 'aiceo-llm-banner';
+    if (s.available) {
+      banner.style.cssText = 'padding:8px 14px;background:var(--emerald-50,#d6f3e6);color:var(--emerald-700,#115e3c);border-radius:8px;font-size:12px;margin-bottom:12px;display:flex;align-items:center;gap:8px';
+      banner.innerHTML = '<span style="font-weight:700">● Claude live</span> — chat streaming actif via Anthropic API.';
+    } else {
+      banner.style.cssText = 'padding:8px 14px;background:var(--amber-50,#fef3c7);color:var(--amber-800,#92400e);border-radius:8px;font-size:12px;margin-bottom:12px;display:flex;align-items:center;gap:8px';
+      banner.innerHTML = '<span style="font-weight:700">○ Mode degrade</span> — ANTHROPIC_API_KEY absente. Reponses heuristiques rule-based. Definir la cle dans Reglages > Donnees pour activer le streaming LLM.';
+    }
+    main.insertBefore(banner, main.firstChild);
+  }
+
   async function init() {
-    await loadConversations();
+    await Promise.all([loadConversations(), showLlmStatus()]);
     bindComposer();
     bindConvSelect();
   }

@@ -1,9 +1,9 @@
 # ROADMAP — compagnon texte de la carte interactive
 
 Pour la carte cliquable : [`04_docs/11-roadmap-map.html`](../04_docs/11-roadmap-map.html).
-Pour le détail produit (jalons, équipe, budgets, KPIs) : [`04_docs/08-roadmap.md`](../04_docs/08-roadmap.md) (v3.0 — réalignement 26/04).
+Pour le détail produit (jalons, équipe, budgets, KPIs) : [`04_docs/08-roadmap.md`](../04_docs/08-roadmap.md) (v3.3 — restructuration 28/04 post-S6.4).
 
-## Où nous en sommes — 26/04/2026
+## Où nous en sommes — 28/04/2026
 
 | Branche | État | Tag / milestone GitHub |
 |---|---|---|
@@ -11,10 +11,13 @@ Pour le détail produit (jalons, équipe, budgets, KPIs) : [`04_docs/08-roadmap.
 | **MVP Node** (`03_mvp/`) | Validé en réel v0.4 · 28/28 tâches arbitrées · ≈ 1,5 ct/jour | Tag `v0.4` · milestone `MVP` |
 | **Produit unifié v0.5** | **✅ LIVRÉ 26/04/2026** — 5 sprints en ~16h chrono dogfood, vélocité x30 | Tag `v0.5` · milestones `v0.5-s1` à `v0.5-s5` closes |
 | **Bundle design Claude Design v3.1** | ✅ Livré 26/04 (cible visuelle V1) | `04_docs/_design-v05-claude/` |
-| **v0.6 — Interface finalisée** | 🔜 Ouverture post-ExCom (~2-3 sem binôme · ~8 k€) | milestone `v0.6` à créer |
-| **V1 — SaaS + équipes + mobile** | 🔜 Démarrage post-v0.6 (6 thèmes ~46 k€ binôme/6 mois) | milestone `V1` à recréer |
+| **v0.6 — Interface finalisée + câblage réel** | **✅ LIVRÉ 28/04/2026** — 4 sprints S6.1 (DS atomic) + S6.2-S6.3 (Phase A 17 écrans) + S6.4 (câblage backend SQLite + 13/17 pages API + sync emails Outlook) | Tag `v0.6-s6.1` posé · `v0.6-s6.4` à poser post-recette |
+| **v0.7 — LLM + events Outlook + gaps** | 🔜 Ouverture post-recette ExCom (~3-4 sessions binôme · ~5 k€) | milestone `v0.7` à créer |
+| **V1 — SaaS + équipes + mobile** | 🔜 Démarrage post-v0.7 (6 thèmes ~41 k€ binôme/6 mois, vs 46 k€ initial : -5 k€ absorbés v0.7) | milestone `V1` à recréer |
 | **V2 — commercial international + i18n + SOC 2** | Esquissée (ex-V2 multi-tenant absorbé en V1) | milestone `V2` à redéfinir |
 | **V3 — coach + offline + multi-CEO écosystème** | Stable | milestone `V3` |
+
+**Réalignement v3.3 (ADR 28/04)** : v0.6 livrée différemment de prévu (scope enrichi via S6.4 câblage réel + ingestion emails SQLite + bootstrap auto). v0.7 inséré entre v0.6 et V1 pour combler les 5 gaps identifiés CR-GAP : LLM Anthropic 4 surfaces UX (coaching, decision-recommend, auto-draft, "Si vous tranchez A"), sync events Outlook calendrier, status decision 'reportee' (kanban persistant), FK emails→projects + UI rattachement, 3 pages preview à câbler. Budget V1 réduit de 46 k€ → 41 k€.
 
 **Réalignement v3.0 (ADR 26/04)** : la nouvelle V1 absorbe ce qui était V2 (multi-tenant) et V3 (mobile) dans la ROADMAP v2.0 du 24/04. Cause : pression Microsoft Copilot CEO 2027 + vélocité x30 binôme CEO+Claude validée sur v0.5.
 

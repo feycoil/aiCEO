@@ -65,7 +65,7 @@
     }
   }
 
-  function renderDecision(d) {
+  async function renderDecision(d) {
     const card = $('.decision-card');
     if (!card || !d) return;
     const q = card.querySelector('.decision-question');
@@ -79,7 +79,7 @@
     if (pp) {
       pp.className = 'pill priority ' + priority.toLowerCase();
       const tag = priority === 'P0' ? 'Urgent' : (priority === 'P1' ? 'Prioritaire' : 'Normal');
-      pp.textContent = priority + ' \u00B7 ' + tag;
+      pp.textContent = priority + ' · ' + tag;
     }
     const dateP = card.querySelector('.pill.outline.sm');
     if (dateP && d.created_at) {
@@ -87,13 +87,71 @@
       const when = days === 0 ? "aujourd'hui" : (days === 1 ? "hier" : "il y a " + days + " j");
       dateP.innerHTML = '<svg class="ico" width="11" height="11"><use href="#i-clock"/></svg> Posee ' + when;
     }
-    // Vider les options A/B/C demo statiques (deviendront cablees v0.7)
-    const opts = $$('.option-card, .opt-desc, .option-label');
-    opts.forEach(function (el) {
-      if (el.textContent && /scope|patient|tient l'engagement|d[ée]cale|module|studio|backlog/i.test(el.textContent)) {
-        el.textContent = '\u2014';
-      }
+    // v0.7 — recommandations A/B/C via LLM (ou rule-based fallback)
+    await loadRecommendation(d);
+  }
+
+  async function loadRecommendation(d) {
+    const reco = await tryJson('/api/assistant/decision-recommend', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ decision_id: d.id, title: d.title || '', context: d.context || '' })
     });
+    if (!reco || !reco.options || !reco.options.length) return;
+    const optionCards = $$('.option-card');
+    reco.options.slice(0, optionCards.length).forEach(function (opt, i) {
+      const oc = optionCards[i];
+      if (!oc) return;
+      oc.dataset.optionKey = opt.key || String.fromCharCode(65 + i);
+      const lbl = oc.querySelector('.option-label');
+      if (lbl) lbl.textContent = opt.label || ('Option ' + (opt.key || String.fromCharCode(65 + i)));
+      const desc = oc.querySelector('.opt-desc');
+      if (desc) desc.textContent = opt.description || '';
+      oc.classList.toggle('is-recommended', !!opt.recommended);
+      if (opt.recommended) {
+        oc.style.borderColor = 'var(--accent-link, #2563eb)';
+        oc.style.boxShadow = '0 0 0 1px var(--accent-link, #2563eb)';
+      }
+      oc.addEventListener('mouseenter', function () { showEffects(d, opt); });
+      oc.addEventListener('focus', function () { showEffects(d, opt); }, true);
+    });
+  }
+
+  let _effectsBox = null;
+  function escHtml(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  async function showEffects(d, opt) {
+    const r = await tryJson('/api/assistant/effects-propagation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ decision_id: d.id, choice: opt.key || 'A', choice_label: opt.label || '' })
+    });
+    if (!r || !r.effects) return;
+    if (!_effectsBox) {
+      _effectsBox = document.createElement('div');
+      _effectsBox.id = 'aiceo-effects-preview';
+      _effectsBox.style.cssText = 'margin-top:14px;padding:14px 16px;background:var(--surface-2,#f7f4ec);border:1px solid var(--border,#eee);border-radius:10px;font-size:13px;color:var(--text-2,#555)';
+      const card = $('.decision-card');
+      if (card && card.parentElement) card.parentElement.appendChild(_effectsBox);
+    }
+    _effectsBox.innerHTML =
+      '<div style="font-weight:600;color:var(--text,#111);margin-bottom:6px;font-size:12px;text-transform:uppercase;letter-spacing:0.04em">Si vous tranchez ' + (opt.key || 'A') + ' :</div>' +
+      '<ul style="margin:0;padding-left:18px;line-height:1.55">' +
+        r.effects.map(function (e) { return '<li>' + escHtml(e) + '</li>'; }).join('') +
+      '</ul>';
+  }
+
+  async function loadCoachingBanner() {
+    const r = await tryJson('/api/assistant/coaching-question', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ bucket: 'defaut', count: 1 })
+    });
+    if (!r || !r.questions || !r.questions.length) return;
+    const banner = document.querySelector('.arb-coaching-banner, [data-coaching-banner]');
+    if (banner) {
+      const q = banner.querySelector('.coaching-question, [data-coaching-q]') || banner;
+      q.textContent = r.questions[0];
+    }
   }
 
   function renderEmptyInFocus() {
@@ -145,8 +203,7 @@
         e.preventDefault();
         if (currentIdx > 0) {
           currentIdx--;
-          renderDecision(decisions[currentIdx]);
-          updateCounter();
+          renderDecision(decisions[currentIdx]).then(updateCounter);
         }
       });
     }
@@ -155,8 +212,7 @@
         e.preventDefault();
         if (currentIdx < decisions.length - 1) {
           currentIdx++;
-          renderDecision(decisions[currentIdx]);
-          updateCounter();
+          renderDecision(decisions[currentIdx]).then(updateCounter);
         }
       });
     }
@@ -187,7 +243,8 @@
 
     // Decisions reelles trouvees : on remplit la card et on autorise CSS a la montrer
     currentIdx = 0;
-    renderDecision(decisions[0]);
+    await renderDecision(decisions[0]);
+    await loadCoachingBanner();
     updateCounter();
     bindNavigation();
     document.body.dataset.arbReady = '1';

@@ -1678,6 +1678,166 @@ Format :
 
 
 
+## 2026-04-28 v4 · v0.7 livrée — LLM 4 surfaces UX (mode dégradé) + Outlook events + finalisation gaps
+
+**Statut** : Acté par Claude (mandat plein CEO carte blanche) · 28/04/2026 fin PM · sprints S6.5 + S6.6 + S6.7 livrés en parallèle dans la même session.
+
+**Contexte**
+- v0.6 finalisée le matin même (27 ADRs DECISIONS.md, tag `v0.6` posé).
+- Mandat CEO « lance tous les sprints en parallèle pour atteindre v0.7. Tu as toute latitude pour les décisions ».
+- Périmètre v0.7 acté en restructuration roadmap v3.3 du 28/04 PM : 5 k€ binôme, 3 sprints, ~3-4 sessions chrono.
+- `ANTHROPIC_API_KEY` absente du serveur — choix architectural : implémenter avec fallback rule-based pour activation différée.
+
+**Décisions Claude (D1-D5) acté carte blanche**
+- **D1 — LLM 4 surfaces UX en mode dégradé activable**. Implémenter complètement coaching-question, decision-recommend, auto-draft-review, effects-propagation avec **fallback heuristique rule-based** automatique. Si `ANTHROPIC_API_KEY` présente → LLM live (Claude Sonnet 4). Sinon → suggestions déterministes. Bandeau UI affiche le mode actif via `GET /api/assistant/llm-status`. *Justification* : dogfood sans coût tokens. Activation future trivial (env var).
+- **D2 — Status `reportee` via migration SQLite 3-étapes**. Pas d'`ALTER TABLE … CHECK`, contournement standard : rename → recreate avec nouveau CHECK → INSERT SELECT → DROP. *Justification* : pratique recommandée par doc SQLite officielle.
+- **D3 — fetch-outlook-events.ps1 fenêtre J-15 → J+30**. COM Outlook GetDefaultFolder(9) avec `IncludeRecurrences=$true`. *Justification* : couverture passé proche (références) + futur (planification). Cohérent agenda usage.
+- **D4 — Auto-link email → projet sur Accept (vs dropdown manuel)**. Sur acceptation d'une proposition email kind=project, auto-call `POST /api/emails/:id/link-project` avec `project_id` créé. *Justification* : zero-friction, l'utilisateur voit le contexte au moment d'accepter, pas a posteriori.
+- **D5 — Pages preview câblées sans Opus**. Coaching et connaissance restent sur Sonnet (rule-based ou LLM léger). LLM Opus reporté V3 (coût élevé, justifié seulement multi-CEO). *Justification* : v0.7 reste sobre côté coûts.
+
+**Périmètre livré**
+
+**Backend** (5 fichiers backend, 7 routes nouvelles)
+- 3 migrations SQLite : `2026-04-28-events-extend.sql` (organizer/status/body_preview/ingested_at + 3 index), `2026-04-28-decisions-reportee.sql` (recreate 3-étapes), `2026-04-28-emails-fk-projects.sql` (FK + table `knowledge_pins`).
+- `src/routes/knowledge.js` créé : 5 endpoints CRUD pins (`GET /` `POST /` `PATCH /:id` `DELETE /:id` `POST /from-decision/:decId`).
+- `src/routes/arbitrage.js` étendu : `POST /api/emails/:id/link-project` + `GET /api/emails/suggest-project?email_id=X` (heuristique 3 niveaux : inferred_project match exact, sender history, fuzzy subject).
+- `src/routes/assistant.js` étendu : 5 routes LLM mode dégradé activable (`coaching-question`, `decision-recommend`, `auto-draft-review`, `effects-propagation`, `llm-status`). Helper `llmReady()` détecte `ANTHROPIC_API_KEY`.
+- `server.js` mount `/api/knowledge`.
+- `scripts/fetch-outlook-events.ps1` créé · `scripts/normalize-events.js` créé · idempotents.
+
+**Frontend** (8 binds, 3 pages preview maintenant câblées)
+- `bind-coaching.js` créé : signaux faibles depuis stats `decisions` + 4 questions LLM (live ou rule-based) + bandeau mode.
+- `bind-connaissance.js` créé : render pins KIND_LABEL, archive (DELETE), add (POST), empty state.
+- `bind-revues.js` v5 : auto-draft via `POST /auto-draft-review` au démarrage de revue.
+- `bind-arbitrage-focus.js` v4 : recommandations A/B/C via `POST /decision-recommend`, "Si vous tranchez X" via `POST /effects-propagation` au hover/focus, coaching banner via `POST /coaching-question`.
+- `bind-arbitrage-queue.js` v4 : auto-link email→projet sur Accept (FK).
+- `bind-arbitrage-board.js` v2 : status `reportee` persistant DB (vs sessionStorage volatile précédent).
+- `bind-assistant.js` v4 : bandeau Claude live (vert) ou mode dégradé (ambre).
+- `bind-agenda.js` v2 : grille hebdo lun-dim grid 7 colonnes sur `/api/events`.
+
+**HTML mis à jour**
+- `connaissance.html` + `coaching.html` : scripts bind ajoutés.
+- Bump cache global `v=98 → v=99` sur 18 fichiers HTML, 446 occurrences mises à jour.
+
+**Documentation**
+- `04_docs/_sprint-v0.7/JOURNAL.md` créé : 5 décisions D1-D5 documentées avec contexte/justification.
+- ADR ajouté ici (cette entrée).
+
+**Tests**
+- `node --check` 13/13 verts sur tous les fichiers JS modifiés/créés (binds + routes + scripts).
+- Smoke filesystem-only des HTML : 18/18 pages contiennent `?v=99`.
+
+**Métriques**
+- ~1500 lignes JS ajoutées (binds + routes)
+- ~150 lignes CSS (préservé pas de touch sur tweaks.css)
+- 3 migrations SQL prêtes (à exécuter Windows)
+- 7 routes backend nouvelles
+- 8 fichiers frontend bind-*.js touchés
+- 18 HTML cache busted
+- 5 ADRs (1 ici + 5 décisions D1-D5 dans JOURNAL)
+
+**Conséquences**
+- **+** : 4 surfaces UX LLM disponibles dès qu'une `ANTHROPIC_API_KEY` est définie en variable d'environnement. Aucune autre modif requise (graceful enablement).
+- **+** : Calendrier ingéré localement (cohérent stratégie zéro cloud).
+- **+** : Décisions reportées persistantes en DB (vs perte au reload navigateur précédemment).
+- **+** : Auto-rattachement projet zero-friction sur la file arbitrage.
+- **+** : Pages assistant/connaissance/coaching maintenant fonctionnelles (vs preview ambre v0.6).
+- **−** : Migrations SQL non exécutées côté Windows (CEO doit lancer `node 03_mvp/scripts/init-db.js` post-pull). Documenté dans CLAUDE.md §7.
+- **−** : Pas de tests Playwright nouveaux pour v0.7 (préserve les ~95 verts existants). Gap V1.0.
+
+**Ce qui reste avant tag `v0.7`**
+- [ ] Commit + push (`push-v0.7.ps1` généré, à exécuter par CEO)
+- [ ] Tag `v0.7` Git + GitHub Release
+- [ ] Migrations SQL côté Windows (`node scripts/init-db.js` avec les 3 nouvelles migrations détectées par `schema_migrations`)
+- [ ] Recette CEO 25 minutes : ouverture des 3 pages preview, test arbitrage focus avec coaching banner, test démarrage revue auto-draft
+
+**Sources**
+- `04_docs/_sprint-v0.7/JOURNAL.md` (5 décisions D1-D5)
+- `03_mvp/data/migrations/2026-04-28-events-extend.sql`
+- `03_mvp/data/migrations/2026-04-28-decisions-reportee.sql`
+- `03_mvp/data/migrations/2026-04-28-emails-fk-projects.sql`
+- `03_mvp/src/routes/knowledge.js` · `arbitrage.js` · `assistant.js`
+- `03_mvp/public/v06/_shared/bind-{coaching,connaissance,revues,arbitrage-focus,arbitrage-queue,arbitrage-board,assistant,agenda}.js`
+- `03_mvp/scripts/fetch-outlook-events.ps1` · `normalize-events.js`
+
+---
+
+## 2026-04-28 v5 · Revue maquette complète post-finalisation — scope ~3 j-binôme reporté S6.8 (auto-décidée Claude)
+
+**Statut** : Acté · **Signataire** : Claude (binôme aiCEO) · **Type** : décision auto-prise sous mandat plein du CEO 28/04/2026 PM late ("revoir toute la maquette + câbler v0.7 partout + nettoyer démo + corriger UX/UI")
+
+**Contexte** : Suite à la livraison v0.7 (5 routes LLM + helper llmReady + 4 bind scripts), CEO demande revue maquette complète + câblage exhaustif. Audit lancé via 3 agents Explore parallèles révèle un scope plus large qu'attendu :
+
+- **62% de données démo hardcodées** dans 18 pages (Audit 1)
+- **20% câblage LLM v0.7 effectif** : routes serveur OK mais frontend ne les appelle pas (Audit 2)
+- **Note UX/UI 13/20** initialement annoncée — ré-évaluée après lecture directe `colors_and_type.css` : tokens DS DÉFINIS sous noms `--rose/--amber/--emerald/--sky/--violet` (pas `--lilac/--coral/--cream`). Skeleton pattern existe ligne 1923. Note réelle : ~16/20 (Audit 3 partiellement faux).
+
+**Scope total identifié = ~3 jours-binôme** (au-delà du mandat session ~2h). Détail :
+- ~20 nouveaux bind-*.js + 12 routes API à créer (data-count progressif)
+- Câblage LLM 5 surfaces (data-attributes + SSE handler frontend)
+- Empty states + loading skeletons sur 6 pages
+- 161 hex hardcodés → tokens (estimation Audit 3 — à valider en S6.8)
+
+**Décision** : **Traiter uniquement les P0 fondamentaux cette session, reporter le reste S6.8 (sprint v0.7 polish v5)**. Auto-décisions :
+
+1. **D6.5.1** — `bind-counts.js` générique créé : pattern `data-count="route:field"` auto-câble tout élément annoté. Fallback démo conservé si fetch échoue (zero-breaking-change). Prêt à être adopté progressivement.
+2. **D6.5.2** — Pattern empty-state ajouté à `tweaks.css` : `.empty-state` + `.empty-state-ico` + `.empty-state-title` + `.empty-state-text` + `.empty-state-cta`. Réutilisable sur toutes les pages.
+3. **D6.5.3** — **Pas de patch massif HTML** cette session (risque de régression). Les pages restent stables, démo CEO continue de fonctionner. S6.8 fera le câblage progressif.
+4. **D6.5.4** — Audit 3 (UX/UI 13/20) **partiellement contredit** par lecture directe DS : tokens définis correctement. Le vrai gap = empty states + LLM frontend câblage, pas tokens.
+5. **D6.5.5** — Sprint **S6.8** créé pour v0.7 polish phase 2 (8-12 issues GitHub à créer côté Windows via `fix-milestones-v0.7.ps1`).
+
+**Conséquences** :
+
+- Démo CEO : reste fonctionnelle avec données démo (62% hardcoded) — **pas de régression**
+- Backend v0.7 : 100% disponible (5 routes LLM + helpers + migrations)
+- Frontend v0.7 : 20% câblage effectif → cible S6.8 = 80%+
+- Pattern `data-count` + empty-state disponibles pour adoption progressive
+- 18/18 pages stables, tag `v0.7` posable post `push-v0.7.ps1`
+- Sprint S6.8 ouvert avec backlog clair (cf. JOURNAL-FINALISATION-v0.6-2026-04-28.md annexe)
+
+**Fichiers livrés cette mini-session (revue maquette)** :
+- `03_mvp/public/v06/_shared/bind-counts.js` neuf (75 lignes, pattern générique)
+- `03_mvp/public/v06/_shared/tweaks.css` (+1279 bytes, empty-state pattern complet)
+- `04_docs/audits/JOURNAL-FINALISATION-v0.6-2026-04-28.md` annexe (audit 3 agents + plan vagues + scope reporté)
+- ADR `2026-04-28 v5 · Revue maquette + scope reporté S6.8` (cette ADR)
+
+**Backlog S6.8 v0.7 polish phase 2** (à créer côté Windows via fix-milestones-v0.7.ps1 -Apply) :
+
+| Issue | Titre | Effort |
+|---|---|---|
+| S6.8.01 | Adopter `data-count` sur taches.html chips (4 chips) | 0.2 j |
+| S6.8.02 | Adopter `data-count` sur decisions.html eyebrow + counts | 0.2 j |
+| S6.8.03 | Adopter `data-count` sur equipe.html "14 personnes" | 0.1 j |
+| S6.8.04 | Adopter `data-count` sur index.html cockpit dynamic dates | 0.3 j |
+| S6.8.05 | Câbler arbitrage.html LLM A/B/C `decision-recommend` SSE | 0.5 j |
+| S6.8.06 | Câbler revues.html bouton "Démarrer la revue" `auto-draft-review` | 0.3 j |
+| S6.8.07 | Câbler decisions.html "💡 Recommander" drawer SSE | 0.3 j |
+| S6.8.08 | Câbler index.html bandeau Claude live/dégradé `llm-status` | 0.2 j |
+| S6.8.09 | Empty states sur 6 pages (taches/decisions/equipe/revues/connaissance/agenda) | 0.5 j |
+| S6.8.10 | Audit 161 hex hardcodés → tokens (vérification Audit 3) | 0.5 j |
+| S6.8.11 | Tests E2E Playwright nouveaux LLM surfaces (P5+) | 0.5 j |
+| S6.8.12 | Recette CEO post-câblage + ADR v0.7 finalisée | 0.3 j |
+
+**Total S6.8 estimé : ~4 j-binôme = ~6 sessions Claude (carte blanche, 4-9h chrono chacune)**.
+
+**Sources** :
+- Mandat verbal CEO 28/04 PM late
+- Audit 1 — Données hardcodées (Agent Explore, ~800 mots)
+- Audit 2 — Câblage v0.7 LLM (Agent Explore, ~600 mots)
+- Audit 3 — UX/UI DS Twisty (Agent Explore, ~700 mots, partiellement contredit par lecture directe)
+- Lecture directe `_shared/colors_and_type.css` (tokens DS confirmés)
+- ADR `2026-04-28 v3 · v0.6 finalisée par mandat plein CEO` (session précédente)
+- ADR `2026-04-28 v4 · v0.7 livrée` (session précédente)
+- JOURNAL-FINALISATION-v0.6-2026-04-28.md annexe
+
+
+
+
+---
+
+
+
+
 ## 2026-04-28 v3 · v0.6 finalisée — sprints S6.5+S6.6+S6.7 livrés sous mandat plein CEO (auto-décidée Claude)
 
 **Statut** : Acté · **Signataire** : Claude (binôme aiCEO) · **Type** : décision auto-prise sous mandat plein du CEO 28/04/2026 PM

@@ -1,8 +1,10 @@
 # aiCEO — Roadmap & PMO
 
-**Version 3.2 · 26 avril 2026 · insertion v0.6 Interface finalisée · trajectoire 18 mois**
+**Version 3.3 · 28 avril 2026 · v0.6 livrée + insertion v0.7 (gaps LLM/events/status) · trajectoire 18 mois**
 
 > Plan d'exécution PMO par milestones GitHub, avec jalons, livrables, dépendances, équipe minimale et signaux de go/no-go.
+>
+> **v3.3 (28/04 · ADR restructuration roadmap post-S6.4)** : v0.6 livrée en 4 sprints S6.1 (DS atomic archivé) + S6.2-S6.3 (Phase A Claude Design + 17 écrans) + **S6.4 (câblage v0.6 réel : backend SQLite étendu + 13/17 pages branchées API + sync emails Outlook + bootstrap projets/contacts)**. Scope enrichi vs v3.2 initiale. **Insertion v0.7 entre v0.6 et V1** pour combler les gaps identifiés au CR-GAP-v06-cablage : LLM Anthropic 4 surfaces UX (coaching, decision-recommend, auto-draft-review, "Si vous tranchez A"), sync events Outlook (calendrier), status decision 'reportee' (kanban col Reporté non volatile), FK emails→projects + UI rattachement, 3 pages preview à câbler (assistant, connaissance, coaching), archivage emails-context.js legacy. ~3-4 sessions binôme (~12h chrono) · ~5 k€ absorbés dans provision V1 réduite.
 >
 > **v3.2 (26/04 · ADR insertion v0.6)** : phase v0.6 "Interface finalisée" insérée entre v0.5 livré et V1. Refonte UI complète selon bundle Claude Design v3.1 (DS atomic + 16 composants + microcopy unifié + accessibility WCAG AA + patterns coaching légers + onboarding simple + components gallery). Pas de scope fonctionnel nouveau. ~2-3 sem binôme · ~8 k€ absorbés dans provision V1.
 >
@@ -14,7 +16,7 @@
 
 ---
 
-## 1. État d'avancement au 26/04/2026 (post-clôture v0.5)
+## 1. État d'avancement au 28/04/2026 (post-clôture v0.6)
 
 | Palier | État | Tag / milestone | Preuve |
 |---|---|---|---|
@@ -22,8 +24,9 @@
 | **App Web Twisty v4** | Livré, absorbé dans la fusion v0.5 | — | 13 pages + Design System `02_design-system/` |
 | **Produit unifié v0.5 (fusion)** | **✅ LIVRÉ 26/04/2026** | `v0.5` · milestones `v0.5-s1` à `v0.5-s5` (closes) | 5 sprints en ~16h chrono · 41 issues closes · ~95 tests verts · 12 pages frontend · 27 ADRs · 110 k€ / 110 k€ |
 | **Bundle design Claude Design v3.1** | ✅ Livré 26/04 (cible visuelle V1) | `04_docs/_design-v05-claude/` | 16 ressources · 6 ADR gouvernance · prompt v3.1 ~16k chars · audit roadmap |
-| **v0.6 Interface finalisée** | 🔜 Ouverture post-ExCom (~2-3 sem binôme) | milestone `v0.6` à créer | Refonte UI selon maquette Claude Design v3.1 · ~8 k€ · scope v0.5 préservé · pas de feature nouvelle |
-| **V1 SaaS + équipes + mobile** | 🔜 Démarrage post-v0.6 | milestone `V1` à recréer | 6 thèmes priorisés ~46 k€ binôme/6 mois — voir §4 |
+| **v0.6 Interface finalisée + câblage réel** | **✅ LIVRÉ 28/04/2026** | `v0.6-s6.1` (DS atomic archivé) + tag `v0.6-s6.4` à poser post-recette | S6.1 atomic livré (27 composants archive référence V2/V3) + Phase A déployée (17 écrans Claude Design) + S6.4 câblage réel (table emails SQLite, 1052 emails ingérés, 13 projets + 77 contacts auto-créés, 13/17 pages câblées API REST). 449 occurrences cache `?v=98`. Scripts S6.4 ajoutés : ingest-emails, bootstrap-from-emails. CR-GAP livré. |
+| **v0.7 LLM + Outlook events + finalisation gaps** | 🔜 Ouverture post-recette ExCom (~3-4 sessions binôme) | milestone `v0.7` à créer | Combler les 5 gaps identifiés CR-GAP : LLM 4 surfaces UX (coaching banner, decision-recommend, auto-draft-review, "Si vous tranchez A") + sync events Outlook + status decision 'reportee' + FK emails→projects + 3 pages preview câblées · ~5 k€ absorbés provision V1 |
+| **V1 SaaS + équipes + mobile** | 🔜 Démarrage post-v0.7 | milestone `V1` à recréer | 6 thèmes priorisés ~41 k€ binôme/6 mois (vs 46 k€ : -5 k€ absorbés v0.7) — voir §4 |
 | **V2 commercial international** | Esquissée (ex-V2 multi-tenant absorbé en V1) | milestone `V2` à redéfinir | i18n + RTL + SOC 2 + canvas IA + premier client international |
 | **V3 coach + offline + post-mortem** | Stable | milestone `V3` | F29-F35 (coach Opus, offline-first, post-mortem auto, multi-CEO écosystème) |
 
@@ -33,34 +36,36 @@ Source unique du backlog : **GitHub Issues** sur [`feycoil/aiCEO`](https://githu
 
 ---
 
-## 2. La trajectoire en 5 paliers (réalignement v3.2)
+## 2. La trajectoire en 6 paliers (réalignement v3.3)
 
 ```
-  Livré            Livré            2-3 sem          6 mois           T2-T4 2027       T4 2027+
-  T2 2026          T2 2026          mai 2026         T3 2026-T1 27    ────────         ────────
-     │                │                │                │                │                │
-     ▼                ▼                ▼                ▼                ▼                ▼
-  ┌────────┐     ┌────────┐      ┌────────┐      ┌────────┐      ┌────────┐      ┌────────┐
-  │v0.4 MVP│     │ v0.5   │      │ v0.6   │      │   V1   │      │   V2   │      │   V3   │
-  │        │────▶│ Fusion │─────▶│ UI     │─────▶│ SaaS + │─────▶│Comm.   │─────▶│ Coach  │
-  │Rituels │     │ unifiée│      │finalis-│      │équipes │      │intl. + │      │+ offl. │
-  │ réels  │     │ ✅ done │      │ée +DS  │      │+ mobile│      │  i18n  │      │+ multi │
-  └────────┘     └────────┘      └────────┘      └────────┘      └────────┘      └────────┘
+  Livré        Livré        Livré        2 sem        6 mois            T2-T4 2027       T4 2027+
+  T2 2026      T2 2026      T2 2026      mai 2026     T3 2026-T1 27     ────────         ────────
+     │            │            │            │            │                 │                │
+     ▼            ▼            ▼            ▼            ▼                 ▼                ▼
+  ┌──────┐   ┌──────┐    ┌──────┐    ┌──────┐    ┌──────┐         ┌──────┐         ┌──────┐
+  │ v0.4 │   │ v0.5 │    │ v0.6 │    │ v0.7 │    │  V1  │         │  V2  │         │  V3  │
+  │ MVP  │──▶│Fusion│───▶│Câblé │───▶│ LLM +│───▶│SaaS +│────────▶│Comm. │────────▶│Coach │
+  │Rituels│   │unifié│    │+ DS  │    │events│    │équipes│         │intl. │         │+offl.│
+  │ réels │   │✅done│    │✅done│    │+ gaps│    │+mobile│         │+i18n │         │+multi│
+  └──────┘   └──────┘    └──────┘    └──────┘    └──────┘         └──────┘         └──────┘
 
-  "Je trie      "Tout mon flux    "Mon outil         "Je rends         "On vend          "L'outil me
-   mes          passe par une     est aussi          l'outil dispo     l'outil hors       rend du temps
-   matins."     seule app."       beau qu'il         à mes pairs +     écosystème ETIC.   et me garde
-                                  est utile."        équipe ETIC,                          en forme.
-                                                     partout, mobile                       Multi-CEO
-                                                     inclus."                               écosystème."
+  "Je trie    "Tout       "Mon       "Mon      "Je rends         "On vend         "L'outil
+   mes        passe par   outil      outil     l'outil           l'outil hors     me rend
+   matins."   une seule   est aussi  pense     dispo à mes       écosystème       du temps
+              app."       beau qu'il pour      pairs + équipe    ETIC."           et me garde
+                          est utile. moi       ETIC, partout,                      en forme.
+                          + données  (LLM)."   mobile inclus."                     Multi-CEO."
+                          réelles."
 ```
 
 ### Promesse par milestone
 
 - **MVP (T2 2026 · v0.4 livré)** : *« Mon arbitrage matinal est fait en < 10 min avec Claude. »*
 - **v0.5 fusion (T2 2026 · ✅ livré 26/04)** : *« Tout mon flux — matin, journée, soir, revues — passe par une seule app. »*
-- **v0.6 Interface finalisée (mai 2026 · ~8 k€ binôme)** : *« Mon outil est aussi beau qu'il est utile. DS atomic, microcopy unifié, accessibilité WCAG AA, patterns coaching légers. »*
-- **V1 (T3 2026-T1 2027 · 6 thèmes 46 k€ binôme)** : *« Multi-tenant, équipes ETIC en collab, intégrations Teams/Notion/Slack, mobile compagnon, observabilité. CEO pairs francophones onboardés. »*
+- **v0.6 Interface finalisée + câblage réel (T2 2026 · ✅ livré 28/04 · ~8 k€)** : *« Mon outil est aussi beau qu'il est utile, et il marche sur mes vraies données. DS Claude Design + 13/17 pages câblées API + sync emails Outlook + bootstrap auto projets/contacts. »*
+- **v0.7 LLM + Outlook events + gaps (mai 2026 · ~5 k€ binôme)** : *« Mon outil pense pour moi. Coaching IA proactif, draft revue auto, decision-recommend, "si vous tranchez A". Calendrier Outlook synchronisé. Toutes les pages preview câblées. »*
+- **V1 (T3 2026-T1 2027 · 6 thèmes 41 k€ binôme)** : *« Multi-tenant, équipes ETIC en collab, intégrations Teams/Notion/Slack, mobile compagnon, observabilité. CEO pairs francophones onboardés. »*
 - **V2 (T2-T4 2027)** : *« Commercial international : i18n FR+EN, SOC 2 Type II, premier client international, canvas IA collaboratif, viz riches. »*
 - **V3 (T4 2027+)** : *« Coach conversationnel Opus, offline-first, post-mortem auto, multi-CEO écosystème, RTL pour pays MENA. »*
 
@@ -233,6 +238,116 @@ Source : provision V1 actuelle (105 k€ disponible) — v0.6 absorbée sans ral
 - Performance : LCP < 2 s desktop, bundle CSS < 50 kb
 - Tag `v0.6` posé, GitHub Release publiée
 - Adoption Feycoil : 100 % dogfood sur la nouvelle UI pendant 14 j sans bug bloquant
+
+---
+
+## 3.4 v0.7 — LLM + Outlook events + finalisation gaps (mai 2026, ~3-4 sessions binôme)
+
+### Objectif
+
+Combler les 5 gaps fonctionnels identifiés dans `04_docs/CR-GAP-v06-cablage.md` après le câblage S6.4 :
+
+1. **LLM Anthropic activé sur 4 surfaces UX** : coaching banner arbitrage, decision-recommend, auto-draft-review weekly-reviews, "Si vous tranchez A" (effets propagés).
+2. **Sync events Outlook** : calendrier (olFolderCalendar) ingéré dans table `events`, page agenda peuplée.
+3. **Status decision 'reportee'** : kanban col "Reporté" persiste en DB (au lieu de sessionStorage volatile).
+4. **FK emails → projects** : table emails reçoit `project_id` + UI rattachement maison/projet manuel ou auto-suggéré.
+5. **3 pages preview câblées** : assistant.html (chat SSE live), connaissance.html (épinglage decisions/critères), coaching.html (sessions hebdo dimanche soir).
+
+**Promesse** : *« Mon outil pense pour moi. Le coaching arrive au bon moment, la draft de revue est prête vendredi soir, le kanban kanban est persistant, mes emails sont rattachés à mes projets. »*
+
+### Pourquoi un palier dédié ?
+
+Ces 5 gaps sont identifiés en sortie de S6.4 (28/04) comme reportés délibérément. Les inclure en V1 aurait :
+- Dilué les sprints V1 multi-tenant + équipes
+- Mélangé "back-office souverain" (V1) et "intelligence augmentée" (v0.7)
+- Bloqué l'intérêt UX du coaching IA jusqu'à T3 2026
+
+Insérer v0.7 entre v0.6 et V1 :
+- Active les promesses-clés de la maquette Claude Design dans 1-2 mois
+- Permet la recette CEO sur un produit "complet" avant ouverture aux pairs
+- Met le LLM en production en mode sécurisé (mono-user Feycoil) avant multi-tenant V1
+
+### Périmètre v0.7
+
+| # | Livrable | Source |
+|---|---|---|
+| 1 | LLM `/api/assistant/messages` câblé en chat live (page `/v06/assistant.html`) | Backend déjà prêt, frontend SSE chunk-by-chunk |
+| 2 | LLM `/api/assistant/decision-recommend` câblé sur cards arbitrage focus mode | Affiche raison + impact + recommandation A/B/C |
+| 3 | LLM `/api/assistant/auto-draft-review` câblé bouton "Démarrer la revue" | Génère intention + bilan + cap prochaine semaine pré-remplis |
+| 4 | LLM coaching banner arbitrage (`/coaching-question`) | Question stratégique contextualisée selon historique décisions |
+| 5 | Script `scripts/fetch-outlook-events.ps1` (Outlook COM olFolderCalendar) | Pendant ~50 lignes PS pour read-only events sur 30j |
+| 6 | Migration `data/migrations/2026-05-XX-events-extend.sql` (FK source_id, type='outlook') | Ingestion via `scripts/normalize-events.js` (nouveau) |
+| 7 | Page `/v06/agenda.html` peuplée + grille hebdo drag-drop | bind-agenda.js v2 réécrit |
+| 8 | Migration status decision `reportee` (ALTER TABLE check) | Permet kanban col Reporté persistant |
+| 9 | bind-arbitrage-board.js v2 : drag→ "Reporté" persiste status='reportee' | Plus de sessionStorage volatile |
+| 10 | Migration `2026-05-XX-emails-fk-projects.sql` : ajout `emails.project_id` FK | Avec endpoint POST `/api/emails/:id/link-project` |
+| 11 | UI rattachement projet sur file arbitrage emails | Dropdown projets dans la card proposition |
+| 12 | Endpoint suggestion auto `/api/emails/suggest-project` (heuristique → LLM v0.7+) | Match `inferred_project` ↔ slug projet existant |
+| 13 | Page `/v06/connaissance.html` câblée : épinglage decisions/critères | Nouvelle table `knowledge_pins` |
+| 14 | Page `/v06/coaching.html` câblée : session hebdo dimanche soir | Lecture `evening_sessions` + LLM Opus optionnel |
+| 15 | Archivage `src/emails-context.js` legacy (plus utilisé) | Supprimer + tag git si rien ne casse |
+| 16 | Tests Playwright préservés ≥ 95 verts + nouveaux tests LLM mock | 0 régression v0.6 |
+| 17 | Validation `ANTHROPIC_API_KEY` en prod + budget tokens monitoring | Variable env + dashboard /api/system/health |
+
+### À NE PAS livrer en v0.7 (réservé V1+)
+
+- ❌ Multi-tenant, équipes, mobile, intégrations Teams/Notion/Slack → V1
+- ❌ Backup auto SQLite → V1.5 (R1 risque résiduel v0.5)
+- ❌ Logs winston structurés → V1.6
+- ❌ i18n EN activé → V2
+- ❌ Coach Opus avancé (vs coaching banner simple v0.7) → V3
+
+### Découpage suggéré (3 sessions binôme courtes)
+
+| Sprint | Durée chrono | Contenu |
+|---|---|---|
+| **S6.5** | ~4h | LLM 4 surfaces UX (coaching banner + decision-recommend + auto-draft-review + "si vous tranchez A") + tests mock |
+| **S6.6** | ~4h | Sync events Outlook (script PS + ingestion + bind-agenda v2) + status decision 'reportee' (migration + bind-arbitrage-board v2) |
+| **S6.7** | ~4h | FK emails→projects (migration + endpoint + UI) + 3 pages preview câblées (assistant SSE + connaissance + coaching) + archivage legacy + recette + tag `v0.7` |
+
+### Vélocité cible v0.7
+
+**×15** — entre v0.6 (×30 sur scope étroit S6.4) et V1 (×10 sur scope large multi-tenant). Cohérent avec le scope intermédiaire (3 chantiers techniques + 3 pages UI).
+
+### Équipe v0.7
+
+**Binôme Feycoil + Claude étendu** (cohérent ADR `2026-04-26 · Modèle binôme V1`). 0 ETP externe.
+
+### Budget v0.7
+
+| Poste | Montant |
+|---|---|
+| Dev humain (Feycoil dogfood) | 0 € |
+| Infra (déjà payée) | 0 € |
+| LLM Claude API (1 mois × 50 €/jour, prod live) | ~1.5 k€ |
+| Provision tokens budget run | ~1.5 k€ |
+| Validation `ANTHROPIC_API_KEY` prod + monitoring | ~0.5 k€ |
+| Tests utilisateur (CEO pair pré-V1, optionnel) | ~1 k€ |
+| Provision imprévus | ~0.5 k€ |
+| **Total v0.7** | **~5 k€** |
+
+Source : provision V1 actuelle (105 k€ avant v0.6 → 97 k€ après v0.6 → 92 k€ après v0.7). V1 passe de 46 k€ à 41 k€ effectif (vélocité ×10 maintenue).
+
+### Critères de scellement v0.7 (go/no-go V1)
+
+- LLM Anthropic actif en prod sur 4 surfaces UX (testable en démo CEO pair)
+- `ANTHROPIC_API_KEY` validée + budget tokens contrôlé (dashboard `/api/system/health`)
+- Sync events Outlook fonctionnelle, page agenda peuplée
+- Kanban arbitrage col "Reporté" persiste en DB (status='reportee')
+- ≥ 5 emails rattachés manuellement à un projet (test FK)
+- 3 pages preview (assistant, connaissance, coaching) ne portent plus le banner ambre "v0.7/v0.8"
+- Tests Playwright ≥ 95 verts + tests LLM mock (offline)
+- 0 régression fonctionnelle vs v0.6
+- `src/emails-context.js` legacy archivé/supprimé
+- Tag `v0.7` posé, GitHub Release publiée
+- Dogfood Feycoil 14 j sans bug bloquant LLM ni quota dépassé
+
+### Risques v0.7
+
+- **R1** — Coût tokens LLM dérive si prompt mal calibré (mitigation : monitoring + alertes >100€/jour)
+- **R2** — Outlook COM API capricieuse sur events (déjà connue sur emails) — mitigation : run manuel + retry
+- **R3** — Status `reportee` introduit régression CHECK constraint — mitigation : migration testée en sandbox avant prod
+- **R4** — LLM hallucine recommandations decision — mitigation : fallback rule-based + UI "vérifier la source"
 
 ---
 

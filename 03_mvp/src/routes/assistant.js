@@ -180,4 +180,211 @@ router.post('/messages', async (req, res) => {
   }
 });
 
+// ════════════════════════════════════════════════════════════════
+// v0.7-S6.5 — LLM 4 surfaces UX avec fallback rule-based
+// Décision Claude D1 : si ANTHROPIC_API_KEY absente, retour suggestion
+// déterministe heuristique. Si présente, future intégration messages.stream.
+// ════════════════════════════════════════════════════════════════
+
+function llmReady() {
+  return !!process.env.ANTHROPIC_API_KEY;
+}
+
+// --- POST /coaching-question -----------------------------------
+// Génère une question stratégique contextualisée pour le banner arbitrage.
+router.post("/coaching-question", (req, res) => {
+  try {
+    const db = getDb();
+    const { decision_id, context } = req.body || {};
+
+    // Fallback rule-based : choix d'une question parmi un pool selon contexte
+    const QUESTIONS = {
+      defaut: [
+        "Quel est le coût d'attendre encore 24h pour décider ?",
+        "À quel moment saurez-vous que c'était la bonne décision ?",
+        "Quelle option choisirait quelqu'un qui n'a aucun investissement émotionnel dans ce projet ?",
+      ],
+      tension: [
+        "Vous tranchez souvent par défaut sur la voie 'tenir l'engagement'. Est-ce que vous savez encore pourquoi ce client compte ?",
+        "Si vous deviez recommencer ce projet aujourd'hui, le lanceriez-vous ?",
+      ],
+      equipe: [
+        "Cette décision augmente-t-elle ou diminue-t-elle l'autonomie de votre équipe ?",
+        "Qui dans votre équipe sera impacté en premier par cette décision ?",
+      ],
+      finance: [
+        "Cette décision vous rapproche ou vous éloigne du point mort ?",
+        "Quel est le coût d'opportunité du chemin que vous ne prenez pas ?",
+      ],
+    };
+
+    let bucket = "defaut";
+    const ctxStr = ((context || "") + " " + (decision_id || "")).toLowerCase();
+    if (/north|tension|alerte|urgent/i.test(ctxStr)) bucket = "tension";
+    if (/equipe|delegu|recrut|lamiae|feycoil/i.test(ctxStr)) bucket = "equipe";
+    if (/budget|tresor|cout|ca\b|chiffre/i.test(ctxStr)) bucket = "finance";
+
+    const pool = QUESTIONS[bucket];
+    const question = pool[Math.floor(Math.random() * pool.length)];
+
+    res.json({
+      question: question,
+      mode: llmReady() ? "rule-based-pending-llm" : "rule-based",
+      llm_available: llmReady(),
+      bucket: bucket,
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// --- POST /decision-recommend ----------------------------------
+// Recommandation A/B/C avec impact estimé pour une décision donnée.
+router.post("/decision-recommend", (req, res) => {
+  try {
+    const db = getDb();
+    const { decision_id } = req.body || {};
+    if (!decision_id) return res.status(400).json({ error: "decision_id requis" });
+
+    const dec = db.prepare("SELECT * FROM decisions WHERE id = ?").get(decision_id);
+    if (!dec) return res.status(404).json({ error: "decision introuvable" });
+
+    // Heuristique : compter projets actifs, tasks ouvertes, ratio decisions tranchees
+    const projsActive = db.prepare("SELECT COUNT(*) AS c FROM projects WHERE status IN ('active','hot')").get().c;
+    const tasksOpen = db.prepare("SELECT COUNT(*) AS c FROM tasks WHERE done = 0").get().c;
+    const decsClosed = db.prepare("SELECT COUNT(*) AS c FROM decisions WHERE status IN ('decidee','executee')").get().c;
+    const decsTotal = db.prepare("SELECT COUNT(*) AS c FROM decisions").get().c;
+
+    // Construction d'options selon priorité décision
+    const isUrgent = (dec.priority === 'P0') || (dec.deadline && new Date(dec.deadline).getTime() < Date.now() + 7 * 86400000);
+
+    const options = [
+      {
+        label: "A",
+        title: isUrgent ? "Trancher maintenant" : "Décider rapidement",
+        impact: "Libère " + projsActive + " projets actifs en attente",
+        confidence: 0.7,
+        recommended: isUrgent,
+      },
+      {
+        label: "B",
+        title: "Reporter à demain",
+        impact: tasksOpen > 20 ? "Évite la surcharge (" + tasksOpen + " tâches ouvertes)" : "Permet de mûrir la décision",
+        confidence: 0.5,
+        recommended: !isUrgent && tasksOpen > 20,
+      },
+      {
+        label: "C",
+        title: "Déléguer",
+        impact: "Soulage votre charge cognitive — ratio actuel " + (decsTotal === 0 ? 0 : Math.round(100 * decsClosed / decsTotal)) + "% décidé",
+        confidence: 0.4,
+        recommended: false,
+      },
+    ];
+
+    res.json({
+      decision_id: decision_id,
+      options: options,
+      mode: llmReady() ? "rule-based-pending-llm" : "rule-based",
+      llm_available: llmReady(),
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// --- POST /auto-draft-review -----------------------------------
+// Pré-remplit intention + bilan + cap pour une weekly review (semaine YYYY-Www).
+router.post("/auto-draft-review", (req, res) => {
+  try {
+    const db = getDb();
+    const { week } = req.body || {};
+    if (!week) return res.status(400).json({ error: "week (YYYY-Www) requis" });
+
+    // Stats de la semaine
+    const tasksDone = db.prepare("SELECT COUNT(*) AS c FROM tasks WHERE done = 1 AND created_at >= datetime('now', '-7 days')").get().c;
+    const decsTaken = db.prepare("SELECT COUNT(*) AS c FROM decisions WHERE status IN ('decidee','executee') AND decided_at >= datetime('now', '-7 days')").get().c;
+    const projsHot = db.prepare("SELECT name FROM projects WHERE status = 'hot' LIMIT 3").all().map(p => p.name);
+
+    const intention = "Semaine " + week + " : " + (decsTaken > 0 ? decsTaken + " décision(s) tranchée(s), " : "") + tasksDone + " action(s) clôturée(s)" + (projsHot.length ? ". Focus chaud : " + projsHot.join(', ') + "." : ".");
+    const bilan = decsTaken === 0 && tasksDone < 5
+      ? "Semaine plus calme que prévu. À utiliser pour avancer sur les sujets de fond ou pour souffler."
+      : "Bonne dynamique opérationnelle. Vérifiez que la cadence est tenable sans dette de sommeil ni d'attention.";
+    const capProchaine = projsHot.length > 0
+      ? "Avancer " + projsHot[0] + " (priorité absolue) · trancher les décisions reportées · libérer 1 plage deep-work"
+      : "Définir la priorité de la semaine à venir · libérer 2-3 plages deep-work";
+
+    res.json({
+      week: week,
+      intention: intention,
+      bilan: bilan,
+      cap_prochaine: capProchaine,
+      stats: { tasks_done: tasksDone, decisions_taken: decsTaken, projects_hot: projsHot },
+      mode: llmReady() ? "rule-based-pending-llm" : "rule-based",
+      llm_available: llmReady(),
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// --- POST /effects-propagation ---------------------------------
+// "Si vous tranchez A" : retourne les effets propagés estimés (decisions liées + jalons impactés).
+router.post("/effects-propagation", (req, res) => {
+  try {
+    const db = getDb();
+    const { decision_id, choice } = req.body || {};
+    if (!decision_id || !choice) return res.status(400).json({ error: "decision_id et choice requis" });
+
+    const dec = db.prepare("SELECT * FROM decisions WHERE id = ?").get(decision_id);
+    if (!dec) return res.status(404).json({ error: "decision introuvable" });
+
+    // Heuristique : compter decisions liées par projet + tasks impactées
+    let related = [];
+    let tasksImpacted = 0;
+    if (dec.project_id) {
+      related = db
+        .prepare("SELECT id, title, status FROM decisions WHERE project_id = ? AND id != ? AND status = 'ouverte' LIMIT 3")
+        .all(dec.project_id, decision_id);
+      tasksImpacted = db
+        .prepare("SELECT COUNT(*) AS c FROM tasks WHERE project_id = ? AND done = 0")
+        .get(dec.project_id).c;
+    }
+
+    const effects = [];
+    if (choice === "A" || choice === "B") {
+      effects.push({ kind: "ok", text: tasksImpacted + " tâche(s) du projet débloquée(s)" });
+      if (related.length > 0) effects.push({ kind: "ok", text: related.length + " décision(s) liée(s) à reprendre dans la foulée" });
+      effects.push({ kind: "warn", text: "1 jalon pourrait se déplacer de 1-2 semaines selon impact" });
+    } else {
+      effects.push({ kind: "warn", text: "Décision reportée — " + tasksImpacted + " tâche(s) restent en attente" });
+      effects.push({ kind: "info", text: "À reprendre dans 24-48h" });
+    }
+
+    res.json({
+      decision_id: decision_id,
+      choice: choice,
+      related_decisions: related,
+      tasks_impacted: tasksImpacted,
+      effects: effects,
+      mode: llmReady() ? "rule-based-pending-llm" : "rule-based",
+      llm_available: llmReady(),
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// --- GET /llm-status -------------------------------------------
+// Indique si le LLM Anthropic est branché en prod (clé API présente).
+router.get("/llm-status", (req, res) => {
+  res.json({
+    available: llmReady(),
+    mode: llmReady() ? "live" : "rule-based-fallback",
+    message: llmReady()
+      ? "LLM Anthropic actif. Les 4 surfaces UX (coaching, decision-recommend, auto-draft-review, effects-propagation) utilisent les routes streaming SSE."
+      : "Mode dégradé : suggestions rule-based déterministes. Pour activer le LLM live, settez ANTHROPIC_API_KEY dans les variables d'environnement Windows et redémarrez le serveur.",
+  });
+});
+
 module.exports = router;

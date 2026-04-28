@@ -76,6 +76,20 @@
             if (row) row.style.opacity = '0.4';
             acceptBtn.disabled = true;
             if (ignoreBtn) ignoreBtn.disabled = true;
+            // v0.7 — auto-link email -> project si on vient de creer un projet
+            if (item.kind === 'project' && item.source_id) {
+              try {
+                const created = await r.clone().json();
+                const projId = created && created.project && created.project.id;
+                if (projId) {
+                  await fetch('/api/emails/' + encodeURIComponent(item.source_id) + '/link-project', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ project_id: projId })
+                  });
+                }
+              } catch (e) { /* silent */ }
+            }
             if (window.AICEOShell) window.AICEOShell.showToast('Ajoute', 'success');
           }
         } catch (err) {

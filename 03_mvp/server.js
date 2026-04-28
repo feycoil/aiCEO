@@ -84,6 +84,7 @@ const systemRouter        = require("./src/routes/system");
 
 const assistantRouter     = require("./src/routes/assistant");
 const preferencesRouter   = require("./src/routes/preferences");
+const knowledgeRouter     = require("./src/routes/knowledge");
 
 
 
@@ -302,6 +303,7 @@ app.use("/api/big-rocks",      bigRocksRouter);
 
 app.use("/api/system",         systemRouter);
 app.use("/api/preferences",    preferencesRouter);
+app.use("/api/knowledge",      knowledgeRouter);
 
 
 app.use("/api/assistant",      assistantRouter);

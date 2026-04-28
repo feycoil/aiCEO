@@ -513,4 +513,88 @@ router.post("/bootstrap-from-emails", async (req, res) => {
   }
 });
 
+// --- POST /api/emails/:id/link-project --------------------------
+// Permet de rattacher un email à un projet (FK emails.project_id).
+// (Migration 2026-04-28-emails-fk-projects.sql doit être appliquée.)
+router.post("/emails/:id/link-project", (req, res) => {
+  try {
+    const db = getDb();
+    const { id } = req.params;
+    const { project_id } = req.body || {};
+    if (!project_id) return res.status(400).json({ error: "project_id requis" });
+
+    // Verif email existe
+    const email = db.prepare("SELECT id FROM emails WHERE id = ?").get(id);
+    if (!email) return res.status(404).json({ error: "email introuvable" });
+
+    // Verif projet existe
+    const proj = db.prepare("SELECT id, name FROM projects WHERE id = ?").get(project_id);
+    if (!proj) return res.status(404).json({ error: "projet introuvable" });
+
+    db.prepare("UPDATE emails SET project_id = ? WHERE id = ?").run(project_id, id);
+    res.json({ ok: true, email_id: id, project: proj });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// --- GET /api/emails/suggest-project?email_id=X -------------------
+// Suggère un projet pour rattachement basé sur emails.inferred_project (slug).
+// Heuristique : match sur projects.name (case-insensitive) ou sur les emails du même expéditeur déjà rattachés.
+router.get("/emails/suggest-project", (req, res) => {
+  try {
+    const db = getDb();
+    const { email_id } = req.query;
+    if (!email_id) return res.status(400).json({ error: "email_id requis" });
+
+    const email = db.prepare("SELECT * FROM emails WHERE id = ?").get(email_id);
+    if (!email) return res.status(404).json({ error: "email introuvable" });
+
+    const candidates = [];
+
+    // 1. Match exact sur inferred_project ↔ project name
+    if (email.inferred_project) {
+      const direct = db
+        .prepare("SELECT * FROM projects WHERE LOWER(name) = LOWER(?) LIMIT 1")
+        .get(email.inferred_project);
+      if (direct) candidates.push({ project: direct, confidence: 0.95, reason: "inferred_project match exact" });
+    }
+
+    // 2. Projets déjà rattachés à des emails du même expéditeur
+    if (email.from_email) {
+      const sibling = db.prepare(`
+        SELECT p.*, COUNT(*) AS n
+        FROM emails e
+        JOIN projects p ON p.id = e.project_id
+        WHERE e.from_email = ? AND e.id != ? AND e.project_id IS NOT NULL
+        GROUP BY p.id ORDER BY n DESC LIMIT 1
+      `).get(email.from_email, email_id);
+      if (sibling && (!candidates.length || sibling.id !== candidates[0].project.id)) {
+        candidates.push({ project: sibling, confidence: 0.7, reason: sibling.n + " emails du meme expediteur deja rattaches" });
+      }
+    }
+
+    // 3. Match keywords subject ↔ project name (fuzzy)
+    const subj = (email.subject || "").toLowerCase();
+    if (subj.length > 0) {
+      const allProj = db.prepare("SELECT * FROM projects").all();
+      for (const p of allProj) {
+        const slug = (p.name || "").toLowerCase();
+        if (slug.length < 3) continue;
+        if (subj.indexOf(slug) !== -1 && !candidates.find(c => c.project.id === p.id)) {
+          candidates.push({ project: p, confidence: 0.5, reason: "nom projet present dans le sujet" });
+        }
+      }
+    }
+
+    res.json({
+      email_id: email_id,
+      suggestions: candidates.slice(0, 3),
+      ready: candidates.length > 0,
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 module.exports = router;

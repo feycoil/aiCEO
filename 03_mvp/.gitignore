@@ -13,4 +13,19 @@ data/aiceo-test.db-wal
 data/aiceo-test.db-shm
 data/aiceo.db.bak-test
 
+# SQLite backups & recovery (fix-db-malformed.ps1, snapshots manuels, sandbox tests)
+data/aiceo.db.bak-*
+data/aiceo.db.dead-*
+data/aiceo.db.corrupt-*
+data/aiceo-recovered-*.sql
+data/aiceo-fresh-*.db
+data/aiceo-fresh-*.db-shm
+data/aiceo-fresh-*.db-wal
+data/recovery-dump-*/
+data/backup-aiceo-*
+data/events-raw.json
+data/aiceo-test-migration.db
+data/aiceo-test-migration.db-wal
+data/aiceo-test-migration.db-shm
+
 daemon/

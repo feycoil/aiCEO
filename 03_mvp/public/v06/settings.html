@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>aiCEO — Réglages</title>
-<link rel="stylesheet" href="_shared/colors_and_type.css?v=92">
-<link rel="stylesheet" href="_shared/app.css?v=92">
-<link rel="stylesheet" href="_shared/tweaks.css?v=92">
-<script src="_shared/theme.js?v=92"></script>
+<link rel="stylesheet" href="_shared/colors_and_type.css?v=99">
+<link rel="stylesheet" href="_shared/app.css?v=99">
+<link rel="stylesheet" href="_shared/tweaks.css?v=99">
+<script src="_shared/theme.js?v=99"></script>
 </head>
 <body data-route="settings">
 <script>
@@ -341,6 +341,14 @@
         <button class="settings-tab" data-tab="health">
           <svg class="ico" width="16" height="16"><use href="#i-activity"/></svg>
           <span>Santé système</span>
+        </button>
+        <button class="settings-tab" data-tab="logs">
+          <svg class="ico" width="16" height="16"><use href="#i-folder"/></svg>
+          <span>Logs</span>
+        </button>
+        <button class="settings-tab" data-tab="releases">
+          <svg class="ico" width="16" height="16"><use href="#i-flag"/></svg>
+          <span>Releases</span>
         </button>
         <hr style="margin:12px 0">
         <button class="settings-tab danger" data-tab="danger">
@@ -745,6 +753,41 @@
           </div>
         </article>
 
+        <!-- Logs -->
+        <article class="card panel settings-section" data-panel="logs">
+          <header class="settings-section-head">
+            <h2 class="card-title">Logs applicatifs</h2>
+            <p class="small u-text-3">Les fichiers de log permettent de diagnostiquer les erreurs et de suivre l'activité du serveur et des scripts. Tous les logs restent en local sur votre machine.</p>
+          </header>
+
+          <div class="aiceo-logs-help" style="display:flex;gap:14px;padding:14px 16px;background:var(--amber-50,#fef3c7);border:1px solid var(--amber,#f5b342);border-radius:10px;margin-bottom:18px;font-size:13px;color:var(--amber-800,#92400e)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <div>
+              <strong style="display:block;margin-bottom:4px">À quoi ça sert ?</strong>
+              <p style="margin:0;line-height:1.5">Les logs enregistrent ce qui se passe en arrière-plan : démarrage du serveur, requêtes API, erreurs SQLite, sync Outlook, scripts PowerShell. Si quelque chose ne fonctionne pas, c'est ici que vous (ou votre support) pouvez identifier la cause. Les 200 dernières lignes de chaque fichier sont affichées.</p>
+            </div>
+          </div>
+
+          <div id="aiceo-logs-tabs" style="display:flex;gap:4px;border-bottom:1px solid var(--border,#eee);margin-bottom:14px;flex-wrap:wrap">
+            <!-- Onglets injectés dynamiquement par bind-settings.js -->
+            <div style="padding:14px 0;color:var(--text-3,#888);font-size:13px">Chargement des logs…</div>
+          </div>
+
+          <div id="aiceo-logs-content"></div>
+        </article>
+
+        <!-- Releases -->
+        <article class="card panel settings-section" data-panel="releases">
+          <header class="settings-section-head">
+            <h2 class="card-title">Releases</h2>
+            <p class="small u-text-3">Historique des versions livrées et roadmap des releases à venir. Chaque release apporte de nouvelles fonctionnalités.</p>
+          </header>
+
+          <div id="aiceo-releases-content">
+            <div style="padding:28px 0;text-align:center;color:var(--text-3,#888);font-size:13px">Chargement des releases…</div>
+          </div>
+        </article>
+
         <!-- Danger -->
         <article class="card panel settings-section danger-section" data-panel="danger">
           <header class="settings-section-head">
@@ -780,76 +823,29 @@
 <nav class="bottom-tab-nav">
   <a href="index.html" class="bottom-tab"><svg class="ico"><use href="#i-home"/></svg><span>Cockpit</span></a>
   <a href="arbitrage.html" class="bottom-tab"><svg class="ico"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
-  <button class="bottom-tab fab-trigger"><span class="fab-circle"><svg class="ico"><use href="#i-mic"/></svg></span><span style="margin-top:30px">Capter</span></button>
-  <a href="#" class="bottom-tab"><svg class="ico"><use href="#i-projects"/></svg><span>Projets</span></a>
-  <a href="evening.html" class="bottom-tab"><svg class="ico"><use href="#i-evening"/></svg><span>Soirée</span></a>
-</nav>
+  <button class="bottom-tab fab-trigger"><span class="fab-circle"><svg class="ico"><use href="#i-mic"/></svg
 
-<style>
-.settings-grid {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: var(--space-6);
-  align-items: start;
-}
-@media (max-width: 1023px) {
-  .settings-grid { grid-template-columns: 1fr; gap: var(--space-4); }
-}
 
-.settings-side {
-  display: flex; flex-direction: column;
-  gap: 2px;
-  position: sticky; top: var(--space-4);
-  background: var(--surface-2);
-  border-radius: var(--radius);
-  padding: 8px;
-  box-shadow: var(--shadow-card);
-}
-@media (max-width: 1023px) {
-  .settings-side { position: static; flex-direction: row; overflow-x: auto; padding: 8px; gap: 4px; }
-  .settings-side::-webkit-scrollbar { display: none; }
-}
+<!-- aiCEO Convergence v0.6 (S6.4) - Scripts -->
+<script src="_shared/app.js"></script>
+<script src="_shared/shell.js?v=99" defer></script>
+<script src="_shared/clear-demo.js?v=99" defer></script>
+<script src="_shared/command-palette.js?v=99" defer></script>
+<script src="_shared/mobile.js?v=99" defer></script>
+<script src="_shared/polish.js?v=99" defer></script>
+<script src="_shared/states.js?v=99" defer></script>
+<script src="_shared/a11y.js?v=99" defer></script>
+<script src="_shared/microcopy.js?v=99" defer></script>
+<script src="_shared/settings-actions.js?v=99" defer></script>
+<script src="_shared/profile-menu.js?v=99" defer></script>
+<script src="_shared/modal.js?v=99" defer></script>
+<script src="_shared/crud-modals.js?v=99" defer></script>
+<script src="_shared/responsive-mobile.js?v=99" defer></script>
+<script src="_shared/breadcrumbs.js?v=99" defer></script>
+<script src="_shared/bind-drawer-extras.js?v=99" defer></script>
+<script src="_shared/bind-active-nav.js?v=99" defer></script>
+<script src="_shared/bind-drawer-badges.js?v=99" defer></script>
+<script src="_shared/bind-settings.js?v=99" defer></script>
 
-.settings-tab {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px;
-  background: transparent; border: 0;
-  border-radius: 8px;
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  color: var(--text-2);
-  cursor: pointer;
-  text-align: start;
-  width: 100%;
-  white-space: nowrap;
-  transition: all .12s;
-}
-.settings-tab:hover { background: var(--surface-3); color: var(--text); }
-.settings-tab.is-active { background: var(--brand-50); color: var(--text); font-weight: var(--fw-semi); }
-.settings-tab.danger { color: var(--rose-800); }
-.settings-tab svg { color: currentColo
-</style>
-<!-- aiCEO Convergence v0.6 (S6.2) -->
-<script src="_shared/shell.js?v=92" defer></script>
-<script src="_shared/clear-demo.js?v=92" defer></script>
-<script src="_shared/command-palette.js?v=92" defer></script>
-<script src="_shared/mobile.js?v=92" defer></script>
-<script src="_shared/polish.js?v=92" defer></script>
-<script src="_shared/states.js?v=92" defer></script>
-<script src="_shared/a11y.js?v=92" defer></script>
-<script src="_shared/filters.js?v=92" defer></script>
-<script src="_shared/bulk-actions.js?v=92" defer></script>
-<script src="_shared/breadcrumbs.js?v=92" defer></script>
-<script src="_shared/bind-drawer-extras.js?v=92" defer></script>
-  <script src="_shared/bind-active-nav.js?v=92" defer></script>
-  <script src="_shared/bind-drawer-badges.js?v=92" defer></script>
-<script src="_shared/responsive-mobile.js?v=92" defer></script>
-<script src="_shared/microcopy.js?v=92" defer></script>
-<script src="_shared/settings-actions.js?v=92" defer></script>
-<script src="_shared/profile-menu.js?v=92" defer></script>
-<script src="_shared/modal.js?v=92" defer></script>
-<script src="_shared/crud-modals.js?v=92" defer></script>
-<script src="_shared/workflow.js?v=92" defer></script>
-<script src="_shared/bind-settings.js?v=92" defer></script>
 </body>
 </html>

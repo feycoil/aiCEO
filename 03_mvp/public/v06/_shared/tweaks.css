@@ -1893,3 +1893,275 @@ body[data-route="arbitrage"][data-arb-ready="1"] #focus-mode {
   flex-shrink: 0 !important;
 }
 
+
+/* ════════════════════════════════════════════════════════════════
+   aiCEO v0.6 — Settings tabs strict 28/04 v6
+   Force le mecanisme is-visible au cas ou shell.js n'est pas charge
+   ════════════════════════════════════════════════════════════════ */
+
+body[data-route="settings"] .settings-section {
+  display: none !important;
+}
+body[data-route="settings"] .settings-section.is-visible {
+  display: block !important;
+}
+
+/* Loader spinner */
+.aiceo-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--surface-3, #ebe7df);
+  border-top-color: var(--accent, #e35a3a);
+  border-radius: 50%;
+  animation: aiceo-spin 0.7s linear infinite;
+}
+@keyframes aiceo-spin {
+  to { transform: rotate(360deg); }
+}
+
+.aiceo-skeleton {
+  background: linear-gradient(90deg, var(--surface-3,#ebe7df) 0%, var(--surface-2,#fff) 50%, var(--surface-3,#ebe7df) 100%);
+  background-size: 200% 100%;
+  animation: aiceo-skel 1.4s ease-in-out infinite;
+  border-radius: 8px;
+}
+@keyframes aiceo-skel {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   aiCEO v0.6 — Styles critiques pure CSS 28/04 v7
+   Indépendants de shell.js (qui injecte les styles en JS — fragile au timing).
+   Couvrent : settings tabs verticaux + badges drawer + logo version + topbar.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Settings : grid 2 colonnes (tabs vertical + panel) ─────────── */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .settings-grid { grid-template-columns: 1fr; }
+}
+
+.settings-tabs {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  position: sticky;
+  top: 80px;
+}
+
+.settings-tab {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 9px 12px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  text-align: left !important;
+  width: 100% !important;
+  background: transparent !important;
+  border: 0 !important;
+  color: var(--text-2, #555) !important;
+  cursor: pointer !important;
+  font-family: inherit !important;
+  transition: background .12s, color .12s;
+  text-decoration: none !important;
+}
+.settings-tab:hover {
+  background: var(--surface-3, #ebe7df) !important;
+  color: var(--text, #1a1a1a) !important;
+}
+.settings-tab.is-active {
+  background: var(--surface-3, #ebe7df) !important;
+  color: var(--text, #1a1a1a) !important;
+  font-weight: 600 !important;
+}
+.settings-tab.danger { color: var(--rose-700, #9c2920) !important; }
+.settings-tab svg { color: currentColor !important; width: 16px !important; height: 16px !important; flex-shrink: 0; }
+
+.settings-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Badge preview (v0.7 / v0.8 / V2) ────────────────────────── */
+.badge-soon, .badge-preview {
+  margin-left: auto !important;
+  font-size: 9px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 6px !important;
+  border-radius: 99px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  align-self: center;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  height: 18px !important;
+  min-width: 22px !important;
+}
+.badge-soon { background: var(--surface-3, #eee); color: var(--text-3, #888); }
+.badge-preview {
+  background: var(--amber-50, #fef3c7) !important;
+  color: var(--amber-800, #92400e) !important;
+  border: 1px solid var(--amber, #f5b342) !important;
+}
+
+/* ── Drawer logo version pill (jaune ambre) ─────────────────── */
+.drawer-logo .logo-version {
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  padding: 1px 5px !important;
+  background: var(--amber-50, #fef3c7) !important;
+  color: var(--amber-800, #92400e) !important;
+  border: 1px solid var(--amber, #f5b342) !important;
+  border-radius: 99px !important;
+  text-transform: uppercase !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 14px !important;
+  line-height: 1 !important;
+  margin-left: 6px !important;
+}
+.app[data-drawer="collapsed"] .drawer-logo .logo-version {
+  display: none !important;
+}
+
+/* ── Drawer items : layout uniforme ─────────────────────────── */
+.drawer .drawer-item,
+.drawer .drawer-locale,
+button.drawer-locale,
+a.drawer-locale {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 9px 12px !important;
+  min-height: 36px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  font-family: inherit !important;
+  text-decoration: none !important;
+  color: var(--text, #1a1a1a) !important;
+  border: 0 !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  line-height: 1.2 !important;
+}
+.drawer .drawer-item.is-active,
+.drawer .drawer-item[aria-current="page"] {
+  background: var(--text, #1a1a1a) !important;
+  color: #fff !important;
+}
+.drawer .drawer-item.is-active .ico,
+.drawer .drawer-item.is-active svg,
+.drawer .drawer-item[aria-current="page"] .ico,
+.drawer .drawer-item[aria-current="page"] svg {
+  color: #fff !important;
+}
+.drawer .drawer-item:hover:not(.is-active):not([aria-current="page"]) {
+  background: var(--surface-3, #ebe7df) !important;
+}
+.drawer .drawer-item.is-preview,
+.drawer .drawer-item[aria-disabled="true"] {
+  opacity: 0.55 !important;
+  cursor: not-allowed !important;
+}
+
+/* ── Badge compteur drawer (pastille rouge) ─────────────────── */
+.drawer .drawer-item .badge:not(.badge-preview) {
+  margin-left: auto !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  height: 18px !important;
+  min-width: 22px !important;
+  padding: 0 7px !important;
+  line-height: 18px !important;
+  border-radius: 99px !important;
+  background: var(--accent, #e35a3a) !important;
+  color: #fff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+.drawer .drawer-item .badge[data-zero="1"],
+.drawer .drawer-item .badge:empty {
+  display: none !important;
+}
+
+/* En collapsed : tout cache sauf icône */
+.app[data-drawer="collapsed"] .drawer .badge,
+.app[data-drawer="collapsed"] .drawer .badge-preview,
+.app[data-drawer="collapsed"] .drawer .pill,
+.app[data-drawer="collapsed"] .drawer .badge-soon {
+  display: none !important;
+}
+.app[data-drawer="collapsed"] .drawer-item .label,
+.app[data-drawer="collapsed"] .drawer-locale .locale-name {
+  display: none !important;
+}
+
+
+
+/* ════════════════════════════════════════════════════════════════
+   Empty-state pattern (S6.8 — review maquette mandate plein CEO)
+   À utiliser quand une liste/section n'a pas de données à afficher.
+   Markup type :
+     <div class="empty-state">
+       <svg class="ico empty-state-ico"><use href="#i-folder"/></svg>
+       <h3 class="empty-state-title">Aucun élément</h3>
+       <p class="empty-state-text">Créez-en un pour commencer.</p>
+       <button class="btn primary empty-state-cta">Créer →</button>
+     </div>
+   ════════════════════════════════════════════════════════════════ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px;
+  background: var(--surface);
+  border-radius: 16px;
+  color: var(--text-2);
+  gap: 12px;
+}
+.empty-state-ico {
+  width: 48px; height: 48px;
+  opacity: 0.4;
+  color: var(--text-3);
+}
+.empty-state-title {
+  font-family: var(--font-sans);
+  font-size: var(--fs-h3, 18px);
+  font-weight: var(--fw-bold, 600);
+  margin: 0;
+  color: var(--text);
+}
+.empty-state-text {
+  font-size: var(--fs-sm, 13px);
+  color: var(--text-2);
+  max-width: 320px;
+  margin: 0;
+  line-height: var(--lh-base, 1.5);
+}
+.empty-state-cta {
+  margin-top: 8px;
+}

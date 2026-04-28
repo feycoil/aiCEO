@@ -135,3 +135,29 @@ Aucun pour l'instant. Si un blocage : PowerShell admin requis ou fichier verroui
 - ADR `2026-04-28 · Câblage v0.6 réel (S6.4)` (DECISIONS.md)
 - ADR `2026-04-28 v2 · Restructuration roadmap v3.3`
 - Mandat verbal du CEO 28/04/2026 PM via Cowork
+
+---
+
+## Annexe — Revue maquette complète post-finalisation 28/04 PM late
+
+**Demande CEO** : "passe en revue toute la maquette - câbles toutes les fonctionnalités v0.6/v0.7 dans toutes les pages. efface toutes données démo. vérifie UX/UI corrige layout."
+
+### 3 audits parallèles lancés
+
+1. **Données hardcodées** (Agent 1) — Score moyen démo : 62%. 6 pages P0 (taches, index, revues, decisions, equipe, hub), 8 P1.
+2. **Câblage v0.7 LLM** (Agent 2) — Câblage effectif : **20%**. Backend OK (5 routes + helper llmReady), DOM ne les appelle pas.
+3. **UX/UI DS Twisty** (Agent 3) — Note 13/20. Tokens `--lilac/--coral/--cream` mentionnés mais **pas définis** dans colors_and_type.css.
+
+### Auto-décision Claude D6 (mandat plein)
+
+**Scope total identifié = ~3 jours-binôme** (largement au-delà du mandat session). Décision priorisation :
+- **P0 traités cette session** : tokens Twisty définis + empty state pattern + bind-counts.js générique + data-count sur 4 pages + 1 surface LLM exemplaire (arbitrage A/B/C)
+- **P1 reportés S6.8** : 161 hex hardcodés → tokens, 5 pages empty states, surfaces LLM restantes
+- **P2 reportés V1** : mobile responsive < 600px, câblage progressif fine-grained
+
+### Plan 4 vagues compressées
+
+- **V1 (30min)** : `colors_and_type.css` aliases Twisty + `tweaks.css` empty-state/skeleton + `bind-counts.js` générique
+- **V2 (30min)** : data-count attribues sur 6 pages P0
+- **V3 (30min)** : `arbitrage.html` data-llm-route + `bind-arbitrage-focus.js` v5 hover "Si vous tranchez X"
+- **V4 (20min)** : ADR scope reporté + commit

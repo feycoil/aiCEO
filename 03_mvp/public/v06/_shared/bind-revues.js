@@ -1,4 +1,5 @@
-/* bind-revues.js v4 — Liste revues hebdo + CTA "Demarrer une revue" si vide */
+/* bind-revues.js v5 — Liste revues hebdo + CTA "Demarrer une revue" si vide
+ * v0.7 — auto-draft via /api/assistant/auto-draft-review (LLM ou rule-based) */
 (function () {
   'use strict';
   const $  = (s, r=document) => r.querySelector(s);
@@ -13,11 +14,10 @@
     } catch(e) { return null; }
   }
 
-  // ISO week (YYYY-Www) — algorithme standard
+  // ISO week (YYYY-Www)
   function currentWeekId() {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
-    // Jeudi de la semaine ISO
     d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
     const yearStart = new Date(d.getFullYear(), 0, 4);
     const weekNo = 1 + Math.round(((d - yearStart) / 86400000 - 3 + ((yearStart.getDay() + 6) % 7)) / 7);
@@ -42,16 +42,30 @@
       btn.addEventListener('click', async () => {
         btn.disabled = true;
         btn.textContent = 'Creation...';
+        // v0.7 — auto-draft via LLM (ou rule-based fallback)
+        let draft = null;
+        try {
+          const draftR = await tryJson('/api/assistant/auto-draft-review', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ week: week })
+          });
+          if (draftR && draftR.draft) draft = draftR.draft;
+        } catch (e) { /* silent */ }
         const r = await tryJson('/api/weekly-reviews', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ week: week, intention: '', mood: '' })
+          body: JSON.stringify({
+            week: week,
+            intention: (draft && draft.intention) || '',
+            mood: (draft && draft.bilan) || ''
+          })
         });
         if (r && r.review) {
           if (window.AICEOShell && window.AICEOShell.showToast) {
-            window.AICEOShell.showToast('Revue de la semaine demarree', 'success');
+            const mode = (draft && draft.mode === 'live') ? ' (Claude)' : '';
+            window.AICEOShell.showToast('Revue de la semaine demarree' + mode, 'success');
           }
-          // Relancer init pour rendre la nouvelle revue
           init();
         } else {
           btn.disabled = false;
@@ -82,7 +96,6 @@
         }).join('');
       }
     } else {
-      // Injecter le CTA "Demarrer la revue"
       injectCTA();
     }
 

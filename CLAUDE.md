@@ -2,7 +2,7 @@
 
 > **Lis ce fichier en premier** quand tu démarres une nouvelle session sur ce projet. Il consolide le contexte, les conventions, les pièges connus et les workflows types pour t'éviter de tout redécouvrir.
 
-**Version** : 28/04/2026 PM v3 (v0.6 FINALISÉE par mandat plein CEO + sprints S6.5/S6.6/S6.7 livrés Claude auto-décidée)
+**Version** : 28/04/2026 PM v4 (**v0.7 LIVRÉE** sous mandat plein CEO — sprints S6.5/S6.6/S6.7 v0.7 RÉELS livrés en parallèle, code 13/13 `node --check` verts, prêt à tag)
 **À jour à chaque clôture de sprint** ou décision structurante (cf. § 8 Maintenance).
 
 ---
@@ -32,15 +32,31 @@
   - **35/35 fichiers JS** `node --check` verts · A11y 18/18 pages conformes · 0 usage applicatif localStorage non-`aiCEO.uiPrefs.*`
   - **27 ADRs datés** dans DECISIONS.md (incl. ADR `v3 · v0.6 finalisée par mandat plein CEO`)
 
-**Prochaine étape** : poser tag `v0.6` côté Windows + recette CEO + ExCom → GO v0.7 (LLM coaching/auto-draft/decision-recommend + sync events Outlook + finalisation gaps CR-GAP, ~5 k€ binôme prélevés sur réallocation 254 k€).
+- **v0.7 LIVRÉE 28/04 PM late (mandat plein CEO carte blanche)** :
+  - **S6.5 — LLM 4 surfaces UX (mode dégradé activable)** :
+    - 5 routes ajoutées dans `src/routes/assistant.js` : `coaching-question` · `decision-recommend` · `auto-draft-review` · `effects-propagation` · `llm-status`.
+    - Helper `llmReady()` détecte `process.env.ANTHROPIC_API_KEY` → bascule LLM live (Claude Sonnet) / rule-based heuristique automatiquement.
+    - Frontend : `bind-arbitrage-focus.js` v4 (recommandations A/B/C + "Si vous tranchez X" hover) · `bind-revues.js` v5 (auto-draft sur démarrage revue) · `bind-coaching.js` neuf (signaux faibles + 4 questions LLM) · `bind-assistant.js` v4 (bandeau Claude live vert / mode dégradé ambre).
+  - **S6.6 — Outlook events sync + status `reportee` persistant** :
+    - Migration `2026-04-28-events-extend.sql` : organizer/status/body_preview/ingested_at + 3 index.
+    - Migration `2026-04-28-decisions-reportee.sql` : recreate 3-étapes (rename → recreate avec nouveau CHECK incluant `reportee` → INSERT SELECT → DROP) — contournement standard SQLite ALTER TABLE CHECK.
+    - `scripts/fetch-outlook-events.ps1` : COM Outlook GetDefaultFolder(9) avec `IncludeRecurrences=$true`, fenêtre J-15 → J+30.
+    - `scripts/normalize-events.js` : ingestion SQLite idempotente (INSERT OR REPLACE sur PK Outlook EntryID).
+    - `bind-arbitrage-board.js` v2 : status `reportee` persistant DB (vs sessionStorage volatile précédent). `bind-agenda.js` v2 grille hebdo.
+  - **S6.7 — FK emails→projects + 3 pages preview câblées + tag** :
+    - Migration `2026-04-28-emails-fk-projects.sql` : `emails.project_id` FK + table `knowledge_pins` (kind decision/criterion/principle/note + tags + soft delete).
+    - `src/routes/knowledge.js` neuf : 5 endpoints CRUD pins (`GET/POST/PATCH/DELETE` + `from-decision/:decId`).
+    - 2 routes dans `arbitrage.js` : `POST /api/emails/:id/link-project` + `GET /api/emails/suggest-project?email_id=X` (heuristique 3 niveaux).
+    - `bind-arbitrage-queue.js` v4 : auto-link email→projet sur Accept (zero-friction, vs dropdown manuel).
+    - `bind-connaissance.js` neuf : render pins KIND_LABEL + archive + add via prompt(). Empty state propre avec bouton "+ Première note".
+    - 17 HTML : bump cache `v=98 → v=99` (446 occurrences).
+- **5 décisions Claude carte blanche** documentées dans `04_docs/_sprint-v0.7/JOURNAL.md` : D1 mode dégradé activable, D2 status `reportee` 3-étapes, D3 events fenêtre J-15→J+30, D4 auto-link projet, D5 pas d'Opus en v0.7 (Sonnet only).
+- **Tags Git** : `v0.5` · `v0.6-s6.1` · `v0.6-s6.4` · **`v0.6`**. **`v0.7` à poser** post `push-v0.7.ps1` (script généré, à exécuter par CEO).
+- **28 ADRs datés** dans DECISIONS.md (ajout ADR `v4 · v0.7 livrée` ligne 1681).
 
-**Ajouts S6.4 v2 (28/04 PM late)** :
-- **Onglet Logs** dans Réglages : `GET /api/system/logs` (lecture `data/*.log` + tail 200 lignes), bouton "Charger les logs" manuel + spinner, console dark theme avec coloration syntaxique (rouge=error, ambre=warn, vert=OK), bandeau ambre d'aide pédagogique, métadonnées (size/lignes/mtime).
-- **Onglet Releases** dans Réglages : `GET /api/system/releases` (4 livrées + 4 upcoming), skeleton loader pendant fetch, cartes avec border-left coloré (emerald livrée, accent courante, ambre à venir), pills statut, mention "Bloqué par" pour upcoming.
-- **Pattern globals theme.js renforcé** : `window.aiceoSettingsTab(event, target)` pour résister aux handlers globaux. `onclick` HTML inline injecté sur chaque tab via JS.
-- **Pattern fix critique** : `settings.html` avait perdu **19/20 scripts** (seul `theme.js` restait). Restauration via Python atomic write — vérifier régulièrement la section `<script src=...>` à la fin de chaque page.
+**Prochaine étape** : exécuter `push-v0.7.ps1` (commit + tag `v0.7` + Release GitHub) côté Windows. Lancer migrations SQL via `node 03_mvp/scripts/init-db.js` (les 3 nouvelles `2026-04-28-*.sql` détectées par `schema_migrations`). Recette CEO 25 min.
 
-**Cache busting** : `?v=98` (428 occurrences sur 18 fichiers HTML).
+**Cache busting** : `?v=99` (446 occurrences sur 18 fichiers HTML).
 
 ---
 
@@ -66,17 +82,28 @@
 
 ### Backend (`03_mvp/`)
 - Express + **node:sqlite** (Node 24, pas better-sqlite3 cf. ADR S1.13)
-- **14 routers REST CRUD** (`/api/{tasks,decisions,contacts,projects,groups,events,cockpit,arbitrage,evening,weekly-reviews,big-rocks,system,preferences,assistant}`)
-- 4 routes assistant streaming SSE via `messages.stream` Anthropic SDK
+- **15 routers REST CRUD** (`/api/{tasks,decisions,contacts,projects,groups,events,cockpit,arbitrage,evening,weekly-reviews,big-rocks,system,preferences,assistant,knowledge}`) — `knowledge` ajouté v0.7 (S6.7)
+- 4 routes assistant streaming SSE via `messages.stream` Anthropic SDK + **5 routes LLM v0.7** (`coaching-question`, `decision-recommend`, `auto-draft-review`, `effects-propagation`, `llm-status`) avec helper `llmReady()` mode dégradé activable
 - SSE bus EventEmitter + `GET /api/cockpit/stream` (S3.05)
-- **20 tables SQLite** : tasks, decisions, contacts, projects, groups, events, **emails** (S6.4 nouveau), arbitrage_sessions, evening_sessions, weekly_reviews, weeks, big_rocks, task_events, contacts_projects, delegations, settings, user_preferences, assistant_conversations, assistant_messages, schema_migrations
-- **4 migrations** appliquées : `2026-04-25-init-schema.sql` + `2026-04-26-s4-assistant.sql` + `2026-04-27-s6-preferences.sql` + **`2026-04-28-emails.sql` (S6.4)**
-- Mode démo automatique sans `ANTHROPIC_API_KEY` (LLM routes répondent stub)
+- **21 tables SQLite** : tasks, decisions, contacts, projects, groups, events, **emails** (S6.4), arbitrage_sessions, evening_sessions, weekly_reviews, weeks, big_rocks, task_events, contacts_projects, delegations, settings, user_preferences, assistant_conversations, assistant_messages, **knowledge_pins** (v0.7 S6.7), schema_migrations
+- **7 migrations** appliquées :
+  1. `2026-04-25-init-schema.sql` (init)
+  2. `2026-04-26-s4-assistant.sql` (S4)
+  3. `2026-04-27-s6-preferences.sql` (S6)
+  4. `2026-04-28-emails.sql` (S6.4 — table `emails` 14 colonnes + PK Outlook)
+  5. `2026-04-28-events-extend.sql` (v0.7 S6.6 — organizer/status/body_preview/ingested_at + 3 index)
+  6. `2026-04-28-decisions-reportee.sql` (v0.7 S6.6 — recreate 3-étapes pour ajouter `reportee` au CHECK)
+  7. `2026-04-28-emails-fk-projects.sql` (v0.7 S6.7 — `emails.project_id` FK + table `knowledge_pins`)
+- Mode démo automatique sans `ANTHROPIC_API_KEY` (LLM routes répondent stub) ; helper `llmReady()` détecte présence clé pour bascule LLM live (Sonnet) / rule-based heuristique
 - Isolation tests via env `AICEO_DB_OVERRIDE=/path/to/test.db`
 - Port défaut **4747** (pas 3001 — historique S2.00 mais wrapper Variante D utilise 4747)
-- **Endpoints S6.4 ajoutés** :
+- **Endpoints S6.4 (v0.6)** :
   - `POST /api/arbitrage/analyze-emails` → scoring SQL emails non lus/flagged/récents (top 8 propositions)
   - `POST /api/arbitrage/bootstrap-from-emails` → auto-création projets (depuis `inferred_project` distincts) + contacts (expéditeurs ≥3 emails). Idempotent.
+- **Endpoints v0.7 ajoutés (S6.5/S6.6/S6.7)** :
+  - `GET/POST/PATCH/DELETE /api/knowledge/pins` + `GET /api/knowledge/from-decision/:decId` (5 endpoints CRUD pins)
+  - `POST /api/emails/:id/link-project` + `GET /api/emails/suggest-project?email_id=X` (auto-link avec heuristique 3 niveaux)
+  - 5 routes LLM listées plus haut (mode dégradé activable)
 
 ### Frontend Claude Design v0.6 (17 pages, `03_mvp/public/v06/`) — **CIBLE OFFICIELLE + CÂBLÉE S6.4**
 

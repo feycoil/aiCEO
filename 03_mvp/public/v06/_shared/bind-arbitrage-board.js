@@ -25,20 +25,12 @@
     } catch (e) { return null; }
   }
 
-  // Bin local override (later) : pas en DB
-  const LATER_KEY = 'aiCEO.arbitrage.later';
-  function getLaterIds() {
-    try { return JSON.parse(sessionStorage.getItem(LATER_KEY) || '[]'); } catch(e) { return []; }
-  }
-  function setLaterIds(arr) {
-    try { sessionStorage.setItem(LATER_KEY, JSON.stringify(arr)); } catch(e) {}
-  }
-
+  // v0.7-S6.6 : status 'reportee' persiste en DB (migration 2026-04-28-decisions-reportee.sql)
   function statusToBin(d) {
     const s = (d.status || 'ouverte').toLowerCase();
-    if (getLaterIds().indexOf(d.id) !== -1) return 'later';
     if (s === 'decidee' || s === 'executee') return 'done';
     if (s === 'abandonnee') return 'frozen';
+    if (s === 'reportee') return 'later';
     return 'todo';
   }
 
@@ -46,7 +38,8 @@
     if (bin === 'done') return 'decidee';
     if (bin === 'frozen') return 'abandonnee';
     if (bin === 'todo') return 'ouverte';
-    return null; // later : pas de status DB
+    if (bin === 'later') return 'reportee';
+    return null;
   }
 
   function priorityFor(d) {
@@ -142,11 +135,8 @@
         const oldBin = statusToBin(decision);
         if (oldBin === bin) return;
 
-        // Persister
+        // Persister via PATCH (status 'reportee' supporté depuis v0.7)
         const newStatus = binToStatus(bin);
-        let later = getLaterIds().filter(function (x) { return x !== id; });
-        if (bin === 'later') later.push(id);
-        setLaterIds(later);
 
         if (newStatus) {
           const patch = { status: newStatus };
