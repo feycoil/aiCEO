@@ -1517,6 +1517,122 @@ Format :
 
 
 
+## 2026-04-28 v20 · S6.11-EE livré — 16 pages v06 → v07 migrées en autonomie (lots A B C D)
+
+**Statut** : Acté · **Origine** : mandat CEO 28/04 nuit *« lance tout d'une traite A B C D »*.
+
+**Décision** : génération en bloc des 16 pages restantes via template Python (page-clones du pattern decisions.html validé en S6.10-EE). Tous les 4 lots livrés en une passe.
+
+**Périmètre livré** :
+
+**Lot A** (4 pages CRUD simples) : `projets · equipe · revues · agenda`
+**Lot B** (4 pages CRUD + states) : `taches · evening · settings · projet`
+**Lot C** (4 pages live data) : `index (cockpit) · arbitrage · onboarding · hub`
+**Lot D** (4 pages LLM-heavy) : `assistant · connaissance · coaching · components`
+
+**Pour chaque page, livré** :
+1. **Squelette HTML v07** dans `pages/<id>.html` :
+   - Drawer-sidebar avec `active=<id>` (item correspondant marqué)
+   - Header-topbar avec breadcrumb + titre + sous-titre + actions (Nouveau + Exporter) + search optionnel
+   - Region kpis + filters-row + timeline + empty-state
+   - Footer strategic-q parité v06 + meta v0.7
+   - Bottom-tab nav mobile avec is-active sur l'onglet courant
+   - Burger top-left + backdrop + modal-detail
+   - Sprite SVG fetched + colors_and_type v06 + tokens v07
+
+2. **Store dédié** dans `stores/<id>-store.js` :
+   - Class PageStore extends Store
+   - Fetch sur l'endpoint API mappé (`/api/projects`, `/api/tasks`, `/api/cockpit/today`, etc.)
+   - Render générique avec card-decision comme template universel (champs adaptés depuis chaque API)
+   - Anti-race seq + debounce 30ms + safety net 1s (parité decisions-store)
+
+**Mapping des API par page** :
+
+| Page | Endpoint | Collection |
+|---|---|---|
+| projets | `/api/projects` | projects |
+| equipe | `/api/contacts` | contacts |
+| revues | `/api/weekly-reviews` | reviews |
+| agenda | `/api/events` | events |
+| taches | `/api/tasks` | tasks |
+| evening | `/api/evening` | sessions |
+| settings | `/api/preferences` | settings |
+| projet | `/api/projects` | project |
+| index (cockpit) | `/api/cockpit/today` | cockpit |
+| arbitrage | `/api/arbitrage/queue` | queue |
+| onboarding | `/api/preferences` | wizard |
+| hub | `/api/system/health` | hub |
+| assistant | `/api/assistant/conversations` | conversations |
+| connaissance | `/api/knowledge/pins` | pins |
+| coaching | `/api/cockpit/coaching` | signals |
+| components | (pas d'API) | components |
+
+**Effort réel** : ~1h Claude actif (génération Python batch). Vs cadrage initial 2.5 j-binôme = ~20h ETP. **Vélocité ×20**.
+
+**Qualité** : 10/10 tests verts (PAGES list de 17 entries vérifiée : 4 composants critiques + bottom-tab + footer + import v06 sur chaque page).
+
+**Limitations connues (à résoudre en S6.11-EE-2)** :
+- Le rendu des cards utilise `card-decision` comme template universel pour TOUS les types d'items (projets, contacts, tâches, events, etc.). Visuellement correct mais sémantiquement basique.
+- Pages spécifiques qui mériteront un store enrichi en S6.11-EE-2 : `cockpit` (5 sections distinctes), `arbitrage` (file + détail + verdict), `assistant` (chat SSE), `evening` (formulaire interactif), `settings` (8 onglets), `onboarding` (wizard 3 étapes), `hub` (grid de 17 tuiles), `components` (storybook).
+- Aucune page ne fait encore de fetch live conditionnel (pagination, scroll infini, filtres dynamiques). À traiter au cas-par-cas en S6.11-EE-2.
+- Tests E2E Playwright Windows non lancés (sandbox Linux).
+
+**Conséquences** :
+
+*Court terme* :
+- **17 pages v07 livrées** (decisions ADR v19 + 16 nouvelles ADR v20).
+- Tous accessibles via `localhost:4747/v07/pages/<id>.html`.
+- Pattern Atomic Templates **validé à l'échelle**.
+- Aucune régression v06 (cohabitation totale).
+
+*Long terme* :
+- S6.11-EE-2 (post-recette CEO) : enrichissement spécifique des 8 pages "complexes" listées ci-dessus.
+- V1 : possibilité de faire une bascule v06 → v07 totale via redirect ou alias d'URL.
+- Cohabitation v06 ↔ v07 jusqu'à V1 (estimé ~3 mois).
+
+*Risques résiduels* :
+- R1 — Le rendu universel via `card-decision` peut afficher de manière incongrue certaines pages (settings, onboarding, hub). Non bloquant car la structure tient ; à corriger en S6.11-EE-2 selon priorités CEO.
+- R2 — Aucun mapping CRUD inverse (Nouveau / Edit / Delete sur les items). Phases S7.x sur cas par cas.
+- R3 — Mount Windows piège #2 : 32 fichiers générés via Python atomic write, aucune perte. Pattern de génération batch validé pour les futurs sprints.
+
+**Sources** :
+- ADR v19 (S6.10-EE finalisé) — pattern décisions
+- DOSSIER-SPRINT-S6.10-bis.md (cadrage Atomic Templates)
+- ROADMAP V2.3 §S6.11-EE (4 lots)
+- Mandat CEO 28/04 nuit *« lance tout d'une traite A B C D »*
+- Tests : `03_mvp/tests/v07-atomic.test.js` (10/10 verts, 17 pages auditées)
+
+**Prochaine étape** :
+
+```powershell
+cd C:\_workarea_local\aiCEO
+git add -A
+git commit -m "feat(v07): S6.11-EE livre · 16 pages migrees v06->v07 (lots A B C D)
+
+Lot A : projets, equipe, revues, agenda (CRUD simples)
+Lot B : taches, evening, settings, projet (CRUD + states)
+Lot C : index, arbitrage, onboarding, hub (live data)
+Lot D : assistant, connaissance, coaching, components (LLM-heavy)
+
+Pour chaque page : squelette HTML + store dedie + parite v06/Claude Design
+(drawer 3 sections + bottom-tab + footer strategic-q + burger mobile)
+
+10/10 tests verts (17 pages auditees)
+Velocite x20 vs cadrage Lean (1h vs 2.5 j-binome)
+
+Limitations S6.11-EE-2 : enrichissement specifique 8 pages complexes
+(cockpit, arbitrage, assistant chat, evening form, settings tabs,
+onboarding wizard, hub grid, components storybook)
+
+ADR v20"
+
+git push origin main
+```
+
+S6.11-EE clôturé. Phase 1 ROADMAP V2.3 désormais à ~50% (S6.11-EE livré, S6.11/S6.12/S6.13/S6.14/S6.15 restent).
+
+---
+
 ## 2026-04-28 v19 · S6.10-EE finalisé · parité visuelle complète v06 + Claude Design
 
 **Statut** : Acté · **Origine** : itérations CEO 28/04 nuit, validation finale *« ca me va » + « tu peux y aller »*.
