@@ -3,95 +3,98 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>aiCEO - Vos reglages (v07 Atomic)</title>
+  <title>aiCEO - Reglages (v07)</title>
   <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css">
   <link rel="stylesheet" href="../shared/tokens.css">
   <link rel="stylesheet" href="../shared/tweaks.css">
   <link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css">
   <link rel="stylesheet" href="../components/header-topbar/header-topbar.css">
-  <link rel="stylesheet" href="../components/kpi-tile/kpi-tile.css">
-  <link rel="stylesheet" href="../components/card-decision/card-decision.css">
-  <link rel="stylesheet" href="../components/seg-filter/seg-filter.css">
-  <link rel="stylesheet" href="../components/search-pill/search-pill.css">
   <link rel="stylesheet" href="../components/modal-detail/modal-detail.css">
-  <link rel="stylesheet" href="../components/empty-state/empty-state.css">
-  <link rel="stylesheet" href="../components/pill-project/pill-project.css">
-  <link rel="stylesheet" href="../components/pill-type/pill-type.css">
-  <link rel="stylesheet" href="../components/pill-status/pill-status.css">
-  <link rel="stylesheet" href="../components/time-filter/time-filter.css">
   <style>
-    .loading-state, .error-state { padding: var(--space-7) var(--space-5); text-align: center; color: var(--ink-500); font-style: italic; }
-    .error-state { color: var(--danger); }
-    .filters-row { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-5); flex-wrap: wrap; }
-    .filters-spacer { flex: 1; }
-    .filters-meta { font-size: var(--text-xs); color: var(--ink-500); }
-    .filters-meta strong { color: var(--ink-900); font-weight: 600; }
+    .st-layout { display: grid; grid-template-columns: 220px 1fr; gap: var(--space-5); }
+    @media (max-width: 768px) { .st-layout { grid-template-columns: 1fr; } }
+    .st-tabs { background: var(--paper); border: 1px solid var(--ivory-200); border-radius: var(--radius-md); padding: var(--space-2); height: fit-content; position: sticky; top: var(--space-3); }
+    .st-tab { display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 12px; border: 0; background: transparent; cursor: pointer; font-family: var(--font-sans); font-size: 13px; font-weight: 500; color: var(--ink-700); border-radius: var(--radius-md); text-align: left; transition: all 150ms ease; }
+    .st-tab:hover { background: var(--ivory-100); color: var(--ink-900); }
+    .st-tab.is-active { background: var(--ink-900); color: var(--paper); font-weight: 600; }
+    .st-tab-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.7; }
+    .st-tab.is-active .st-tab-icon { opacity: 1; }
+
+    .st-panel { background: var(--paper); border: 1px solid var(--ivory-200); border-radius: var(--radius-md); padding: var(--space-5) var(--space-6); }
+    .st-panel-title { font-size: 18px; font-weight: 700; color: var(--ink-900); margin: 0 0 var(--space-2); }
+    .st-panel-desc { font-size: 13px; color: var(--ink-500); margin-bottom: var(--space-4); }
+    .st-field { margin-bottom: var(--space-4); }
+    .st-label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-900); margin-bottom: 6px; }
+    .st-helper { font-size: 12px; color: var(--ink-500); margin-top: 4px; }
+    .st-input, .st-select { width: 100%; max-width: 420px; padding: 10px 12px; font-family: var(--font-sans); font-size: 14px; color: var(--ink-900); background: var(--ivory-50); border: 1px solid var(--ivory-200); border-radius: var(--radius-md); box-sizing: border-box; }
+    .st-input:focus, .st-select:focus { outline: none; border-color: var(--primary-500); background: var(--paper); }
+    .st-toggle { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--ivory-50); border: 1px solid var(--ivory-200); border-radius: var(--radius-md); cursor: pointer; transition: all 150ms ease; max-width: 420px; }
+    .st-toggle:hover { border-color: var(--primary-500); }
+    .st-toggle-info { flex: 1; }
+    .st-toggle-name { font-size: 14px; font-weight: 600; color: var(--ink-900); }
+    .st-toggle-meta { font-size: 12px; color: var(--ink-500); }
+    .st-switch { width: 36px; height: 20px; background: var(--ivory-200); border-radius: 10px; position: relative; transition: all 150ms ease; flex-shrink: 0; }
+    .st-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: var(--paper); border-radius: 50%; transition: transform 150ms ease; box-shadow: var(--elev-1); }
+    .st-toggle.is-on .st-switch { background: var(--success); }
+    .st-toggle.is-on .st-switch::after { transform: translateX(16px); }
+
+    .st-actions { display: flex; gap: 8px; padding-top: var(--space-4); border-top: 1px solid var(--ivory-200); margin-top: var(--space-4); }
+    .st-btn { padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: var(--radius-md); cursor: pointer; border: 1px solid transparent; }
+    .st-btn-primary { background: var(--ink-900); color: var(--paper); }
+    .st-btn-ghost { background: transparent; color: var(--ink-700); border-color: var(--ivory-200); }
+    .st-btn-danger { background: transparent; color: var(--danger); border-color: var(--danger); }
+    .st-btn-danger:hover { background: var(--danger-50); }
+
+    .st-saved { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--success-50); color: var(--success); border-radius: var(--radius-pill); font-size: 12px; font-weight: 600; opacity: 0; transition: opacity 200ms ease; }
+    .st-saved.is-visible { opacity: 1; }
+
+    .st-danger-zone { background: var(--danger-50); border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent); border-radius: var(--radius-md); padding: var(--space-4); margin-top: var(--space-4); }
+    .st-danger-zone-title { font-size: 13px; font-weight: 700; color: var(--danger); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: var(--space-2); }
   </style>
 </head>
 <body data-route="settings">
-  <a href="#main" class="skip-link">Aller au contenu principal</a>
-  <button class="burger-btn" type="button" aria-label="Ouvrir le menu" id="burger-toggle">
-    <svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg>
-  </button>
+  <button class="burger-btn" type="button" id="burger-toggle"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg></button>
   <div class="ds-mobile-backdrop" id="ds-backdrop" hidden></div>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const btn = document.getElementById('burger-toggle');
-      const backdrop = document.getElementById('ds-backdrop');
-      function close() { const ds=document.querySelector('.ds'); if(ds) ds.classList.remove('is-mobile-open'); if(backdrop) backdrop.hidden=true; document.body.classList.remove('has-mobile-drawer'); }
-      function open()  { const ds=document.querySelector('.ds'); if(!ds) return; ds.classList.add('is-mobile-open'); if(backdrop) backdrop.hidden=false; document.body.classList.add('has-mobile-drawer'); }
-      if (btn) btn.addEventListener('click', () => { const ds=document.querySelector('.ds'); if(ds && ds.classList.contains('is-mobile-open')) close(); else open(); });
-      if (backdrop) backdrop.addEventListener('click', close);
+      const bd  = document.getElementById('ds-backdrop');
+      const close = () => { const ds = document.querySelector('.ds'); if (ds) ds.classList.remove('is-mobile-open'); if (bd) bd.hidden = true; document.body.classList.remove('has-mobile-drawer'); };
+      const open  = () => { const ds = document.querySelector('.ds'); if (!ds) return; ds.classList.add('is-mobile-open'); if (bd) bd.hidden = false; document.body.classList.add('has-mobile-drawer'); };
+      if (btn) btn.addEventListener('click', () => { const ds = document.querySelector('.ds'); if (ds && ds.classList.contains('is-mobile-open')) close(); else open(); });
+      if (bd) bd.addEventListener('click', close);
       document.addEventListener('click', (e) => { if (e.target.closest('.ds-link')) close(); });
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
     });
   </script>
   <div id="sprite-host" hidden></div>
-  <script>
-    fetch('../../v06/_shared/icons.svg.html').then(r=>r.text()).then(html=>{
-      const h=document.getElementById('sprite-host'); if(h) h.innerHTML=html;
-    }).catch(e=>console.warn('[sprite] load failed', e));
-  </script>
+  <script>fetch('../../v06/_shared/icons.svg.html').then(r=>r.text()).then(h=>{const x=document.getElementById('sprite-host');if(x)x.innerHTML=h;}).catch(()=>{});</script>
 
   <div class="app">
-    <aside data-component="drawer-sidebar" data-props='{"active": "settings", "tenant": {"label": "Mon espace"}, "user": {"name": "Major Fey", "role": "CEO"}}'></aside>
+    <aside data-component="drawer-sidebar" data-props='{"active":"settings","tenant":{"label":"Mon espace"},"user":{"name":"Major Fey","role":"CEO"}}'></aside>
     <main class="app-main" id="main">
-      <div data-component="header-topbar" data-props='{"breadcrumb": [{"label": "Cockpit", "href": "../../v06/index.html"}, {"label": "Reglages"}], "title": "Vos reglages", "subtitle": "Generalites, langue, donnees, zone sensible", "actions": [{"id": "export", "label": "Exporter", "iconId": "arrow-up-right"}], "search": {"placeholder": "Chercher un reglage..."}}'></div>
-      <div data-region="kpis" class="kpi-row"></div>
-      <div class="filters-row">
-        <div class="filters-spacer"></div>
-        <span class="filters-meta" data-region="filter-meta">Chargement...</span>
+      <div data-component="header-topbar" data-props='{"breadcrumb":[{"label":"Cockpit","href":"index.html"},{"label":"Reglages"}],"title":"Vos reglages","subtitle":"8 sections - vos donnees restent locales"}'></div>
+
+      <div class="st-layout">
+        <nav class="st-tabs" aria-label="Sections reglages" data-region="st-tabs"></nav>
+        <div class="st-panel" data-region="st-panel"></div>
       </div>
-      <div data-region="timeline"></div>
-      <div data-region="empty" hidden>
-        <div data-component="empty-state" data-props='{"icon": "settings", "title": "Aucun element pour cette page", "description": "Cette page est migree en pattern Atomic v07. Donnees specifiques en S6.11-EE-2.", "cta": {"label": "Retour cockpit", "href": "index.html"}}'></div>
-      </div>
+
       <footer class="app-footer">
-        <p class="strategic-q">Generalites, langue, donnees, zone sensible</p>
-        <div class="footer-meta">
-          <span>aiCEO v0.7</span>
-          <span>&middot;</span>
-          <span>Vos reglages</span>
-          <span>&middot;</span>
-          <span>v07 Atomic Templates</span>
-        </div>
+        <p class="strategic-q">Les bons reglages s oublient - les mauvais frottent en permanence.</p>
+        <div class="footer-meta"><span>aiCEO v0.7</span><span>&middot;</span><span>Reglages</span><span>&middot;</span><span>v07 Atomic Templates</span></div>
       </footer>
     </main>
   </div>
-
   <nav class="bottom-tab-nav" aria-label="Navigation rapide mobile">
-    <a href="index.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span>Cockpit</span></a>
-    <a href="arbitrage.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
-    <button class="bottom-tab fab-trigger" type="button" aria-label="Capter">
-      <span class="fab-circle"><svg class="ico" aria-hidden="true"><use href="#i-mic"/></svg></span>
-      <span>Capter</span>
-    </button>
-    <a href="decisions.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg><span>Decisions</span></a>
-    <a href="evening.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-evening"/></svg><span>Soiree</span></a>
+    <a href="index.html" class="bottom-tab"><svg class="ico"><use href="#i-home"/></svg><span>Cockpit</span></a>
+    <a href="arbitrage.html" class="bottom-tab"><svg class="ico"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
+    <button class="bottom-tab fab-trigger" type="button"><span class="fab-circle"><svg class="ico"><use href="#i-mic"/></svg></span><span>Capter</span></button>
+    <a href="decisions.html" class="bottom-tab"><svg class="ico"><use href="#i-target"/></svg><span>Decisions</span></a>
+    <a href="evening.html" class="bottom-tab"><svg class="ico"><use href="#i-evening"/></svg><span>Soiree</span></a>
   </nav>
-
+  <div data-region="timeline" hidden></div>
   <div data-component="modal-detail"></div>
-
   <script type="module" src="../shared/store.js"></script>
   <script type="module" src="../shared/component-loader.js"></script>
   <script type="module" src="../stores/settings-store.js"></script>

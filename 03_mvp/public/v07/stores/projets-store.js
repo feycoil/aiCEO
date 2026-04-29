@@ -51,13 +51,16 @@ async function doRender() {
     } else {
       timeline.innerHTML = state.items.slice(0, 50).map((item, i) => {
         const data = {
+          kind: 'project',
           id: item.id || ('item-' + i),
           title: item.title || item.name || item.subject || ('Element ' + (i+1)),
           context: item.description || item.context || item.summary || '',
           status: item.status || 'active',
           created_at: item.created_at || item.updated_at || item.date || new Date().toISOString(),
           project_name: item.project_name || item.project || item.house_name,
-          type: item.type
+          type: item.type,
+          // S6.12 : payload complet pour modal-detail (related items fetch via id)
+          _raw: item
         };
         const delay = Math.min(i * 30, 600);
         return '<div data-component="card-decision" data-props=' + "'" + escapeJsonAttr(JSON.stringify(data)) + "'" + ' style="animation-delay:' + delay + 'ms"></div>';

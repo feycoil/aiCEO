@@ -92,3 +92,169 @@
   color: var(--ink-700);
   line-height: 1.6;
 }
+
+
+/* === S6.12 : enrichissement par kind === */
+.md-loading {
+  padding: var(--space-6);
+  text-align: center;
+  color: var(--ink-500);
+  font-style: italic;
+  font-size: 14px;
+}
+
+.md-section {
+  margin-bottom: var(--space-4);
+}
+.md-section:last-child { margin-bottom: 0; }
+.md-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-500);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 var(--space-2);
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--ivory-200);
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.md-section-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-300);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.md-meta-grid {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 6px var(--space-3);
+  margin: 0 0 var(--space-4);
+  font-size: 13px;
+  background: var(--ivory-50);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+}
+.md-meta-grid dt {
+  color: var(--ink-500);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  align-self: center;
+}
+.md-meta-grid dd {
+  margin: 0;
+  color: var(--ink-900);
+}
+.md-meta-grid dd a { color: var(--primary-700, #463a54); text-decoration: none; }
+.md-meta-grid dd a:hover { text-decoration: underline; }
+
+.md-context {
+  font-size: 14px;
+  color: var(--ink-700);
+  line-height: 1.6;
+}
+.md-context p { margin: 0 0 var(--space-2); }
+.md-context p:last-child { margin-bottom: 0; }
+
+.md-options {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+.md-options li {
+  padding: 8px 12px;
+  background: var(--ivory-50);
+  border: 1px solid var(--ivory-200);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  color: var(--ink-900);
+}
+
+.md-related-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 4px;
+}
+.md-related-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--paper);
+  border: 1px solid var(--ivory-200);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  transition: all 150ms ease;
+}
+.md-related-item:hover {
+  border-color: var(--primary-500, #463a54);
+  background: var(--ivory-50);
+}
+.md-related-link {
+  flex: 1;
+  color: var(--ink-900);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.md-related-link:hover { color: var(--primary-700, #463a54); }
+
+/* Badges status (multi-tons) */
+.md-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 1px solid transparent;
+}
+.md-badge-success { background: var(--success-50); color: var(--success); }
+.md-badge-warning { background: var(--warning-50); color: var(--warning); }
+.md-badge-danger  { background: var(--danger-50); color: var(--danger); }
+.md-badge-info    { background: var(--info-50); color: var(--info); }
+.md-badge-neutral { background: var(--ivory-100); color: var(--ink-500); }
+
+/* Footer actions */
+.md-foot {
+  padding: var(--space-3) var(--space-5);
+  border-top: 1px solid var(--ivory-200);
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+.md-btn {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 150ms ease;
+  font-family: var(--font-sans);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+.md-btn-primary { background: var(--ink-900); color: var(--paper); }
+.md-btn-primary:hover { background: var(--ink-700); }
+.md-btn-ghost { background: transparent; color: var(--ink-700); border-color: var(--ivory-200); }
+.md-btn-ghost:hover { background: var(--ivory-100); color: var(--ink-900); }
+.md-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Pointer sur les cartes auto-detectees */
+[data-md-kind][data-md-id] {
+  cursor: pointer;
+}

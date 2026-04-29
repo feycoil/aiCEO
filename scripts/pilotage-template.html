@@ -1287,60 +1287,64 @@ code, pre, .mono { font-family: var(--font-mono); }
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-top:16px">
 
           <div style="border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface-2)">
-            <h4 style="margin:0 0 10px;color:var(--text)">🔄 Git & versioning</h4>
-            <ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text-2);line-height:1.7">
-              <li>Push commits : <code>git push origin main</code></li>
-              <li>Push tags : <code>git push origin --tags</code></li>
-              <li>Vérif état : <code>git status</code> + <code>git log --oneline -10</code></li>
-              <li>Hook pre-commit : <code>pwsh .cowork\hooks\install-hooks.ps1</code></li>
+            <h4 style="margin:0 0 10px;color:var(--text)">🔄 Git &amp; versioning</h4>
+            <ul style="margin:0;padding-left:0;list-style:none;font-size:13px;color:var(--text-2)">
+              <li class="cmd-line"><span class="cmd-label">Push commits :</span><code>git push origin main</code><button class="cmd-copy-btn" data-cmd="git push origin main" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
+              <li class="cmd-line"><span class="cmd-label">Push tags :</span><code>git push origin --tags</code><button class="cmd-copy-btn" data-cmd="git push origin --tags" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
+              <li class="cmd-line"><span class="cmd-label">Vérif état :</span><code>git status</code><button class="cmd-copy-btn" data-cmd="git status" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
+              <li class="cmd-line"><span class="cmd-label">Log récent :</span><code>git log --oneline -10</code><button class="cmd-copy-btn" data-cmd="git log --oneline -10" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
+              <li class="cmd-line"><span class="cmd-label">Hook pre-commit :</span><code>pwsh .cowork\hooks\install-hooks.ps1</code><button class="cmd-copy-btn" data-cmd="pwsh .cowork\hooks\install-hooks.ps1" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
             </ul>
           </div>
 
           <div style="border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface-2)">
             <h4 style="margin:0 0 10px;color:var(--text)">⚙️ Serveur Node :4747</h4>
-            <ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text-2);line-height:1.7">
-              <li>Restart : <code>pwsh -File restart-server.ps1</code></li>
-              <li>Stop seul : <code>pwsh -File restart-server.ps1 -StopOnly</code></li>
-              <li>Vérif port : <code>Get-NetTCPConnection -LocalPort 4747</code></li>
+            <ul style="margin:0;padding-left:0;list-style:none;font-size:13px;color:var(--text-2)">
+              <li class="cmd-line"><span class="cmd-label">Restart :</span><code>pwsh -File restart-server.ps1</code><button class="cmd-copy-btn" data-cmd="pwsh -File restart-server.ps1" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
+              <li class="cmd-line"><span class="cmd-label">Stop seul :</span><code>pwsh -File restart-server.ps1 -StopOnly</code><button class="cmd-copy-btn" data-cmd="pwsh -File restart-server.ps1 -StopOnly" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
+              <li class="cmd-line"><span class="cmd-label">Vérif port :</span><code>Get-NetTCPConnection -LocalPort 4747</code><button class="cmd-copy-btn" data-cmd="Get-NetTCPConnection -LocalPort 4747" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
+              <li class="cmd-line"><span class="cmd-label">Kill :</span><code>Get-NetTCPConnection -LocalPort 4747 | Stop-Process -Force</code><button class="cmd-copy-btn" data-cmd="Get-NetTCPConnection -LocalPort 4747 | Stop-Process -Force" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
             </ul>
           </div>
 
           <div style="border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface-2)">
-            <h4 style="margin:0 0 10px;color:var(--text)">📊 Pilotage & données</h4>
-            <ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text-2);line-height:1.7">
-              <li>Régen pilotage : bouton ↻ <strong>en bas-droite</strong> de cette page</li>
-              <li>Régen manuelle : <code>node scripts/generate-pilotage.js</code></li>
-              <li>Sync GitHub : <code>pwsh -File consistence-dump.ps1</code></li>
-              <li>Sync Outlook : <code>pwsh -File scripts/sync-outlook.ps1</code></li>
+            <h4 style="margin:0 0 10px;color:var(--text)">📊 Pilotage &amp; données</h4>
+            <ul style="margin:0;padding-left:0;list-style:none;font-size:13px;color:var(--text-2)">
+              <li style="margin-bottom:6px;line-height:1.6">Régen pilotage : bouton ↻ <strong>en bas-droite</strong></li>
+              <li class="cmd-line"><span class="cmd-label">Régen manuelle :</span><code>node scripts/generate-pilotage.js</code><button class="cmd-copy-btn" data-cmd="node scripts/generate-pilotage.js" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
+              <li class="cmd-line"><span class="cmd-label">Sync GitHub :</span><code>pwsh -File consistence-dump.ps1</code><button class="cmd-copy-btn" data-cmd="pwsh -File consistence-dump.ps1" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
+              <li class="cmd-line"><span class="cmd-label">Sync Outlook :</span><code>pwsh -File scripts/sync-outlook.ps1</code><button class="cmd-copy-btn" data-cmd="pwsh -File scripts/sync-outlook.ps1" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
             </ul>
           </div>
 
           <div style="border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface-2)">
-            <h4 style="margin:0 0 10px;color:var(--text)">🧪 Tests & recette</h4>
-            <ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text-2);line-height:1.7">
-              <li>Tests unit : <code>cd 03_mvp ; npm test</code></li>
-              <li>Smoke : <code>pwsh scripts/smoke-all.ps1</code></li>
-              <li>E2E Playwright : <code>cd 03_mvp ; npx playwright test</code></li>
-              <li>Recette CEO : <code>04_docs/05_recette/RECETTE-CEO-v0.5-s4.md</code></li>
+            <h4 style="margin:0 0 10px;color:var(--text)">🧪 Tests &amp; recette</h4>
+            <ul style="margin:0;padding-left:0;list-style:none;font-size:13px;color:var(--text-2)">
+              <li class="cmd-line"><span class="cmd-label">Tests unit :</span><code>cd 03_mvp ; npm test</code><button class="cmd-copy-btn" data-cmd="cd 03_mvp ; npm test" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
+              <li class="cmd-line"><span class="cmd-label">Smoke :</span><code>pwsh scripts/smoke-all.ps1</code><button class="cmd-copy-btn" data-cmd="pwsh scripts/smoke-all.ps1" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
+              <li class="cmd-line"><span class="cmd-label">E2E Playwright :</span><code>cd 03_mvp ; npx playwright test</code><button class="cmd-copy-btn" data-cmd="cd 03_mvp ; npx playwright test" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
+              <li class="cmd-line"><span class="cmd-label">Tests v07 :</span><code>cd 03_mvp ; node --test tests/v07-atomic.test.js</code><button class="cmd-copy-btn" data-cmd="cd 03_mvp ; node --test tests/v07-atomic.test.js" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
+              <li style="margin-bottom:6px;line-height:1.6">Recette CEO : <code>04_docs/05_recette/RECETTE-CEO-v0.5-s4.md</code></li>
             </ul>
           </div>
 
           <div style="border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface-2)">
-            <h4 style="margin:0 0 10px;color:var(--text)">🛠️ DB & migrations</h4>
-            <ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text-2);line-height:1.7">
-              <li>Reset DB : <code>cd 03_mvp ; npm run db:reset</code></li>
-              <li>Init : <code>node scripts/init-db.js</code></li>
-              <li>Backup : <code>cp data/aiceo.db data/aiceo.db.bak</code></li>
+            <h4 style="margin:0 0 10px;color:var(--text)">🛠️ DB &amp; migrations</h4>
+            <ul style="margin:0;padding-left:0;list-style:none;font-size:13px;color:var(--text-2)">
+              <li class="cmd-line"><span class="cmd-label">Reset DB :</span><code>cd 03_mvp ; npm run db:reset</code><button class="cmd-copy-btn" data-cmd="cd 03_mvp ; npm run db:reset" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
+              <li class="cmd-line"><span class="cmd-label">Init :</span><code>node scripts/init-db.js</code><button class="cmd-copy-btn" data-cmd="node scripts/init-db.js" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
+              <li class="cmd-line"><span class="cmd-label">Backup :</span><code>cp data/aiceo.db data/aiceo.db.bak</code><button class="cmd-copy-btn" data-cmd="cp data/aiceo.db data/aiceo.db.bak" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
+              <li class="cmd-line"><span class="cmd-label">Migrate :</span><code>cd 03_mvp ; node scripts/migrate.js</code><button class="cmd-copy-btn" data-cmd="cd 03_mvp ; node scripts/migrate.js" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
             </ul>
           </div>
 
           <div style="border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface-2)">
             <h4 style="margin:0 0 10px;color:var(--text)">🐛 Pièges connus</h4>
-            <ul style="margin:0;padding-left:18px;font-size:13px;color:var(--text-2);line-height:1.7">
-              <li>NUL bytes : <code>python3 strip-nul.py &lt;fichier&gt;</code></li>
-              <li>Tronc HTML : grep <code>&lt;script src</code> ≥ 15</li>
-              <li>EBUSY DB : kill port 4747 avant <code>db:reset</code></li>
-              <li>Cf. CLAUDE.md §5 pour la liste complète</li>
+            <ul style="margin:0;padding-left:0;list-style:none;font-size:13px;color:var(--text-2)">
+              <li class="cmd-line"><span class="cmd-label">NUL bytes :</span><code>python3 strip-nul.py &lt;fichier&gt;</code><button class="cmd-copy-btn" data-cmd="python3 strip-nul.py &lt;fichier&gt;" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
+              <li class="cmd-line"><span class="cmd-label">Tronc HTML :</span><code>grep -c &quot;&lt;script src&quot; page.html</code><button class="cmd-copy-btn" data-cmd="grep -c &quot;&lt;script src&quot; page.html" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
+              <li class="cmd-line"><span class="cmd-label">EBUSY DB :</span><code>Get-NetTCPConnection -LocalPort 4747 | Stop-Process -Force</code><button class="cmd-copy-btn" data-cmd="Get-NetTCPConnection -LocalPort 4747 | Stop-Process -Force" title="Copier"><span class="cmd-copy-ico">📋</span></button></li>
+              <li style="margin-bottom:6px;line-height:1.6">Cf. CLAUDE.md §5 pour la liste complète</li>
             </ul>
           </div>
 
@@ -2145,6 +2149,63 @@ init();
   .regen-toast.success { border-left: 3px solid var(--success, #2d7a4d); }
   .regen-toast.error { border-left: 3px solid var(--danger, #c14a4a); }
 
+  /* === Boutons Copier sur commandes Actions CEO (Pilotage v1.7) === */
+  .cmd-line {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 6px;
+    line-height: 1.6;
+  }
+  .cmd-line .cmd-label {
+    color: var(--text-2, #3d362c);
+    flex-shrink: 0;
+  }
+  .cmd-line code {
+    background: var(--ivory-100, #f5f3ee);
+    border: 1px solid var(--ivory-200, #ebe7dc);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+    font-size: 12px;
+    color: var(--ink-900, #1a1612);
+    white-space: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  .cmd-copy-btn {
+    background: transparent;
+    border: 1px solid var(--ivory-200, #ebe7dc);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 11px;
+    cursor: pointer;
+    color: var(--ink-500, #6b614f);
+    transition: all 150ms ease;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    line-height: 1;
+  }
+  .cmd-copy-btn:hover {
+    background: var(--primary-50, #ece7f0);
+    border-color: var(--primary, #463a54);
+    color: var(--primary, #463a54);
+  }
+  .cmd-copy-btn:active {
+    transform: scale(0.95);
+  }
+  .cmd-copy-btn.copied {
+    background: var(--success-50, #d6f3e6);
+    border-color: var(--success, #115e3c);
+    color: var(--success, #115e3c);
+  }
+  .cmd-copy-btn .cmd-copy-ico {
+    font-size: 12px;
+  }
+
   /* Cmd+K palette */
   .cmdk-overlay {
     position: fixed; inset: 0;
@@ -2516,6 +2577,51 @@ init();
   overlay.addEventListener('click', function (e) {
     if (e.target === overlay) closeCmdK();
   });
+
+  // ===== Boutons Copier sur commandes Actions CEO (Pilotage v1.7) =====
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('.cmd-copy-btn');
+    if (!btn) return;
+    e.preventDefault();
+    var cmd = btn.dataset.cmd || '';
+    if (!cmd) return;
+
+    // Décoder les entités HTML (le data-cmd est extrait du HTML mais le navigateur les a déjà décodées)
+    var copy = function (text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text);
+      }
+      // Fallback execCommand pour http://localhost
+      return new Promise(function (resolve, reject) {
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          var ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          ok ? resolve() : reject(new Error('execCommand failed'));
+        } catch (err) { reject(err); }
+      });
+    };
+
+    copy(cmd).then(function () {
+      btn.classList.add('copied');
+      var ico = btn.querySelector('.cmd-copy-ico');
+      var oldIco = ico ? ico.textContent : '📋';
+      if (ico) ico.textContent = '✓';
+      showToast('Commande copiée : ' + (cmd.length > 50 ? cmd.slice(0, 50) + '…' : cmd), 'success');
+      setTimeout(function () {
+        btn.classList.remove('copied');
+        if (ico) ico.textContent = oldIco;
+      }, 1500);
+    }).catch(function (err) {
+      showToast('Erreur copie : ' + err.message, 'error');
+    });
+  });
+
 })();
 </script>
 

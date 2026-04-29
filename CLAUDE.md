@@ -2,7 +2,7 @@
 
 > **Lis ce fichier en premier** quand tu démarres une nouvelle session sur ce projet. Il consolide le contexte, les conventions, les pièges connus et les workflows types pour t'éviter de tout redécouvrir.
 
-**Version** : 28/04/2026 soir v7 (**Sprint S6.8 LIVRÉ** en 5 commits enchaînés sous mandat plein CEO — sidebar activation + Connaissance/Assistant/Décisions cablées + boucle pin_to_knowledge + Eisenhower 5 verdicts arbitrage + macro-scénarios + cockpit narratif. Cache `?v=117`. **30 ADRs total** dans DECISIONS.md.)
+**Version** : 29/04/2026 PM v9 (**S6.12 LIVRE** : modal-detail enrichi 6 kinds + auto-detection - card-decision.js patche + 5 stores liste - 10/10 tests verts. ADR ajoute. Total 32 ADRs.)
 **À jour à chaque clôture de sprint** ou décision structurante (cf. § 8 Maintenance).
 
 ---

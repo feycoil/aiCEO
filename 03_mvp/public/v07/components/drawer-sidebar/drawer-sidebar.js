@@ -1,54 +1,63 @@
 // drawer-sidebar.js — Editorial Executive aligne v06 (sprite SVG)
-// S6.10-EE-FIX
+// S6.11-EE-fix : routage v07 (13 pages migrees) + flag pending pour pages v06 non migrees
 function ico(id) {
   return `<svg class="ico" aria-hidden="true"><use href="#i-${id}"/></svg>`;
 }
 
+// hrefs : pages v07 = bare filename (pages chargees depuis v07/pages/)
+// hrefs : toutes pages migrees v07 (S6.11-EE-fix2). Flag pending:true gere si une page repasse en v06.
 const SECTIONS = [
   {
     title: 'Pilotage',
     items: [
-      { id: 'cockpit',     label: 'Cockpit',      href: '../../v06/index.html',      iconId: 'home' },
-      { id: 'arbitrage',   label: 'Arbitrage',    href: '../../v06/arbitrage.html',  iconId: 'arbitrage', badgeCount: 0 },
-      { id: 'evening',     label: 'Soiree',       href: '../../v06/evening.html',    iconId: 'evening' }
+      { id: 'cockpit',     label: 'Cockpit',      href: 'index.html',         iconId: 'home' },
+      { id: 'arbitrage',   label: 'Arbitrage',    href: 'arbitrage.html',     iconId: 'arbitrage', badgeCount: 0 },
+      { id: 'evening',     label: 'Soiree',       href: 'evening.html',       iconId: 'evening' }
     ]
   },
   {
     title: 'Travail',
     items: [
-      { id: 'projets',     label: 'Projets',      href: '../../v06/projets.html',    iconId: 'projects', badgeCount: 0 },
-      { id: 'taches',      label: 'Actions',      href: '../../v06/taches.html',     iconId: 'actions', badgeCount: 0 },
-      { id: 'agenda',      label: 'Agenda',       href: '../../v06/agenda.html',     iconId: 'calendar' },
-      { id: 'assistant',   label: 'Assistant',    href: '../../v06/assistant.html',  iconId: 'sparkle', badge: 'NEW' },
-      { id: 'equipe',      label: 'Equipe',       href: '../../v06/equipe.html',     iconId: 'people' }
+      { id: 'projets',     label: 'Projets',      href: 'projets.html',       iconId: 'projects', badgeCount: 0 },
+      { id: 'taches',      label: 'Actions',      href: 'taches.html',        iconId: 'actions', badgeCount: 0 },
+      { id: 'agenda',      label: 'Agenda',       href: 'agenda.html',        iconId: 'calendar' },
+      { id: 'assistant',   label: 'Assistant',    href: 'assistant.html',     iconId: 'sparkle', badge: 'NEW' },
+      { id: 'equipe',      label: 'Equipe',       href: 'equipe.html',        iconId: 'people' }
     ]
   },
   {
     title: 'Capital',
     items: [
-      { id: 'connaissance',label: 'Connaissance', href: '../../v06/connaissance.html', iconId: 'knowledge', badge: 'NEW' },
-      { id: 'coaching',    label: 'Coaching',     href: '../../v06/coaching.html',     iconId: 'coaching', badge: 'NEW' },
-      { id: 'revues',      label: 'Revues',       href: '../../v06/revues.html',     iconId: 'undo' },
-      { id: 'decisions',   label: 'Decisions',    href: 'decisions.html',            iconId: 'target' }
+      { id: 'connaissance',label: 'Connaissance', href: 'connaissance.html',  iconId: 'knowledge', badge: 'NEW' },
+      { id: 'coaching',    label: 'Coaching',     href: 'coaching.html',      iconId: 'coaching', badge: 'NEW' },
+      { id: 'revues',      label: 'Revues',       href: 'revues.html',        iconId: 'undo' },
+      { id: 'decisions',   label: 'Decisions',    href: 'decisions.html',     iconId: 'target' }
     ]
   }
 ];
 
-// Aide + Reglages : section additionnelle apres Capital (pas avec FOOTER plus, evite duplication avec ds-locale).
+// Aide v07 livree (S6.11-EE-fix2)
 const EXTRA_LINKS = [
-  { id: 'help',    label: 'Aide',      href: '../../v06/aide.html',        iconId: 'info' },
-  { id: 'settings',label: 'Reglages',  href: '../../v06/settings.html',    iconId: 'settings' }
+  { id: 'help',     label: 'Aide',     href: 'aide.html',           iconId: 'info' },
+  { id: 'settings', label: 'Reglages', href: 'settings.html',       iconId: 'settings' }
 ];
 
 function renderItem(item, active) {
   const isActive = item.id === active ? ' is-active' : '';
+  const isPending = item.pending ? ' is-pending' : '';
   const ariaCurrent = item.id === active ? ' aria-current="page"' : '';
-  const badge = item.badge
-    ? `<span class="ds-badge ds-badge-new">${item.badge}</span>`
-    : (item.badgeCount && item.badgeCount > 0 ? `<span class="ds-badge ds-badge-count">${item.badgeCount}</span>` : '');
+  const titleAttr = item.pending ? ' title="Page pas encore migree en v07 (pointe vers v06)"' : '';
+  let badge = '';
+  if (item.pending) {
+    badge = '<span class="ds-tag ds-tag-pending">v06</span>';
+  } else if (item.badge) {
+    badge = `<span class="ds-badge ds-badge-new">${item.badge}</span>`;
+  } else if (item.badgeCount && item.badgeCount > 0) {
+    badge = `<span class="ds-badge ds-badge-count">${item.badgeCount}</span>`;
+  }
   return `
-    <li class="ds-item${isActive}">
-      <a href="${item.href}" class="ds-link"${ariaCurrent}>
+    <li class="ds-item${isActive}${isPending}">
+      <a href="${item.href}" class="ds-link"${ariaCurrent}${titleAttr}>
         ${ico(item.iconId)}
         <span class="ds-label">${item.label}</span>
         ${badge}
@@ -77,15 +86,7 @@ export default {
       sectionsRegion.innerHTML += `
         <div class="ds-section ds-section-extras">
           <ul class="ds-list">
-            ${EXTRA_LINKS.map(item => `
-              <li class="ds-item">
-                <a href="${item.href}" class="ds-link ds-link-extra">
-                  ${ico(item.iconId)}
-                  <span class="ds-label">${item.label}</span>
-                  
-                </a>
-              </li>
-            `).join('')}
+            ${EXTRA_LINKS.map(item => renderItem(item, active)).join('')}
           </ul>
         </div>
       `;

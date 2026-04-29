@@ -1,92 +1,113 @@
-// connaissance-store.js — page-clone du pattern decisions (S6.11-EE)
-import { Store } from '../shared/store.js';
-import { ComponentLoader } from '../shared/component-loader.js';
+// connaissance-store.js — CRUD pins (S6.11-EE-2 L3.2)
+const escHtml = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-class PageStore extends Store {
-  constructor() { super({ items: [], loading: false, error: null }); }
-  async load() {
-    this.setState({ loading: true, error: null });
-    try {
-      const r = await fetch('/api/knowledge/pins');
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      const data = await r.json();
-      const items = Array.isArray(data) ? data : (data['pins'] || data.items || []);
-      this.setState({ items, loading: false });
-    } catch (e) {
-      console.error('[connaissance-store] load failed', e);
-      this.setState({ loading: false, error: e.message });
+const state = { pins: [], filter: 'Tous' };
+
+async function safeFetch(url, opts) {
+  try { const r = await fetch(url, opts); if (!r.ok) return null; return await r.json(); }
+  catch (e) { return null; }
+}
+
+async function loadPins() {
+  const data = await safeFetch('/api/knowledge/pins');
+  state.pins = data?.pins || data || [];
+  render();
+}
+
+function render() {
+  const grid = document.querySelector('[data-region="kn-grid"]');
+  const empty = document.querySelector('[data-region="kn-empty"]');
+  const meta = document.querySelector('[data-region="kn-meta"]');
+  if (!grid) return;
+
+  const filtered = state.filter === 'Tous'
+    ? state.pins
+    : state.pins.filter(p => p.type === state.filter);
+
+  if (meta) meta.textContent = `${filtered.length} pin${filtered.length > 1 ? 's' : ''}`;
+
+  if (!filtered.length) {
+    grid.innerHTML = '';
+    if (empty) empty.hidden = false;
+    return;
+  }
+  if (empty) empty.hidden = true;
+
+  grid.innerHTML = filtered.map(p => `
+    <div class="kn-pin" data-pin-id="${p.id}">
+      <button class="kn-pin-del" data-action="delete" data-id="${p.id}" title="Supprimer">×</button>
+      <div class="kn-pin-type">${escHtml(p.type || 'pin')}</div>
+      <div class="kn-pin-title">${escHtml(p.title || '')}</div>
+      ${p.content ? `<div class="kn-pin-content">${escHtml(p.content)}</div>` : ''}
+      <div class="kn-pin-meta">
+        <span>${(p.created_at || '').slice(0, 10)}</span>
+        ${p.source_decision_id ? `<a href="decisions.html#dec-${p.source_decision_id}" style="color:var(--primary-700);text-decoration:none">Decision liee →</a>` : ''}
+      </div>
+    </div>
+  `).join('');
+
+  grid.querySelectorAll('[data-action="delete"]').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      if (!confirm('Supprimer ce pin ?')) return;
+      const id = btn.dataset.id;
+      await safeFetch(`/api/knowledge/pins/${id}`, { method: 'DELETE' });
+      loadPins();
+    });
+  });
+}
+
+function bindForm() {
+  const form = document.getElementById('kn-form');
+  const newBtn = document.querySelector('[data-action="new"]');
+  const cancelBtn = document.querySelector('[data-action="cancel"]');
+
+  if (newBtn) newBtn.addEventListener('click', (e) => { e.preventDefault(); form?.classList.add('is-open'); document.getElementById('kn-title')?.focus(); });
+  if (cancelBtn) cancelBtn.addEventListener('click', () => { form?.classList.remove('is-open'); form?.reset(); });
+
+  // Empty state CTA
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('[data-cta-action="new"]')) {
+      form?.classList.add('is-open');
+      document.getElementById('kn-title')?.focus();
     }
-  }
-}
+  });
 
-const store = new PageStore();
-function escapeJsonAttr(s) { return String(s).replace(/'/g, '&#39;'); }
-
-let renderSeq = 0;
-let renderTimer = null;
-function scheduleRender() {
-  if (renderTimer) clearTimeout(renderTimer);
-  renderTimer = setTimeout(doRender, 30);
-}
-
-async function doRender() {
-  const mySeq = ++renderSeq;
-  const state = store.state;
-
-  const meta = document.querySelector('[data-region="filter-meta"]');
-  if (meta) {
-    const n = state.items.length;
-    meta.innerHTML = state.loading ? 'Chargement...' : ('<strong>' + n + '</strong> element' + (n > 1 ? 's' : ''));
-  }
-
-  const timeline = document.querySelector('[data-region="timeline"]');
-  const empty = document.querySelector('[data-region="empty"]');
-  if (timeline) {
-    if (state.error) {
-      timeline.innerHTML = '<div class="error-state">Erreur : ' + state.error + '</div>';
-    } else if (state.items.length === 0 && state.loading) {
-      timeline.innerHTML = '<div class="loading-state">Chargement...</div>';
-    } else if (state.items.length === 0) {
-      timeline.innerHTML = '';
-    } else {
-      timeline.innerHTML = state.items.slice(0, 50).map((item, i) => {
-        const data = {
-          id: item.id || ('item-' + i),
-          title: item.title || item.name || item.subject || ('Element ' + (i+1)),
-          context: item.description || item.context || item.summary || '',
-          status: item.status || 'active',
-          created_at: item.created_at || item.updated_at || item.date || new Date().toISOString(),
-          project_name: item.project_name || item.project || item.house_name,
-          type: item.type
-        };
-        const delay = Math.min(i * 30, 600);
-        return '<div data-component="card-decision" data-props=' + "'" + escapeJsonAttr(JSON.stringify(data)) + "'" + ' style="animation-delay:' + delay + 'ms"></div>';
-      }).join('');
-      await ComponentLoader.refresh(timeline);
-      if (mySeq !== renderSeq) return;
-    }
-  }
-  if (empty) empty.hidden = state.items.length > 0 || state.loading;
-}
-
-store.on('change', scheduleRender);
-
-function startLoad() {
-  setTimeout(() => {
-    store.load();
-    setTimeout(() => {
-      const tl = document.querySelector('[data-region="timeline"]');
-      if (tl && tl.innerHTML.trim() === '' && store.state.items.length > 0) {
-        scheduleRender();
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const type = document.getElementById('kn-type').value;
+      const title = document.getElementById('kn-title').value.trim();
+      const content = document.getElementById('kn-content').value.trim();
+      if (!title) { alert('Le titre est requis.'); return; }
+      const r = await safeFetch('/api/knowledge/pins', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type, title, content })
+      });
+      if (r) {
+        form.classList.remove('is-open');
+        form.reset();
+        loadPins();
+      } else {
+        alert('Erreur creation.');
       }
-    }, 1000);
-  }, 50);
+    });
+  }
 }
 
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
-  startLoad();
-} else {
-  document.addEventListener('DOMContentLoaded', startLoad);
+function bindFilters() {
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-component="seg-filter"] button, [data-component="seg-filter"] .seg-option');
+    if (!btn) return;
+    const label = btn.textContent.trim();
+    state.filter = label;
+    render();
+  });
 }
 
-export default store;
+document.addEventListener('DOMContentLoaded', () => {
+  bindForm();
+  bindFilters();
+  loadPins();
+});

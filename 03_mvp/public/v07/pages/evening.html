@@ -3,95 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>aiCEO - Votre rituel du soir (v07 Atomic)</title>
+  <title>aiCEO - Soiree (v07)</title>
   <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css">
   <link rel="stylesheet" href="../shared/tokens.css">
   <link rel="stylesheet" href="../shared/tweaks.css">
   <link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css">
   <link rel="stylesheet" href="../components/header-topbar/header-topbar.css">
-  <link rel="stylesheet" href="../components/kpi-tile/kpi-tile.css">
-  <link rel="stylesheet" href="../components/card-decision/card-decision.css">
-  <link rel="stylesheet" href="../components/seg-filter/seg-filter.css">
-  <link rel="stylesheet" href="../components/search-pill/search-pill.css">
   <link rel="stylesheet" href="../components/modal-detail/modal-detail.css">
-  <link rel="stylesheet" href="../components/empty-state/empty-state.css">
-  <link rel="stylesheet" href="../components/pill-project/pill-project.css">
-  <link rel="stylesheet" href="../components/pill-type/pill-type.css">
-  <link rel="stylesheet" href="../components/pill-status/pill-status.css">
-  <link rel="stylesheet" href="../components/time-filter/time-filter.css">
   <style>
-    .loading-state, .error-state { padding: var(--space-7) var(--space-5); text-align: center; color: var(--ink-500); font-style: italic; }
-    .error-state { color: var(--danger); }
-    .filters-row { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-5); flex-wrap: wrap; }
-    .filters-spacer { flex: 1; }
-    .filters-meta { font-size: var(--text-xs); color: var(--ink-500); }
-    .filters-meta strong { color: var(--ink-900); font-weight: 600; }
+    .ev-hero { background: var(--paper); border: 1px solid var(--ivory-200); border-radius: var(--radius-md); padding: var(--space-5) var(--space-6); margin-bottom: var(--space-5); }
+    .ev-eyebrow { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--primary-500); letter-spacing: 0.08em; text-transform: uppercase; }
+    .ev-title { font-family: var(--font-signature, 'Aubrielle', cursive); font-size: 38px; line-height: 1.1; color: var(--ink-900); margin: 6px 0 var(--space-2); letter-spacing: -0.01em; }
+    .ev-streak { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; background: var(--primary-50); color: var(--primary-700); border-radius: var(--radius-pill); font-size: 13px; font-weight: 600; margin-top: 8px; }
+    .ev-form { background: var(--paper); border: 1px solid var(--ivory-200); border-radius: var(--radius-md); padding: var(--space-5) var(--space-6); }
+    .ev-section { margin-bottom: var(--space-5); }
+    .ev-label { display: block; font-size: 14px; font-weight: 600; color: var(--ink-900); margin-bottom: var(--space-2); }
+    .ev-helper { font-size: 12px; color: var(--ink-500); margin-top: 4px; }
+    .ev-scale { display: flex; gap: 8px; flex-wrap: wrap; }
+    .ev-scale-btn { flex: 1; min-width: 64px; padding: 14px 8px; background: var(--ivory-50); border: 2px solid var(--ivory-200); border-radius: var(--radius-md); cursor: pointer; transition: all 150ms ease; font-family: var(--font-sans); font-size: 24px; text-align: center; }
+    .ev-scale-btn:hover { border-color: var(--primary-500); }
+    .ev-scale-btn.is-selected { border-color: var(--primary-500); background: var(--primary-50); }
+    .ev-scale-label { display: block; font-size: 11px; color: var(--ink-500); margin-top: 4px; font-weight: 600; }
+    .ev-input { width: 100%; padding: 10px 12px; font-family: var(--font-sans); font-size: 14px; color: var(--ink-900); background: var(--ivory-50); border: 1px solid var(--ivory-200); border-radius: var(--radius-md); margin-bottom: 8px; box-sizing: border-box; }
+    .ev-input:focus { outline: none; border-color: var(--primary-500); background: var(--paper); box-shadow: 0 0 0 3px var(--primary-50); }
+    .ev-actions { display: flex; justify-content: space-between; gap: var(--space-3); padding-top: var(--space-4); border-top: 1px solid var(--ivory-200); }
+    .ev-btn { padding: 10px 22px; font-family: var(--font-sans); font-size: 14px; font-weight: 600; border-radius: var(--radius-md); cursor: pointer; border: 1px solid transparent; transition: all 150ms ease; }
+    .ev-btn-primary { background: var(--ink-900); color: var(--paper); }
+    .ev-btn-primary:hover { background: var(--ink-700); }
+    .ev-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .ev-btn-ghost { background: transparent; color: var(--ink-700); }
+    .ev-btn-ghost:hover { background: var(--ivory-100); }
+    .ev-history { margin-top: var(--space-5); }
+    .ev-history-row { display: flex; justify-content: space-between; padding: 10px 14px; background: var(--ivory-50); border: 1px solid var(--ivory-200); border-radius: var(--radius-md); margin-bottom: 6px; font-size: 13px; }
+    .ev-history-date { color: var(--ink-500); font-family: var(--font-mono); font-size: 12px; }
+    .ev-success { background: var(--success-50); border: 1px solid var(--success); color: var(--success); padding: 12px 16px; border-radius: var(--radius-md); margin-bottom: var(--space-3); display: flex; align-items: center; gap: 8px; }
   </style>
 </head>
 <body data-route="evening">
-  <a href="#main" class="skip-link">Aller au contenu principal</a>
-  <button class="burger-btn" type="button" aria-label="Ouvrir le menu" id="burger-toggle">
-    <svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg>
-  </button>
+  <a href="#main" class="skip-link">Aller au contenu</a>
+  <button class="burger-btn" type="button" id="burger-toggle"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg></button>
   <div class="ds-mobile-backdrop" id="ds-backdrop" hidden></div>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const btn = document.getElementById('burger-toggle');
-      const backdrop = document.getElementById('ds-backdrop');
-      function close() { const ds=document.querySelector('.ds'); if(ds) ds.classList.remove('is-mobile-open'); if(backdrop) backdrop.hidden=true; document.body.classList.remove('has-mobile-drawer'); }
-      function open()  { const ds=document.querySelector('.ds'); if(!ds) return; ds.classList.add('is-mobile-open'); if(backdrop) backdrop.hidden=false; document.body.classList.add('has-mobile-drawer'); }
-      if (btn) btn.addEventListener('click', () => { const ds=document.querySelector('.ds'); if(ds && ds.classList.contains('is-mobile-open')) close(); else open(); });
-      if (backdrop) backdrop.addEventListener('click', close);
+      const bd  = document.getElementById('ds-backdrop');
+      const close = () => { const ds = document.querySelector('.ds'); if (ds) ds.classList.remove('is-mobile-open'); if (bd) bd.hidden = true; document.body.classList.remove('has-mobile-drawer'); };
+      const open  = () => { const ds = document.querySelector('.ds'); if (!ds) return; ds.classList.add('is-mobile-open'); if (bd) bd.hidden = false; document.body.classList.add('has-mobile-drawer'); };
+      if (btn) btn.addEventListener('click', () => { const ds = document.querySelector('.ds'); if (ds && ds.classList.contains('is-mobile-open')) close(); else open(); });
+      if (bd) bd.addEventListener('click', close);
       document.addEventListener('click', (e) => { if (e.target.closest('.ds-link')) close(); });
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
     });
   </script>
   <div id="sprite-host" hidden></div>
-  <script>
-    fetch('../../v06/_shared/icons.svg.html').then(r=>r.text()).then(html=>{
-      const h=document.getElementById('sprite-host'); if(h) h.innerHTML=html;
-    }).catch(e=>console.warn('[sprite] load failed', e));
-  </script>
+  <script>fetch('../../v06/_shared/icons.svg.html').then(r=>r.text()).then(h=>{const x=document.getElementById('sprite-host');if(x)x.innerHTML=h;}).catch(()=>{});</script>
 
   <div class="app">
-    <aside data-component="drawer-sidebar" data-props='{"active": "evening", "tenant": {"label": "Mon espace"}, "user": {"name": "Major Fey", "role": "CEO"}}'></aside>
+    <aside data-component="drawer-sidebar" data-props='{"active":"evening","tenant":{"label":"Mon espace"},"user":{"name":"Major Fey","role":"CEO"}}'></aside>
     <main class="app-main" id="main">
-      <div data-component="header-topbar" data-props='{"breadcrumb": [{"label": "Cockpit", "href": "../../v06/index.html"}, {"label": "Soiree"}], "title": "Votre rituel du soir", "subtitle": "Humeur, energie, top 3, streak", "actions": [{"id": "new", "label": "Demarrer la soiree", "iconId": "plus", "primary": true}, {"id": "export", "label": "Exporter", "iconId": "arrow-up-right"}], "search": {"placeholder": "Rechercher dans le journal..."}}'></div>
-      <div data-region="kpis" class="kpi-row"></div>
-      <div class="filters-row">
-        <div class="filters-spacer"></div>
-        <span class="filters-meta" data-region="filter-meta">Chargement...</span>
-      </div>
-      <div data-region="timeline"></div>
-      <div data-region="empty" hidden>
-        <div data-component="empty-state" data-props='{"icon": "evening", "title": "Aucun element pour cette page", "description": "Cette page est migree en pattern Atomic v07. Donnees specifiques en S6.11-EE-2.", "cta": {"label": "Retour cockpit", "href": "index.html"}}'></div>
-      </div>
-      <footer class="app-footer">
-        <p class="strategic-q">Humeur, energie, top 3, streak</p>
-        <div class="footer-meta">
-          <span>aiCEO v0.7</span>
-          <span>&middot;</span>
-          <span>Votre rituel du soir</span>
-          <span>&middot;</span>
-          <span>v07 Atomic Templates</span>
+      <div data-component="header-topbar" data-props='{"breadcrumb":[{"label":"Cockpit","href":"index.html"},{"label":"Soiree"}],"title":"Votre rituel du soir","subtitle":"Humeur, energie, top 3, streak"}'></div>
+
+      <section class="ev-hero">
+        <span class="ev-eyebrow">SOIREE - 3 minutes</span>
+        <h1 class="ev-title" data-region="ev-greeting">Comment ca s est passe ?</h1>
+        <div class="ev-streak" data-region="ev-streak">🔥 Streak : -</div>
+      </section>
+
+      <div data-region="ev-success-host"></div>
+
+      <form class="ev-form" id="ev-form" novalidate>
+        <div class="ev-section">
+          <label class="ev-label">Humeur du jour</label>
+          <div class="ev-scale" data-region="ev-mood">
+            <button type="button" class="ev-scale-btn" data-mood="1">😞<span class="ev-scale-label">tendu</span></button>
+            <button type="button" class="ev-scale-btn" data-mood="2">😐<span class="ev-scale-label">neutre</span></button>
+            <button type="button" class="ev-scale-btn" data-mood="3">🙂<span class="ev-scale-label">ok</span></button>
+            <button type="button" class="ev-scale-btn" data-mood="4">😊<span class="ev-scale-label">bon</span></button>
+            <button type="button" class="ev-scale-btn" data-mood="5">🤩<span class="ev-scale-label">excellent</span></button>
+          </div>
         </div>
+
+        <div class="ev-section">
+          <label class="ev-label">Niveau d energie</label>
+          <div class="ev-scale" data-region="ev-energy">
+            <button type="button" class="ev-scale-btn" data-energy="1">🔋<span class="ev-scale-label">vide</span></button>
+            <button type="button" class="ev-scale-btn" data-energy="2">🔋<span class="ev-scale-label">bas</span></button>
+            <button type="button" class="ev-scale-btn" data-energy="3">🔋<span class="ev-scale-label">moyen</span></button>
+            <button type="button" class="ev-scale-btn" data-energy="4">🔋<span class="ev-scale-label">bon</span></button>
+            <button type="button" class="ev-scale-btn" data-energy="5">⚡<span class="ev-scale-label">plein</span></button>
+          </div>
+        </div>
+
+        <div class="ev-section">
+          <label class="ev-label">Top 3 - ce qui a ete fait aujourd hui</label>
+          <input type="text" class="ev-input" id="ev-top1" placeholder="Action #1 (la plus importante)" maxlength="200" />
+          <input type="text" class="ev-input" id="ev-top2" placeholder="Action #2" maxlength="200" />
+          <input type="text" class="ev-input" id="ev-top3" placeholder="Action #3" maxlength="200" />
+          <p class="ev-helper">Optionnel mais conseille - aide a renforcer le streak.</p>
+        </div>
+
+        <div class="ev-actions">
+          <a href="index.html" class="ev-btn ev-btn-ghost">Retour cockpit</a>
+          <button type="submit" class="ev-btn ev-btn-primary" data-region="ev-submit">Cloturer ma journee</button>
+        </div>
+      </form>
+
+      <section class="ev-history">
+        <h3 style="font-size:14px;font-weight:700;color:var(--ink-700);margin:0 0 var(--space-3);text-transform:uppercase;letter-spacing:0.04em;">Historique recent</h3>
+        <div data-region="ev-history"></div>
+      </section>
+
+      <footer class="app-footer">
+        <p class="strategic-q">Une journee close, c est une journee qui ne hante pas la suivante.</p>
+        <div class="footer-meta"><span>aiCEO v0.7</span><span>&middot;</span><span>Soiree</span><span>&middot;</span><span>v07 Atomic Templates</span></div>
       </footer>
     </main>
   </div>
-
   <nav class="bottom-tab-nav" aria-label="Navigation rapide mobile">
-    <a href="index.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span>Cockpit</span></a>
-    <a href="arbitrage.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
-    <button class="bottom-tab fab-trigger" type="button" aria-label="Capter">
-      <span class="fab-circle"><svg class="ico" aria-hidden="true"><use href="#i-mic"/></svg></span>
-      <span>Capter</span>
-    </button>
-    <a href="decisions.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg><span>Decisions</span></a>
-    <a href="evening.html" class="bottom-tab is-active"><svg class="ico" aria-hidden="true"><use href="#i-evening"/></svg><span>Soiree</span></a>
+    <a href="index.html" class="bottom-tab"><svg class="ico"><use href="#i-home"/></svg><span>Cockpit</span></a>
+    <a href="arbitrage.html" class="bottom-tab"><svg class="ico"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
+    <button class="bottom-tab fab-trigger" type="button"><span class="fab-circle"><svg class="ico"><use href="#i-mic"/></svg></span><span>Capter</span></button>
+    <a href="decisions.html" class="bottom-tab"><svg class="ico"><use href="#i-target"/></svg><span>Decisions</span></a>
+    <a href="evening.html" class="bottom-tab is-active"><svg class="ico"><use href="#i-evening"/></svg><span>Soiree</span></a>
   </nav>
-
+  <div data-region="timeline" hidden></div>
   <div data-component="modal-detail"></div>
-
   <script type="module" src="../shared/store.js"></script>
   <script type="module" src="../shared/component-loader.js"></script>
   <script type="module" src="../stores/evening-store.js"></script>

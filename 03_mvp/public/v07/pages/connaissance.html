@@ -3,95 +3,115 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>aiCEO - Votre base de connaissance (v07 Atomic)</title>
+  <title>aiCEO - Connaissance (v07)</title>
   <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css">
   <link rel="stylesheet" href="../shared/tokens.css">
   <link rel="stylesheet" href="../shared/tweaks.css">
   <link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css">
   <link rel="stylesheet" href="../components/header-topbar/header-topbar.css">
-  <link rel="stylesheet" href="../components/kpi-tile/kpi-tile.css">
-  <link rel="stylesheet" href="../components/card-decision/card-decision.css">
   <link rel="stylesheet" href="../components/seg-filter/seg-filter.css">
-  <link rel="stylesheet" href="../components/search-pill/search-pill.css">
-  <link rel="stylesheet" href="../components/modal-detail/modal-detail.css">
   <link rel="stylesheet" href="../components/empty-state/empty-state.css">
-  <link rel="stylesheet" href="../components/pill-project/pill-project.css">
-  <link rel="stylesheet" href="../components/pill-type/pill-type.css">
-  <link rel="stylesheet" href="../components/pill-status/pill-status.css">
-  <link rel="stylesheet" href="../components/time-filter/time-filter.css">
+  <link rel="stylesheet" href="../components/modal-detail/modal-detail.css">
   <style>
-    .loading-state, .error-state { padding: var(--space-7) var(--space-5); text-align: center; color: var(--ink-500); font-style: italic; }
-    .error-state { color: var(--danger); }
-    .filters-row { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-5); flex-wrap: wrap; }
-    .filters-spacer { flex: 1; }
-    .filters-meta { font-size: var(--text-xs); color: var(--ink-500); }
-    .filters-meta strong { color: var(--ink-900); font-weight: 600; }
+    .kn-toolbar { display: flex; gap: var(--space-3); margin-bottom: var(--space-4); flex-wrap: wrap; align-items: center; }
+    .kn-spacer { flex: 1; }
+    .kn-meta { font-size: 12px; color: var(--ink-500); }
+    .kn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-3); }
+    .kn-pin { background: var(--paper); border: 1px solid var(--ivory-200); border-radius: var(--radius-md); padding: var(--space-4); position: relative; transition: all 150ms ease; }
+    .kn-pin:hover { box-shadow: var(--elev-1); transform: translateY(-1px); }
+    .kn-pin-type { font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--primary-500); letter-spacing: 0.08em; text-transform: uppercase; }
+    .kn-pin-title { font-size: 14px; font-weight: 600; color: var(--ink-900); margin: 6px 0 var(--space-2); line-height: 1.3; }
+    .kn-pin-content { font-size: 13px; color: var(--ink-700); line-height: 1.5; }
+    .kn-pin-meta { font-size: 11px; color: var(--ink-500); margin-top: var(--space-3); padding-top: var(--space-2); border-top: 1px dashed var(--ivory-200); display: flex; justify-content: space-between; }
+    .kn-pin-del { position: absolute; top: 8px; right: 8px; background: transparent; border: 0; color: var(--ink-300); cursor: pointer; padding: 4px; border-radius: 4px; font-size: 14px; line-height: 1; }
+    .kn-pin-del:hover { color: var(--danger); background: var(--danger-50); }
+
+    .kn-form { background: var(--paper); border: 1px solid var(--ivory-200); border-radius: var(--radius-md); padding: var(--space-4); margin-bottom: var(--space-4); display: none; }
+    .kn-form.is-open { display: block; }
+    .kn-form-row { display: grid; grid-template-columns: 1fr 2fr; gap: var(--space-3); margin-bottom: var(--space-3); }
+    .kn-form-field label { display: block; font-size: 12px; font-weight: 600; color: var(--ink-700); margin-bottom: 4px; }
+    .kn-form-field select, .kn-form-field input, .kn-form-field textarea { width: 100%; padding: 8px 10px; font-family: var(--font-sans); font-size: 13px; border: 1px solid var(--ivory-200); border-radius: var(--radius-md); background: var(--ivory-50); box-sizing: border-box; }
+    .kn-form-field textarea { min-height: 70px; resize: vertical; }
+    .kn-form-actions { display: flex; gap: 8px; justify-content: flex-end; }
+    .kn-btn { padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: var(--radius-md); cursor: pointer; border: 1px solid transparent; }
+    .kn-btn-primary { background: var(--ink-900); color: var(--paper); }
+    .kn-btn-ghost { background: transparent; color: var(--ink-700); border-color: var(--ivory-200); }
   </style>
 </head>
 <body data-route="connaissance">
-  <a href="#main" class="skip-link">Aller au contenu principal</a>
-  <button class="burger-btn" type="button" aria-label="Ouvrir le menu" id="burger-toggle">
-    <svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg>
-  </button>
+  <button class="burger-btn" type="button" id="burger-toggle"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg></button>
   <div class="ds-mobile-backdrop" id="ds-backdrop" hidden></div>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const btn = document.getElementById('burger-toggle');
-      const backdrop = document.getElementById('ds-backdrop');
-      function close() { const ds=document.querySelector('.ds'); if(ds) ds.classList.remove('is-mobile-open'); if(backdrop) backdrop.hidden=true; document.body.classList.remove('has-mobile-drawer'); }
-      function open()  { const ds=document.querySelector('.ds'); if(!ds) return; ds.classList.add('is-mobile-open'); if(backdrop) backdrop.hidden=false; document.body.classList.add('has-mobile-drawer'); }
-      if (btn) btn.addEventListener('click', () => { const ds=document.querySelector('.ds'); if(ds && ds.classList.contains('is-mobile-open')) close(); else open(); });
-      if (backdrop) backdrop.addEventListener('click', close);
+      const bd  = document.getElementById('ds-backdrop');
+      const close = () => { const ds = document.querySelector('.ds'); if (ds) ds.classList.remove('is-mobile-open'); if (bd) bd.hidden = true; document.body.classList.remove('has-mobile-drawer'); };
+      const open  = () => { const ds = document.querySelector('.ds'); if (!ds) return; ds.classList.add('is-mobile-open'); if (bd) bd.hidden = false; document.body.classList.add('has-mobile-drawer'); };
+      if (btn) btn.addEventListener('click', () => { const ds = document.querySelector('.ds'); if (ds && ds.classList.contains('is-mobile-open')) close(); else open(); });
+      if (bd) bd.addEventListener('click', close);
       document.addEventListener('click', (e) => { if (e.target.closest('.ds-link')) close(); });
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
     });
   </script>
   <div id="sprite-host" hidden></div>
-  <script>
-    fetch('../../v06/_shared/icons.svg.html').then(r=>r.text()).then(html=>{
-      const h=document.getElementById('sprite-host'); if(h) h.innerHTML=html;
-    }).catch(e=>console.warn('[sprite] load failed', e));
-  </script>
+  <script>fetch('../../v06/_shared/icons.svg.html').then(r=>r.text()).then(h=>{const x=document.getElementById('sprite-host');if(x)x.innerHTML=h;}).catch(()=>{});</script>
 
   <div class="app">
-    <aside data-component="drawer-sidebar" data-props='{"active": "connaissance", "tenant": {"label": "Mon espace"}, "user": {"name": "Major Fey", "role": "CEO"}}'></aside>
+    <aside data-component="drawer-sidebar" data-props='{"active":"connaissance","tenant":{"label":"Mon espace"},"user":{"name":"Major Fey","role":"CEO"}}'></aside>
     <main class="app-main" id="main">
-      <div data-component="header-topbar" data-props='{"breadcrumb": [{"label": "Cockpit", "href": "../../v06/index.html"}, {"label": "Connaissance"}], "title": "Votre base de connaissance", "subtitle": "Decisions epinglees, criteres, regles", "actions": [{"id": "new", "label": "Nouveau pin", "iconId": "plus", "primary": true}, {"id": "export", "label": "Exporter", "iconId": "arrow-up-right"}], "search": {"placeholder": "Chercher dans la connaissance..."}}'></div>
-      <div data-region="kpis" class="kpi-row"></div>
-      <div class="filters-row">
-        <div class="filters-spacer"></div>
-        <span class="filters-meta" data-region="filter-meta">Chargement...</span>
+      <div data-component="header-topbar" data-props='{"breadcrumb":[{"label":"Cockpit","href":"index.html"},{"label":"Connaissance"}],"title":"Votre base de connaissance","subtitle":"Decisions epinglees, criteres, regles","actions":[{"id":"new","label":"Nouveau pin","iconId":"plus","primary":true}]}'></div>
+
+      <div class="kn-toolbar">
+        <div data-component="seg-filter" data-props='{"id":"type","options":["Tous","decision","critere","regle"],"active":"Tous"}'></div>
+        <div class="kn-spacer"></div>
+        <span class="kn-meta" data-region="kn-meta">— pins</span>
       </div>
-      <div data-region="timeline"></div>
-      <div data-region="empty" hidden>
-        <div data-component="empty-state" data-props='{"icon": "knowledge", "title": "Aucun element pour cette page", "description": "Cette page est migree en pattern Atomic v07. Donnees specifiques en S6.11-EE-2.", "cta": {"label": "Retour cockpit", "href": "index.html"}}'></div>
-      </div>
-      <footer class="app-footer">
-        <p class="strategic-q">Decisions epinglees, criteres, regles</p>
-        <div class="footer-meta">
-          <span>aiCEO v0.7</span>
-          <span>&middot;</span>
-          <span>Votre base de connaissance</span>
-          <span>&middot;</span>
-          <span>v07 Atomic Templates</span>
+
+      <form class="kn-form" id="kn-form">
+        <div class="kn-form-row">
+          <div class="kn-form-field">
+            <label for="kn-type">Type</label>
+            <select id="kn-type">
+              <option value="critere">Critere</option>
+              <option value="regle">Regle</option>
+              <option value="decision">Decision</option>
+            </select>
+          </div>
+          <div class="kn-form-field">
+            <label for="kn-title">Titre</label>
+            <input type="text" id="kn-title" placeholder="Ex : Toujours verifier le ROI avant un investissement &gt; 10k€" required maxlength="200" />
+          </div>
         </div>
+        <div class="kn-form-field">
+          <label for="kn-content">Contenu (optionnel)</label>
+          <textarea id="kn-content" placeholder="Detail, exception, contexte..." maxlength="800"></textarea>
+        </div>
+        <div class="kn-form-actions">
+          <button type="button" class="kn-btn kn-btn-ghost" data-action="cancel">Annuler</button>
+          <button type="submit" class="kn-btn kn-btn-primary">Epingler</button>
+        </div>
+      </form>
+
+      <div data-region="kn-grid" class="kn-grid"></div>
+      <div data-region="kn-empty" hidden>
+        <div data-component="empty-state" data-props='{"icon":"knowledge","title":"Votre base de connaissance est vide","description":"Epinglez des decisions importantes, des criteres recurrents ou des regles que vous voulez retrouver vite.","cta":{"label":"Creer le premier pin","action":"new"}}'></div>
+      </div>
+
+      <footer class="app-footer">
+        <p class="strategic-q">Ce qu on epingle aujourd hui evite de re-decider demain.</p>
+        <div class="footer-meta"><span>aiCEO v0.7</span><span>&middot;</span><span>Connaissance</span><span>&middot;</span><span>v07 Atomic Templates</span></div>
       </footer>
     </main>
   </div>
-
   <nav class="bottom-tab-nav" aria-label="Navigation rapide mobile">
-    <a href="index.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span>Cockpit</span></a>
-    <a href="arbitrage.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
-    <button class="bottom-tab fab-trigger" type="button" aria-label="Capter">
-      <span class="fab-circle"><svg class="ico" aria-hidden="true"><use href="#i-mic"/></svg></span>
-      <span>Capter</span>
-    </button>
-    <a href="decisions.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg><span>Decisions</span></a>
-    <a href="evening.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-evening"/></svg><span>Soiree</span></a>
+    <a href="index.html" class="bottom-tab"><svg class="ico"><use href="#i-home"/></svg><span>Cockpit</span></a>
+    <a href="arbitrage.html" class="bottom-tab"><svg class="ico"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
+    <button class="bottom-tab fab-trigger" type="button"><span class="fab-circle"><svg class="ico"><use href="#i-mic"/></svg></span><span>Capter</span></button>
+    <a href="decisions.html" class="bottom-tab"><svg class="ico"><use href="#i-target"/></svg><span>Decisions</span></a>
+    <a href="evening.html" class="bottom-tab"><svg class="ico"><use href="#i-evening"/></svg><span>Soiree</span></a>
   </nav>
-
+  <div data-region="timeline" hidden></div>
   <div data-component="modal-detail"></div>
-
   <script type="module" src="../shared/store.js"></script>
   <script type="module" src="../shared/component-loader.js"></script>
   <script type="module" src="../stores/connaissance-store.js"></script>

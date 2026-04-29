@@ -3,95 +3,124 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>aiCEO - Arbitrer la matinee (v07 Atomic)</title>
+  <title>aiCEO - Arbitrage du matin (v07)</title>
   <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css">
   <link rel="stylesheet" href="../shared/tokens.css">
   <link rel="stylesheet" href="../shared/tweaks.css">
   <link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css">
   <link rel="stylesheet" href="../components/header-topbar/header-topbar.css">
-  <link rel="stylesheet" href="../components/kpi-tile/kpi-tile.css">
-  <link rel="stylesheet" href="../components/card-decision/card-decision.css">
   <link rel="stylesheet" href="../components/seg-filter/seg-filter.css">
-  <link rel="stylesheet" href="../components/search-pill/search-pill.css">
-  <link rel="stylesheet" href="../components/modal-detail/modal-detail.css">
   <link rel="stylesheet" href="../components/empty-state/empty-state.css">
-  <link rel="stylesheet" href="../components/pill-project/pill-project.css">
-  <link rel="stylesheet" href="../components/pill-type/pill-type.css">
-  <link rel="stylesheet" href="../components/pill-status/pill-status.css">
-  <link rel="stylesheet" href="../components/time-filter/time-filter.css">
+  <link rel="stylesheet" href="../components/modal-detail/modal-detail.css">
   <style>
-    .loading-state, .error-state { padding: var(--space-7) var(--space-5); text-align: center; color: var(--ink-500); font-style: italic; }
-    .error-state { color: var(--danger); }
-    .filters-row { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-5); flex-wrap: wrap; }
-    .filters-spacer { flex: 1; }
-    .filters-meta { font-size: var(--text-xs); color: var(--ink-500); }
-    .filters-meta strong { color: var(--ink-900); font-weight: 600; }
+    .ar-mode-tabs { display: inline-flex; background: var(--ivory-100); border-radius: var(--radius-md); padding: 4px; margin-bottom: var(--space-4); }
+    .ar-mode-tab { padding: 8px 18px; border: 0; background: transparent; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--ink-500); border-radius: 6px; transition: all 150ms ease; font-family: var(--font-sans); }
+    .ar-mode-tab:hover { color: var(--ink-900); }
+    .ar-mode-tab.is-active { background: var(--paper); color: var(--ink-900); box-shadow: var(--elev-1); }
+
+    .ar-summary { background: var(--paper); border: 1px solid var(--ivory-200); border-radius: var(--radius-md); padding: var(--space-4) var(--space-5); margin-bottom: var(--space-4); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); }
+    .ar-summary-text { font-size: 14px; color: var(--ink-700); }
+    .ar-summary-text strong { color: var(--ink-900); }
+    .ar-btn { padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: var(--radius-md); cursor: pointer; border: 1px solid transparent; transition: all 150ms ease; }
+    .ar-btn-primary { background: var(--ink-900); color: var(--paper); }
+    .ar-btn-primary:hover { background: var(--ink-700); }
+    .ar-btn-ghost { background: transparent; color: var(--ink-700); border-color: var(--ivory-200); }
+    .ar-btn-ghost:hover { background: var(--ivory-100); }
+
+    /* Queue emails */
+    .ar-queue { display: grid; gap: var(--space-3); }
+    .ar-mail { background: var(--paper); border: 1px solid var(--ivory-200); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); display: grid; grid-template-columns: auto 1fr auto; gap: var(--space-3); align-items: center; }
+    .ar-mail-rail { width: 4px; align-self: stretch; border-radius: 2px; background: var(--ivory-200); }
+    .ar-mail.is-high .ar-mail-rail { background: var(--danger); }
+    .ar-mail.is-mid .ar-mail-rail { background: var(--warning); }
+    .ar-mail.is-low .ar-mail-rail { background: var(--info); }
+    .ar-mail-body { min-width: 0; }
+    .ar-mail-from { font-size: 12px; color: var(--ink-500); font-family: var(--font-mono); }
+    .ar-mail-subject { font-size: 14px; font-weight: 600; color: var(--ink-900); margin: 2px 0 4px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ar-mail-snippet { font-size: 13px; color: var(--ink-700); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .ar-mail-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .ar-mail-act { padding: 6px 10px; border-radius: var(--radius-md); border: 1px solid var(--ivory-200); background: var(--paper); cursor: pointer; font-size: 12px; font-weight: 600; transition: all 150ms ease; font-family: var(--font-sans); }
+    .ar-mail-act.accept { background: var(--success); color: var(--paper); border-color: var(--success); }
+    .ar-mail-act.defer  { color: var(--warning); border-color: var(--warning); }
+    .ar-mail-act.ignore { color: var(--ink-500); }
+    .ar-mail-act:hover { transform: translateY(-1px); }
+
+    /* Mode focus (decisions) */
+    .ar-decision { background: var(--paper); border: 1px solid var(--ivory-200); border-radius: var(--radius-md); padding: var(--space-5); max-width: 720px; margin: 0 auto; }
+    .ar-decision-eyebrow { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--primary-500); letter-spacing: 0.08em; }
+    .ar-decision-title { font-size: 22px; font-weight: 700; color: var(--ink-900); margin: 8px 0 var(--space-3); line-height: 1.3; }
+    .ar-decision-context { font-size: 14px; color: var(--ink-700); line-height: 1.6; margin-bottom: var(--space-4); }
+    .ar-decision-options { display: grid; gap: var(--space-2); margin-bottom: var(--space-4); }
+    .ar-option { padding: 12px 16px; background: var(--ivory-50); border: 1px solid var(--ivory-200); border-radius: var(--radius-md); font-size: 13px; color: var(--ink-900); cursor: pointer; transition: all 150ms ease; }
+    .ar-option:hover { border-color: var(--primary-500); background: var(--primary-50); }
+    .ar-decision-actions { display: flex; gap: var(--space-2); justify-content: flex-end; padding-top: var(--space-3); border-top: 1px solid var(--ivory-200); }
+
+    .ar-loading { padding: 40px; text-align: center; color: var(--ink-500); font-style: italic; }
   </style>
 </head>
 <body data-route="arbitrage">
-  <a href="#main" class="skip-link">Aller au contenu principal</a>
-  <button class="burger-btn" type="button" aria-label="Ouvrir le menu" id="burger-toggle">
-    <svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg>
-  </button>
+  <button class="burger-btn" type="button" id="burger-toggle"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg></button>
   <div class="ds-mobile-backdrop" id="ds-backdrop" hidden></div>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const btn = document.getElementById('burger-toggle');
-      const backdrop = document.getElementById('ds-backdrop');
-      function close() { const ds=document.querySelector('.ds'); if(ds) ds.classList.remove('is-mobile-open'); if(backdrop) backdrop.hidden=true; document.body.classList.remove('has-mobile-drawer'); }
-      function open()  { const ds=document.querySelector('.ds'); if(!ds) return; ds.classList.add('is-mobile-open'); if(backdrop) backdrop.hidden=false; document.body.classList.add('has-mobile-drawer'); }
-      if (btn) btn.addEventListener('click', () => { const ds=document.querySelector('.ds'); if(ds && ds.classList.contains('is-mobile-open')) close(); else open(); });
-      if (backdrop) backdrop.addEventListener('click', close);
+      const bd  = document.getElementById('ds-backdrop');
+      const close = () => { const ds = document.querySelector('.ds'); if (ds) ds.classList.remove('is-mobile-open'); if (bd) bd.hidden = true; document.body.classList.remove('has-mobile-drawer'); };
+      const open  = () => { const ds = document.querySelector('.ds'); if (!ds) return; ds.classList.add('is-mobile-open'); if (bd) bd.hidden = false; document.body.classList.add('has-mobile-drawer'); };
+      if (btn) btn.addEventListener('click', () => { const ds = document.querySelector('.ds'); if (ds && ds.classList.contains('is-mobile-open')) close(); else open(); });
+      if (bd) bd.addEventListener('click', close);
       document.addEventListener('click', (e) => { if (e.target.closest('.ds-link')) close(); });
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
     });
   </script>
   <div id="sprite-host" hidden></div>
-  <script>
-    fetch('../../v06/_shared/icons.svg.html').then(r=>r.text()).then(html=>{
-      const h=document.getElementById('sprite-host'); if(h) h.innerHTML=html;
-    }).catch(e=>console.warn('[sprite] load failed', e));
-  </script>
+  <script>fetch('../../v06/_shared/icons.svg.html').then(r=>r.text()).then(h=>{const x=document.getElementById('sprite-host');if(x)x.innerHTML=h;}).catch(()=>{});</script>
 
   <div class="app">
-    <aside data-component="drawer-sidebar" data-props='{"active": "arbitrage", "tenant": {"label": "Mon espace"}, "user": {"name": "Major Fey", "role": "CEO"}}'></aside>
+    <aside data-component="drawer-sidebar" data-props='{"active":"arbitrage","tenant":{"label":"Mon espace"},"user":{"name":"Major Fey","role":"CEO"}}'></aside>
     <main class="app-main" id="main">
-      <div data-component="header-topbar" data-props='{"breadcrumb": [{"label": "Cockpit", "href": "index.html"}, {"label": "Arbitrage"}], "title": "Arbitrer la matinee", "subtitle": "Faire / Deleguer / Ignorer en moins de 5 minutes", "actions": [{"id": "new", "label": "Demarrer arbitrage", "iconId": "plus", "primary": true}, {"id": "export", "label": "Exporter", "iconId": "arrow-up-right"}], "search": {"placeholder": "Filtrer la file..."}}'></div>
-      <div data-region="kpis" class="kpi-row"></div>
-      <div class="filters-row">
-        <div class="filters-spacer"></div>
-        <span class="filters-meta" data-region="filter-meta">Chargement...</span>
+      <div data-component="header-topbar" data-props='{"breadcrumb":[{"label":"Cockpit","href":"index.html"},{"label":"Arbitrage"}],"title":"Arbitrage du matin","subtitle":"5 a 10 minutes - file emails et decisions a trancher"}'></div>
+
+      <!-- Tabs mode -->
+      <div class="ar-mode-tabs" role="tablist">
+        <button class="ar-mode-tab is-active" data-mode="queue" role="tab">📬 File emails</button>
+        <button class="ar-mode-tab" data-mode="focus" role="tab">🎯 Focus decisions</button>
       </div>
-      <div data-region="timeline"></div>
-      <div data-region="empty" hidden>
-        <div data-component="empty-state" data-props='{"icon": "arbitrage", "title": "Aucun element pour cette page", "description": "Cette page est migree en pattern Atomic v07. Donnees specifiques en S6.11-EE-2.", "cta": {"label": "Retour cockpit", "href": "index.html"}}'></div>
-      </div>
-      <footer class="app-footer">
-        <p class="strategic-q">Faire / Deleguer / Ignorer en moins de 5 minutes</p>
-        <div class="footer-meta">
-          <span>aiCEO v0.7</span>
-          <span>&middot;</span>
-          <span>Arbitrer la matinee</span>
-          <span>&middot;</span>
-          <span>v07 Atomic Templates</span>
+
+      <!-- Mode QUEUE -->
+      <section data-region="ar-queue-mode">
+        <div class="ar-summary">
+          <div class="ar-summary-text">
+            <span data-region="ar-queue-stat"><strong>—</strong> emails proposes par scoring SQL</span>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="ar-btn ar-btn-ghost" data-action="bootstrap">Bootstrap projets/contacts</button>
+            <button class="ar-btn ar-btn-primary" data-action="analyze">Analyser les emails</button>
+          </div>
         </div>
+        <div class="ar-queue" data-region="ar-queue"></div>
+      </section>
+
+      <!-- Mode FOCUS -->
+      <section data-region="ar-focus-mode" hidden>
+        <div data-region="ar-focus-host"></div>
+      </section>
+
+      <footer class="app-footer">
+        <p class="strategic-q">L arbitrage du matin n est pas un tri d emails - c est une declaration d intention.</p>
+        <div class="footer-meta"><span>aiCEO v0.7</span><span>&middot;</span><span>Arbitrage du matin</span><span>&middot;</span><span>v07 Atomic Templates</span></div>
       </footer>
     </main>
   </div>
-
   <nav class="bottom-tab-nav" aria-label="Navigation rapide mobile">
-    <a href="index.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span>Cockpit</span></a>
-    <a href="arbitrage.html" class="bottom-tab is-active"><svg class="ico" aria-hidden="true"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
-    <button class="bottom-tab fab-trigger" type="button" aria-label="Capter">
-      <span class="fab-circle"><svg class="ico" aria-hidden="true"><use href="#i-mic"/></svg></span>
-      <span>Capter</span>
-    </button>
-    <a href="decisions.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg><span>Decisions</span></a>
-    <a href="evening.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-evening"/></svg><span>Soiree</span></a>
+    <a href="index.html" class="bottom-tab"><svg class="ico"><use href="#i-home"/></svg><span>Cockpit</span></a>
+    <a href="arbitrage.html" class="bottom-tab is-active"><svg class="ico"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
+    <button class="bottom-tab fab-trigger" type="button"><span class="fab-circle"><svg class="ico"><use href="#i-mic"/></svg></span><span>Capter</span></button>
+    <a href="decisions.html" class="bottom-tab"><svg class="ico"><use href="#i-target"/></svg><span>Decisions</span></a>
+    <a href="evening.html" class="bottom-tab"><svg class="ico"><use href="#i-evening"/></svg><span>Soiree</span></a>
   </nav>
-
+  <div data-region="timeline" hidden></div>
   <div data-component="modal-detail"></div>
-
   <script type="module" src="../shared/store.js"></script>
   <script type="module" src="../shared/component-loader.js"></script>
   <script type="module" src="../stores/arbitrage-store.js"></script>

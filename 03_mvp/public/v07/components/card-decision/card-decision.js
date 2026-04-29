@@ -1,4 +1,4 @@
-// card-decision.js — refonte parite Claude Design
+// card-decision.js — refonte parite Claude Design + S6.12 (kind dispatch)
 import { ComponentLoader } from '../../shared/component-loader.js';
 
 const STATUS_RAIL_TONE = {
@@ -105,7 +105,6 @@ export default {
 
     const src = el.querySelector('[data-region="cd-source"]');
     if (src) {
-      // Toujours afficher la source : props.source > props.source_label > fallback "Posee [date]"
       if (props.source) {
         src.innerHTML = `Source : <a href="#" class="cd-source-link">${escapeHtml(props.source)}</a>`;
       } else if (props.source_label) {
@@ -125,7 +124,6 @@ export default {
       }
     }
 
-    // Lien "Demander a l assistant" : visible uniquement si decision ouverte
     const aiLink = el.querySelector('[data-region="cd-ai-link"]');
     if (aiLink) {
       const isOpen = ['active', 'open', 'pending'].includes(status);
@@ -139,10 +137,14 @@ export default {
 
     const btn = el.querySelector('[data-action="open"]');
     if (btn) {
+      // S6.12 : kind dispatch (project/contact/task/event/review/decision par defaut)
+      const kind = props.kind || 'decision';
       btn.addEventListener('click', () => {
-        el.dispatchEvent(new CustomEvent('decision:open', {
+        const detail = { id: props.id };
+        detail[kind] = props;
+        el.dispatchEvent(new CustomEvent(kind + ':open', {
           bubbles: true,
-          detail: { id: props.id, decision: props }
+          detail: detail
         }));
       });
     }

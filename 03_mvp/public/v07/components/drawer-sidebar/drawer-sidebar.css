@@ -204,6 +204,30 @@
   text-transform: uppercase;
 }
 
+/* === Pages non migrees v07 (pointent vers v06) === */
+.ds-item.is-pending .ds-link {
+  opacity: 0.55;
+  font-style: italic;
+}
+.ds-item.is-pending .ds-link:hover {
+  opacity: 0.85;
+  background: var(--ivory-200);
+}
+.ds-item.is-pending .ds-link svg.ico { opacity: 0.6; }
+.ds-tag-pending {
+  font-size: 9px; font-weight: 700;
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+  background: var(--warning-50, #fef3c7);
+  color: var(--warning, #92400e);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.ds-item.is-pending.is-active .ds-link {
+  opacity: 1;
+  font-style: normal;
+}
+
 .ds-locale {
   display: flex;
   align-items: center;

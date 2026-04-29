@@ -1,92 +1,270 @@
-// onboarding-store.js — page-clone du pattern decisions (S6.11-EE)
-import { Store } from '../shared/store.js';
-import { ComponentLoader } from '../shared/component-loader.js';
+// onboarding-store.js — Wizard 4 etapes (S6.11-EE-2 L1.2)
+// Etape 1 : firstName | Etape 2 : tenantName | Etape 3 : posture | Etape 4 : recap+confirm
+// Persistance : POST /api/preferences (table key/value)
 
-class PageStore extends Store {
-  constructor() { super({ items: [], loading: false, error: null }); }
-  async load() {
-    this.setState({ loading: true, error: null });
-    try {
-      const r = await fetch('/api/preferences');
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      const data = await r.json();
-      const items = Array.isArray(data) ? data : (data['wizard'] || data.items || []);
-      this.setState({ items, loading: false });
-    } catch (e) {
-      console.error('[onboarding-store] load failed', e);
-      this.setState({ loading: false, error: e.message });
+const STEPS = ['identite', 'espace', 'posture', 'recap'];
+const POSTURES = [
+  {
+    id: 'gardienne',
+    glyph: '🛡',
+    name: 'La gardienne',
+    tag: 'Je tranche pour proteger.',
+    bullets: ['Lis les risques en premier', 'Prefere stabiliser avant d explorer', 'Consultative avec l equipe']
+  },
+  {
+    id: 'exploratrice',
+    glyph: '🌱',
+    name: 'L exploratrice',
+    tag: 'Je tranche pour ouvrir.',
+    bullets: ['Cherche l opportunite cachee', 'Tolere le doute pour avancer', 'Pivote vite si signal nouveau']
+  },
+  {
+    id: 'architecte',
+    glyph: '◆',
+    name: 'L architecte',
+    tag: 'Je tranche pour optimiser.',
+    bullets: ['Aligne tout sur la coherence systeme', 'Mesure avant de decider', 'Refuse l improvisation sans donnees']
+  }
+];
+
+const state = {
+  currentStep: 0,
+  data: { firstName: '', tenantName: '', posture: '' }
+};
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderProgress() {
+  const host = document.querySelector('[data-region="ob-progress"]');
+  if (!host) return;
+  let html = '';
+  STEPS.forEach((_, i) => {
+    const cls = i < state.currentStep ? 'is-done' : (i === state.currentStep ? 'is-current' : '');
+    html += `<span class="ob-step-dot ${cls}">${i + 1}</span>`;
+    if (i < STEPS.length - 1) {
+      const lineCls = i < state.currentStep ? 'is-done' : '';
+      html += `<span class="ob-step-line ${lineCls}"></span>`;
     }
+  });
+  host.innerHTML = html;
+}
+
+function renderStep() {
+  const host = document.querySelector('[data-region="ob-step-host"]');
+  if (!host) return;
+  const step = STEPS[state.currentStep];
+  if (step === 'identite') host.innerHTML = stepIdentite();
+  else if (step === 'espace') host.innerHTML = stepEspace();
+  else if (step === 'posture') host.innerHTML = stepPosture();
+  else if (step === 'recap') host.innerHTML = stepRecap();
+  bindStepEvents();
+}
+
+function stepIdentite() {
+  return `
+    <div class="ob-card">
+      <div class="ob-eyebrow">Etape 1 / 4 - Identite</div>
+      <h1 class="ob-title">Comment puis-je vous appeler ?</h1>
+      <p class="ob-desc">Votre prenom apparaitra dans le greeting du Hub et dans les rituels matin/soir. Rien d ecrit en pierre - vous pourrez modifier dans Reglages.</p>
+      <div class="ob-field">
+        <label class="ob-label" for="ob-firstName">Prenom</label>
+        <input type="text" id="ob-firstName" class="ob-input" placeholder="Major" value="${escapeHtml(state.data.firstName)}" autocomplete="given-name" />
+        <p class="ob-helper">Exemple : "Major", "Lamiae", "Jean-Pierre"...</p>
+      </div>
+      <div class="ob-actions">
+        <button class="ob-btn ob-btn-secondary" data-action="prev" disabled>Precedent</button>
+        <button class="ob-btn ob-btn-primary" data-action="next">Continuer</button>
+      </div>
+    </div>
+  `;
+}
+
+function stepEspace() {
+  return `
+    <div class="ob-card">
+      <div class="ob-eyebrow">Etape 2 / 4 - Espace de travail</div>
+      <h1 class="ob-title">Quel nom pour votre espace ?</h1>
+      <p class="ob-desc">Un espace = un perimetre. C est comme un compte. Vous pourrez en avoir plusieurs plus tard (perso / pro / projet specifique).</p>
+      <div class="ob-field">
+        <label class="ob-label" for="ob-tenantName">Nom de l espace</label>
+        <input type="text" id="ob-tenantName" class="ob-input" placeholder="Mon espace" value="${escapeHtml(state.data.tenantName)}" />
+        <p class="ob-helper">Exemple : "ETIC Services", "Direction generale", "Mon perso"...</p>
+      </div>
+      <div class="ob-actions">
+        <button class="ob-btn ob-btn-secondary" data-action="prev">Precedent</button>
+        <button class="ob-btn ob-btn-primary" data-action="next">Continuer</button>
+      </div>
+    </div>
+  `;
+}
+
+function stepPosture() {
+  const cards = POSTURES.map(p => `
+    <button type="button" class="ob-posture${state.data.posture === p.id ? ' is-selected' : ''}" data-posture-id="${p.id}">
+      <div class="ob-posture-glyph">${p.glyph}</div>
+      <div class="ob-posture-name">${p.name}</div>
+      <div class="ob-posture-tag">${p.tag}</div>
+      <ul class="ob-posture-list">
+        ${p.bullets.map(b => `<li>${b}</li>`).join('')}
+      </ul>
+    </button>
+  `).join('');
+  return `
+    <div class="ob-card">
+      <div class="ob-eyebrow">Etape 3 / 4 - Posture decisionnelle</div>
+      <h1 class="ob-title">Comment <em>decidez</em>-vous, en vrai ?</h1>
+      <p class="ob-desc">Aucune reponse n est meilleure - mais l assistant adaptera ses propositions selon votre style dominant. Vous pourrez l ajuster dans Reglages.</p>
+      <div class="ob-postures">${cards}</div>
+      <div class="ob-actions">
+        <button class="ob-btn ob-btn-secondary" data-action="prev">Precedent</button>
+        <button class="ob-btn ob-btn-primary" data-action="next" ${state.data.posture ? '' : 'disabled'}>Continuer</button>
+      </div>
+    </div>
+  `;
+}
+
+function stepRecap() {
+  const posture = POSTURES.find(p => p.id === state.data.posture);
+  return `
+    <div class="ob-card">
+      <div class="ob-eyebrow">Etape 4 / 4 - Confirmation</div>
+      <h1 class="ob-title">On est prets, ${escapeHtml(state.data.firstName || 'Major')}.</h1>
+      <p class="ob-desc">Voici votre configuration. Cliquez sur "Demarrer" pour rejoindre le cockpit.</p>
+      <div class="ob-recap">
+        <div class="ob-recap-row">
+          <span class="ob-recap-label">Prenom</span>
+          <span class="ob-recap-value">${escapeHtml(state.data.firstName)}</span>
+        </div>
+        <div class="ob-recap-row">
+          <span class="ob-recap-label">Espace</span>
+          <span class="ob-recap-value">${escapeHtml(state.data.tenantName)}</span>
+        </div>
+        <div class="ob-recap-row">
+          <span class="ob-recap-label">Posture</span>
+          <span class="ob-recap-value">${posture ? posture.glyph + ' ' + posture.name : '—'}</span>
+        </div>
+      </div>
+      <div class="ob-actions">
+        <button class="ob-btn ob-btn-secondary" data-action="prev">Modifier</button>
+        <button class="ob-btn ob-btn-primary" data-action="finish">Demarrer aiCEO</button>
+      </div>
+    </div>
+  `;
+}
+
+function bindStepEvents() {
+  const host = document.querySelector('[data-region="ob-step-host"]');
+  if (!host) return;
+
+  // Inputs
+  const fn = host.querySelector('#ob-firstName');
+  if (fn) fn.addEventListener('input', e => { state.data.firstName = e.target.value.trim(); });
+  const tn = host.querySelector('#ob-tenantName');
+  if (tn) tn.addEventListener('input', e => { state.data.tenantName = e.target.value.trim(); });
+
+  // Posture cards
+  host.querySelectorAll('[data-posture-id]').forEach(card => {
+    card.addEventListener('click', () => {
+      state.data.posture = card.dataset.postureId;
+      renderStep();
+    });
+  });
+
+  // Actions
+  host.querySelectorAll('[data-action]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const action = btn.dataset.action;
+      if (action === 'prev') prevStep();
+      else if (action === 'next') nextStep();
+      else if (action === 'finish') finishOnboarding();
+    });
+  });
+}
+
+function nextStep() {
+  // Validation par etape
+  const step = STEPS[state.currentStep];
+  if (step === 'identite' && !state.data.firstName) {
+    alert('Indiquez un prenom (meme une initiale).');
+    return;
+  }
+  if (step === 'espace' && !state.data.tenantName) {
+    state.data.tenantName = 'Mon espace';
+  }
+  if (step === 'posture' && !state.data.posture) {
+    alert('Choisissez une posture (vous pourrez la changer dans Reglages).');
+    return;
+  }
+  if (state.currentStep < STEPS.length - 1) {
+    state.currentStep++;
+    renderProgress();
+    renderStep();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
 
-const store = new PageStore();
-function escapeJsonAttr(s) { return String(s).replace(/'/g, '&#39;'); }
-
-let renderSeq = 0;
-let renderTimer = null;
-function scheduleRender() {
-  if (renderTimer) clearTimeout(renderTimer);
-  renderTimer = setTimeout(doRender, 30);
+function prevStep() {
+  if (state.currentStep > 0) {
+    state.currentStep--;
+    renderProgress();
+    renderStep();
+  }
 }
 
-async function doRender() {
-  const mySeq = ++renderSeq;
-  const state = store.state;
+async function finishOnboarding() {
+  const btn = document.querySelector('[data-action="finish"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sauvegarde...'; }
 
-  const meta = document.querySelector('[data-region="filter-meta"]');
-  if (meta) {
-    const n = state.items.length;
-    meta.innerHTML = state.loading ? 'Chargement...' : ('<strong>' + n + '</strong> element' + (n > 1 ? 's' : ''));
-  }
+  try {
+    const r = await fetch('/api/preferences', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        'user.firstName':  state.data.firstName,
+        'user.tenantName': state.data.tenantName,
+        'user.posture':    state.data.posture,
+        'onboarding.completed': new Date().toISOString()
+      })
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
 
-  const timeline = document.querySelector('[data-region="timeline"]');
-  const empty = document.querySelector('[data-region="empty"]');
-  if (timeline) {
-    if (state.error) {
-      timeline.innerHTML = '<div class="error-state">Erreur : ' + state.error + '</div>';
-    } else if (state.items.length === 0 && state.loading) {
-      timeline.innerHTML = '<div class="loading-state">Chargement...</div>';
-    } else if (state.items.length === 0) {
-      timeline.innerHTML = '';
-    } else {
-      timeline.innerHTML = state.items.slice(0, 50).map((item, i) => {
-        const data = {
-          id: item.id || ('item-' + i),
-          title: item.title || item.name || item.subject || ('Element ' + (i+1)),
-          context: item.description || item.context || item.summary || '',
-          status: item.status || 'active',
-          created_at: item.created_at || item.updated_at || item.date || new Date().toISOString(),
-          project_name: item.project_name || item.project || item.house_name,
-          type: item.type
-        };
-        const delay = Math.min(i * 30, 600);
-        return '<div data-component="card-decision" data-props=' + "'" + escapeJsonAttr(JSON.stringify(data)) + "'" + ' style="animation-delay:' + delay + 'ms"></div>';
-      }).join('');
-      await ComponentLoader.refresh(timeline);
-      if (mySeq !== renderSeq) return;
+    // Etat de succes : rendu inline + redirection 1.2s
+    const host = document.querySelector('[data-region="ob-step-host"]');
+    if (host) {
+      host.innerHTML = `
+        <div class="ob-card ob-success">
+          <div class="ob-success-glyph">✓</div>
+          <h1 class="ob-title">Bienvenue, ${escapeHtml(state.data.firstName)}.</h1>
+          <p class="ob-desc">Configuration enregistree. Direction le cockpit...</p>
+        </div>
+      `;
     }
+    setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+  } catch (err) {
+    console.error('[onboarding] finish error', err);
+    if (btn) { btn.disabled = false; btn.textContent = 'Reessayer'; }
+    alert('Sauvegarde echouee : ' + err.message + '. Le serveur tourne-t-il sur :4747 ?');
   }
-  if (empty) empty.hidden = state.items.length > 0 || state.loading;
 }
 
-store.on('change', scheduleRender);
-
-function startLoad() {
-  setTimeout(() => {
-    store.load();
-    setTimeout(() => {
-      const tl = document.querySelector('[data-region="timeline"]');
-      if (tl && tl.innerHTML.trim() === '' && store.state.items.length > 0) {
-        scheduleRender();
-      }
-    }, 1000);
-  }, 50);
+async function loadExistingPrefs() {
+  // Si l onboarding a deja ete fait, on prefille les champs
+  try {
+    const r = await fetch('/api/preferences');
+    if (!r.ok) return;
+    const data = await r.json();
+    const prefs = data.preferences || {};
+    state.data.firstName  = prefs['user.firstName']  || '';
+    state.data.tenantName = prefs['user.tenantName'] || '';
+    state.data.posture    = prefs['user.posture']    || '';
+  } catch (e) {}
 }
 
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
-  startLoad();
-} else {
-  document.addEventListener('DOMContentLoaded', startLoad);
-}
-
-export default store;
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadExistingPrefs();
+  renderProgress();
+  renderStep();
+  console.info('[onboarding] wizard ready', { steps: STEPS.length, prefilled: !!state.data.firstName });
+});
