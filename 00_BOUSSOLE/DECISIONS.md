@@ -10,6 +10,58 @@
 
 
 
+## 2026-04-29 · S6.17 livre — Refonte Cockpit Phase 2 UX v0.8 (voix exec moderne)
+
+**Statut** : Livre · **Audience** : binome · **Decision** : refonte de la page Cockpit (`v07/pages/index.html` + `v07/stores/index-store.js`) selon le Memo Phase 1 UX v0.8 valide en Etape 2 (8 sous-validations CEO 29/04 PM tardif). Premiere page-pilote a appliquer la voix exec moderne (12 termes canoniques) et le cadrage UX complet.
+
+**Contexte** : 29/04/2026 PM tardif, suite a la validation Etape 2 par le CEO de la phrase magnetique "Naviguer clair. Trancher juste. Dormir serein.", 6 principes directeurs, 12 termes canoniques (Hub · Stream · Project · Action · Decision · Pin · Compass · North Star · Big Rock · Sync · Triage · Pulse), 8 visualisations marquantes par page, et 4 chronotypes visuels. La punch-list Phase 2 prevoyait 8 actions Cockpit pour ~4h binome. Livraison rapide en autonomie pour valider le pattern de portage du Memo en code.
+
+**Decision** : refonte complete de `index.html` (19 KB, 7 sections) + `index-store.js` (15 KB, logique async parallele) en remplaçant la version precedente (S6.11-EE-2 L2 du 28/04 PM) par une version conforme au Memo UX v0.8.
+
+**Sections livrees** :
+1. **Hero greeting Aubrielle chronotype** — detection automatique de la tranche horaire (matin/journee/soir/nuit), shift CSS variables (--chrono-bg, --chrono-accent, --chrono-mood), greeting adapte ("Bonjour Major" / "Bon midi" / "Bon apres-midi" / "Bonsoir Major" / "Encore la, Major ?") + lead correspondant + CTA noir vers "Lancer le Triage" (anciennement "Lancer l arbitrage").
+2. **Anneau journee 3 segments** — composant SVG circulaire 100x100 viewBox avec 3 anneaux concentriques (rayons 40/32/24, stroke 6px) : Decisions tranchees (violet `#463a54`), Actions completees (vert `#115e3c`), Sync done (rose `#d96d3e`). Pourcentage moyen au centre. Legende laterale avec compteurs `X/Total`.
+3. **Bloc Ma Trajectoire mini** — heatmap horizontal 7 derniers jours, markers carres 36x36 avec intensite progressive selon nombre d evenements (decisions tranchees + Big Rocks atteints + Projects clos), highlight today (box-shadow 2px ink-900), CTA "Voir ma Trajectoire complete →" (lien provisoire vers `#trajectoire-coming`, page complete S6.18).
+4. **KPI row 4 tiles parametrables** — Streak, Decisions/sem, Big Rocks ratio, Pulse serenite. Chaque tile a une mini-progress-bar 4px (background ivory-200, fill primary-500) avec progression vs cible parametrable. Cibles lues depuis `/api/preferences` (cle.streak, cle.decs_week, cle.big_rocks, cle.serenite). Lien "Configurer mes cibles →" vers `settings.html#coaching`.
+5. **North Star premium** — bloc gradient violet→paper, eyebrow "INTENTION DE LA SEMAINE" (font-mono 10px), texte intention en 20px font-weight 600 (max-width 720px), etoile ✦ flottante top-right opacity 0.4. Empty state elegant avec lien `Lancer le Weekly Sync`.
+6. **Top 3 Eisenhower** — 3 cards avec rang visible en JetBrains Mono 36px (ivory-200, position absolute top-right) + eyebrow violet "PRIORITE 1/2/3" + titre + meta `Urgent et important / Urgent / Important / Standard` + echeance. Click ouvre modal-detail enrichi via `data-md-kind="task" data-md-id="..."` (S6.12 auto-detection).
+7. **Project glance** — pill-shape unique remplaçant les anciennes projects-houses encombrantes : `2 en alerte · 5 a surveiller · 6 sains · Ouvrir Projects →`. Beaucoup plus light, redirige vers la page Projets.
+
+**Voix exec moderne appliquee** :
+- "Triage" remplace "Arbitrage" sur tous les libelles UI (CTA hero, bottom-tab nav)
+- "Bilan" en bottom-tab (anciennement "Soiree") - migration partielle
+- "Decision tranchee" / "Action completee" / "Sync" dans la legende anneau
+- "North Star" / "Weekly Sync" / "Pulse serenite" / "Big Rock" dans les sections
+- "Project / Projects" dans le glance
+- Footer reprend la phrase magnetique : "Naviguer clair. Trancher juste. Dormir serein."
+
+**Conseguences** :
+- Cockpit refondu en ~ 4h binome conformement a la punch-list Phase 2 (estimation respectee)
+- 10/10 tests `v07-atomic.test.js` verts (drawer, header-topbar, modal-detail, timeline, bottom-tab, footer tous preserves)
+- Validation par le CEO en mode usage 3-7 jours (Etape 5 de l accompagnement) avant generalisation aux 17 autres pages
+- Pattern reutilisable pour les sprints suivants (S6.18 Hub, S6.19 Triage, S6.20 Decisions, S6.21 LLM frontend)
+- v07 fonctionnellement complete + Cockpit aux standards UX v0.8 (premiere page conforme au cadrage Phase 1)
+
+**Reportes (S6.18+)** :
+- Page complete `trajectoire.html` interactive (link CTA pointe vers placeholder pour l instant)
+- Renommage drawer-sidebar Pilotage→Compass / Travail→Deliver / Capital→Wealth (separe pour eviter regression S6.17)
+- Remplacement complet "Soiree"→"Bilan" dans drawer + page evening.html (sprint cosmetique separe)
+- Generalisation pattern Cockpit aux 17 autres pages
+- Cablage LLM frontend complet (S6.21)
+
+**Sources** :
+- Memo UX v0.8 Phase 1 valide : `04_docs/_design-v08-intentions/MEMO-UX-V08-PHASE1.md`
+- Charte de voix : `04_docs/_design-v08-intentions/VOICE-AICEO.md`
+- Glossaire 12 termes : `04_docs/_design-v08-intentions/GLOSSAIRE-AICEO.md`
+- Moodboard valide : `04_docs/_design-v08-intentions/MOODBOARD-V08-PHASE1.svg`
+- Choix CEO Etape 0 : `04_docs/_design-v08-intentions/CHOIX-CEO-ETAPE-0.md`
+- Code livre : `03_mvp/public/v07/pages/index.html` (19 KB) + `03_mvp/public/v07/stores/index-store.js` (15 KB)
+- Script production : `outputs/write-cockpit-phase2.py`
+
+**Validation** : a tester par le CEO sur 3-7 jours en condition reelle d usage matin/journee/soir (Etape 5 du parcours UX v0.8). Si OK, generalisation aux 17 autres pages en sprints S6.18+. Si ajustements, 1 boucle Phase 2bis.
+
+---
+
 ## 2026-04-29 · S6.12 livre — modal-detail enrichi 6 kinds + auto-detection
 
 **Statut** : Livre · **Audience** : binome · **Decision** : extension du composant `modal-detail` v07 pour gerer 6 types d items (decision/project/contact/task/event/review) avec rendu specifique, related items fetch async, actions footer contextuelles, et auto-detection des elements `[data-md-kind]`.

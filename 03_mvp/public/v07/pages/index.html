@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-chronotype="day">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>aiCEO - Cockpit (v07 Atomic / Editorial Executive)</title>
+  <title>aiCEO - Cockpit (v07 voix exec)</title>
   <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css">
   <link rel="stylesheet" href="../shared/tokens.css">
   <link rel="stylesheet" href="../shared/tweaks.css">
@@ -12,7 +12,18 @@
   <link rel="stylesheet" href="../components/kpi-tile/kpi-tile.css">
   <link rel="stylesheet" href="../components/modal-detail/modal-detail.css">
   <style>
-    /* === Hero cockpit (compact) === */
+    /* === Chronotype CSS variables === */
+    :root[data-chronotype="morning"]  { --chrono-bg: #faf8f3; --chrono-accent: #d96d3e; --chrono-mood: warm; }
+    :root[data-chronotype="day"]      { --chrono-bg: #ffffff; --chrono-accent: #463a54; --chrono-mood: neutral; }
+    :root[data-chronotype="evening"]  { --chrono-bg: #f5f3ee; --chrono-accent: #463a54; --chrono-mood: warm-soft; }
+    :root[data-chronotype="night"]    { --chrono-bg: #ebe7dc; --chrono-accent: #2d2438; --chrono-mood: cool; }
+
+    body {
+      transition: background 600ms cubic-bezier(.16,1,.3,1);
+      background: var(--chrono-bg);
+    }
+
+    /* === Hero greeting Aubrielle chronotype === */
     .ck-hero {
       background: var(--paper);
       border: 1px solid var(--ivory-200);
@@ -23,6 +34,15 @@
       grid-template-columns: 1fr auto;
       gap: var(--space-5);
       align-items: end;
+      position: relative;
+      overflow: hidden;
+    }
+    .ck-hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: var(--chrono-accent);
+      opacity: 0.6;
     }
     @media (max-width: 768px) {
       .ck-hero { grid-template-columns: 1fr; }
@@ -31,13 +51,13 @@
       font-family: var(--font-mono);
       font-size: 11px;
       font-weight: 700;
-      color: var(--primary-500, #463a54);
+      color: var(--chrono-accent);
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
     .ck-greeting {
       font-family: var(--font-signature, 'Aubrielle', cursive);
-      font-size: 42px;
+      font-size: 44px;
       line-height: 1.1;
       color: var(--ink-900);
       margin: 6px 0 var(--space-2);
@@ -49,11 +69,11 @@
       line-height: 1.5;
       max-width: 520px;
     }
-    .ck-arb-cta {
+    .ck-cta-triage {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 12px 20px;
+      padding: 12px 22px;
       background: var(--ink-900);
       color: var(--paper);
       border-radius: var(--radius-md);
@@ -63,8 +83,8 @@
       transition: all 150ms ease;
       white-space: nowrap;
     }
-    .ck-arb-cta:hover { background: var(--ink-700); transform: translateY(-1px); }
-    .ck-arb-cta svg.ico { width: 16px; height: 16px; }
+    .ck-cta-triage:hover { background: var(--ink-700); transform: translateY(-1px); }
+    .ck-cta-triage svg.ico { width: 16px; height: 16px; }
 
     /* === Section générique === */
     .ck-section { margin-bottom: var(--space-6); }
@@ -85,10 +105,58 @@
       font-size: 12px;
       color: var(--ink-500);
       font-family: var(--font-mono);
+      text-decoration: none;
+    }
+    a.ck-section-meta { color: var(--chrono-accent); }
+
+    /* === Anneau journee (SVG 3 segments) === */
+    .ck-day-ring-wrap {
+      background: var(--paper);
+      border: 1px solid var(--ivory-200);
+      border-radius: var(--radius-md);
+      padding: var(--space-4) var(--space-5);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--space-5);
+      align-items: center;
+    }
+    .ck-day-ring {
+      width: 140px; height: 140px;
+      flex-shrink: 0;
+    }
+    .ck-day-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .ck-day-leg-row {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 13px;
+      color: var(--ink-700);
+    }
+    .ck-day-leg-dot {
+      width: 12px; height: 12px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .ck-day-leg-label { flex: 1; font-weight: 500; }
+    .ck-day-leg-val {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink-900);
+    }
+    .ck-day-leg-val .total { color: var(--ink-300); font-weight: 500; }
+
+    /* === KPI row === */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-3);
     }
 
-    /* === Cap stratégique === */
-    .ck-cap {
+    /* === North Star premium === */
+    .ck-northstar {
       background: linear-gradient(135deg, var(--primary-50) 0%, var(--paper) 100%);
       border: 1px solid var(--primary-100, #d8d0e0);
       border-radius: var(--radius-md);
@@ -96,118 +164,85 @@
       position: relative;
       overflow: hidden;
     }
-    .ck-cap::before {
+    .ck-northstar::before {
       content: '✦';
       position: absolute;
-      top: 12px; right: 18px;
-      font-size: 24px;
+      top: 14px; right: 22px;
+      font-size: 26px;
       color: var(--primary-500, #463a54);
       opacity: 0.4;
     }
-    .ck-cap-eyebrow {
+    .ck-ns-eyebrow {
       font-family: var(--font-mono);
       font-size: 10px;
       font-weight: 700;
       color: var(--primary-700, #463a54);
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
-    .ck-cap-text {
-      font-size: 18px;
+    .ck-ns-text {
+      font-size: 20px;
       font-weight: 600;
       color: var(--ink-900);
       line-height: 1.4;
       margin: 0;
+      max-width: 720px;
     }
-    .ck-cap-empty {
+    .ck-ns-empty {
       font-size: 14px;
       color: var(--ink-500);
       font-style: italic;
     }
+    .ck-ns-empty a { color: var(--primary-700); }
 
-    /* === Dot-chart 7 jours === */
-    .ck-velocity {
+    /* === Bloc Ma Trajectoire mini (7j heatmap horizontal) === */
+    .ck-traj-mini {
       background: var(--paper);
       border: 1px solid var(--ivory-200);
       border-radius: var(--radius-md);
       padding: var(--space-4) var(--space-5);
-    }
-    .ck-velocity-grid {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: var(--space-2);
+      grid-template-columns: 1fr auto;
+      gap: var(--space-4);
+      align-items: center;
     }
-    .ck-velocity-day {
-      text-align: center;
+    .ck-traj-grid {
+      display: flex;
+      gap: 6px;
+      align-items: center;
     }
-    .ck-velocity-dot {
-      width: 100%;
-      aspect-ratio: 1;
-      max-width: 56px;
-      max-height: 56px;
-      margin: 0 auto;
-      border-radius: var(--radius-md);
+    .ck-traj-day {
+      width: 36px; height: 36px;
+      border-radius: 6px;
       background: var(--ivory-100);
       display: grid; place-items: center;
       font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--ink-900);
-      transition: all 150ms ease;
-    }
-    .ck-velocity-dot.is-empty { color: var(--ink-300); background: var(--ivory-50); }
-    .ck-velocity-dot.is-low   { background: var(--primary-50); }
-    .ck-velocity-dot.is-mid   { background: color-mix(in srgb, var(--primary-500, #463a54) 30%, var(--paper)); color: var(--paper); }
-    .ck-velocity-dot.is-high  { background: var(--primary-500, #463a54); color: var(--paper); }
-    .ck-velocity-dot.is-today { box-shadow: 0 0 0 2px var(--ink-900); }
-    .ck-velocity-label {
-      font-size: 10px;
-      color: var(--ink-500);
-      margin-top: 4px;
-      text-transform: uppercase;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-    }
-
-    /* === Projects-houses === */
-    .ck-houses {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: var(--space-3);
-    }
-    .ck-house {
-      background: var(--paper);
-      border: 1px solid var(--ivory-200);
-      border-left: 4px solid var(--ink-300);
-      border-radius: var(--radius-md);
-      padding: var(--space-3) var(--space-4);
-      text-decoration: none;
-      color: var(--ink-900);
-      display: flex; flex-direction: column; gap: 6px;
-      transition: all 150ms ease;
-    }
-    .ck-house:hover { box-shadow: var(--elev-1); transform: translateY(-1px); }
-    .ck-house.is-alert      { border-left-color: var(--danger); }
-    .ck-house.is-attention  { border-left-color: var(--warning); }
-    .ck-house.is-sain       { border-left-color: var(--success); }
-    .ck-house-name {
-      font-size: 14px; font-weight: 600;
-    }
-    .ck-house-status {
       font-size: 11px;
-      color: var(--ink-500);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      font-weight: 600;
-    }
-    .ck-house-meta {
-      font-size: 12px;
+      font-weight: 700;
       color: var(--ink-700);
-      display: flex; gap: 10px;
+      transition: transform 150ms ease;
+      cursor: default;
     }
+    .ck-traj-day:hover { transform: scale(1.1); }
+    .ck-traj-day.is-empty { color: var(--ink-300); background: var(--ivory-50); }
+    .ck-traj-day.is-low   { background: color-mix(in srgb, var(--primary-500, #463a54) 18%, var(--paper)); }
+    .ck-traj-day.is-mid   { background: color-mix(in srgb, var(--primary-500, #463a54) 45%, var(--paper)); color: var(--paper); }
+    .ck-traj-day.is-high  { background: var(--primary-500, #463a54); color: var(--paper); }
+    .ck-traj-day.is-today { box-shadow: 0 0 0 2px var(--ink-900); }
+    .ck-traj-cta {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary-700, #463a54);
+      text-decoration: none;
+      white-space: nowrap;
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      transition: background 150ms ease;
+    }
+    .ck-traj-cta:hover { background: var(--primary-50); }
 
-    /* === Top 3 === */
+    /* === Top 3 Eisenhower === */
     .ck-top3 {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -217,21 +252,36 @@
       background: var(--paper);
       border: 1px solid var(--ivory-200);
       border-radius: var(--radius-md);
-      padding: var(--space-4);
+      padding: var(--space-4) var(--space-5);
       display: flex; flex-direction: column; gap: var(--space-2);
+      position: relative;
+      transition: all 150ms ease;
     }
+    .ck-top3-card:hover { box-shadow: var(--elev-1); transform: translateY(-2px); }
     .ck-top3-rank {
+      position: absolute;
+      top: 14px; right: 18px;
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--ivory-200);
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+    .ck-top3-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 10px;
       font-weight: 700;
       color: var(--primary-500, #463a54);
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
     }
     .ck-top3-title {
       font-size: 15px;
       font-weight: 600;
       color: var(--ink-900);
-      line-height: 1.3;
+      line-height: 1.35;
+      max-width: 80%;
     }
     .ck-top3-meta {
       font-size: 12px;
@@ -239,6 +289,36 @@
       margin-top: auto;
       padding-top: var(--space-2);
       border-top: 1px dashed var(--ivory-200);
+    }
+
+    /* === Project-glance link (remplace projects-houses encombrant) === */
+    .ck-project-glance {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: 10px 16px;
+      background: var(--paper);
+      border: 1px solid var(--ivory-200);
+      border-radius: var(--radius-pill);
+      text-decoration: none;
+      font-size: 13px;
+      color: var(--ink-700);
+      transition: all 150ms ease;
+    }
+    .ck-project-glance:hover { border-color: var(--primary-500); color: var(--ink-900); }
+    .ck-project-glance .ck-pg-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 600;
+    }
+    .ck-pg-pill.alert  .dot { background: var(--danger); }
+    .ck-pg-pill.watch  .dot { background: var(--warning); }
+    .ck-pg-pill.healthy .dot { background: var(--success); }
+    .ck-pg-pill .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      display: inline-block;
     }
 
     .ck-empty {
@@ -295,80 +375,120 @@
   </script>
 
   <div class="app">
-    <aside data-component="drawer-sidebar" data-props='{"active":"cockpit","tenant":{"label":"Mon espace"},"user":{"name":"Major Fey","role":"CEO"}}'></aside>
+    <aside data-component="drawer-sidebar" data-props='{"active":"cockpit","tenant":{"label":"Mon Hub"},"user":{"name":"Major Fey","role":"CEO"}}'></aside>
     <main class="app-main" id="main">
 
-      <div data-component="header-topbar" data-props='{"breadcrumb":[{"label":"Cockpit"}],"title":"Votre cockpit du jour","subtitle":"Cap strategique, top 3, alertes"}'></div>
+      <div data-component="header-topbar" data-props='{"breadcrumb":[{"label":"Cockpit"}],"title":"Votre cockpit du jour","subtitle":"Naviguer clair. Trancher juste. Dormir serein."}'></div>
 
-      <!-- 1. HERO greeting + cta arbitrage -->
+      <!-- 1. HERO greeting Aubrielle chronotype + CTA Triage -->
       <section class="ck-hero">
         <div>
           <span class="ck-eyebrow" data-region="ck-eyebrow">COCKPIT - 29 avril 2026</span>
           <h1 class="ck-greeting" data-region="ck-greeting">Bonjour Major.</h1>
           <p class="ck-lead" data-region="ck-lead">Voici votre journee : ce qui compte, ce qui peut attendre.</p>
         </div>
-        <a href="arbitrage.html" class="ck-arb-cta">
+        <a href="arbitrage.html" class="ck-cta-triage">
           <svg class="ico" aria-hidden="true"><use href="#i-arbitrage"/></svg>
-          Lancer l arbitrage du matin
+          Lancer le Triage
         </a>
       </section>
 
-      <!-- 2. KPI ROW -->
+      <!-- 2. ANNEAU JOURNEE 3 segments (Decisions / Actions / Sync) -->
       <section class="ck-section">
+        <div class="ck-section-head">
+          <h2 class="ck-section-title">Aujourd'hui</h2>
+          <span class="ck-section-meta" data-region="ck-day-meta">— en cours</span>
+        </div>
+        <div class="ck-day-ring-wrap">
+          <svg class="ck-day-ring" viewBox="0 0 100 100" data-region="ck-day-ring-svg">
+            <!-- placeholder, rendu par store -->
+          </svg>
+          <div class="ck-day-legend" data-region="ck-day-legend">
+            <div class="ck-day-leg-row">
+              <span class="ck-day-leg-dot" style="background:#463a54"></span>
+              <span class="ck-day-leg-label">Decisions tranchees</span>
+              <span class="ck-day-leg-val" data-leg="decisions">0<span class="total">/—</span></span>
+            </div>
+            <div class="ck-day-leg-row">
+              <span class="ck-day-leg-dot" style="background:#115e3c"></span>
+              <span class="ck-day-leg-label">Actions completees</span>
+              <span class="ck-day-leg-val" data-leg="actions">0<span class="total">/—</span></span>
+            </div>
+            <div class="ck-day-leg-row">
+              <span class="ck-day-leg-dot" style="background:#d96d3e"></span>
+              <span class="ck-day-leg-label">Sync (Triage + Bilan)</span>
+              <span class="ck-day-leg-val" data-leg="sync">0<span class="total">/2</span></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. BLOC MA TRAJECTOIRE mini (7 derniers jours heatmap) -->
+      <section class="ck-section">
+        <div class="ck-section-head">
+          <h2 class="ck-section-title">Ma Trajectoire — 7 derniers jours</h2>
+          <span class="ck-section-meta" data-region="ck-traj-meta">— evenements</span>
+        </div>
+        <div class="ck-traj-mini">
+          <div class="ck-traj-grid" data-region="ck-traj-grid"></div>
+          <a href="#trajectoire-coming" class="ck-traj-cta" title="Page complete disponible en S6.18">Voir ma Trajectoire complete →</a>
+        </div>
+      </section>
+
+      <!-- 4. KPI ROW (4 tiles parametrables) -->
+      <section class="ck-section">
+        <div class="ck-section-head">
+          <h2 class="ck-section-title">Mes baselines</h2>
+          <a href="settings.html#coaching" class="ck-section-meta">Configurer mes cibles →</a>
+        </div>
         <div data-region="kpis" class="kpi-row"></div>
       </section>
 
-      <!-- 3. CAP STRATEGIQUE -->
+      <!-- 5. NORTH STAR premium -->
       <section class="ck-section">
         <div class="ck-section-head">
-          <h2 class="ck-section-title">Cap strategique</h2>
-          <span class="ck-section-meta" data-region="ck-cap-week">Semaine —</span>
+          <h2 class="ck-section-title">North Star</h2>
+          <span class="ck-section-meta" data-region="ck-ns-week">Semaine —</span>
         </div>
-        <div class="ck-cap" data-region="ck-cap">
-          <div class="ck-cap-eyebrow">INTENTION DE SEMAINE</div>
-          <p class="ck-cap-text" data-region="ck-cap-text">
-            <span class="ck-cap-empty">Pas encore d intention pour cette semaine. <a href="revues.html" style="color:var(--primary-700)">Lancer la revue</a> pour la definir.</span>
+        <div class="ck-northstar" data-region="ck-northstar">
+          <div class="ck-ns-eyebrow">INTENTION DE LA SEMAINE</div>
+          <p class="ck-ns-text" data-region="ck-ns-text">
+            <span class="ck-ns-empty">Pas encore de North Star pour cette semaine. <a href="revues.html">Lancer le Weekly Sync</a> pour la definir.</span>
           </p>
         </div>
       </section>
 
-      <!-- 4. DOT-CHART 7 JOURS -->
-      <section class="ck-section">
-        <div class="ck-section-head">
-          <h2 class="ck-section-title">Velocite arbitrage - 7 derniers jours</h2>
-          <span class="ck-section-meta" data-region="ck-velocity-meta">— decisions tranchees</span>
-        </div>
-        <div class="ck-velocity">
-          <div class="ck-velocity-grid" data-region="ck-velocity-grid"></div>
-        </div>
-      </section>
-
-      <!-- 5. PROJECTS-HOUSES -->
-      <section class="ck-section">
-        <div class="ck-section-head">
-          <h2 class="ck-section-title">Maisons sous tension</h2>
-          <a href="projets.html" class="ck-section-meta" style="text-decoration:none;color:var(--primary-700)">Voir tout →</a>
-        </div>
-        <div class="ck-houses" data-region="ck-houses"></div>
-      </section>
-
-      <!-- 6. TOP 3 DU JOUR -->
+      <!-- 6. TOP 3 Eisenhower -->
       <section class="ck-section">
         <div class="ck-section-head">
           <h2 class="ck-section-title">Top 3 du jour</h2>
-          <a href="taches.html" class="ck-section-meta" style="text-decoration:none;color:var(--primary-700)">Voir toutes les actions →</a>
+          <a href="taches.html" class="ck-section-meta">Toutes mes Actions →</a>
         </div>
         <div class="ck-top3" data-region="ck-top3"></div>
       </section>
 
+      <!-- 7. PROJECT GLANCE (remplace projects-houses) -->
+      <section class="ck-section">
+        <div class="ck-section-head">
+          <h2 class="ck-section-title">Vos Projects en un coup d'oeil</h2>
+          <span class="ck-section-meta">Ventiles par sante</span>
+        </div>
+        <a href="projets.html" class="ck-project-glance" data-region="ck-project-glance">
+          <span class="ck-pg-pill alert"><span class="dot"></span><span data-pg="alert">0</span> en alerte</span>
+          <span class="ck-pg-pill watch"><span class="dot"></span><span data-pg="watch">0</span> a surveiller</span>
+          <span class="ck-pg-pill healthy"><span class="dot"></span><span data-pg="healthy">0</span> sains</span>
+          <span style="margin-left:auto;font-weight:600;color:var(--primary-700)">Ouvrir Projects →</span>
+        </a>
+      </section>
+
       <footer class="app-footer">
-        <p class="strategic-q">Une journee bien tranchee : 80 % execution, 20 % decision. Et un soir.</p>
+        <p class="strategic-q">Naviguer clair. Trancher juste. Dormir serein.</p>
         <div class="footer-meta">
           <span>aiCEO v0.7</span>
           <span>&middot;</span>
           <span>Cockpit du jour</span>
           <span>&middot;</span>
-          <span>v07 Atomic Templates</span>
+          <span>v07 · Voix exec moderne</span>
         </div>
       </footer>
     </main>
@@ -377,13 +497,13 @@
   <!-- Bottom-tab nav mobile -->
   <nav class="bottom-tab-nav" aria-label="Navigation rapide mobile">
     <a href="index.html" class="bottom-tab is-active"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span>Cockpit</span></a>
-    <a href="arbitrage.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
+    <a href="arbitrage.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-arbitrage"/></svg><span>Triage</span></a>
     <button class="bottom-tab fab-trigger" type="button" aria-label="Capter">
       <span class="fab-circle"><svg class="ico" aria-hidden="true"><use href="#i-mic"/></svg></span>
       <span>Capter</span>
     </button>
     <a href="decisions.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg><span>Decisions</span></a>
-    <a href="evening.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-evening"/></svg><span>Soiree</span></a>
+    <a href="evening.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-evening"/></svg><span>Bilan</span></a>
   </nav>
 
   <!-- timeline region requise par les tests v07-atomic -->
