@@ -45,6 +45,13 @@ export default {
     const status = (props.status || 'active').toLowerCase();
     const tone = STATUS_RAIL_TONE[status] || 'neutral';
     if (root) root.dataset.tone = tone;
+    // S6.29 : auto-wire modal-detail sur la card root si props.id present.
+    // Si props.kind defini (project/task/event/review/big-rock/info), respecte-le.
+    if (root && props.id) {
+      root.dataset.mdKind = props.kind || 'decision';
+      root.dataset.mdId = props.id;
+      root.style.cursor = 'pointer';
+    }
 
     const timeEl = el.querySelector('[data-region="cd-time"]');
     if (timeEl) {

@@ -247,13 +247,46 @@ function renderGeneric(data) {
   };
 }
 
+// S6.29 : renderer Big Rock (rocher hebdo)
+async function renderBigRock(r) {
+  const meta = metaGrid([
+    ['Semaine', r.week_id || r.week || null],
+    ['Statut', r.status ? statusBadge(r.status) : null],
+    ['Ordre', r.ordre ? String(r.ordre) + '/3' : null],
+    ['Cree', r.created_at ? fmtDateTime(r.created_at) : null]
+  ]);
+  return {
+    body: meta + (r.description ? '<div class="md-context"><p>' + escapeHtml(r.description).replace(/\n/g, '<br>') + '</p></div>' : ''),
+    foot: '<button class="md-btn md-btn-ghost" data-action="close">Fermer</button>'
+  };
+}
+
+// S6.29 : renderer Info (email lie a un projet, kind=info dans Triage)
+async function renderInfo(data) {
+  const meta = metaGrid([
+    ['Type', 'Info contextuelle'],
+    ['Projet lie', data.project_name || data.inferred_project || null],
+    ['Source', data.from_email ? data.from_email : 'email'],
+    ['Recu', data.received_at ? fmtDateTime(data.received_at) : null]
+  ]);
+  const body = data.subject ? '<h4 style="margin:0 0 8px;font-size:14px;font-weight:600">' + escapeHtml(data.subject) + '</h4>' : '';
+  const ctx = data.body_preview || data.snippet || data.excerpt || '';
+  return {
+    body: body + meta + (ctx ? '<div class="md-context"><p>' + escapeHtml(ctx).replace(/\n/g, '<br>') + '</p></div>' : ''),
+    foot: '<button class="md-btn md-btn-ghost" data-action="close">Fermer</button>'
+  };
+}
+
 const RENDERERS = {
   decision: renderDecision,
   project: renderProject,
   contact: renderContact,
   task: renderTask,
   event: renderEvent,
-  review: renderReview
+  review: renderReview,
+  'big-rock': renderBigRock,
+  bigrock: renderBigRock,
+  info: renderInfo
 };
 
 export default {
@@ -371,7 +404,10 @@ export default {
         contact:  `/api/contacts/${id}`,
         task:     `/api/tasks/${id}`,
         event:    `/api/events/${id}`,
-        review:   `/api/weekly-reviews/${id}`
+        review:   `/api/weekly-reviews/${id}`,
+        'big-rock': `/api/big-rocks/${id}`,
+        bigrock:    `/api/big-rocks/${id}`,
+        info:       `/api/arbitrage/emails/${id}`
       };
       const url = endpoints[kind];
       if (!url) return;

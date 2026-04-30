@@ -180,7 +180,8 @@ function renderTimeline() {
       const pct = span > 0 ? ((t - minTime) / span) * 100 : 50;
       const symbol = e.kind === 'decision' ? 'D' : (e.kind === 'bigrock' ? '★' : 'P');
       const apiKind = e.kind === 'bigrock' ? 'big-rock' : (e.kind === 'project' ? 'project' : 'decision');
-      const mdKind = e.kind === 'project' ? 'project' : (e.kind === 'bigrock' ? 'task' : 'decision');
+      // S6.29 : modal-detail supporte 'big-rock' nativement
+      const mdKind = apiKind;
       const dateStr = e.date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
       markersHtml += `<span class="tj-marker kind-${e.kind}" style="left:calc(${pct.toFixed(2)}% - 12px)" title="${escHtml(e.title)} - ${dateStr}" data-md-kind="${mdKind}" data-md-id="${e.id}">${symbol}</span>`;
     });
@@ -243,7 +244,8 @@ function renderGraphe() {
     const cl = clusters.find(c => c.kind === e.kind);
     if (!cl || !e._x) return;
     const symbol = e.kind === 'decision' ? 'D' : (e.kind === 'bigrock' ? '*' : 'P');
-    const mdKind = e.kind === 'project' ? 'project' : (e.kind === 'bigrock' ? 'task' : 'decision');
+    // S6.29 : modal-detail supporte 'big-rock' nativement
+    const mdKind = e.kind === 'project' ? 'project' : (e.kind === 'bigrock' ? 'big-rock' : 'decision');
     const dateStr = e.date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
     html += '<g class="tj-graphe-node" data-md-kind="' + mdKind + '" data-md-id="' + e.id + '">';
     html += '<circle cx="' + e._x + '" cy="' + e._y + '" r="11" fill="' + cl.color + '"/>';
