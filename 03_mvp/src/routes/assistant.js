@@ -36,6 +36,48 @@ Tu peux appeler le tool plusieurs fois dans la même réponse si plusieurs élé
 
 const MAX_TOKENS = 1500;
 
+// === S7.1 (30/04/2026) — Memoire inter-fils LLM (pilier IA contextualisee) ===
+// buildContextualSystemPrompt() augmente le system prompt avec snapshot DB.
+// Try/catch : si DB indisponible, fallback prompt de base.
+function buildContextualSystemPrompt() {
+  let ctx = "";
+  try {
+    const db = getDb();
+    let decisions = [];
+    try { decisions = db.prepare("SELECT title, status FROM decisions WHERE status IN ('ouverte','reportee') ORDER BY updated_at DESC LIMIT 5").all(); } catch (e) {}
+    let rocks = [];
+    try {
+      const now = new Date();
+      const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+      const dayNum = d.getUTCDay() || 7;
+      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      const weekNum = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+      const weekId = d.getUTCFullYear() + "-W" + String(weekNum).padStart(2, "0");
+      rocks = db.prepare("SELECT title, status, ordre FROM big_rocks WHERE week_id = ? ORDER BY ordre").all(weekId);
+    } catch (e) {}
+    let projects = [];
+    try { projects = db.prepare("SELECT name, tagline FROM projects WHERE status IN ('active','hot','new') ORDER BY updated_at DESC LIMIT 5").all(); } catch (e) {}
+    let feedbacks = [];
+    try { feedbacks = db.prepare("SELECT verdict, COUNT(*) AS n FROM email_feedback WHERE feedback_at >= datetime('now','-30 days') GROUP BY verdict ORDER BY n DESC LIMIT 5").all(); } catch (e) {}
+    let pins = [];
+    try { pins = db.prepare("SELECT kind, title FROM knowledge_pins ORDER BY pinned_at DESC LIMIT 5").all(); } catch (e) {}
+
+    if (decisions.length || rocks.length || projects.length || feedbacks.length || pins.length) {
+      ctx += "\n\n---\nCONTEXTE EXECUTIF DU CEO (snapshot DB) — utilise-le pour personnaliser tes reponses :\n";
+      if (decisions.length) ctx += "\n- Decisions en attente (" + decisions.length + ") : " + decisions.map(d => '"' + d.title + '"' + (d.status === "reportee" ? " [reportee]" : "")).join(" | ");
+      if (rocks.length) ctx += "\n- Big Rocks semaine (" + rocks.length + "/3) : " + rocks.map(r => '"' + r.title + '"' + (r.status === "accompli" ? " OK" : r.status === "rate" ? " KO" : "")).join(" | ");
+      if (projects.length) ctx += "\n- Projets actifs : " + projects.map(p => '"' + p.name + '"' + (p.tagline ? " (" + p.tagline.slice(0, 40) + ")" : "")).join(" | ");
+      if (feedbacks.length) ctx += "\n- Apprentissage Triage 30j : " + feedbacks.map(f => f.verdict + "x" + f.n).join(" | ");
+      if (pins.length) ctx += "\n- Connaissance epinglee recente : " + pins.map(p => "[" + p.kind + "] " + p.title).join(" | ");
+      ctx += "\n---\n";
+    }
+  } catch (e) {
+    console.warn("[assistant:buildContextualSystemPrompt] failed:", e.message);
+  }
+  return SYSTEM_PROMPT_ASSISTANT + ctx;
+}
+
 // S6.8.1 (28/04 PM late) — Tool pin_to_knowledge pour epinglage automatique Connaissance
 const TOOLS_ASSISTANT = [
   {
@@ -218,7 +260,7 @@ router.post('/messages', async (req, res) => {
         const stream = await client.messages.stream({
           model,
           max_tokens: MAX_TOKENS,
-          system: SYSTEM_PROMPT_ASSISTANT,
+          system: buildContextualSystemPrompt(),
           tools: TOOLS_ASSISTANT,
           messages: claudeMessages,
         });
