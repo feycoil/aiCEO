@@ -1544,50 +1544,77 @@ function renderFullTimeline() {
 }
 
 function renderRoadmap() {
-  // Détection automatique des sprints livrés depuis ADR (v12-v17 = Phase 0)
+  // Detection automatique des sprints livres depuis ADR (regex etendu pour couvrir EE/EE-2/EE-fix2/etc.)
   const livredIds = new Set();
   (DATA.adrs || []).forEach(a => {
     const t = (a.title || '').toLowerCase();
-    const m = t.match(/(s\d+\.\d+(?:-bis)?(?:-light|-ee|-ee-fix\d?)?|spike-validation)/i);
-    if (m && /(livr|livre|complete|cloture)/.test(t)) livredIds.add(m[1].toLowerCase());
+    // Capture s6.11-ee-2, s6.11-ee-fix2, s6.18, s6.10-ee-fix, etc.
+    const matches = t.matchAll(/(s\d+(?:\.\d+)?(?:-bis)?(?:-light|-ee(?:-fix\d?)?(?:-\d)?(?:-fix\d)?)?(?:-fix\d?)?|spike-validation|phase\s*\d|phase\s*0\s+lean)/gi);
+    for (const m of matches) {
+      if (/(livr|livre|complete|cloture)/.test(t)) {
+        livredIds.add(m[1].toLowerCase().replace(/\s+/g, '-'));
+      }
+    }
   });
+  // Whitelist explicite des sprints livres connus (fallback en cas de regex qui rate)
+  ['s6.9-bis-light','s6.10-bis-light','spike-validation','s6.11-bis-light',
+   's6.10-ee','s6.10-ee-fix','s6.11-ee','s6.11-ee-fix','s6.11-ee-fix2','s6.11-ee-2',
+   's6.12','s6.17','s6.18'].forEach(s => livredIds.add(s));
+
   function sprintStatus(id) {
     var lid = id.toLowerCase();
     if (livredIds.has(lid)) return 'done';
-    if (lid.startsWith('s6.10-ee') || lid.startsWith('s6.11-bis-light') || lid.startsWith('s6.10-bis-light') || lid.startsWith('s6.9-bis-light') || lid === 'spike-validation') return 'done';
     return 'pending';
   }
   const phases = [
-    { num: 0, title: 'PHASE 0 LEAN — Setup minimal + Validation', status: 'pending', subtitle: 'Variante Lean : preuve avant engagement · 3 j-binôme', sprints: [
+    { num: 0, title: 'PHASE 0 LEAN — Setup minimal + Validation ADD-AI', status: 'done', subtitle: 'Variante Lean : preuve avant engagement · 3 j-binome · livre 27/04', sprints: [
       { id: 'S6.9-bis-LIGHT', desc: 'Cowork minimal (3 skills + 4 subagents) · 0.5 j', doc: '_sprints/S6.9-bis/DOSSIER-SPRINT-S6.9-bis.md' },
       { id: 'S6.10-bis-LIGHT', desc: 'Atomic Templates : 1 page-pilote · 1 j', doc: '_sprints/S6.10-bis/DOSSIER-SPRINT-S6.10-bis.md' },
       { id: 'SPIKE-VALIDATION', desc: '⚡ MESURE GO/NO-GO ADD-AI · 0.5 j', doc: '_sprints/SPIKE-VALIDATION-ADD-AI/DOSSIER-SPIKE-VALIDATION.md' },
-      { id: 'S6.11-bis-LIGHT', desc: 'Pilotage v1.5 : Cmd+K + Régénérer · 1 j', doc: '_sprints/S6.11-bis/DOSSIER-SPRINT-S6.11-bis.md' }
-    ], cible: '3 j-binome' },
-    { num: 1, title: 'FONDATIONS', status: 'pending', subtitle: 'Solidifier le DS et la vitesse · ~5.5 j-binôme', sprints: [
-      { id: 'S6.11', desc: 'DS consolidation finale' },
-      { id: 'S6.12', desc: 'Keyboard-first arbitrage v07' },
-      { id: 'S6.13', desc: 'Cmd+K palette + FTS5' },
-      { id: 'S6.14', desc: 'Contexte LLM enrichi serveur' },
-      { id: 'S6.15', desc: 'Revues hebdo refondue v07' },
+      { id: 'S6.11-bis-LIGHT', desc: 'Pilotage v1.5 : Cmd+K + Regenerer · 1 j', doc: '_sprints/S6.11-bis/DOSSIER-SPRINT-S6.11-bis.md' }
+    ], cible: '3 j-binome livres' },
+
+    { num: 1, title: 'PHASE 1A — Migration v06 -> v07 (Atomic Templates)', status: 'done', subtitle: 'Parite Claude Design + 17 pages migrees · ~5 j-binome · livre 28/04', sprints: [
+      { id: 'S6.10-EE', desc: 'Parite visuelle v07/decisions vs Claude Design' },
+      { id: 'S6.10-EE-FIX', desc: 'Fidelite SVG + fonts + chevron + spritesheet v06' },
+      { id: 'S6.11-EE', desc: 'Migration 16 pages v06->v07 (lots A B C D)' },
+      { id: 'S6.11-EE-fix', desc: 'Routage drawer-sidebar v07 + grisage Aide pending' },
+      { id: 'S6.11-EE-fix2', desc: 'Aide v07 livree (sortie du pending)' },
+      { id: 'S6.11-EE-2', desc: '8 pages enrichies UX specifique (4 lots Hub/Onb/Cockpit/Soiree/Conn/Coach/Arb/Reg)' },
+      { id: 'S6.12', desc: 'Modal-detail enrichi 6 kinds + auto-detection [data-md-kind]' }
+    ], cible: '18/18 pages v07 + 10/10 tests verts' },
+
+    { num: 2, title: 'PHASE 1B — UX Editorial Executive v0.8 (voix exec moderne)', status: 'active', subtitle: 'Refonte progressive selon Memo UX v0.8 · en cours 29/04 PM', sprints: [
+      { id: 'S6.17', desc: 'Phase 2 - Cockpit refondu voix exec (anneau, North Star, Top 3, KPIs parametrables)' },
+      { id: 'S6.18', desc: 'Page Trajectoire MVP + drawer Capital + activation CTA Cockpit' },
+      { id: 'S6.19', desc: 'Generalisation pattern aux autres pages (Hub, Soiree, Decisions, Projects)', doc: null },
+      { id: 'S6.20', desc: 'Triage refondu (file emails + focus mode)', doc: null }
+    ], cible: '12 termes canoniques figes + 19/19 pages refondues' },
+
+    { num: 3, title: 'PHASE 1C — LLM frontend complet + tests', status: 'pending', subtitle: 'Cablage Claude live sur 5 surfaces UX · ~3-4 j-binome', sprints: [
+      { id: 'S6.13', desc: 'Cablage LLM frontend (decisions Recommander, revues auto-draft, coaching signaux)' },
+      { id: 'S6.14', desc: 'Tests E2E LLM + recette CEO complete' },
+      { id: 'S6.15', desc: 'Bascule v07 = defaut, v06 archivee' },
       { id: 'S6.16', desc: '🔍 BETA LAMIAE validation utilisateur · 1 j + 3 j cal.', doc: '_sprints/S6.16-beta-lamiae/DOSSIER-SPRINT-S6.16-beta-lamiae.md' }
-    ], cible: 'Note 6.3 → 8.0' },
-    { num: 2, title: 'INTELLIGENCE', status: 'pending', subtitle: 'L\'IA devient un binôme contextualisé · ~6 j-binôme', sprints: [
-      { id: 'S7.1', desc: 'Mémoire inter-fils LLM' },
+    ], cible: 'Note 6.3 -> 8.0 + GO V1' },
+
+    { num: 4, title: 'PHASE 2 — INTELLIGENCE (V1.x)', status: 'pending', subtitle: 'L IA devient un binome contextualise · ~6 j-binome · T3-T4 2026', sprints: [
+      { id: 'S7.1', desc: 'Memoire inter-fils LLM' },
       { id: 'S7.2', desc: 'Batch LLM operations' },
       { id: 'S7.3', desc: 'Capture audio + Whisper' },
       { id: 'S7.4', desc: 'Backlinks bidirectionnels' },
       { id: 'S7.5', desc: 'Skeleton loading + perf' },
-      { id: 'S7.6', desc: 'Mobile responsive' }
-    ], cible: 'Note 8.0 → 9.0' },
-    { num: 3, title: 'RITUALISATION', status: 'pending', subtitle: 'Compagnon quotidien indispensable · ~5.5 j-binôme', sprints: [
+      { id: 'S7.6', desc: 'Mobile responsive complet' }
+    ], cible: 'Note 8.0 -> 9.0' },
+
+    { num: 5, title: 'PHASE 3 — RITUALISATION (V1.x suite)', status: 'pending', subtitle: 'Compagnon quotidien indispensable · ~5.5 j-binome', sprints: [
       { id: 'S7.7', desc: 'Daily digest matin' },
-      { id: 'S7.8', desc: 'Bilan soir augmenté' },
+      { id: 'S7.8', desc: 'Bilan soir augmente' },
       { id: 'S7.9', desc: 'Onboarding CEO pair' },
       { id: 'S7.10', desc: 'Notifications PWA' },
       { id: 'S7.11', desc: 'Light/dark mode' },
       { id: 'S6.16-bis', desc: 'Restructuration projet (deferred fin course)' }
-    ], cible: 'Note 9.0 → 9.5' }
+    ], cible: 'Note 9.0 -> 9.5' }
   ];
   $('#roadmap-phases').innerHTML = phases.map(p => {
     return '<div class="phase ' + p.status + '">' +
