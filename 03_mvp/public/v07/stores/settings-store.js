@@ -285,6 +285,9 @@ function panelDonnees() {
 
 function panelApparence() {
   const theme = state.prefs['ui.theme'] || 'editorial';
+  let density = 'normal';
+  try { density = localStorage.getItem('aiCEO.uiDensity') || 'normal'; } catch (e) {}
+  const dBtn = (id, label) => '<button type="button" class="st-density-btn ' + (density === id ? 'is-active' : '') + '" data-density="' + id + '" style="padding:6px 14px;border:0;background:' + (density === id ? 'var(--paper)' : 'transparent') + ';color:' + (density === id ? 'var(--ink-900)' : 'var(--ink-500)') + ';border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;font-family:var(--font-sans);box-shadow:' + (density === id ? 'var(--elev-1)' : 'none') + ';transition:all 150ms">' + label + '</button>';
   return `
     <h2 class="st-panel-title">Apparence</h2>
     <p class="st-panel-desc">Direction artistique Editorial Executive (warm neutrals + violet primary). Le mode sombre arrive en V2.</p>
@@ -294,6 +297,14 @@ function panelApparence() {
         <option value="editorial" ${theme === 'editorial' ? 'selected' : ''}>Editorial Executive (par defaut)</option>
         <option value="dark" disabled>Sombre (V2)</option>
       </select>
+    </div>
+    <div class="st-field" style="margin-top:var(--space-4)">
+      <label class="st-label">Densite des cards Triage</label>
+      <p class="st-helper" style="margin-bottom:var(--space-2)">Compact = plus d emails par ecran. Detaille = plus de contexte par card.</p>
+      <div role="group" aria-label="Densite UI" style="display:inline-flex;background:var(--ivory-100);border-radius:8px;padding:3px;gap:2px">
+        ${dBtn('compact', 'Compact')}${dBtn('normal', 'Normal')}${dBtn('detaille', 'Detaille')}
+      </div>
+      <p class="st-helper" style="margin-top:var(--space-2);font-style:italic">Choix pris en compte immediatement sur la page Triage.</p>
     </div>
     <div data-region="st-saved" class="st-saved">✓ Enregistre</div>
   `;
@@ -347,6 +358,22 @@ function bindPanelEvents() {
     el.addEventListener('click', () => {
       const isOn = el.classList.toggle('is-on');
       savePref(el.dataset.toggle, isOn ? '1' : '0');
+    });
+  });
+
+  // S6.27 : densite UI buttons
+  host.querySelectorAll('[data-density]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const d = btn.dataset.density;
+      try { localStorage.setItem('aiCEO.uiDensity', d); } catch (e) {}
+      document.body.classList.remove('density-compact', 'density-normal', 'density-detaille');
+      document.body.classList.add('density-' + d);
+      renderPanel();
+      const saved = host.querySelector('[data-region="st-saved"]');
+      if (saved) {
+        saved.classList.add('is-visible');
+        setTimeout(() => saved.classList.remove('is-visible'), 1200);
+      }
     });
   });
 

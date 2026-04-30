@@ -121,6 +121,32 @@ async function analyzeEmails(useLlm) {
   setTimeout(() => maybeShowFirstTriageTour(), 600);
 }
 
+// S6.27 : hint visuel "filtre grace a votre feedback" si LLM a skip des emails
+function renderSkipped() {
+  let host = document.querySelector('[data-region="ar-skipped-hint"]');
+  const queueHost = document.querySelector('[data-region="ar-queue"]');
+  const skippedCount = (state.skipped && state.skipped.length) || 0;
+  if (skippedCount === 0) {
+    if (host) host.remove();
+    return;
+  }
+  if (!host && queueHost) {
+    host = document.createElement('div');
+    host.dataset.region = 'ar-skipped-hint';
+    host.className = 'ar-skipped-hint';
+    queueHost.parentNode.insertBefore(host, queueHost);
+  }
+  if (!host) return;
+  const reasons = {};
+  state.skipped.forEach(s => {
+    const r = s.reason || s.skip_reason || 'autre';
+    reasons[r] = (reasons[r] || 0) + 1;
+  });
+  const topReason = Object.entries(reasons).sort((a, b) => b[1] - a[1])[0];
+  const reasonLbl = topReason ? topReason[0].replace(/[_-]/g, ' ') : 'noise';
+  host.innerHTML = '<span><strong>' + skippedCount + ' email' + (skippedCount > 1 ? 's' : '') + ' filtre' + (skippedCount > 1 ? 's' : '') + '</strong> grace a votre feedback (motif principal : ' + escHtml(reasonLbl) + '). Claude apprend a vous epargner ce bruit.</span>';
+}
+
 async function bootstrapProjects() {
   if (!confirm('Auto-creer projets et contacts a partir des emails ?')) return;
   const r = await safeFetch('/api/arbitrage/bootstrap-from-emails', { method: 'POST' });
