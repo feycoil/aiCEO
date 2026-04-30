@@ -122,7 +122,7 @@ app.use(express.json({ limit: "2mb" }));
 
 
 // Convergence v0.6 (S6.2)  redirect / vers hub avant le static
-app.get("/", (req, res) => res.redirect("/v06/index.html"));
+app.get("/", (req, res) => res.redirect("/v07/pages/index.html")); // S6.15 bascule v07 = defaut
 app.use(express.static(path.join(__dirname, "public")));
 
 
@@ -133,8 +133,8 @@ app.use(express.static(path.join(__dirname, "public")));
 
 
 // Alias routes principales â†’ v0.6
-app.get("/cockpit", (req, res) => res.redirect("/v06/index.html"));
-app.get("/hub",     (req, res) => res.redirect("/v06/hub.html"));
+app.get("/cockpit", (req, res) => res.redirect("/v07/pages/index.html"));
+app.get("/hub",     (req, res) => res.redirect("/v07/pages/hub.html"));
 app.get("/legacy",  (req, res) => {
   // ConservÃ© pour accÃ¨s debug aux pages v0.5
   res.sendFile(path.join(__dirname, "public", "index.html"));

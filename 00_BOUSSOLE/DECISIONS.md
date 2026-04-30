@@ -10,6 +10,87 @@
 
 
 
+## 2026-04-29 · Triple sprint livre — S6.15 (bascule v07=defaut) + S6.19 Lots 1-3 (Hub/Bilan/Decisions voix exec) + S6.13 (banner LLM Cockpit)
+
+**Statut** : Livre · **Audience** : binome · **Decision** : enchainement de 3 sprints en cascade post-S6.18 selon decision CEO "fait tout maintenant" pour maximiser la valeur livree avant la pause de test sur soi (Etape 5 parcours UX v0.8).
+
+**Contexte** : 29/04/2026 PM tres tardif, suite a livraison S6.17 (Cockpit refondu) + S6.18 (page Trajectoire + drawer voix exec partielle), CEO demande la suite logique. Recommandation agent : enchainer S6.15 (bascule rapide) + S6.19 (generalisation pattern Hub/Bilan/Decisions) + S6.13 (banner LLM live/degrade) pour offrir la totalite de l experience refondue avant le test sur soi 3-7 jours.
+
+**Sprint S6.15 — Bascule v07 = defaut (~5 min binome)** :
+- `03_mvp/server.js` : redirect `/` -> `/v07/pages/index.html` (etait `/v06/index.html`)
+- Redirect `/cockpit` et `/hub` egalement bascules vers v07
+- `localhost:4747/` ouvre directement le Cockpit refondu voix exec
+- v06 reste accessible en deep-link (cohabitation S6.15 -> S6.22 prevu)
+- Risque tres faible (2 lignes modifiees)
+
+**Sprint S6.19 — Generalisation pattern (3 lots, ~3-4h binome)** :
+
+*Lot 1 — Hub refondu (~1.5h)* :
+- `v07/pages/hub.html` (10 KB) refondu : hero greeting Aubrielle chronotype + bloc Trajectoire mini 7j + 3 vagues (Compass / Deliver / Wealth)
+- `v07/stores/hub-store.js` : detection chronotype, greeting personnalise par tranche horaire, pre-fetch trajectoire mini, render 3 grids tiles
+- 13 tiles avec voix exec (Triage, Bilan, Projects, Trajectoire, Weekly Sync, Pulse, etc.)
+- CTA "Trajectoire complete" vers `trajectoire.html`
+
+*Lot 2 — Bilan refondu (~1h)* :
+- `v07/pages/evening.html` (10 KB) refondu : titre "Votre Bilan du soir" (anciennement "Votre rituel du soir")
+- Eyebrew "EVENING SYNC - 3 minutes" (anciennement "SOIREE - 3 minutes")
+- Bottom-tab affiche "Bilan" (anciennement "Soiree")
+- Phrase magnetique footer : "Naviguer clair. Trancher juste. Dormir serein."
+- Store `evening-store.js` inchange (deja fonctionnel)
+
+*Lot 3 — Decisions refondu (~30 min)* :
+- `v07/pages/decisions.html` : 11 patches voix exec appliques
+  - Header topbar : "Vos Decisions tranchees" (anciennement "Ce que vous avez choisi de faire")
+  - Filtres seg-filter : "North Star" (anciennement "Strategiques")
+  - Empty state CTA : "Lancer un Triage" (anciennement "Aller a l arbitrage")
+  - Bottom-tab : "Triage", "Bilan"
+  - Banner v07 : "Voix exec moderne · 12 termes canoniques figes · S6.19 Lot 3"
+  - Footer : phrase magnetique trinitaire
+
+*Lot 4 — Projects (defere)* :
+- `v07/pages/projets.html` : pattern de patches HTML cherche n a pas ete trouve sur la version actuelle, indique que le store renomme deja "Projects" via le drawer
+- A traiter en S6.20 avec une refonte plus complete (mindmap projets, auto-status visualise)
+
+**Sprint S6.13 — Banner LLM Cockpit (~30 min)** :
+- Bloc HTML `[data-region="ck-llm-banner"]` insere entre Hero et section Anneau journee dans `index.html`
+- CSS : `.ck-llm-banner.is-live` (vert success + dot pulse animation 2s) / `.ck-llm-banner.is-degraded` (ambre warning + dot statique)
+- Logique JS `renderLLMStatus()` dans `index-store.js` : appelle `/api/llm-status`, met le banner en `is-live` si `r.ready === true`, sinon `is-degraded`
+- Texte affiche : "Claude live · 5 surfaces UX activees" OU "Mode degrade · ANTHROPIC_API_KEY absente · regles heuristiques"
+- Lien "Configurer →" vers `settings.html#coaching`
+- Mode degrade = empty state du LLM (rule-based fallback active)
+
+**Conseguences** :
+- 19 / 19 pages v07 livrees (pas de nouveau ajout, juste enrichissement)
+- 10 / 10 tests verts conserves
+- Cockpit, Hub, Bilan, Decisions, Trajectoire = 5 pages aux standards UX v0.8 voix exec moderne
+- v07 = home par defaut sur `localhost:4747/` (S6.15 bascule effective)
+- Banner LLM affiche le statut Claude en haut du Cockpit (visible immediatement)
+- Voix exec moderne propagee sur :
+  - Drawer-sidebar (Triage, Bilan, Projects, Weekly Sync, Trajectoire NEW)
+  - Cockpit (footer phrase magnetique, libelles)
+  - Hub (3 vagues + tiles)
+  - Bilan (titre + eyebrow + bottom-tab + footer)
+  - Decisions (header, filtres, empty state, footer)
+  - Trajectoire (eyebrow + titre + footer)
+  - Bottom-tab nav mobile (toutes les pages)
+
+**Reportes (sprints suivants)** :
+- S6.20 — Refonte complete Projects (mindmap auto-status + Streams visualises)
+- S6.21 — LLM frontend complet (decision-recommend + auto-draft-review + effects-propagation + coaching-question + signaux Pulse)
+- S6.14 — Tests E2E LLM + recette CEO complete
+- S6.16 — BETA Lamiae validation utilisateur
+
+**Sources** :
+- Memo UX v0.8 Phase 1 valide : `04_docs/_design-v08-intentions/MEMO-UX-V08-PHASE1.md`
+- Charte de voix : `04_docs/_design-v08-intentions/VOICE-AICEO.md`
+- Glossaire 12 termes : `04_docs/_design-v08-intentions/GLOSSAIRE-AICEO.md`
+- Code livre : `03_mvp/server.js` + `03_mvp/public/v07/pages/{hub,evening,decisions,index}.html` + `03_mvp/public/v07/stores/{hub-store,index-store}.js`
+- Scripts : `outputs/write-s6.15-bascule.py`, `outputs/write-s6.19-hub-bilan.py`, `outputs/write-s6.19-decisions-projects-llm.py`
+
+**Validation** : test sur soi 3-7 jours par CEO (Etape 5 parcours UX v0.8). v07 etant maintenant home par defaut, l usage matin/journee/soir/nuit donnera le ressenti chronotype en condition reelle. Si OK, S6.20 (Projects) + S6.21 (LLM frontend complet) suivront. Si dissonance, 1 boucle d ajustement.
+
+---
+
 ## 2026-04-29 · S6.18 livre — Page Trajectoire MVP + drawer Capital + activation CTA Cockpit
 
 **Statut** : Livre · **Audience** : binome · **Decision** : creation page MVP `trajectoire.html` (vue retrospective interactive Decisions/Big Rocks/Projects) + ajout entree drawer en tete de section Capital (badge NEW) + activation CTA Cockpit pointant vers la page complete. Realisation post-Phase 2 S6.17 dans la foulee de la livraison Cockpit refondu, suite a question CEO sur l emplacement optimal du lien Trajectoire.

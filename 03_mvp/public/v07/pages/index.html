@@ -330,6 +330,18 @@
       border: 1px dashed var(--ivory-200);
       border-radius: var(--radius-md);
     }
+
+    /* S6.13 Banner LLM */
+    .ck-llm-banner { display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-radius: var(--radius-md); margin-bottom: var(--space-3); font-size: 12px; font-weight: 500; transition: all 200ms ease; }
+    .ck-llm-banner.is-live { background: var(--success-50); color: var(--success); border: 1px solid color-mix(in srgb, var(--success) 30%, transparent); }
+    .ck-llm-banner.is-degraded { background: var(--warning-50); color: var(--warning); border: 1px solid color-mix(in srgb, var(--warning) 30%, transparent); }
+    .ck-llm-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .ck-llm-banner.is-live .ck-llm-dot { background: var(--success); box-shadow: 0 0 0 3px color-mix(in srgb, var(--success) 25%, transparent); animation: pulse 2s infinite; }
+    .ck-llm-banner.is-degraded .ck-llm-dot { background: var(--warning); }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .ck-llm-cfg { margin-left: auto; color: inherit; font-weight: 600; text-decoration: none; }
+    .ck-llm-cfg:hover { text-decoration: underline; }
+
   </style>
 </head>
 <body data-route="cockpit">
@@ -392,6 +404,13 @@
           Lancer le Triage
         </a>
       </section>
+
+      <!-- S6.13 Banner LLM live/degrade -->
+      <div data-region="ck-llm-banner" class="ck-llm-banner" hidden>
+        <span class="ck-llm-dot"></span>
+        <span data-region="ck-llm-text">Verification du statut Claude...</span>
+        <a href="settings.html#coaching" class="ck-llm-cfg" data-region="ck-llm-cfg">Configurer →</a>
+      </div>
 
       <!-- 2. ANNEAU JOURNEE 3 segments (Decisions / Actions / Sync) -->
       <section class="ck-section">

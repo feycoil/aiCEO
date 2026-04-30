@@ -357,10 +357,30 @@ async function renderProjectGlance() {
   setVal('healthy', counts.healthy);
 }
 
+
+// === S6.13 Banner LLM live/degrade ===
+async function renderLLMStatus() {
+  const banner = document.querySelector('[data-region="ck-llm-banner"]');
+  const text = document.querySelector('[data-region="ck-llm-text"]');
+  if (!banner || !text) return;
+  const r = await safeFetch('/api/llm-status');
+  if (r?.ready) {
+    banner.classList.add('is-live');
+    banner.classList.remove('is-degraded');
+    text.innerHTML = '<strong>Claude live</strong> · 5 surfaces UX activees · IA contextualisee';
+  } else {
+    banner.classList.add('is-degraded');
+    banner.classList.remove('is-live');
+    text.innerHTML = '<strong>Mode degrade</strong> · ANTHROPIC_API_KEY absente · regles heuristiques rule-based';
+  }
+  banner.hidden = false;
+}
+
 // === Init ===
 document.addEventListener('DOMContentLoaded', async () => {
   await Promise.all([
     renderHero(),
+    renderLLMStatus(),
     renderDayRing(),
     renderTrajectoireMini(),
     renderKpis(),

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>aiCEO - Decisions (v07 Atomic / Editorial Executive)</title>
+  <title>aiCEO - Decisions (v07 voix exec moderne)</title>
   <!-- v06 colors_and_type FIRST : Fira Sans + Aubrielle + Sol + base tokens -->
   <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css">
   <!-- v07 tokens override : Editorial Executive warm neutrals + alias v06 -->
@@ -128,16 +128,16 @@
 
       <div class="v07-banner" role="status">
         <span class="v07-banner-tag">v07 EDITORIAL</span>
-        <span>Page-pilote framework Atomic Templates - parite Claude Design (S6.10-EE-FIX).</span>
+        <span>Voix exec moderne · 12 termes canoniques figes · S6.19 Lot 3.</span>
         <a href="../../v06/decisions.html" class="v07-banner-link">^ Comparer avec v06</a>
       </div>
 
-      <div data-component="header-topbar" data-props='{"breadcrumb":[{"label":"Cockpit","href":"../../v06/index.html"},{"label":"Decisions"}],"title":"Ce que vous avez choisi de faire - et de ne pas faire","subtitle":"","search":{"placeholder":"Chercher une decision..."},"actions":[{"id":"new","label":"Nouvelle decision","iconId":"plus","primary":true},{"id":"export","label":"Exporter","iconId":"arrow-up-right"}]}'></div>
+      <div data-component="header-topbar" data-props='{"breadcrumb":[{"label":"Cockpit","href":"../../v06/index.html"},{"label":"Decisions"}],"title":"Vos Decisions tranchees","subtitle":"","search":{"placeholder":"Chercher une decision..."},"actions":[{"id":"new","label":"Nouvelle Decision","iconId":"plus","primary":true},{"id":"export","label":"Exporter","iconId":"arrow-up-right"}]}'></div>
 
       <div data-region="kpis" class="kpi-row"></div>
 
       <div class="filters-row">
-        <div data-component="seg-filter" data-props='{"id":"type","options":["Toutes","Strategiques","Operationnelles","Posture"],"active":"Toutes"}'></div>
+        <div data-component="seg-filter" data-props='{"id":"type","options":["Toutes","North Star","Operationnelles","Posture"],"active":"Toutes"}'></div>
         <div data-component="time-filter" data-props='{"id":"horizon","active":"all"}'></div>
         <div class="filters-spacer"></div>
         <span class="filters-meta" data-region="filter-meta">- resultats - les plus recentes en haut</span>
@@ -146,18 +146,18 @@
       <div data-region="timeline"></div>
 
       <div data-region="empty" hidden>
-        <div data-component="empty-state" data-props='{"icon":"decision","title":"Aucune decision pour ce filtre","description":"Modifiez les filtres ou lancez un arbitrage pour generer de nouvelles decisions a trancher.","cta":{"label":"Aller a l arbitrage","href":"../../v06/arbitrage.html"}}'></div>
+        <div data-component="empty-state" data-props='{"icon":"decision","title":"Aucune decision pour ce filtre","description":"Modifiez les filtres ou lancez un arbitrage pour generer de nouvelles decisions a trancher.","cta":{"label":"Lancer un Triage","href":"arbitrage.html"}}'></div>
       </div>
 
       <!-- Footer parite v06 : posture strategique + meta -->
       <footer class="app-footer">
-        <p class="strategic-q">Une decision claire, c'est une decision qu'on peut citer trois mois plus tard sans rougir.</p>
+        <p class="strategic-q">Naviguer clair. Trancher juste. Dormir serein.</p>
         <div class="footer-meta">
           <span>aiCEO v0.7</span>
           <span>&middot;</span>
           <span>Decisions</span>
           <span>&middot;</span>
-          <span>v07 Atomic Templates</span>
+          <span>v07 · Voix exec moderne</span>
         </div>
       </footer>
     </main>
@@ -165,14 +165,14 @@
 
   <!-- Bottom-tab nav mobile (parite v06) -->
   <nav class="bottom-tab-nav" aria-label="Navigation rapide mobile">
-    <a href="../../v06/index.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span>Cockpit</span></a>
-    <a href="../../v06/arbitrage.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
+    <a href="index.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span>Cockpit</span></a>
+    <a href="arbitrage.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-arbitrage"/></svg><span>Triage</span></a>
     <button class="bottom-tab fab-trigger" type="button" aria-label="Capter">
       <span class="fab-circle"><svg class="ico" aria-hidden="true"><use href="#i-mic"/></svg></span>
       <span>Capter</span>
     </button>
     <a href="decisions.html" class="bottom-tab is-active"><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg><span>Decisions</span></a>
-    <a href="../../v06/evening.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-evening"/></svg><span>Soiree</span></a>
+    <a href="evening.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-evening"/></svg><span>Bilan</span></a>
   </nav>
 
   <div data-component="modal-detail"></div>
