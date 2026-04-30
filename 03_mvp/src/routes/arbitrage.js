@@ -242,6 +242,68 @@ router.get('/today', (req, res) => {
   }
 });
 
+// --- GET /triage-history (S6.22 Lot 23) ---
+// Renvoie l'historique des triages emails effectues (jour par jour).
+// Au lieu de /history qui renvoie les sessions arbitrage_sessions (ancien systeme tasks),
+// celui-ci agrege les emails ayant arbitrated_at != NULL.
+// Joint avec tasks et decisions pour montrer ce qui a ete CREE depuis le triage.
+router.get('/triage-history', (req, res) => {
+  try {
+    const db = getDb();
+    const days = Math.min(parseInt(req.query.days || '7', 10), 30);
+
+    // Verifier table emails
+    const has = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='emails'").get();
+    if (!has) return res.json({ history: [], days });
+
+    const rows = db.prepare(`
+      SELECT date(arbitrated_at) AS day,
+             COUNT(*) AS total
+      FROM emails
+      WHERE arbitrated_at IS NOT NULL
+      GROUP BY date(arbitrated_at)
+      ORDER BY day DESC
+      LIMIT ?
+    `).all(days);
+
+    // Pour chaque jour, compter les tasks et decisions creees ce jour-la depuis emails
+    const enriched = rows.map(r => {
+      const dayStart = r.day + ' 00:00:00';
+      const dayEnd   = r.day + ' 23:59:59';
+      let tasksCreated = 0, decisionsCreated = 0;
+      try {
+        const t = db.prepare(`
+          SELECT COUNT(*) AS n FROM tasks
+          WHERE source_type = 'email'
+            AND created_at BETWEEN ? AND ?
+        `).get(dayStart, dayEnd);
+        tasksCreated = t?.n || 0;
+
+        // Decisions liees email : on cherche dans context [source-email:...]
+        const d = db.prepare(`
+          SELECT COUNT(*) AS n FROM decisions
+          WHERE context LIKE '%[source-email:%'
+            AND created_at BETWEEN ? AND ?
+        `).get(dayStart, dayEnd);
+        decisionsCreated = d?.n || 0;
+      } catch (e) { /* swallow */ }
+
+      return {
+        day: r.day,
+        total_arbitrated: r.total,
+        tasks_created: tasksCreated,
+        decisions_created: decisionsCreated,
+        skipped: Math.max(0, r.total - tasksCreated - decisionsCreated)
+      };
+    });
+
+    res.json({ history: enriched, days });
+  } catch (e) {
+    console.error('[/api/arbitrage/triage-history] error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // --- GET /history --------------------------------------------------
 
 router.get('/history', (req, res) => {
@@ -279,6 +341,30 @@ router.get('/history', (req, res) => {
   }
 });
 
+
+// S6.22 Lot 28 : detection destinataire direct vs CC vs autre
+function loadMyEmails(db) {
+  try {
+    const row = db.prepare("SELECT value FROM user_preferences WHERE key = 'user.email_addresses'").get();
+    if (row && row.value) {
+      const parsed = JSON.parse(row.value);
+      if (Array.isArray(parsed)) return parsed.map(e => String(e).toLowerCase());
+    }
+  } catch (e) { /* swallow */ }
+  return [];
+}
+
+function detectRecipientFlag(toAddrs, myEmails) {
+  if (!myEmails || !myEmails.length) return 'unknown';
+  if (!toAddrs) return 'unknown';
+  const lower = String(toAddrs).toLowerCase();
+  for (const e of myEmails) {
+    if (lower.includes(e)) return 'direct';
+  }
+  // Pas dans TO direct (CC potentiel ou liste de distribution)
+  return 'cc';
+}
+
 // --- POST /analyze-emails ----------------------------
 // Source : table SQLite `emails` (alimentee par scripts/normalize-emails.js
 // apres sync Outlook, ou par scripts/ingest-emails.js en rattrapage).
@@ -287,6 +373,7 @@ router.get('/history', (req, res) => {
 router.post("/analyze-emails", async (req, res) => {
   try {
     const db = getDb();
+    const _myEmails_heur = loadMyEmails(db);
 
     // Verifier presence table emails (tolerant si migration pas encore lancee)
     const hasTable = db
@@ -367,20 +454,77 @@ router.post("/analyze-emails", async (req, res) => {
 
     // Mapping kind heuristique (subject -> task / decision / project)
     const kindFor = (subject) => {
-      const s = (subject || "");
+      const s = (subject || "").toLowerCase();
+      // S6.22 Lot 18 : heuristique elargie pour produire min 3 decisions
       if (/[?]\s*$/.test(s)) return "decision";
+      if (/(valider|trancher|decider|choix|approuver|gate|go\/no.go|arbitrer|confirmer|signer)/i.test(s)) return "decision";
+      if (/(urgent|asap|prioritaire|critique)/i.test(s) && Math.random() < 0.4) return "decision";  // un peu de variete
+      if (/(projet|launch|kickoff|lancement|sprint)/i.test(s)) return "project";
       if (/^(re|fwd|tr)\s*:/i.test(s)) return "task";
-      if (/(projet|launch|kickoff|lancement)/i.test(s)) return "project";
       return "task";
     };
 
-    const proposals = candidates.map((r, i) => ({
+    // S6.22 Lot 22 : retrait du forcage 3 decisions (biais reconnu CEO)
+    // Remplace par : scoring "decisionnabilite" sur TOUT le pool (pas juste top 8)
+    // + indicateur confiance pour chaque kind
+    function decisionabilityScore(row) {
+      const text = ((row.subject || '') + ' ' + (row.preview || '')).toLowerCase();
+      let s = 0;
+      if (text.match(/[?]/)) s += 30;
+      if (text.match(/(valider|trancher|decider|choix|approuver|gate|go\/no\.go|arbitrer|confirmer|signer|decision)/)) s += 40;
+      if (text.match(/(urgent|asap|prioritaire|critique|deadline|delai)/)) s += 15;
+      if (text.match(/(propose|propos[ée])/)) s += 10;
+      if (row.flagged) s += 10;
+      return s;
+    }
+    function kindConfidence(row, kind) {
+      const text = ((row.subject || '') + ' ' + (row.preview || '')).toLowerCase();
+      if (kind === 'decision') {
+        const score = decisionabilityScore(row);
+        if (score >= 50) return 'high';
+        if (score >= 25) return 'medium';
+        return 'low';
+      }
+      if (kind === 'project') {
+        if (text.match(/(launch|kickoff|projet|sprint)/)) return 'high';
+        return 'medium';
+      }
+      return 'medium'; // task par defaut
+    }
+
+    // 1. Scanner TOUS les emails non-arbitres pour trouver les plus decisionnels
+    const allCandidates = db.prepare(`
+      SELECT id, subject, from_name, from_email, received_at,
+             unread, flagged, has_attach, preview, inferred_project, is_self,
+             (flagged * 100 + unread * 30 + has_attach * 5) AS score
+      FROM emails
+      WHERE is_self = 0 AND arbitrated_at IS NULL
+      ORDER BY received_at DESC
+      LIMIT 100
+    `).all();
+    // Top 3 decisionnels (peuvent etre hors du top 8 score)
+    const ranked = allCandidates
+      .map(r => ({ ...r, decScore: decisionabilityScore(r) }))
+      .filter(r => r.decScore >= 25)
+      .sort((a, b) => b.decScore - a.decScore)
+      .slice(0, 3);
+
+    // 2. Top 5 par score classique (priorite/recence) hors decisions deja selectionnees
+    const usedIds = new Set(ranked.map(r => r.id));
+    const others = candidates.filter(r => !usedIds.has(r.id)).slice(0, 5);
+    const allItems = [...ranked, ...others];
+
+    const proposals = allItems.map((r, i) => {
+      const kind = ranked.includes(r) ? 'decision' : kindFor(r.subject);
+      return {
       id: "arb-" + (i + 1),
       source_id: r.id,
-      kind: kindFor(r.subject),
+      kind: kind,
       title: r.subject || "(sans objet)",
       from: r.from_name || r.from_email || "",
       from_email: r.from_email || "",
+      to_addrs: r.to_addrs || "",
+      recipient_flag: detectRecipientFlag(r.to_addrs, _myEmails_heur),
       excerpt: (r.preview || "").slice(0, 220).trim(),
       proposed_priority: r.score >= 100 ? "P0" : r.score >= 50 ? "P1" : "P2",
       inferred_project: r.inferred_project || null,
@@ -388,8 +532,10 @@ router.post("/analyze-emails", async (req, res) => {
       flagged: !!r.flagged,
       unread: !!r.unread,
       score: r.score,
-      created_from: "email",
-    }));
+      kind_confidence: kindConfidence(r, kind),
+      created_from: "email"
+    };
+    });
 
     res.json({
       proposals,
@@ -402,6 +548,557 @@ router.post("/analyze-emails", async (req, res) => {
   } catch (e) {
     console.error("[/api/arbitrage/analyze-emails] error:", e);
     res.status(500).json({ error: e.message });
+  }
+});
+
+// --- POST /analyze-emails-llm ----------------------------
+// S6.22 Lot 17 : Triage Claude-aware reel (analyse LLM batch)
+// Pour chaque email candidat, demande a Claude :
+//   skip, kind, summary, suggested_action, priority, rationale
+// Renvoie proposals (actionnables) + skipped (noise filtre par Claude).
+router.post("/analyze-emails-llm", async (req, res) => {
+  try {
+    const db = getDb();
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+
+    // S6.22 Lot 20 : recupere les adresses email perso pour scorer relevance
+    let myEmails = [];
+    try {
+      const eaRow = db.prepare("SELECT value FROM user_preferences WHERE key = 'user.email_addresses'").get();
+      if (eaRow && eaRow.value) {
+        const parsed = JSON.parse(eaRow.value);
+        if (Array.isArray(parsed)) myEmails = parsed.map(e => String(e).toLowerCase());
+      }
+    } catch (e) { /* swallow */ }
+
+    if (!apiKey) {
+      return res.status(503).json({
+        error: "LLM non disponible",
+        fallback_route: "/api/arbitrage/analyze-emails",
+        message: "ANTHROPIC_API_KEY absente. Activez la cle dans Settings > Coaching IA."
+      });
+    }
+
+    // 1. Verifier table emails
+    const hasTable = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='emails'").get();
+    if (!hasTable) return res.json({ proposals: [], skipped: [], total: 0, message: "Table emails absente." });
+
+    // 2. Recupere 30 candidats SQL non-arbitres puis diversifie a 12 (S6.22 Lot 21 G + Lot 26)
+    const rawRows = db.prepare(`
+      SELECT id, account, subject, from_name, from_email, to_addrs, received_at,
+             unread, flagged, has_attach, preview, inferred_project,
+             (flagged * 100 + unread * 30 + has_attach * 5
+              + CASE WHEN julianday('now') - julianday(received_at) < 1 THEN 20
+                     WHEN julianday('now') - julianday(received_at) < 3 THEN 10 ELSE 0 END
+              + CASE WHEN inferred_project IS NOT NULL AND inferred_project != '' THEN 8 ELSE 0 END
+             ) AS score
+      FROM emails
+      WHERE is_self = 0 AND arbitrated_at IS NULL
+      ORDER BY score DESC, received_at DESC
+      LIMIT 30
+    `).all();
+
+    // S6.22 Lot 26 : detection redondance/relance (emails similaires non arbitres)
+    // Pour chaque candidat, compte combien d emails non arbitres ont un sujet similaire
+    // (3 premiers mots du subject ou meme inferred_project depuis meme expediteur)
+    function getSubjectKey(s) {
+      return (s || '').toLowerCase()
+        .replace(/^(re|fwd|tr|fw)\s*:\s*/i, '')  // retire prefixes
+        .split(/\s+/).slice(0, 3).join(' ')
+        .replace(/[^a-z0-9 ]/g, '');
+    }
+    const allEmailsForRedundancy = db.prepare(`
+      SELECT id, subject, from_email, inferred_project
+      FROM emails
+      WHERE is_self = 0 AND arbitrated_at IS NULL
+    `).all();
+    const subjectKeyToIds = new Map();
+    allEmailsForRedundancy.forEach(e => {
+      const key = getSubjectKey(e.subject);
+      if (!key) return;
+      if (!subjectKeyToIds.has(key)) subjectKeyToIds.set(key, []);
+      subjectKeyToIds.get(key).push(e.id);
+    });
+    // Enrichir rawRows avec related_count + boost score
+    rawRows.forEach(r => {
+      const key = getSubjectKey(r.subject);
+      const related = subjectKeyToIds.get(key) || [];
+      r.related_count = related.length;
+      r.related_ids = related.filter(id => id !== r.id);
+      // Boost si redondance (signal de relance/insistance)
+      if (related.length >= 3) r.score += 25;
+      else if (related.length >= 2) r.score += 12;
+    });
+
+    // Diversification : max 2 par expediteur, equilibrage projet
+    const rows = [];
+    const senderCount = new Map();
+    const projectCount = new Map();
+    const TARGET = 12;
+    const MAX_PER_SENDER = 2;
+    const MAX_PER_PROJECT = 4;
+
+    // Pass 1 : haute priorite (flagged ou score >= 50), respecte les caps
+    for (const r of rawRows) {
+      if (rows.length >= TARGET) break;
+      const sk = (r.from_email || 'unknown').toLowerCase();
+      const pk = r.inferred_project || '__none__';
+      if ((senderCount.get(sk) || 0) >= MAX_PER_SENDER) continue;
+      if ((projectCount.get(pk) || 0) >= MAX_PER_PROJECT) continue;
+      rows.push(r);
+      senderCount.set(sk, (senderCount.get(sk) || 0) + 1);
+      projectCount.set(pk, (projectCount.get(pk) || 0) + 1);
+    }
+    // Pass 2 : remplir si pas assez (assouplit caps)
+    if (rows.length < TARGET) {
+      for (const r of rawRows) {
+        if (rows.length >= TARGET) break;
+        if (rows.includes(r)) continue;
+        rows.push(r);
+      }
+    }
+
+    if (rows.length === 0) {
+      return res.json({ proposals: [], skipped: [], total: 0, ready: false, message: "Rien a arbitrer ce matin." });
+    }
+
+    // 3. Construire payload batch pour Claude
+    const emailsForLlm = rows.map(r => ({
+      id: r.id.slice(-12),  // raccourci pour le LLM (full id reconnect cote serveur)
+      from: ((r.from_name || '') + ' <' + (r.from_email || '') + '>').trim(),
+      subject: (r.subject || '(sans objet)').slice(0, 200),
+      preview: (r.preview || '').slice(0, 300),
+      received: r.received_at ? r.received_at.slice(0, 10) : '',
+      flags: [r.unread ? 'unread' : '', r.flagged ? 'flagged' : '', r.has_attach ? 'has_attach' : ''].filter(Boolean),
+      project_hint: r.inferred_project || null
+    }));
+
+    const myEmailsBlock = myEmails.length
+      ? `\n\nLES ADRESSES EMAIL DU CEO (utilisez-les pour scorer relevance) :\n${myEmails.map(e => '- ' + e).join('\n')}\n\nRelevance values :\n- "direct" : CEO est dans TO (destinataire direct, prioritaire)\n- "cc" : CEO est en CC (informatif, moins prioritaire)\n- "mentioned" : CEO mentionne dans le contenu (cite mais pas destinataire)\n- "not_concerned" : ne concerne pas le CEO (newsletter, FYI generique, distribution liste).`
+      : '\n\nAUCUNE ADRESSE EMAIL CONFIGUREE pour scorer relevance. Set relevance="unknown".';
+
+    // S6.22 Lot 25 : charger patterns appris (feedback CEO) pour ameliorer la pertinence
+    let patternsBlock = '';
+    try {
+      const fbRows = db.prepare(`
+        SELECT ef.verdict, ef.rationale, ef.metadata,
+               e.from_email, e.subject, e.inferred_project
+        FROM email_feedback ef
+        LEFT JOIN emails e ON e.id = ef.email_id
+        WHERE ef.learned_at >= datetime('now', '-30 days')
+        ORDER BY ef.learned_at DESC LIMIT 30
+      `).all();
+      if (fbRows.length) {
+        const patterns = fbRows.slice(0, 15).map(f => {
+          const parts = [];
+          if (f.verdict) parts.push('verdict=' + f.verdict);
+          if (f.from_email) parts.push('from=' + f.from_email);
+          if (f.subject) parts.push('subject="' + (f.subject || '').slice(0, 60) + '"');
+          if (f.inferred_project) parts.push('projet=' + f.inferred_project);
+          if (f.rationale) parts.push('reason="' + f.rationale.slice(0, 80) + '"');
+          return '- ' + parts.join(' | ');
+        }).join('\n');
+        patternsBlock = '\n\nPATTERNS APPRIS DU CEO (30 derniers jours, RESPECTEZ-LES en priorite) :\n' + patterns + '\n\nSi un nouvel email matche un pattern (meme expediteur, sujet similaire, projet), applique le meme verdict.';
+      }
+    } catch (e) { /* swallow si table absente */ }
+
+
+    const SYSTEM = `Tu es un assistant de triage executive pour un CEO de PME francaise. Pour chaque email fourni, decide :
+
+1. skip (boolean) : true si c'est du noise (newsletter, notif auto, FYI sans demande, ou relevance=not_concerned). false si actionnable pour le CEO.
+
+2. kind (string) parmi :
+   - "task" : action ponctuelle a faire
+   - "decision" : choix strategique a trancher
+   - "project" : sujet structurant qui merite un projet
+   - "info" : information contextuelle a lier a un projet existant (pas d'action requise mais utile pour le contexte)
+   - "delegate" : peut etre delegue a quelqu'un d'autre
+   - "read" : a lire mais pas d'action immediate
+
+3. summary (string ≤120 chars) : 1 phrase resumant le contenu et ce que l'expediteur attend.
+
+4. suggested_action (string ≤150 chars) : si actionnable, propose une action CONCRETE au CEO. Format imperatif. Ex: "Repondre OUI sur le contrat ITSM avant vendredi". Si skip=true, mettre "".
+
+5. priority parmi P0 (urgent+important), P1 (important), P2 (normal), P3 (low).
+
+6. rationale (string ≤80 chars) : pourquoi ce kind/priority.
+
+7. relevance (string) : "direct" | "cc" | "mentioned" | "not_concerned" | "unknown" — si CEO est concerne directement.${myEmailsBlock}${patternsBlock}
+
+Reponds UNIQUEMENT avec un JSON array, un objet par email :
+{"id": "...", "skip": bool, "kind": "...", "summary": "...", "suggested_action": "...", "priority": "...", "rationale": "...", "relevance": "..."}
+
+Pas de markdown, pas de prose, juste le JSON array brut.`;
+
+    const USER = `Voici ${emailsForLlm.length} emails a trier (format JSON) :\n\n` + JSON.stringify(emailsForLlm, null, 2) + `\n\nReponds avec le JSON array directement.`;
+
+    // 4. Appel Claude
+    const client = createAnthropicClient();
+    const model = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6';
+
+    const response = await client.messages.create({
+      model,
+      max_tokens: 4000,
+      system: SYSTEM,
+      messages: [{ role: 'user', content: USER }]
+    });
+
+    // 5. Extraire le texte de la reponse
+    let textRaw = '';
+    for (const block of (response.content || [])) {
+      if (block.type === 'text') textRaw += block.text;
+    }
+
+    // 6. Strip markdown fences si Claude en a mis malgre l'instruction
+    let jsonText = textRaw.trim();
+    const fenceMatch = jsonText.match(/^```(?:json)?\s*([\s\S]*?)\s*```\s*$/);
+    if (fenceMatch) jsonText = fenceMatch[1];
+
+    let llmResults;
+    try {
+      llmResults = JSON.parse(jsonText);
+      if (!Array.isArray(llmResults)) throw new Error("response not an array");
+    } catch (e) {
+      console.error('[analyze-emails-llm] JSON parse failed:', e.message, '\nRaw:', textRaw.slice(0, 300));
+      return res.status(500).json({
+        error: 'Claude reponse non parsable',
+        raw_excerpt: textRaw.slice(0, 500)
+      });
+    }
+
+    // 7. Jointure SQL <- LLM par id court
+    const bySlug = {};
+    rows.forEach(r => { bySlug[r.id.slice(-12)] = r; });
+
+    const proposals = [];
+    const skipped = [];
+    for (const r of llmResults) {
+      const sqlRow = bySlug[r.id];
+      if (!sqlRow) continue;
+      const enriched = {
+        id: 'arb-' + r.id,
+        source_id: sqlRow.id,
+        kind: r.kind || 'task',
+        title: sqlRow.subject || '(sans objet)',
+        from: sqlRow.from_name || sqlRow.from_email || '',
+        from_email: sqlRow.from_email || '',
+        to_addrs: sqlRow.to_addrs || '',
+        recipient_flag: detectRecipientFlag(sqlRow.to_addrs, myEmails),
+        excerpt: (sqlRow.preview || '').slice(0, 220),
+        received_at: sqlRow.received_at,
+        flagged: !!sqlRow.flagged,
+        unread: !!sqlRow.unread,
+        inferred_project: sqlRow.inferred_project,
+        related_count: sqlRow.related_count || 1,
+        related_ids: sqlRow.related_ids || [],
+        proposed_priority: r.priority || 'P2',
+        // Champs LLM enrichis
+        summary: r.summary || '',
+        suggested_action: r.suggested_action || '',
+        rationale: r.rationale || '',
+        relevance: r.relevance || 'unknown',
+        skip: !!r.skip,
+        created_from: 'email-llm'
+      };
+      // S6.22 Lot 20 : si relevance="not_concerned" -> auto-skip meme si Claude a dit skip=false
+      if (r.skip || r.relevance === 'not_concerned') skipped.push(enriched);
+      else proposals.push(enriched);
+    }
+
+    res.json({
+      proposals,
+      skipped,
+      total: rows.length,
+      kept: proposals.length,
+      filtered: skipped.length,
+      ready: true,
+      llm_used: true,
+      model,
+      message: `Claude a analyse ${rows.length} emails : ${proposals.length} actionnables, ${skipped.length} filtres en noise.`
+    });
+  } catch (e) {
+    console.error('[/api/arbitrage/analyze-emails-llm] error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// --- S6.22 Lot 25 : Apprentissage actif (email_feedback) ---
+// Cree la table email_feedback si absente (idempotent au boot du serveur)
+function ensureEmailFeedbackTable() {
+  try {
+    const db = getDb();
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS email_feedback (
+        id           TEXT PRIMARY KEY,
+        email_id     TEXT NOT NULL,
+        verdict      TEXT NOT NULL,
+        metadata     TEXT,
+        rationale    TEXT,
+        learned_at   TEXT NOT NULL DEFAULT (datetime('now'))
+      );
+      CREATE INDEX IF NOT EXISTS idx_email_feedback_email   ON email_feedback(email_id);
+      CREATE INDEX IF NOT EXISTS idx_email_feedback_verdict ON email_feedback(verdict);
+      CREATE INDEX IF NOT EXISTS idx_email_feedback_learned ON email_feedback(learned_at DESC);
+    `);
+  } catch (e) { console.error('[ensureEmailFeedbackTable]', e.message); }
+}
+ensureEmailFeedbackTable();
+
+// POST /email-feedback : enregistre un feedback CEO sur un email
+// Body : { email_id, verdict ('not_concerned' | 'info' | 'wrong_kind' | 'wrong_priority' | 'good'), metadata?, rationale? }
+router.post('/email-feedback', (req, res) => {
+  try {
+    const db = getDb();
+    const crypto = require('crypto');
+    const { email_id, verdict, metadata, rationale } = req.body || {};
+    if (!email_id || !verdict) {
+      return res.status(400).json({ error: 'email_id et verdict obligatoires' });
+    }
+    const id = crypto.randomUUID();
+    db.prepare(
+      "INSERT INTO email_feedback (id, email_id, verdict, metadata, rationale, learned_at) " +
+      "VALUES (?, ?, ?, ?, ?, datetime('now'))"
+    ).run(id, email_id, verdict, metadata ? JSON.stringify(metadata) : null, rationale || null);
+    res.status(201).json({ ok: true, id, message: 'Feedback enregistre - Claude apprendra de ce choix.' });
+  } catch (e) {
+    console.error('[POST /email-feedback]', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// GET /email-feedback : retourne les N derniers feedbacks (pour le LLM en contexte)
+router.get('/email-feedback', (req, res) => {
+  try {
+    const db = getDb();
+    const limit = Math.min(parseInt(req.query.limit || '50', 10), 200);
+    const rows = db.prepare(
+      "SELECT id, email_id, verdict, metadata, rationale, learned_at " +
+      "FROM email_feedback ORDER BY learned_at DESC LIMIT ?"
+    ).all(limit);
+    res.json({ feedback: rows, count: rows.length });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// --- S6.24 : routes apprentissage ---
+// GET /learning-stats : agreger les feedbacks par verdict + par mois
+router.get('/learning-stats', (req, res) => {
+  try {
+    const db = getDb();
+    // Verifier table existence (CREATE TABLE au boot dans ensureEmailFeedbackTable)
+    const has = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='email_feedback'").get();
+    if (!has) return res.json({ total: 0, byVerdict: {}, monthly: [], recent: [] });
+
+    const totalRow = db.prepare("SELECT COUNT(*) AS n FROM email_feedback").get();
+    const byVerdict = {};
+    db.prepare("SELECT verdict, COUNT(*) AS n FROM email_feedback GROUP BY verdict").all()
+      .forEach(r => { byVerdict[r.verdict] = r.n; });
+
+    const monthly = db.prepare(`
+      SELECT strftime('%Y-%m', learned_at) AS month, COUNT(*) AS n
+      FROM email_feedback
+      WHERE learned_at >= datetime('now', '-6 months')
+      GROUP BY month ORDER BY month DESC
+    `).all();
+
+    // Estimer "evites auto" : nb d'emails dans la queue actuelle qui matchent un pattern (best effort)
+    let auto_filtered = 0;
+    try {
+      const fbRows = db.prepare(`
+        SELECT DISTINCT e.from_email
+        FROM email_feedback ef
+        JOIN emails e ON e.id = ef.email_id
+        WHERE ef.verdict = 'not_concerned' AND e.from_email IS NOT NULL
+      `).all();
+      const senders = new Set(fbRows.map(r => r.from_email).filter(Boolean));
+      if (senders.size > 0) {
+        const placeholders = Array.from(senders).map(() => '?').join(',');
+        const r = db.prepare(`SELECT COUNT(*) AS n FROM emails WHERE from_email IN (${placeholders}) AND arbitrated_at IS NOT NULL`).get(...senders);
+        auto_filtered = r?.n || 0;
+      }
+    } catch (e) { /* swallow */ }
+
+    const recent = db.prepare(`
+      SELECT ef.id, ef.verdict, ef.rationale, ef.learned_at,
+             e.from_email, e.subject
+      FROM email_feedback ef
+      LEFT JOIN emails e ON e.id = ef.email_id
+      ORDER BY ef.learned_at DESC LIMIT 30
+    `).all();
+
+    res.json({
+      total: totalRow.n,
+      byVerdict,
+      monthly,
+      auto_filtered_estimate: auto_filtered,
+      recent
+    });
+  } catch (e) {
+    console.error('[learning-stats]', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// DELETE /email-feedback/:id : retirer un feedback (correction CEO)
+router.delete('/email-feedback/:id', (req, res) => {
+  try {
+    const db = getDb();
+    const { id } = req.params;
+    const r = db.prepare("DELETE FROM email_feedback WHERE id = ?").run(id);
+    res.json({ ok: true, deleted: r.changes });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// --- POST /accept ----------------------------
+// S6.22 Lot 5 : fix bug doublons + dispatch IA partiel.
+// Verdict du CEO sur une proposition d'arbitrage :
+//   verdict = faire | deleguer | decaler | archiver | decliner
+//   kind    = task | decision | project (heuristique de /analyze-emails)
+// Effets :
+//   - cree dans la bonne table selon kind (tasks par defaut, decisions si kind=decision)
+//   - UPDATE emails SET arbitrated_at=now() WHERE id=source_id (= dedupe)
+//   - check existant par email_id pour eviter doublons memes en cas de retry frontend
+router.post("/accept", (req, res) => {
+  try {
+    const db = getDb();
+    const crypto = require("crypto");
+    const { source_id, kind = "task", verdict = "faire", title, description, priority, delegate_to } = req.body || {};
+
+    if (!title) return res.status(400).json({ ok: false, error: "title manquant" });
+
+    // 1. Check email arbitre par avance (defense en profondeur)
+    if (source_id) {
+      const existing = db.prepare("SELECT arbitrated_at FROM emails WHERE id = ?").get(source_id);
+      if (existing && existing.arbitrated_at) {
+        return res.json({
+          ok: true,
+          deduped: true,
+          message: "Email deja arbitre le " + existing.arbitrated_at + ". Aucune nouvelle action creee."
+        });
+      }
+    }
+
+    // 2. Skip creation si verdict = archiver / decliner (juste marquer arbitre)
+    let createdId = null;
+    let createdKind = null;
+
+    if (verdict === "archiver" || verdict === "decliner") {
+      // Pas de creation, juste marquer arbitre
+    } else {
+      // 3. Determiner table cible selon kind + verdict
+      const useDecisions = (kind === "decision");
+      const finalTitle = (verdict === "deleguer" ? "[Delegation a " + (delegate_to || "equipe") + "] " : "") +
+                         (verdict === "decaler" ? "[Reporte] " : "") + title;
+      const finalPriority = (verdict === "decaler") ? "P2" : (priority || "P1");
+
+      // S6.25.1 : kind=project => auto-create projet (verdict=faire) ou skip
+      if (kind === "project") {
+        if (verdict === "faire") {
+          const projId = crypto.randomUUID();
+          const projName = (title || "Projet sans nom").slice(0, 80);
+          const projTagline = (description || "").slice(0, 200) || null;
+          db.prepare(
+            "INSERT INTO projects (id, name, tagline, status, description, progress, created_at, updated_at) " +
+            "VALUES (?, ?, ?, 'active', ?, 0, datetime('now'), datetime('now'))"
+          ).run(projId, projName, projTagline, description || null);
+          // Lier l email source au projet cree
+          if (source_id) {
+            try { db.prepare("UPDATE emails SET project_id = ? WHERE id = ?").run(projId, source_id); }
+            catch (e) { /* swallow si colonne absente */ }
+          }
+          createdId = projId;
+          createdKind = "project";
+        } else {
+          // verdict decaler / archiver / decliner sur kind=project => juste marquer arbitre
+        }
+      } else if (kind === "big-rock") {
+        // S6.25.2 : promotion en Big Rock (semaine courante ISO)
+        if (verdict === "faire") {
+          const now = new Date();
+          // Compute ISO week YYYY-Www
+          const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+          const dayNum = d.getUTCDay() || 7;
+          d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+          const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+          const weekNum = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+          const weekId = d.getUTCFullYear() + "-W" + String(weekNum).padStart(2, "0");
+          // Ensure week exists
+          try { db.prepare("INSERT OR IGNORE INTO weeks (id, created_at) VALUES (?, datetime('now'))").run(weekId); } catch (e) {}
+          // Check current count
+          const countRow = db.prepare("SELECT COUNT(*) AS n FROM big_rocks WHERE week_id = ?").get(weekId);
+          if (countRow && countRow.n >= 3) {
+            return res.status(400).json({
+              ok: false,
+              error: "max-rocks",
+              message: "Semaine " + weekId + " a deja 3 Big Rocks. Annulez en un dans /revues avant d en ajouter un nouveau."
+            });
+          }
+          const rockId = crypto.randomUUID();
+          db.prepare(
+            "INSERT INTO big_rocks (id, week_id, title, description, status, ordre, created_at) " +
+            "VALUES (?, ?, ?, ?, 'defini', ?, datetime('now'))"
+          ).run(rockId, weekId, (title || "Big Rock").slice(0, 120), description || null, (countRow ? countRow.n : 0) + 1);
+          createdId = rockId;
+          createdKind = "big-rock";
+        }
+      } else if (kind === "info") {
+        // Si project_id ou inferred_project, on lie l'email au projet
+        let targetProjectId = req.body.project_id || null;
+        if (!targetProjectId && source_id) {
+          const inferredProj = db.prepare("SELECT inferred_project FROM emails WHERE id = ?").get(source_id);
+          if (inferredProj && inferredProj.inferred_project) {
+            const proj = db.prepare("SELECT id FROM projects WHERE LOWER(name) = LOWER(?) LIMIT 1").get(inferredProj.inferred_project);
+            if (proj) targetProjectId = proj.id;
+          }
+        }
+        if (source_id && targetProjectId) {
+          try {
+            db.prepare("UPDATE emails SET project_id = ? WHERE id = ?").run(targetProjectId, source_id);
+          } catch (e) { /* swallow si colonne project_id absente */ }
+        }
+        createdId = source_id || null;
+        createdKind = "info";
+      } else if (useDecisions) {
+        // Schema decisions : id, title, context, status('ouverte'|...), pas de source_email_id colonne.
+        // On stocke la trace de l'email source dans context (preserve description)
+        const id = crypto.randomUUID();
+        const ctx = (description || "") + (source_id ? "\n\n[source-email:" + source_id + "]" : "");
+        db.prepare(
+          "INSERT INTO decisions (id, title, context, status, created_at, updated_at) " +
+          "VALUES (?, ?, ?, 'ouverte', datetime('now'), datetime('now'))"
+        ).run(id, finalTitle, ctx || null);
+        createdId = id;
+        createdKind = "decision";
+      } else {
+        // Schema tasks : pas de status, mais done(0/1) + type('do'|'plan'|'delegate'|'defer') + source_type/source_id.
+        const taskType = verdict === "deleguer" ? "delegate" : verdict === "decaler" ? "defer" : "do";
+        const id = crypto.randomUUID();
+        db.prepare(
+          "INSERT INTO tasks (id, title, description, priority, type, source_type, source_id, created_at, updated_at) " +
+          "VALUES (?, ?, ?, ?, ?, 'email', ?, datetime('now'), datetime('now'))"
+        ).run(id, finalTitle, description || null, finalPriority, taskType, source_id || null);
+        createdId = id;
+        createdKind = "task";
+      }
+    }
+
+    // 4. Marquer email arbitre (= dedupe pour les futures relances /analyze-emails)
+    if (source_id) {
+      db.prepare("UPDATE emails SET arbitrated_at = datetime('now') WHERE id = ?").run(source_id);
+    }
+
+    res.json({
+      ok: true,
+      created: createdId ? { id: createdId, kind: createdKind } : null,
+      arbitrated: !!source_id,
+      message: createdKind ? (createdKind + " creee + email marque arbitre") : "email marque arbitre (verdict " + verdict + ")"
+    });
+  } catch (e) {
+    console.error("[/api/arbitrage/accept] error:", e);
+    res.status(500).json({ ok: false, error: e.message });
   }
 });
 
@@ -511,6 +1208,24 @@ router.post("/bootstrap-from-emails", async (req, res) => {
   } catch (e) {
     console.error("[/api/arbitrage/bootstrap-from-emails] error:", e);
     res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+// --- GET /api/arbitrage/emails/:id (S6.22 Lot 22) ---
+// Renvoie un email complet par id (utilise par "Voir le mail original" dans Focus Decision)
+router.get('/emails/:id', (req, res) => {
+  try {
+    const db = getDb();
+    const { id } = req.params;
+    const row = db.prepare(
+      "SELECT id, account, folder, subject, from_name, from_email, to_addrs, " +
+      "received_at, unread, flagged, has_attach, preview, inferred_project, arbitrated_at " +
+      "FROM emails WHERE id = ?"
+    ).get(id);
+    if (!row) return res.status(404).json({ error: 'email introuvable' });
+    res.json({ email: row });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
   }
 });
 
@@ -757,7 +1472,6 @@ router.post('/analyze-emails-grouped', async (req, res) => {
         count: props.length,
         kinds: counts,
         proposals: props,
-        // Score moyen pour priorite tri
         avg_score: Math.round(props.reduce((s, p) => s + p.score, 0) / props.length)
       };
     }).sort((a, b) => b.avg_score - a.avg_score);

@@ -5,22 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>aiCEO - Decisions (v07 voix exec moderne)</title>
   <!-- v06 colors_and_type FIRST : Fira Sans + Aubrielle + Sol + base tokens -->
-  <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css">
+  <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css?v=20260430bb">
   <!-- v07 tokens override : Editorial Executive warm neutrals + alias v06 -->
-  <link rel="stylesheet" href="../shared/tokens.css">
-  <link rel="stylesheet" href="../shared/tweaks.css">
-  <link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css">
-  <link rel="stylesheet" href="../components/header-topbar/header-topbar.css">
-  <link rel="stylesheet" href="../components/kpi-tile/kpi-tile.css">
-  <link rel="stylesheet" href="../components/card-decision/card-decision.css">
-  <link rel="stylesheet" href="../components/seg-filter/seg-filter.css">
-  <link rel="stylesheet" href="../components/search-pill/search-pill.css">
-  <link rel="stylesheet" href="../components/modal-detail/modal-detail.css">
-  <link rel="stylesheet" href="../components/empty-state/empty-state.css">
-  <link rel="stylesheet" href="../components/pill-project/pill-project.css">
-  <link rel="stylesheet" href="../components/pill-type/pill-type.css">
-  <link rel="stylesheet" href="../components/pill-status/pill-status.css">
-  <link rel="stylesheet" href="../components/time-filter/time-filter.css">
+  <link rel="stylesheet" href="../shared/tokens.css?v=20260430bb">
+  <link rel="stylesheet" href="../shared/tweaks.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/header-topbar/header-topbar.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/kpi-tile/kpi-tile.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/card-decision/card-decision.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/seg-filter/seg-filter.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/search-pill/search-pill.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/modal-detail/modal-detail.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/empty-state/empty-state.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/pill-project/pill-project.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/pill-type/pill-type.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/pill-status/pill-status.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/time-filter/time-filter.css?v=20260430bb">
   <style>
     .loading-state, .error-state {
       padding: var(--space-7) var(--space-5);
@@ -71,6 +71,21 @@
   </style>
 </head>
 <body data-route="decisions">
+  <script>
+  // S6.22 Lot 14 : kill switch service worker (anti cache v06)
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(rs => {
+      if (rs.length === 0) return;
+      console.warn('[v07] Desinstallation', rs.length, 'service worker(s) qui cachent l ancien code');
+      Promise.all(rs.map(r => r.unregister())).then(() => {
+        if (window.caches) {
+          caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))))
+            .then(() => { console.warn('[v07] caches cleared, reloading'); location.reload(); });
+        } else { location.reload(); }
+      });
+    });
+  }
+  </script>
   <a href="#main" class="skip-link">Aller au contenu principal</a>
   <button class="burger-btn" type="button" aria-label="Ouvrir le menu" id="burger-toggle">
     <svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg>
@@ -126,13 +141,7 @@
     <aside data-component="drawer-sidebar" data-props='{"active":"decisions","tenant":{"label":"Mon espace"},"user":{"name":"Major Fey","role":"CEO"}}'></aside>
     <main class="app-main" id="main">
 
-      <div class="v07-banner" role="status">
-        <span class="v07-banner-tag">v07 EDITORIAL</span>
-        <span>Voix exec moderne · 12 termes canoniques figes · S6.19 Lot 3.</span>
-        <a href="../../v06/decisions.html" class="v07-banner-link">^ Comparer avec v06</a>
-      </div>
-
-      <div data-component="header-topbar" data-props='{"breadcrumb":[{"label":"Cockpit","href":"../../v06/index.html"},{"label":"Decisions"}],"title":"Vos Decisions tranchees","subtitle":"","search":{"placeholder":"Chercher une decision..."},"actions":[{"id":"new","label":"Nouvelle Decision","iconId":"plus","primary":true},{"id":"export","label":"Exporter","iconId":"arrow-up-right"}]}'></div>
+<div data-component="header-topbar" data-props='{"breadcrumb":[{"label":"Cockpit","href":"index.html"},{"label":"Decisions"}],"title":"Vos Decisions tranchees","subtitle":"","search":{"placeholder":"Chercher une decision..."},"actions":[{"id":"new","label":"Nouvelle Decision","iconId":"plus","primary":true},{"id":"export","label":"Exporter","iconId":"arrow-up-right"}]}'></div>
 
       <div data-region="kpis" class="kpi-row"></div>
 
@@ -177,8 +186,8 @@
 
   <div data-component="modal-detail"></div>
 
-  <script type="module" src="../shared/store.js"></script>
-  <script type="module" src="../shared/component-loader.js"></script>
-  <script type="module" src="../stores/decisions-store.js"></script>
+  <script type="module" src="../shared/store.js?v=20260430bb"></script>
+  <script type="module" src="../shared/component-loader.js?v=20260430bb"></script>
+  <script type="module" src="../stores/decisions-store.js?v=20260430bb"></script>
 </body>
 </html>

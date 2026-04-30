@@ -1,5 +1,6 @@
 // drawer-sidebar.js — Editorial Executive aligne v06 (sprite SVG)
 // S6.18 : ajout Trajectoire en tete de Capital (vue retrospective)
+// S6.22 Lot 6 : puces chiffrees live (Triage/Projects/Actions/Decisions)
 function ico(id) {
   return `<svg class="ico" aria-hidden="true"><use href="#i-${id}"/></svg>`;
 }
@@ -32,7 +33,7 @@ const SECTIONS = [
       { id: 'connaissance',label: 'Connaissance', href: 'connaissance.html',  iconId: 'knowledge', badge: 'NEW' },
       { id: 'coaching',    label: 'Coaching',     href: 'coaching.html',      iconId: 'coaching', badge: 'NEW' },
       { id: 'revues',      label: 'Weekly Sync',  href: 'revues.html',        iconId: 'undo' },
-      { id: 'decisions',   label: 'Decisions',    href: 'decisions.html',     iconId: 'target' }
+      { id: 'decisions',   label: 'Decisions',    href: 'decisions.html',     iconId: 'target', badgeCount: 0 }
     ]
   }
 ];
@@ -54,10 +55,13 @@ function renderItem(item, active) {
   } else if (item.badge) {
     badge = `<span class="ds-badge ds-badge-new">${item.badge}</span>`;
   } else if (item.badgeCount && item.badgeCount > 0) {
-    badge = `<span class="ds-badge ds-badge-count">${item.badgeCount}</span>`;
+    badge = `<span class="ds-badge ds-badge-count" data-region="badge-${item.id}">${item.badgeCount}</span>`;
+  } else if (typeof item.badgeCount === 'number') {
+    // Slot pre-reserve (cache si 0) pour update live S6.22 Lot 6
+    badge = `<span class="ds-badge ds-badge-count" data-region="badge-${item.id}" hidden>0</span>`;
   }
   return `
-    <li class="ds-item${isActive}${isPending}">
+    <li class="ds-item${isActive}${isPending}" data-item-id="${item.id}">
       <a href="${item.href}" class="ds-link"${ariaCurrent}${titleAttr}>
         ${ico(item.iconId)}
         <span class="ds-label">${item.label}</span>
@@ -76,6 +80,50 @@ function renderSection(section, active) {
       </ul>
     </div>
   `;
+}
+
+// S6.22 Lot 6 : fetch comptes live (Triage/Projects/Actions/Decisions ouvertes)
+async function loadBadgeCounts(el) {
+  const safeFetch = async (url, opts) => {
+    try {
+      const r = await fetch(url, { ...(opts || {}), headers: { 'Accept': 'application/json', ...(opts?.headers || {}) } });
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (e) { return null; }
+  };
+  // analyze-emails est en POST, pas GET. Si echec route, on tente une heuristique
+  // sur GET /api/arbitrage qui renvoie souvent l'historique pas le compteur.
+  const [projects, tasks, decisions, arbStats] = await Promise.all([
+    safeFetch('/api/projects'),
+    safeFetch('/api/tasks'),
+    safeFetch('/api/decisions'),
+    safeFetch('/api/arbitrage/analyze-emails', { method: 'POST' })
+  ]);
+
+  // Comptes : projets actifs, tasks non-done, decisions ouvertes, emails arbitrables
+  // API formats : {projects:[...]} / {tasks:[...]} / {decisions:[...]}
+  const projList = projects?.projects || (Array.isArray(projects) ? projects : []);
+  const taskList = tasks?.tasks || (Array.isArray(tasks) ? tasks : []);
+  const decList  = decisions?.decisions || (Array.isArray(decisions) ? decisions : []);
+  const counts = {
+    projets:   projList.filter(p => (p.status || '').toLowerCase() === 'active').length,
+    taches:    taskList.filter(t => !t.done).length,
+    decisions: decList.filter(d => (d.status || '').toLowerCase() === 'ouverte').length,
+    arbitrage: arbStats?.total || arbStats?.total_blocks || 0
+  };
+  console.info('[drawer-sidebar] counts', counts);
+
+  // Update badges DOM
+  Object.entries(counts).forEach(([id, n]) => {
+    const slot = el.querySelector(`[data-region="badge-${id}"]`);
+    if (!slot) return;
+    if (n > 0) {
+      slot.textContent = String(n);
+      slot.hidden = false;
+    } else {
+      slot.hidden = true;
+    }
+  });
 }
 
 export default {
@@ -122,5 +170,8 @@ export default {
         } catch (e) {}
       });
     }
+
+    // S6.22 Lot 6 : load counts en arriere-plan (non bloquant)
+    loadBadgeCounts(el).catch(e => console.warn('[drawer-sidebar] counts load failed', e));
   }
 };

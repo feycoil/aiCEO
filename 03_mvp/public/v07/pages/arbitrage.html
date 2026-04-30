@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>aiCEO - Arbitrage du matin (v07)</title>
-  <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css">
-  <link rel="stylesheet" href="../shared/tokens.css">
-  <link rel="stylesheet" href="../shared/tweaks.css">
-  <link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css">
-  <link rel="stylesheet" href="../components/header-topbar/header-topbar.css">
-  <link rel="stylesheet" href="../components/seg-filter/seg-filter.css">
-  <link rel="stylesheet" href="../components/empty-state/empty-state.css">
-  <link rel="stylesheet" href="../components/modal-detail/modal-detail.css">
+  <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css?v=20260430bb">
+  <link rel="stylesheet" href="../shared/tokens.css?v=20260430bb">
+  <link rel="stylesheet" href="../shared/tweaks.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/header-topbar/header-topbar.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/seg-filter/seg-filter.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/empty-state/empty-state.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/modal-detail/modal-detail.css?v=20260430bb">
   <style>
     .ar-mode-tabs { display: inline-flex; background: var(--ivory-100); border-radius: var(--radius-md); padding: 4px; margin-bottom: var(--space-4); }
     .ar-mode-tab { padding: 8px 18px; border: 0; background: transparent; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--ink-500); border-radius: 6px; transition: all 150ms ease; font-family: var(--font-sans); }
@@ -56,9 +56,862 @@
     .ar-decision-actions { display: flex; gap: var(--space-2); justify-content: flex-end; padding-top: var(--space-3); border-top: 1px solid var(--ivory-200); }
 
     .ar-loading { padding: 40px; text-align: center; color: var(--ink-500); font-style: italic; }
-  </style>
+                                                          /* === S6.24 : tools row + Claude tag + reply === */
+    .ar-card-tools {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      margin-top: 8px; padding-top: 8px;
+      border-top: 1px dashed var(--ivory-200);
+    }
+    .ar-card-reply-mail {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 5px 10px;
+      background: transparent;
+      border: 1px solid var(--ivory-200);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-500);
+      font-family: var(--font-sans);
+      transition: all 150ms;
+      text-decoration: none;
+    }
+    .ar-card-reply-mail:hover {
+      color: #166534;
+      border-color: #86efac;
+      background: #dcfce7;
+    }
+    .ar-card-llm-tag {
+      display: inline-flex; align-items: center;
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #ece7f0;
+      color: var(--violet-800, #463a54);
+      opacity: 0.75;
+      cursor: help;
+      font-family: var(--font-mono);
+    }
+    /* S6.26.2 : bordure violette gauche subtile sur cards LLM */
+    .ar-card.is-llm {
+      border-left: 3px solid var(--violet-300, #b9a5cd);
+    }
+    .ar-card.is-llm:hover {
+      border-left-color: var(--violet-500, #8167a3);
+    }
+
+    /* === S6.22 Lot 28 : Recipient flag + project tag === */
+    .ar-recipient-flag {
+      display: inline-flex;
+      align-items: center;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      cursor: help;
+    }
+    .ar-recipient-flag.is-cc {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fbbf24;
+    }
+
+    .ar-card-project-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      background: #dcfce7;
+      color: #0f5e3c;
+      border: 1px solid #86efac;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      transition: all 150ms;
+    }
+    .ar-card-project-tag:hover {
+      background: #bbf7d0;
+      transform: scale(1.04);
+    }
+    .ar-card-project-tag svg { opacity: 0.7; }
+
+    /* === S6.22 Lot 27 : Verdict teach link (apprentissage actif) === */
+    .ar-verdict-teach {
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px dashed var(--ivory-200);
+      text-align: center;
+    }
+    .ar-verdict-teach-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+      font-size: 10.5px;
+      font-weight: 500;
+      color: var(--ink-500);
+      font-family: var(--font-sans);
+      border-radius: 4px;
+      transition: all 150ms;
+      font-style: italic;
+    }
+    .ar-verdict-teach-link:hover {
+      color: var(--violet-800, #463a54);
+      background: var(--violet-50, #ece7f0);
+      font-style: normal;
+    }
+    .ar-verdict-teach-link svg { color: inherit; opacity: 0.7; }
+
+    /* === S6.22 Lot 26 : From-line + redondance + voir mail === */
+    .ar-card-from-line {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      color: var(--ink-500);
+      margin: 2px 0 4px;
+      font-family: var(--font-mono);
+    }
+    .ar-card-from-label, .ar-card-to-label {
+      opacity: 0.55;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .ar-card-from-value {
+      color: var(--ink-700);
+      font-weight: 600;
+    }
+    .ar-card-to-value {
+      color: var(--ink-500);
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .ar-card-related {
+      display: inline-flex;
+      align-items: center;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%);
+      color: #78350f;
+      font-family: var(--font-mono);
+      animation: pulseGlow 2s ease-in-out infinite;
+      cursor: help;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); }
+      50%      { box-shadow: 0 0 0 4px rgba(251, 191, 36, 0); }
+    }
+
+    .ar-card-view-mail {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 8px;
+      padding: 5px 10px;
+      background: transparent;
+      border: 1px solid var(--ivory-200);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-500);
+      font-family: var(--font-sans);
+      transition: all 150ms;
+    }
+    .ar-card-view-mail:hover {
+      color: var(--violet-800, #463a54);
+      border-color: var(--violet-200, #c7b9d3);
+      background: var(--violet-50, #ece7f0);
+    }
+
+    /* === S6.22 Lot 25 : Verdict info + not-concerned === */
+    .ar-verdict.info-context:hover {
+      color: #1e40af;
+      background: #dbeafe;
+    }
+    .ar-verdict.not-concerned:hover {
+      color: #525252;
+      background: #f5f5f5;
+    }
+    /* Badge kind=info couleur bleue */
+    .ar-card[data-kind="info"] { border-left-color: #1e40af !important; }
+
+    /* === S6.22 Lot 24 : Kind dropdown picker === */
+    .ar-kind-dropdown {
+      background: var(--paper);
+      border: 1px solid var(--ivory-200);
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(26, 22, 18, 0.15), 0 2px 6px rgba(26, 22, 18, 0.08);
+      padding: 6px;
+      min-width: 240px;
+      animation: kindDropdownIn 180ms cubic-bezier(.16, 1, .3, 1);
+    }
+    @keyframes kindDropdownIn {
+      from { opacity: 0; transform: translateY(-6px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .ar-kind-dropdown-head {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ink-500);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 6px 10px 8px;
+      border-bottom: 1px solid var(--ivory-200);
+      margin-bottom: 4px;
+    }
+    .ar-kind-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 8px 10px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      border-radius: 6px;
+      text-align: left;
+      transition: background 130ms;
+      font-family: var(--font-sans);
+    }
+    .ar-kind-option:hover { background: var(--ivory-50); }
+    .ar-kind-option.is-current { background: var(--ivory-50); }
+    .ar-kind-option-icon {
+      width: 30px; height: 30px;
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .ar-kind-option-content { flex: 1; min-width: 0; }
+    .ar-kind-option-label {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink-900);
+      letter-spacing: -0.005em;
+    }
+    .ar-kind-option-desc {
+      font-size: 10.5px;
+      color: var(--ink-500);
+      margin-top: 1px;
+    }
+    .ar-kind-option-check {
+      color: #166534;
+      flex-shrink: 0;
+    }
+
+    /* === S6.22 Lot 24 : Badge kind plus discret === */
+    .ar-card-kind {
+      font-size: 9.5px !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.06em !important;
+      padding: 2px 7px !important;
+      border-radius: 3px !important;
+      opacity: 0.85;
+      transition: opacity 150ms, transform 150ms;
+    }
+    .ar-card-kind:hover {
+      opacity: 1;
+      transform: scale(1.04);
+    }
+    /* Suppression hover trop voyant precedent */
+    .ar-card-kind-clickable:hover {
+      filter: none;
+      transform: scale(1.04);
+    }
+
+    /* === S6.22 Lot 23 : Bulk toolbar polish === */
+    [data-region="ar-bulk-toolbar"] {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #fef9e7 0%, #fef3c7 100%);
+      border: 1px solid #fbbf24;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 8px rgba(251, 191, 36, 0.15);
+      animation: arSlideDown 220ms cubic-bezier(.16, 1, .3, 1);
+    }
+    @keyframes arSlideDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .ar-bulk-info {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: #92400e; font-size: 13px;
+    }
+    .ar-bulk-info strong { font-weight: 700; }
+    .ar-bulk-actions {
+      display: inline-flex; gap: 6px;
+      background: rgba(255,255,255,0.5);
+      padding: 4px;
+      border-radius: 10px;
+    }
+    .ar-bulk-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 7px 14px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 6px;
+      transition: all 150ms ease;
+      letter-spacing: 0.01em;
+    }
+    .ar-bulk-btn:hover {
+      background: var(--paper);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transform: translateY(-1px);
+    }
+    .ar-bulk-btn-accept { color: #166534; }
+    .ar-bulk-btn-defer  { color: #92400e; }
+    .ar-bulk-btn-ignore { color: #525252; }
+    .ar-bulk-btn-accept:hover { background: #dcfce7; color: #14532d; }
+    .ar-bulk-btn-defer:hover  { background: #fef3c7; color: #78350f; }
+    .ar-bulk-btn-ignore:hover { background: #f5f5f5; color: #262626; }
+
+    .ar-bulk-n {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 22px; height: 22px;
+      padding: 0 6px;
+      background: rgba(0,0,0,0.08);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+    .ar-bulk-btn-accept .ar-bulk-n { background: #bbf7d0; color: #166534; }
+    .ar-bulk-btn-defer .ar-bulk-n  { background: #fde68a; color: #92400e; }
+    .ar-bulk-btn-ignore .ar-bulk-n { background: #e5e5e5; color: #525252; }
+
+    .ar-bulk-tools {
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .ar-bulk-link {
+      background: transparent;
+      border: 0;
+      color: #92400e;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: all 150ms;
+    }
+    .ar-bulk-link:hover { background: rgba(251, 191, 36, 0.2); text-decoration: underline; }
+    .ar-bulk-sep { color: #fbbf24; font-weight: 700; }
+
+    @media (max-width: 767px) {
+      [data-region="ar-bulk-toolbar"] { flex-direction: column; align-items: stretch; }
+      .ar-bulk-actions { justify-content: space-between; }
+      .ar-bulk-btn { flex: 1; justify-content: center; }
+      .ar-bulk-tools { justify-content: center; }
+    }
+
+    /* === S6.22 Lot 22 : Focus Decision meta === */
+    .ar-decision-meta {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-500);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-family: var(--font-mono);
+      margin: -4px 0 12px;
+    }
+    .ar-card-kind-clickable {
+      transition: all 150ms;
+    }
+    .ar-card-kind-clickable:hover {
+      filter: brightness(0.95);
+      transform: scale(1.05);
+    }
+
+    /* === S6.22 Lot 21 H : Historique arbitrages === */
+    .ar-history-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .ar-history-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink-700);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 0;
+    }
+    .ar-history-meta {
+      font-size: 11px;
+      color: var(--ink-500);
+      font-family: var(--font-mono);
+    }
+    .ar-history-list { display: flex; flex-direction: column; gap: 8px; }
+    .ar-history-item {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 16px;
+      padding: 10px 14px;
+      background: var(--ivory-50);
+      border: 1px solid var(--ivory-200);
+      border-radius: 8px;
+      align-items: center;
+    }
+    .ar-history-item.is-committed { background: var(--paper); border-color: var(--ivory-200); }
+    .ar-history-item.is-pending { opacity: 0.7; }
+    .ar-history-date {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-700);
+      font-family: var(--font-sans);
+    }
+    .ar-history-counts { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .ar-history-pill {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-family: var(--font-mono);
+    }
+    .ar-history-pill.is-faire    { background: #dcfce7; color: #166534; }
+    .ar-history-pill.is-deleguer { background: #dbeafe; color: #1e40af; }
+    .ar-history-pill.is-reporter { background: #fef3c7; color: #92400e; }
+    .ar-history-total {
+      font-size: 11px;
+      color: var(--ink-500);
+      margin-left: auto;
+    }
+    .ar-history-duration {
+      font-size: 10px;
+      color: var(--ink-500);
+      margin-top: 4px;
+      font-family: var(--font-mono);
+    }
+    .ar-history-pending {
+      font-size: 11px;
+      color: var(--ink-500);
+      font-style: italic;
+    }
+
+    /* === S6.22 Lot 20 : Badge relevance === */
+    .ar-card-relevance {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+    }
+    .ar-card-relevance.is-direct      { background: #dcfce7; color: #166534; }
+    .ar-card-relevance.is-cc          { background: #dbeafe; color: #1e40af; }
+    .ar-card-relevance.is-mentioned   { background: #fef3c7; color: #92400e; }
+    .ar-card-relevance.is-not_concerned { background: #fee2e2; color: #991b1b; }
+
+    /* === S6.22 Lot 19 : Focus decision card refondu === */
+    .ar-decision-card {
+      background: var(--paper);
+      border: 1px solid var(--ivory-200);
+      border-radius: 14px;
+      padding: 32px 36px;
+      max-width: 760px;
+      margin: 24px auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .ar-decision-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .ar-decision-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-500);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .ar-decision-progress {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-500);
+      background: var(--ivory-50);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .ar-decision-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink-900);
+      margin: 8px 0 12px;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+    }
+    .ar-decision-context {
+      font-size: 14px;
+      color: var(--ink-700);
+      line-height: 1.6;
+      margin: 0 0 24px;
+    }
+    .ar-decision-llm-reco {
+      background: linear-gradient(to right, #f5f0fa 0%, var(--paper) 100%);
+      border-left: 3px solid var(--violet-800, #463a54);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--ink-900);
+      margin: 0 0 20px;
+      line-height: 1.5;
+    }
+    .ar-decision-prompt {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-700);
+      margin: 16px 0 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .ar-decision-options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 599px) {
+      .ar-decision-options-grid { grid-template-columns: 1fr; }
+    }
+
+    .ar-option-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--paper);
+      border: 1px solid var(--ivory-200);
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 180ms ease;
+      font-family: var(--font-sans);
+    }
+    .ar-option-card:hover {
+      border-color: var(--opt-color, var(--ink-900));
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+    .ar-option-card:hover .ar-option-label {
+      color: var(--opt-color, var(--ink-900));
+    }
+    .ar-option-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .ar-option-content { min-width: 0; flex: 1; }
+    .ar-option-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink-900);
+      transition: color 180ms;
+      letter-spacing: -0.005em;
+    }
+    .ar-option-desc {
+      font-size: 11px;
+      color: var(--ink-500);
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+
+    .ar-decision-tools {
+      border-top: 1px dashed var(--ivory-200);
+      padding-top: 12px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .ar-decision-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid var(--ivory-200);
+    }
+    .ar-decision-actions .ar-btn { font-size: 12px; }
+
+    /* === Polish cards Triage (LLM) === */
+    .ar-card {
+      padding: 18px 20px;  /* plus aere */
+    }
+    .ar-card-summary {
+      font-size: 12.5px;  /* +0.5 lisibilite */
+      line-height: 1.5;
+      padding: 8px 12px;
+      margin: 6px 0;
+    }
+    .ar-card-suggested {
+      font-size: 13px;
+      padding: 10px 14px;
+      margin: 6px 0 8px;
+      box-shadow: 0 1px 3px rgba(70,58,84,0.06);
+    }
+    .ar-card-why {
+      margin-top: 6px;
+      padding: 4px 0;
+    }
+    .ar-card-snippet {
+      margin-top: 8px;
+      padding-top: 8px;
+    }
+
+    /* === S6.22 Lot 18 : Verdict picker (segmented control) === */
+    .ar-verdict-picker {
+      display: inline-flex;
+      flex-direction: column;
+      gap: 4px;
+      background: var(--ivory-50);
+      border-radius: 10px;
+      padding: 4px;
+      border: 1px solid var(--ivory-200);
+    }
+    .ar-verdict {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-700);
+      border-radius: 6px;
+      transition: all 150ms ease;
+      min-width: 90px;
+      justify-content: flex-start;
+    }
+    .ar-verdict:hover {
+      background: var(--paper);
+      color: var(--ink-900);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .ar-verdict.accept:hover { color: #166534; background: #dcfce7; }
+    .ar-verdict.defer:hover  { color: #92400e; background: #fef3c7; }
+    .ar-verdict.ignore:hover { color: var(--ink-500); }
+    .ar-verdict svg { flex-shrink: 0; }
+
+    @media (max-width: 767px) {
+      .ar-verdict-picker { flex-direction: row; }
+      .ar-verdict { min-width: auto; padding: 8px 10px; flex: 1; justify-content: center; }
+    }
+
+    /* === S6.22 Lot 17 : LLM enrichments === */
+    .ar-card-summary {
+      font-size: 12px;
+      color: var(--ink-700);
+      line-height: 1.45;
+      margin: 4px 0 2px;
+      padding: 6px 10px;
+      background: var(--ivory-50);
+      border-radius: 6px;
+      border-left: 2px solid var(--ink-300, #c7c0b3);
+    }
+    .ar-card-summary strong { color: var(--ink-900); font-weight: 600; margin-right: 4px; }
+
+    .ar-card-suggested {
+      font-size: 12.5px;
+      color: var(--ink-900);
+      line-height: 1.45;
+      margin: 4px 0;
+      padding: 8px 12px;
+      background: linear-gradient(to right, #f5f0fa 0%, var(--paper) 100%);
+      border-radius: 6px;
+      border-left: 3px solid var(--violet-800, #463a54);
+      font-weight: 500;
+    }
+    .ar-card-suggested strong { color: var(--violet-800, #463a54); margin-right: 4px; }
+
+    .ar-card-prio {
+      margin-left: auto;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      font-family: var(--font-mono);
+    }
+    .ar-card-prio.is-p0 { background: #fee2e2; color: #991b1b; }
+    .ar-card-prio.is-p1 { background: #fef3c7; color: #92400e; }
+    .ar-card-prio.is-p2 { background: var(--ivory-100); color: var(--ink-500); }
+    .ar-card-prio.is-p3 { background: var(--ivory-50); color: var(--ink-300); }
+
+    /* === S6.22 Lot 16 : Cards arbitrage refondues (icone kind + justification) === */
+    .ar-card {
+      display: grid;
+      grid-template-columns: 28px 48px 1fr auto;
+      gap: 16px;
+      align-items: start;
+      background: var(--paper);
+      border: 1px solid var(--ivory-200);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+      transition: box-shadow 180ms, border-color 180ms, transform 180ms;
+    }
+    .ar-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      border-color: var(--ink-300, #c7c0b3);
+      transform: translateY(-1px);
+    }
+    .ar-card.is-selected {
+      border-color: var(--ink-900);
+      background: var(--ivory-50);
+    }
+    .ar-card[data-kind="decision"] { border-left: 3px solid #92400e; }
+    .ar-card[data-kind="project"]  { border-left: 3px solid #0f5e3c; }
+    .ar-card[data-kind="task"]     { border-left: 3px solid #463a54; }
+
+    .ar-card-check {
+      display: flex; align-items: center; justify-content: center;
+      padding-top: 14px;
+      cursor: pointer;
+    }
+    .ar-card-check input {
+      width: 16px; height: 16px; cursor: pointer; accent-color: var(--ink-900);
+    }
+
+    .ar-card-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .ar-card-body { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+    .ar-card-meta {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; color: var(--ink-500);
+      flex-wrap: wrap;
+    }
+    .ar-card-kind {
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .ar-card-from {
+      font-weight: 600;
+      color: var(--ink-700);
+    }
+    .ar-card-date {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--ink-500);
+      margin-left: auto;
+    }
+
+    .ar-card-subject {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink-900);
+      line-height: 1.35;
+      margin: 2px 0 0;
+      letter-spacing: -0.005em;
+    }
+
+    .ar-card-why {
+      display: flex; align-items: center; gap: 6px;
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--ink-500);
+      font-style: italic;
+      line-height: 1.4;
+    }
+
+    .ar-card-snippet {
+      font-size: 12px;
+      color: var(--ink-500);
+      line-height: 1.45;
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px dashed var(--ivory-200);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .ar-card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-top: 10px;
+      align-self: stretch;
+    }
+
+    @media (max-width: 767px) {
+      .ar-card {
+        grid-template-columns: 28px 40px 1fr;
+        grid-template-areas: "check icon body" "check actions actions";
+        gap: 10px;
+      }
+      .ar-card-check { grid-area: check; }
+      .ar-card-icon { grid-area: icon; width: 32px; height: 32px; }
+      .ar-card-body { grid-area: body; }
+      .ar-card-actions { grid-area: actions; flex-direction: row; padding-top: 8px; border-top: 1px solid var(--ivory-100); margin-top: 8px; }
+      .ar-card-actions button { flex: 1; }
+      .ar-card-date { display: none; }
+    }
+</style>
 </head>
 <body data-route="arbitrage">
+  <script>
+  // S6.22 Lot 14 : kill switch service worker (anti cache v06)
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(rs => {
+      if (rs.length === 0) return;
+      console.warn('[v07] Desinstallation', rs.length, 'service worker(s) qui cachent l ancien code');
+      Promise.all(rs.map(r => r.unregister())).then(() => {
+        if (window.caches) {
+          caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))))
+            .then(() => { console.warn('[v07] caches cleared, reloading'); location.reload(); });
+        } else { location.reload(); }
+      });
+    });
+  }
+  </script>
   <button class="burger-btn" type="button" id="burger-toggle"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg></button>
   <div class="ds-mobile-backdrop" id="ds-backdrop" hidden></div>
   <script>
@@ -82,6 +935,29 @@
       <div data-component="header-topbar" data-props='{"breadcrumb":[{"label":"Cockpit","href":"index.html"},{"label":"Triage"}],"title":"Arbitrage du matin","subtitle":"5 a 10 minutes - file emails et decisions a trancher"}'></div>
 
       <!-- Tabs mode -->
+            <details class="ar-help" style="margin:0 0 16px;background:var(--ivory-50);border:1px solid var(--ivory-200);border-radius:10px;padding:0">
+        <summary style="cursor:pointer;padding:10px 16px;font-size:12px;font-weight:600;color:var(--ink-700);user-select:none;list-style:none;display:flex;align-items:center;gap:8px">
+          <svg viewBox="0 0 24 24" width="14" height="14" style="color:var(--violet-800,#463a54)"><use href="#i-info"/></svg>
+          <span>Comment fonctionne le Triage du matin ?</span>
+          <span style="margin-left:auto;font-size:11px;color:var(--ink-500)">cliquez pour deplier</span>
+        </summary>
+        <div style="padding:0 16px 16px;font-size:12.5px;color:var(--ink-700);line-height:1.6;border-top:1px dashed var(--ivory-200);margin-top:0">
+          <p style="margin:14px 0 8px"><strong>Le Triage transforme vos emails en items actionnables.</strong> Pour chaque email candidat, l'arbitrage produit un de ces 4 verdicts :</p>
+          <ul style="margin:0 0 12px 20px;padding:0;list-style:disc;line-height:1.7">
+            <li><span style="background:#ece7f0;color:#463a54;padding:1px 6px;border-radius:4px;font-size:11px;font-weight:700">ACTION</span> — Email transforme en tache operationnelle dans <strong>Actions</strong>.</li>
+            <li><span style="background:#fbeed2;color:#92400e;padding:1px 6px;border-radius:4px;font-size:11px;font-weight:700">DECISION</span> — Email transforme en <strong>Decision a trancher</strong> (visible dans Focus decisions et page Decisions).</li>
+            <li><span style="background:#dcfce7;color:#0f5e3c;padding:1px 6px;border-radius:4px;font-size:11px;font-weight:700">PROJECT</span> — Email transforme en sujet a structurer dans <strong>Projects</strong> (V1.x : auto-creation projet).</li>
+            <li><span style="background:#fee2e2;color:#991b1b;padding:1px 6px;border-radius:4px;font-size:11px;font-weight:700">SKIP</span> — Email marque arbitre et filtre comme noise (newsletter, FYI, distribution liste).</li>
+          </ul>
+          <p style="margin:8px 0 4px"><strong>2 modes d'analyse :</strong></p>
+          <ul style="margin:0 0 12px 20px;padding:0;list-style:disc;line-height:1.7">
+            <li><strong>Analyser (heuristique)</strong> : scoring SQL + regex (gratuit, instantane).</li>
+            <li><strong>\u2726 Analyser avec Claude</strong> : analyse LLM batch avec resume + suggested action + relevance basee sur vos adresses email perso. Plus precis (~5 sec, ~0.06\u20ac).</li>
+          </ul>
+          <p style="margin:8px 0 0;font-size:12px;color:var(--ink-500);font-style:italic">Astuce : cliquez sur le badge ACTION/DECISION/PROJECT d'une card pour le changer si vous n'etes pas d'accord avec Claude.</p>
+        </div>
+      </details>
+
       <div class="ar-mode-tabs" role="tablist">
         <button class="ar-mode-tab is-active" data-mode="queue" role="tab">📬 File emails</button>
         <button class="ar-mode-tab" data-mode="focus" role="tab">🎯 Focus decisions</button>
@@ -94,8 +970,9 @@
             <span data-region="ar-queue-stat"><strong>—</strong> emails proposes par scoring SQL</span>
           </div>
           <div style="display:flex;gap:8px;">
-            <button class="ar-btn ar-btn-ghost" data-action="bootstrap">Bootstrap projets/contacts</button>
-            <button class="ar-btn ar-btn-primary" data-action="analyze">Analyser les emails</button>
+            <button class="ar-btn ar-btn-ghost" data-action="bootstrap" title="Auto-detecte les projets et contacts depuis vos emails">✨ Detecter projets & contacts</button>
+            <button class="ar-btn ar-btn-ghost" data-action="analyze">Analyser (heuristique)</button>
+            <button class="ar-btn ar-btn-primary" data-action="analyze-llm" title="Analyse Claude : skip noise + summary + suggested action">✦ Analyser avec Claude</button>
           </div>
         </div>
         <div class="ar-queue" data-region="ar-queue"></div>
@@ -121,8 +998,9 @@
   </nav>
   <div data-region="timeline" hidden></div>
   <div data-component="modal-detail"></div>
-  <script type="module" src="../shared/store.js"></script>
-  <script type="module" src="../shared/component-loader.js"></script>
-  <script type="module" src="../stores/arbitrage-store.js"></script>
+
+  <script type="module" src="../shared/store.js?v=20260430bb"></script>
+  <script type="module" src="../shared/component-loader.js?v=20260430bb"></script>
+  <script type="module" src="../stores/arbitrage-store-v2.js?v=20260430bb"></script>
 </body>
 </html>

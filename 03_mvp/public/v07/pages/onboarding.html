@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>aiCEO - Bienvenue (Onboarding v07)</title>
-  <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css">
-  <link rel="stylesheet" href="../shared/tokens.css">
-  <link rel="stylesheet" href="../shared/tweaks.css">
-  <link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css">
-  <link rel="stylesheet" href="../components/header-topbar/header-topbar.css">
-  <link rel="stylesheet" href="../components/modal-detail/modal-detail.css">
+  <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css?v=20260430bb">
+  <link rel="stylesheet" href="../shared/tokens.css?v=20260430bb">
+  <link rel="stylesheet" href="../shared/tweaks.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/header-topbar/header-topbar.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/modal-detail/modal-detail.css?v=20260430bb">
   <style>
     /* Progress bar etapes */
     .ob-progress {
@@ -87,6 +87,55 @@
       font-weight: 600;
       color: var(--ink-700);
       margin-bottom: 6px;
+    }
+        /* === S6.22 Lot 20 : Email chips onboarding === */
+    .ob-email-list {
+      list-style: none;
+      padding: 12px;
+      margin: 12px 0 0;
+      background: var(--ivory-50);
+      border: 1px solid var(--ivory-200);
+      border-radius: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 56px;
+      align-items: flex-start;
+    }
+    .ob-email-empty {
+      font-size: 12px;
+      color: var(--ink-500);
+      font-style: italic;
+      padding: 8px 4px;
+    }
+    .ob-email-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 4px 6px 12px;
+      background: var(--paper);
+      border: 1px solid var(--ivory-200);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--ink-900);
+      font-family: var(--font-mono);
+    }
+    .ob-email-remove {
+      background: transparent;
+      border: 0;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      cursor: pointer;
+      color: var(--ink-500);
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 150ms;
+    }
+    .ob-email-remove:hover {
+      background: #fee2e2;
+      color: #991b1b;
     }
     .ob-input {
       width: 100%;
@@ -258,6 +307,21 @@
   </style>
 </head>
 <body data-route="onboarding">
+  <script>
+  // S6.22 Lot 14 : kill switch service worker (anti cache v06)
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(rs => {
+      if (rs.length === 0) return;
+      console.warn('[v07] Desinstallation', rs.length, 'service worker(s) qui cachent l ancien code');
+      Promise.all(rs.map(r => r.unregister())).then(() => {
+        if (window.caches) {
+          caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))))
+            .then(() => { console.warn('[v07] caches cleared, reloading'); location.reload(); });
+        } else { location.reload(); }
+      });
+    });
+  }
+  </script>
   <a href="#main" class="skip-link">Aller au contenu principal</a>
   <button class="burger-btn" type="button" aria-label="Ouvrir le menu" id="burger-toggle">
     <svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg>
@@ -318,7 +382,7 @@
           <span>&middot;</span>
           <span>Onboarding</span>
           <span>&middot;</span>
-          <span>v07 Atomic Templates</span>
+          <span>v07 · Voix exec moderne</span>
         </div>
       </footer>
     </main>
@@ -341,8 +405,8 @@
 
   <div data-component="modal-detail"></div>
 
-  <script type="module" src="../shared/store.js"></script>
-  <script type="module" src="../shared/component-loader.js"></script>
-  <script type="module" src="../stores/onboarding-store.js"></script>
+  <script type="module" src="../shared/store.js?v=20260430bb"></script>
+  <script type="module" src="../shared/component-loader.js?v=20260430bb"></script>
+  <script type="module" src="../stores/onboarding-store.js?v=20260430bb"></script>
 </body>
 </html>

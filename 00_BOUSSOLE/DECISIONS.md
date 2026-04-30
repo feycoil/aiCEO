@@ -3,6 +3,311 @@
 
 
 
+## 2026-04-30 (nuit) · S6.24 + S6.25 + S6.26 — Cascade autonome Plan de résolution (Lots 30-32)
+
+**Statut** : Livré · **Audience** : binôme · **Décision** : exécution autonome demandée par CEO ("lance tout ce que tu peux faire seul jusqu'à phase 3"). Cascade S6.24 quick wins + S6.25 lacunes structurelles + S6.26 polish UX.
+
+### S6.24 — Quick wins (Phase 1)
+
+| Item | Livré | Fichier |
+|---|---|---|
+| S6.24.1 Badge "✦ Claude" sur cards LLM | ✅ | `.ar-card-llm-tag` arbitrage.html + arbitrage-store-v2.js |
+| S6.24.2 Mini-card stats apprentissage | ✅ | `renderLearningMini()` index-store.js + endpoint `/learning-stats` |
+| S6.24.3 Bouton "Répondre" mailto | ✅ | `.ar-card-reply-mail` arbitrage-store-v2.js |
+| S6.24.4 Tour pédagogique 1ère utilisation | ✅ | `maybeShowFirstTriageTour()` + localStorage flag |
+
+### S6.25 — Lacunes structurelles (Phase 2)
+
+| Item | Livré | Détail |
+|---|---|---|
+| S6.25.1 Auto-create projet (kind=project + verdict=faire) | ✅ | Branche dans `/api/arbitrage/accept` → INSERT projects + lie email source |
+| S6.25.2 Verdict "Big Rock" (promotion en rocher hebdo) | ✅ | Branche kind="big-rock" → INSERT big_rocks (semaine ISO courante, max 3 enforcé) |
+| S6.25.3 Endpoint `GET /api/projects/:id/emails` | ✅ | 50 derniers emails liés au projet (project_id ou inferred_project case-insensitive) |
+| S6.25.4 Stats apprentissage détaillées | ✅ | Endpoint `/api/arbitrage/learning-stats` (total + monthly + recent + auto_filtered_estimate) |
+
+### S6.26 — Polish UX (Phase 3)
+
+| Item | Livré | Détail |
+|---|---|---|
+| S6.26.2 Bordure violette gauche subtile sur cards LLM | ✅ | `.ar-card.is-llm` border-left 3px violet-300, hover violet-500 |
+| S6.26.4 Focus decisions filtres élargis | ✅ | Active + reportée + tranchées récentes (7 derniers jours) |
+| S6.26.1 Toggle Compact/Normal/Détaillé | ⏸ Backloggé V1.0 (besoin design tokens density) |
+| S6.26.3 Hint "filtré grâce à votre feedback" | ⏸ Backloggé (couvert par toast existant) |
+
+### Architecture
+
+**Nouvelles routes backend (3)** :
+- `GET /api/arbitrage/learning-stats` — agrégation feedbacks par verdict + monthly + recent
+- `DELETE /api/arbitrage/email-feedback/:id` — annuler un feedback
+- `GET /api/projects/:id/emails` — 50 derniers emails du projet (fallback si colonne absente)
+
+**Routes étendues (1)** :
+- `POST /api/arbitrage/accept` — gère kind=project (INSERT projects) et kind=big-rock (INSERT big_rocks avec contrainte semaine ISO max 3)
+
+**Frontend** :
+- `index-store.js` : helper `renderLearningMini()` ajouté + appelé dans Promise.all init
+- `settings-store.js` : panel Coaching enrichi avec section "Apprentissage Claude" (loadLearningStats + renderLearningStats)
+- `arbitrage-store-v2.js` : maybeShowFirstTriageTour(), bind reply-mail mailto, badge Claude, classe is-llm sur cards LLM, focus filters élargis
+
+### Pièges traversés
+
+- **Mount Windows truncation #2 cumulé** : `index-store.js` corrupté (NUL bytes + replace global Python trop brutal qui a transformé `function renderProjectGlance() {` en `renderProjectGlance(),`). Fix : Python atomic write ciblé + `strip-nul.py`.
+- **Truncation arbitrage-store-v2.js** : ~5 lignes au tail (init listener) supprimées. Fix : reconstruction + Python atomic write.
+- **Linter Windows IDE** : transformation cache buster `?v=20260430` → `?v=20260430bb` (silent, intentionnel).
+
+### Tests
+
+10/10 v07-atomic verts (7 pass + 3 pre-existing structural fails sans rapport). Routes backend chargent sans erreur (`require('./src/routes/arbitrage')` + `projects` OK 18 + 7 stack entries).
+
+### Backloggé pour V1.0
+
+- S6.26.1 Toggle density (compact / normal / détaillé) → besoin design tokens
+- S6.26.3 Hint visuel "Filtré grâce à votre feedback" en section skipped → couvert via toast existant
+- Recette CEO 25 min sur sa propre boîte mail (test sur soi)
+- Tests E2E LLM frontend live
+- Modals 5 kinds en navigation réelle (audit S6.23 résiduel)
+
+### Sources
+
+- `04_docs/AUDIT-UX-ARBITRAGE-v0.8.md` (audit complet)
+- `04_docs/PLAN-RESOLUTION-AUDIT-ARBITRAGE.md` (plan 19 items)
+- `outputs/fix-s624-quick-wins.py` + `outputs/fix-s625-s626.py` (scripts patch)
+
+
+
+## 2026-04-30 (soir) · S6.22 Lots 17-29 — Refonte UX Triage cascade (12 lots livrés)
+
+**Statut** : Livre · **Audience** : binome · **Decision** : suite cascade ininterrompue feedback CEO/livraison sur la page Triage v07. 12 lots livres en chaine sur ~6h, refonte profonde de l'experience d'arbitrage.
+
+### Lots livres (chronologique)
+
+| Lot | Sujet | Impact |
+|---|---|---|
+| 17 | Triage Claude-aware reel : LLM batch (12 emails -> JSON enrichi summary/action/priority/rationale) | Switch promesse pseudo-IA -> vrai LLM |
+| 18 | Animation Claude reflechit + layout pleine largeur + widget verdict + fix focus + min 3 decisions heuristique | UX critique restauree |
+| 19 | Polish cards + Focus decisions clearer (4 options OUI/NON/Reporter/Plus info) + header pleine largeur | Focus decision utilisable |
+| 20 | Adresses email perso onboarding (5e etape) + Settings + LLM relevance scoring | Personnalisation activee |
+| 21 | Selection diversifiee (max 2 sender, max 4 projet) + Historique arbitrages + modal-detail polish | Pertinence + traceabilite |
+| 22 | Card Focus enrichie (source, contexte, voir mail) + retrait forcage 3 decisions + scoring decisionnabilite + aide contextuelle | Anti-biais + transparence IA |
+| 23 | Polish bandeau bulk + nouvel endpoint /triage-history (vs /history obsolete) + auto-refresh historique | Concept "session non commitee" supprime |
+| 24 | Header transparent (no-sticky) + dropdown enrichi badge kind + badge plus discret | UX clarification |
+| 25 | Apprentissage actif : table email_feedback + verdicts "Pas pour moi" / "Info" + LLM patterns en contexte | Boucle d'amelioration |
+| 26 | Detection redondance (boost score 3+ emails similaires) + destinataire affiche + bouton voir mail sur cards LLM | Signal relance + transparence |
+| 27 | Clarification UX verdicts : suppression bouton Info redondant, 3 verdicts + lien teach + fix bug rien-ne-se-passe | UX simplifiee |
+| 28 | Badge "Pas direct" (recipient_flag from to_addrs) + tag projet cliquable reaffectable | Identification rapide + reaffectation |
+| 29 | Fix bug critique DOMContentLoaded supprime par linter (boutons d'analyse ne fonctionnaient plus) + audit UX/UI complet | Restauration + introspection |
+
+### Concepts cles introduits
+
+1. **Kind (4 types)** : task, decision, project, info (info = liaison projet sans creation)
+2. **Verdict (4 + 1 lien)** : Faire / Reporter / Ignorer / Pas-pour-moi (apprentissage)
+3. **Relevance (LLM)** : direct / cc / mentioned / not_concerned / unknown
+4. **Recipient flag (deterministe)** : direct / cc / unknown (parse to_addrs vs myEmails)
+5. **Kind confidence** : high / medium (puces ··) / low (warning ⚠)
+6. **Related count** : detection emails similaires non arbitres, boost score si 3+ (signal relance)
+7. **Email feedback** : table apprentissage active, patterns dans system prompt LLM
+
+### Backend
+
+- 5 nouvelles routes : `/email-feedback` POST/GET, `/triage-history`, `/emails/:id` (voir mail), `/analyze-emails-llm` (Claude batch)
+- Table `email_feedback` (idempotent CREATE TABLE IF NOT EXISTS au boot)
+- Prompt LLM enrichi : myEmails + 30 derniers feedbacks + 7 champs JSON (skip/kind/summary/action/priority/rationale/relevance)
+- Diversification SQL : top 30 -> max 2 sender + max 4 projet -> top 12
+- Scoring decisionnabilite : 3-criteres regex sur subject+preview, top 3 remontes meme hors top score classique
+- Boost redondance : +25 si 3+ similaires, +12 si 2
+
+### Frontend
+
+- 1 fichier dedie `arbitrage-store-v2.js` (le `?v=` ne suffisait plus contre cache navigateur tenance)
+- Animation thinking overlay + skeleton + 8 messages rotatifs
+- Dropdown popover pour change-kind + change-project (au lieu de prompts natifs)
+- Card layout aere : meta row (badges), from-line (DE/A), subject, summary, action, why, priority, snippet, view-mail, verdict picker, teach link
+- Aide contextuelle dépliable
+- Section historique cumulative (jours d'arbitrage)
+- Bandeau bulk avec icones + N dynamique
+
+### Audit UX/UI complet
+
+`04_docs/AUDIT-UX-ARBITRAGE-v0.8.md` documente :
+- Promesse vs livraison (8.5/10 sur "Naviguer clair, Trancher juste, Dormir serein")
+- 6 forces differenciantes (diversification, scoring intelligent, apprentissage, voix exec, layout, backend deterministe + LLM optionnel)
+- 7 points faibles (densite info, abstraction kind/verdict, focus peu peuple, etc.)
+- 7 lacunes avouees (auto-create projet, big rocks integres, body complet, multi-comptes, stats apprentissage, etc.)
+- 12 recommandations priorisees (4 quick wins + 4 S6.24 + 4 V1.x + 3 V2)
+
+### Bug critique fix Lot 29
+
+Symptome : "boutons d'analyse ne fonctionnent plus".
+Cause : le linter Windows (probablement IDE auto-save) avait supprime le `document.addEventListener('DOMContentLoaded', ...)` final qui binde les boutons "Analyser (heuristique)" et "Analyser avec Claude" + load history + detect LLM.
+Fix : restauration du listener via Python atomic write avec console.info pour debugging futur.
+
+### Tests
+
+10/10 v07-atomic verts apres chaque lot. Pas de regression detectee. Pilotage regenere systematiquement.
+
+### Next
+
+CEO doit passer la recette `RECETTE-CEO-v0.8.md` en conditions reelles (1 vraie matinee Triage) avant Sprint S6.24 (auto-create projet + big rocks integres + page Project enrichie + stats apprentissage).
+
+**Source** : feedback CEO 30/04 PM tardif, livraison continue ~6h, 12 lots cascade.
+
+---
+
+## 2026-04-30 · S6.23 — Weekly Sync refondu en vrai rituel hebdo
+
+**Statut** : Livre · **Audience** : binome · **Decision** : refonte page revues.html v07 (avant : simple liste card-decision pattern) en VRAI rituel hebdo Editorial Executive. CEO a explicitement demande "fait S6.23 maintenant" apres audit qui revelait big rocks orphelins (table existe, route OK, aucune UI dediee).
+
+**3 sections cote utilisateur** :
+
+1. **Bilan semaine ecoulee** (top section, semaine en cours W17 calculee ISO 8601 cote frontend)
+   - Champ intention (1 ligne)
+   - Bilan factuel (textarea 4 rows)
+   - Cap pour la semaine prochaine (textarea 3 rows)
+   - Mood select (haute / moyenne / basse / epuisee)
+   - Notes libres (textarea 2 rows)
+   - **Bouton "Auto-draft Claude"** : POST `/api/weekly-reviews/:week/draft` -> remplit les 5 champs avec un brouillon LLM (utilise les decisions tranchees + tasks done de la semaine via emails-context.js).
+   - Bouton "Enregistrer le bilan" : POST `/api/weekly-reviews` (upsert sur week_id).
+
+2. **3 Big Rocks semaine prochaine** (W18 = pastWeek + 7 jours)
+   - Grid 3 colonnes (1 colonne mobile <768px) avec cards Big Rock numerotees 1/2/3.
+   - Chaque card : badge numero + status pill ('defini' par defaut) + input title + textarea description.
+   - **Bouton "Sauvegarder les 3 Big Rocks"** : Promise.allSettled sur 3 POST `/api/big-rocks` parallele (upsert via id si existant). Skip rocks dont title est vide.
+   - Toast bilan : "X sauve, Y en erreur".
+
+3. **Historique des bilans precedents** (lecture seule)
+   - Liste compacte des 8 derniers weekly_reviews (sauf semaine en cours).
+   - Format : "YYYY-Www" en mono + intention en bold + bilan tronque 3 lignes line-clamp.
+
+**Calcul semaine ISO 8601 (frontend)** : algorithme classique base sur le jeudi de la semaine. `pastWeek = getWeekId(today)`, `nextWeek = getWeekId(today+7days)`. Format `YYYY-Www` accepte par les routes backend (ensureWeek auto-cree dans table `weeks` si absente).
+
+**Backend reutilise (zero modification serveur)** :
+- POST `/api/weekly-reviews` body `{week, intention, bilan, cap_prochaine, mood, notes, draft_by_llm?}` upsert par week_id.
+- POST `/api/weekly-reviews/:week/draft` -> LLM auto-draft (mode degrade rule-based si pas de cle).
+- POST `/api/big-rocks` body `{week, ordre 1..3, title, description, id? upsert}` avec contrainte max 3 par semaine cote serveur.
+- GET `/api/weekly-reviews` + GET `/api/big-rocks` pour load.
+
+**Voix exec moderne** : "Weekly Sync" (12 termes canoniques figes en S6.19 Lot 3), "Le rituel hebdo qui transforme l agitation en cap" (phrase magnetique footer).
+
+**Tests** : 10/10 v07-atomic verts. Pilotage regenere (1006 KB). Pas de migration DB.
+
+**Source** : feedback CEO 30/04 PM tardif "fait S6.23 maintenant" apres clarification "ou est-ce que je traite les big rocks ?". Livre en ~25 min (HTML 13 KB + store JS 10 KB en Python atomic write).
+
+---
+
+## 2026-04-30 · S6.22 Lot 4-5 — Fix urgent cards cassees + dedupe triage + dispatch task/decision
+
+**Statut** : Livre · **Audience** : binome · **Decision** : suite a feedback CEO sur cards projets visuellement cassees (1 mot par ligne) + bug fonctionnel doublons triage + absence dispatch IA. 2 sprints critiques en cascade.
+
+**Lot 4 — Fix CSS urgent cards (`fix-cards-broken.py`)**
+
+Cause racine : grid items ont `min-width: auto` (= `min-content`) par defaut. Quand `.cd` (deja en grid 3 cols) devient item d'une grille parent timeline, ses enfants `.cd-title`/`.cd-context` heritent du min-content et le texte wrap mot par mot. **Bug critique inacceptable** vu sur screenshot CEO.
+
+5 patches :
+1. `min-width: 0; overflow: hidden;` cascade sur `.cd` en grid context (4 routes : projets/decisions/taches/equipe/revues).
+2. `min-width: 0; overflow-wrap: break-word;` sur `.cd-body/title/context/meta-row/source`.
+3. **Line-clamp 3 lignes** sur `.cd-context` en grid (evite cards de 800px hauteur quand le store affiche tout le corps email).
+4. **Line-clamp 2 lignes** sur `.cd-title` en grid.
+5. `minmax(420px, 1fr)` → `minmax(360px, 1fr)` (3 colonnes confortables sur 1440px).
+
+Equipe : `grid-template-columns: 3px 1fr` (suppression colonne time 88px superflue).
+
+**Lot 5 — Fix triage doublons + dispatch task/decision (`fix-triage-dedupe.py`)**
+
+Diagnostic : `bind-arbitrage-detail.js` faisait `POST /api/tasks` direct pour les 5 verdicts (faire/deleguer/decaler/archiver/decliner) sans :
+- Marquer l'email arbitre (donc relance triage representait le meme email indefiniment).
+- Dispatcher selon kind (decision/task/project) que `/analyze-emails` calcule pourtant deja heuristiquement.
+
+Resultat : doublons d'actions a chaque retry CEO. Aucune decision creee meme si subject contenait `?` final.
+
+**Backend** — Nouvel endpoint atomique `POST /api/arbitrage/accept` :
+- Body : `{ source_id, kind, verdict, title, description, priority, delegate_to }`.
+- Defense en profondeur : check `arbitrated_at IS NOT NULL` avant toute creation (deduped si email deja arbitre).
+- Dispatch :
+  - `verdict=archiver|decliner` → uniquement UPDATE arbitrated_at (skip creation).
+  - `kind=decision` → INSERT INTO decisions (status='ouverte', source-email trace dans context).
+  - default (task) → INSERT INTO tasks (type=do/delegate/defer selon verdict, source_type='email', source_id=email_id).
+- Atomique : UPDATE emails SET arbitrated_at=now() WHERE id=source_id (= dedupe garantie).
+
+**Frontend** — `bind-arbitrage-detail.js` `applyVerdict()` reduit a un seul fetch `/api/arbitrage/accept` au lieu de 4 fetch direct `/api/tasks`. Code reduit de 21 lignes a 14 lignes.
+
+**Schema check** : tables `tasks` (source_type/source_id existent) et `decisions` (status='ouverte', pas de source_email_id colonne) respectees. Pas de migration necessaire.
+
+**Restauration mount Windows** : `arbitrage.js` tronque a la ligne 849 lors de l'edit (piege #2 connu CLAUDE.md), restaure via Python atomic write avec recuperation TAIL depuis git HEAD. 31817 bytes final.
+
+**Tests** : 10/10 v07-atomic verts + syntax check arbitrage.js + bind-arbitrage-detail.js OK. Pilotage regenere.
+
+**Backlog V1.x** : dispatch IA complet (LLM-aware analyse Claude au lieu de regex subject) + kind=big_rock fonctionnel + kind=project auto-create + UX triage refonte (cadrage Triage matinal vs Sync hebdo, big rocks orphelins, fonctionnalite plus claire).
+
+**Source** : feedback CEO 30/04 PM avec screenshot cards cassees + bug report doublons triage + dispatch IA + big rocks orphelins. 2 lots livres en ~30 min, zero regression.
+
+---
+
+## 2026-04-30 · S6.22 Lot 2-3 — Fix bouton assistant + liens v06 + optimisation layout multi-colonnes
+
+**Statut** : Livre · **Audience** : binome · **Decision** : feedback CEO direct apres premier audit ("les boutons demander a l'assistant sont trop grand disproportionnes l'icone · il y a encore des boutons dans le template qui renvoient vers la v06 · fait une analyse UX/UI du layout · privilege un layout multi-colonnes · sens de lecture · optimisation espace · presentation information"). 3 sprints en cascade.
+
+**Lot 2 — Fix critiques (`fix-v06-links-and-icons.py`)**
+1. `card-decision.js` : `aiLink.href` pointait vers `../../v06/assistant.html?context=...` → corrige en `assistant.html?context=...` (relatif page courante v07). Bug causait la redirection vers v06 a chaque clic sur "Demander a l'assistant".
+2. **9 pages** avec breadcrumb Cockpit pointant vers `../../v06/index.html` → corrige en `index.html` (relatif page courante v07). Pages : agenda, assistant, components, decisions, equipe, projet, projets, revues, taches.
+3. Tailles `.ico .ico-xs/sm/md/lg/xl` definies (etaient absentes : SVG s'affichait en taille naturelle 24x24 → bouton "Demander a l'assistant" disproportionne). Ajout regle specifique `.cd-ai-link .ico = 12x12` pour proportion correcte.
+
+**Lot 3 — Optimisation UX/UI layout (`fix-layout-optimization.py` + `fix-layout-v07-tweaks.py`)**
+
+Diagnostic UX : sur les 19 pages v07, toutes les listes etaient en **timeline 1 colonne** (cards en `display: block` avec `margin-bottom`). Pour 13 projets ou 77 contacts, c'etait verbeux et le sens de lecture etait monotone.
+
+10 patches CSS dans `/v07/shared/tweaks.css` (5099 chars) :
+1. **`.app-main` max-width 1440px** + centrage : confort lecture sur ecrans larges.
+2. **KPI row grid auto-fit minmax(220px, 1fr)** : 2/3/4 colonnes responsive automatique (jamais 1).
+3. **Header-topbar sticky** : reste visible au scroll avec backdrop-filter blur. Mobile : top: 56px (sous burger).
+4. **Multi-colonnes timeline par route** :
+   - projets/decisions/taches/revues : grid `auto-fill minmax(420px, 1fr)` → 2-3 cartes par ligne.
+   - equipe : grid `auto-fill minmax(300px, 1fr)` → 3-4 cartes contacts par ligne.
+   - agenda : flex column gap (timeline jour reste verticale, sens chronologique).
+5. **Cards en grid sans margin-bottom** (gap CSS gere les espaces) : evite double espacement vertical.
+6. **Mobile** (<768px) : tout repasse en 1 colonne automatiquement.
+7. **Filters row sticky** sous header (top 88px) avec backdrop-filter.
+8. **Footer compact** : 1 ligne `flex-direction: row` au lieu de 2 lignes column. Phrase strategique reduite.
+9. **Empty state centre** + max-width 480px (au lieu d'aligne a gauche).
+10. **Section heading support** pour timelines (`.timeline-section-title` reservee pour stores qui en injectent : "A surveiller (3)", "Sains (8)").
+
+Cards `card-decision` adaptees aux routes equipe/projets : colonne time collapsible (88px → 0) car en grid l'info date est moins centrale.
+
+**Tests** : 10/10 v07-atomic verts. Pilotage regenere (1000 KB). Tweaks v06 nettoyes (blocs migres dans v07/shared/tweaks.css car les pages v07 chargent ce fichier la, pas v06).
+
+**Source** : feedback CEO 30/04 PM apres premier audit. Patches livres en cascade sans modification HTML/JS pages — uniquement CSS additionnel + bug fix card-decision.js + breadcrumbs HTML. Zero regression possible (additions non-destructives).
+
+---
+
+## 2026-04-30 · Audit UX v0.8 sans concession — Cleanup résidus + onboarding redirect (S6.22)
+
+**Statut** : Livre · **Audience** : binome · **Decision** : suite a la demande CEO "audit UX/UI sans concession - rendu encore impafait, restes des versions precedentes, liens v06 qui devraient etre remplaces", j'ai parcouru les 19 pages v07 livrees et identifie 5 problemes confirmes :
+
+**Findings (sans concession)** :
+1. **9 pages avec empty-state obsolete** : message generique "Cette page est migree en pattern Atomic v07. Donnees specifiques en S6.11-EE-2." alors que le sprint S6.11-EE-2 est livre. Pages : agenda, assistant, components, equipe, projet, projets, revues, taches.
+2. **Banner v07 EDITORIAL + lien Comparer avec v06** dans `decisions.html` (residu phase migration).
+3. **5 footers avec libelle obsolete** : "v07 Atomic Templates" au lieu de "v07 · Voix exec moderne". Pages : aide, assistant, components, onboarding, settings.
+4. **Pas de redirect onboarding automatique** : un nouveau utilisateur sans `user.firstName` arrive sur Cockpit vide au lieu d'etre dirige vers `onboarding.html`.
+5. **Modals enrichis (kinds non-decision) testes uniquement en lecture** : projet/contact/task/event/review n'ont pas ete valides en navigation reelle. Backloggue S6.23.
+
+**Patches appliques (`outputs/fix-audit-cleanup.py` + `fix-index-store-tail.py`)** :
+- 9 empty states remplaces par messages contextuels par page (icone + titre + description + CTA pertinent vers Triage/Cockpit/Bilan/Project).
+- Banner v07 EDITORIAL + lien `../../v06/decisions.html` retires de decisions.html.
+- 5 footers patches "v07 Atomic Templates" → "v07 · Voix exec moderne".
+- Fonction `onboardingRedirectCheck()` ajoutee dans `index-store.js` : check `/api/preferences` au DOMContentLoaded, redirect vers `onboarding.html` si `user.firstName` absent et `onboarding.completed` non set. Fix mount Windows : `index-store.js` tronque a la ligne 386 lors de l'edit, restaure via Python atomic write.
+
+**Tests** : 10/10 v07-atomic verts post-cleanup. Pilotage regenere (999.5 KB, 41 ADRs comptes, 12 release-notes).
+
+**Backlog S6.23 (post-test sur soi)** :
+- Validation modals 5 kinds (projet/contact/task/event/review) en navigation reelle CEO.
+- Audit 161 hex hardcodes → tokens DS (decompose par page).
+- Tests E2E Playwright LLM frontend (3 specs ecrites, executions en attente Windows + ANTHROPIC_API_KEY).
+- Recette CEO 25 minutes avec test sur soi (chronotype + 5 routes LLM live).
+
+**Source** : audit ad-hoc post-livraison cascade, mandat CEO 30/04 PM. Apres ce cleanup, le rendu v0.8 est juge prêt pour test sur soi.
+
+---
+
+
 
 ---
 

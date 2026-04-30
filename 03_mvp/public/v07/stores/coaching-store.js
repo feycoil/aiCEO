@@ -62,7 +62,7 @@ async function loadLlmStatus() {
   const r = await safeFetch('/api/llm-status');
   const banner = document.querySelector('[data-region="co-llm-banner"]');
   if (!banner) return false;
-  if (r?.ready) {
+  if (r?.ready || r?.available || r?.mode === "live") {
     banner.innerHTML = '<span>● Coach Claude live</span><span style="opacity:0.7;font-size:11px">- signaux et questions personnalises</span>';
     banner.className = 'co-llm-banner is-live';
     return true;

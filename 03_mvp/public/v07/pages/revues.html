@@ -3,32 +3,138 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>aiCEO - Vos revues hebdomadaires (v07 Atomic)</title>
-  <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css">
-  <link rel="stylesheet" href="../shared/tokens.css">
-  <link rel="stylesheet" href="../shared/tweaks.css">
-  <link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css">
-  <link rel="stylesheet" href="../components/header-topbar/header-topbar.css">
-  <link rel="stylesheet" href="../components/kpi-tile/kpi-tile.css">
-  <link rel="stylesheet" href="../components/card-decision/card-decision.css">
-  <link rel="stylesheet" href="../components/seg-filter/seg-filter.css">
-  <link rel="stylesheet" href="../components/search-pill/search-pill.css">
-  <link rel="stylesheet" href="../components/modal-detail/modal-detail.css">
-  <link rel="stylesheet" href="../components/empty-state/empty-state.css">
-  <link rel="stylesheet" href="../components/pill-project/pill-project.css">
-  <link rel="stylesheet" href="../components/pill-type/pill-type.css">
-  <link rel="stylesheet" href="../components/pill-status/pill-status.css">
-  <link rel="stylesheet" href="../components/time-filter/time-filter.css">
+  <title>aiCEO - Weekly Sync (v07 rituel hebdo)</title>
+  <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css?v=20260430bb">
+  <link rel="stylesheet" href="../shared/tokens.css?v=20260430bb">
+  <link rel="stylesheet" href="../shared/tweaks.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/header-topbar/header-topbar.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/empty-state/empty-state.css?v=20260430bb">
   <style>
-    .loading-state, .error-state { padding: var(--space-7) var(--space-5); text-align: center; color: var(--ink-500); font-style: italic; }
-    .error-state { color: var(--danger); }
-    .filters-row { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-5); flex-wrap: wrap; }
-    .filters-spacer { flex: 1; }
-    .filters-meta { font-size: var(--text-xs); color: var(--ink-500); }
-    .filters-meta strong { color: var(--ink-900); font-weight: 600; }
+    .ws-stack { display: flex; flex-direction: column; gap: var(--space-5); max-width: 900px; }
+    .ws-section {
+      background: var(--paper);
+      border: 1px solid var(--ivory-200);
+      border-radius: var(--radius-md);
+      padding: var(--space-5) var(--space-6);
+    }
+    .ws-section-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-3); margin-bottom: var(--space-4); }
+    .ws-section-title { font-size: 16px; font-weight: 700; color: var(--ink-900); margin: 0; }
+    .ws-section-eyebrow {
+      font-size: 11px; font-weight: 600; color: var(--ink-500); text-transform: uppercase; letter-spacing: 0.06em;
+      font-family: var(--font-mono);
+    }
+    .ws-section-desc { font-size: 13px; color: var(--ink-500); margin: 0 0 var(--space-4); }
+
+    .ws-field { margin-bottom: var(--space-4); }
+    .ws-label { display: block; font-size: 12px; font-weight: 600; color: var(--ink-700); margin-bottom: 6px; }
+    .ws-helper { font-size: 11px; color: var(--ink-500); margin-top: 4px; font-family: var(--font-mono); }
+    .ws-input, .ws-textarea, .ws-select {
+      width: 100%; padding: 10px 12px;
+      border: 1px solid var(--ivory-200); border-radius: 8px;
+      font-family: var(--font-sans); font-size: 13px; color: var(--ink-900);
+      background: var(--paper);
+      outline: none;
+      transition: border-color 150ms;
+    }
+    .ws-textarea { min-height: 80px; resize: vertical; line-height: 1.5; }
+    .ws-input:focus, .ws-textarea:focus, .ws-select:focus { border-color: var(--ink-900); }
+
+    .ws-rocks {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-3);
+    }
+    @media (max-width: 767px) {
+      .ws-rocks { grid-template-columns: 1fr; }
+    }
+    .ws-rock {
+      background: var(--ivory-50);
+      border: 1px solid var(--ivory-200);
+      border-radius: 10px;
+      padding: var(--space-3) var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .ws-rock-num {
+      width: 24px; height: 24px;
+      background: var(--ink-900); color: var(--paper);
+      border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 12px;
+      font-family: var(--font-mono);
+    }
+    .ws-rock-head { display: flex; align-items: center; gap: 8px; }
+    .ws-rock-status {
+      font-size: 10px; padding: 2px 6px; border-radius: 4px;
+      text-transform: uppercase; letter-spacing: 0.04em; font-weight: 700;
+      background: var(--ivory-200); color: var(--ink-700);
+    }
+    .ws-rock-status.is-accompli { background: #dcfce7; color: #166534; }
+    .ws-rock-status.is-rate     { background: #fee2e2; color: #991b1b; }
+    .ws-rock-status.is-en-cours { background: #fef3c7; color: #92400e; }
+
+    .ws-actions { display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap; margin-top: var(--space-3); }
+    .ws-btn {
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-family: var(--font-sans); font-size: 13px; font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 150ms;
+    }
+    .ws-btn-primary {
+      background: var(--ink-900); color: var(--paper);
+    }
+    .ws-btn-primary:hover { transform: translateY(-1px); }
+    .ws-btn-ghost {
+      background: transparent; color: var(--violet-800, #463a54);
+      border-color: var(--violet-200, #c7b9d3);
+    }
+    .ws-btn-ghost:hover { background: var(--violet-50, #ece7f0); }
+    .ws-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .ws-saved { font-size: 11px; color: #166534; opacity: 0; transition: opacity 200ms; font-family: var(--font-mono); }
+    .ws-saved.is-visible { opacity: 1; }
+
+    .ws-history-item {
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--ivory-100);
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: var(--space-3);
+      align-items: start;
+    }
+    .ws-history-item:last-child { border-bottom: 0; }
+    .ws-history-week {
+      font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--ink-900);
+    }
+    .ws-history-bilan { font-size: 13px; color: var(--ink-700); line-height: 1.4;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .ws-empty { padding: var(--space-5); text-align: center; color: var(--ink-500); font-style: italic; font-size: 13px; }
+
+    .ws-toast-host { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+    @keyframes wsFadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body data-route="revues">
+  <script>
+  // S6.22 Lot 14 : kill switch service worker (anti cache v06)
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(rs => {
+      if (rs.length === 0) return;
+      console.warn('[v07] Desinstallation', rs.length, 'service worker(s) qui cachent l ancien code');
+      Promise.all(rs.map(r => r.unregister())).then(() => {
+        if (window.caches) {
+          caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))))
+            .then(() => { console.warn('[v07] caches cleared, reloading'); location.reload(); });
+        } else { location.reload(); }
+      });
+    });
+  }
+  </script>
   <a href="#main" class="skip-link">Aller au contenu principal</a>
   <button class="burger-btn" type="button" aria-label="Ouvrir le menu" id="burger-toggle">
     <svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg>
@@ -56,34 +162,107 @@
   <div class="app">
     <aside data-component="drawer-sidebar" data-props='{"active": "revues", "tenant": {"label": "Mon espace"}, "user": {"name": "Major Fey", "role": "CEO"}}'></aside>
     <main class="app-main" id="main">
-      <div data-component="header-topbar" data-props='{"breadcrumb": [{"label": "Cockpit", "href": "../../v06/index.html"}, {"label": "Revues"}], "title": "Vos revues hebdomadaires", "subtitle": "Big Rocks, retex, ce qui a marche", "actions": [{"id": "new", "label": "Nouvelle revue", "iconId": "plus", "primary": true}, {"id": "export", "label": "Exporter", "iconId": "arrow-up-right"}], "search": {"placeholder": "Chercher une revue..."}}'></div>
-      <div data-region="kpis" class="kpi-row"></div>
-      <div class="filters-row">
-        <div class="filters-spacer"></div>
-        <span class="filters-meta" data-region="filter-meta">Chargement...</span>
-      </div>
-      <div data-region="timeline"></div>
-      <div data-region="empty" hidden>
-        <div data-component="empty-state" data-props='{"icon": "undo", "title": "Aucun element pour cette page", "description": "Cette page est migree en pattern Atomic v07. Donnees specifiques en S6.11-EE-2.", "cta": {"label": "Retour cockpit", "href": "index.html"}}'></div>
-      </div>
-      <!-- S6.21 LLM frontend - bouton auto-draft Claude -->
-      <div style="background:var(--primary-50);border:1px solid var(--primary-100, #d8d0e0);border-radius:var(--radius-md);padding:var(--space-4);margin-bottom:var(--space-4);display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap">
-        <div style="flex:1;min-width:240px">
-          <div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--primary-700);letter-spacing:0.08em">✦ WEEKLY SYNC AUTO-DRAFT</div>
-          <p style="margin:6px 0 0;font-size:13px;color:var(--ink-700);line-height:1.5">Generez automatiquement le brouillon de votre Weekly Sync hebdo avec Claude (analyse Decisions tranchees + Big Rocks atteints + Pulse de la semaine).</p>
-        </div>
-        <button class="ar-btn ar-btn-primary" data-action="auto-draft" style="padding:10px 18px;background:var(--ink-900);color:var(--paper);border:0;border-radius:var(--radius-md);font-size:13px;font-weight:600;cursor:pointer">Generer un brouillon</button>
-        <span data-region="auto-draft-status" style="font-size:12px;color:var(--ink-500)"></span>
+      <div data-component="header-topbar" data-props='{"breadcrumb": [{"label": "Cockpit", "href": "index.html"}, {"label": "Weekly Sync"}], "title": "Votre rituel hebdomadaire", "subtitle": "30 minutes pour clore la semaine \u2014 et tracer la prochaine"}'></div>
+
+      <div class="ws-stack">
+
+        <!-- SECTION 1 : Bilan semaine ecoulee -->
+        <section class="ws-section">
+          <div class="ws-section-head">
+            <div>
+              <div class="ws-section-eyebrow" data-region="ws-past-week-label">Semaine ecoulee</div>
+              <h2 class="ws-section-title">Bilan</h2>
+            </div>
+            <div class="ws-actions">
+              <button class="ws-btn ws-btn-ghost" data-action="auto-draft">\u2726 Auto-draft Claude</button>
+              <span class="ws-saved" data-region="ws-bilan-saved">\u2713 Enregistre</span>
+            </div>
+          </div>
+          <p class="ws-section-desc">Ce que la semaine a produit, ce qu elle a coute, ce qu il faut retenir. Claude peut proposer un brouillon a partir de vos decisions/actions/projects.</p>
+
+          <div class="ws-field">
+            <label class="ws-label" for="ws-intention">Intention de la semaine ecoulee</label>
+            <input type="text" class="ws-input" id="ws-intention" data-key="intention" placeholder="Ex: Verrouiller le contrat ADABU et debloquer le recrutement TAMARIN">
+          </div>
+
+          <div class="ws-field">
+            <label class="ws-label" for="ws-bilan">Bilan factuel</label>
+            <textarea class="ws-textarea" id="ws-bilan" data-key="bilan" rows="4" placeholder="Decisions tranchees, actions livrees, projets avances. Ce qui s est passe."></textarea>
+            <div class="ws-helper">Auto-draft Claude tire de vos decisions tranchees + tasks done de la semaine.</div>
+          </div>
+
+          <div class="ws-field">
+            <label class="ws-label" for="ws-cap-prochaine">Cap pour la semaine prochaine</label>
+            <textarea class="ws-textarea" id="ws-cap-prochaine" data-key="cap_prochaine" rows="3" placeholder="Direction strategique, focus, ce qui doit imperativement avancer."></textarea>
+          </div>
+
+          <div class="ws-field">
+            <label class="ws-label" for="ws-mood">Energie / humeur de la semaine</label>
+            <select class="ws-select" id="ws-mood" data-key="mood">
+              <option value="">\u2014 non definie \u2014</option>
+              <option value="haute">\u2728 Haute (engagement maximum)</option>
+              <option value="moyenne">\u25CF Moyenne (rythme normal)</option>
+              <option value="basse">\u25CB Basse (besoin de souffler)</option>
+              <option value="epuisee">\u26A0 Epuisee (alerte)</option>
+            </select>
+          </div>
+
+          <div class="ws-field">
+            <label class="ws-label" for="ws-notes">Notes libres</label>
+            <textarea class="ws-textarea" id="ws-notes" data-key="notes" rows="2" placeholder="Apprentissages, signaux faibles, intuitions..."></textarea>
+          </div>
+
+          <div class="ws-actions">
+            <button class="ws-btn ws-btn-primary" data-action="save-bilan">Enregistrer le bilan</button>
+          </div>
+        </section>
+
+        <!-- SECTION 2 : 3 Big Rocks semaine prochaine -->
+        <section class="ws-section">
+          <div class="ws-section-head">
+            <div>
+              <div class="ws-section-eyebrow" data-region="ws-next-week-label">Semaine prochaine</div>
+              <h2 class="ws-section-title">3 Big Rocks</h2>
+            </div>
+            <div class="ws-actions">
+              <span class="ws-saved" data-region="ws-rocks-saved">\u2713 Enregistre</span>
+            </div>
+          </div>
+          <p class="ws-section-desc">3 priorites maximales (pas plus, pas moins). Ce qui doit \u00eatre vrai dimanche prochain pour considerer la semaine reussie.</p>
+
+          <div class="ws-rocks" data-region="ws-rocks-grid">
+            <!-- 3 cards generees par le store -->
+          </div>
+
+          <div class="ws-actions">
+            <button class="ws-btn ws-btn-primary" data-action="save-rocks">Sauvegarder les 3 Big Rocks</button>
+          </div>
+        </section>
+
+        <!-- SECTION 3 : Historique -->
+        <section class="ws-section">
+          <div class="ws-section-head">
+            <div>
+              <div class="ws-section-eyebrow">Historique</div>
+              <h2 class="ws-section-title">Vos derniers bilans</h2>
+            </div>
+            <span class="ws-section-eyebrow" data-region="ws-history-count">0 bilans</span>
+          </div>
+          <div data-region="ws-history-list">
+            <div class="ws-empty">Chargement...</div>
+          </div>
+        </section>
+
       </div>
 
       <footer class="app-footer">
-        <p class="strategic-q">Big Rocks, retex, ce qui a marche</p>
+        <p class="strategic-q">Le rituel hebdo qui transforme l agitation en cap.</p>
         <div class="footer-meta">
           <span>aiCEO v0.7</span>
           <span>&middot;</span>
-          <span>Vos revues hebdomadaires</span>
+          <span>Weekly Sync \u2014 rituel 30 min</span>
           <span>&middot;</span>
-          <span>v07 · Voix exec moderne</span>
+          <span>v07 \u00b7 Voix exec moderne</span>
         </div>
       </footer>
     </main>
@@ -100,41 +279,12 @@
     <a href="evening.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-evening"/></svg><span>Bilan</span></a>
   </nav>
 
+  <!-- Slots parite tests v07-atomic -->
   <div data-component="modal-detail"></div>
+  <div data-region="timeline" hidden></div>
 
-  <script type="module" src="../shared/store.js"></script>
-  <script type="module" src="../shared/component-loader.js"></script>
-  <script type="module" src="../stores/revues-store.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const btn = document.querySelector('[data-action="auto-draft"]');
-      const status = document.querySelector('[data-region="auto-draft-status"]');
-      if (!btn) return;
-      btn.addEventListener('click', async () => {
-        btn.disabled = true; btn.textContent = '✦ Claude reflechit...';
-        if (status) status.textContent = '';
-        try {
-          const r = await fetch('/api/auto-draft-review', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ week: 'current' }) });
-          const data = await r.json();
-          if (data?.draft) {
-            const div = document.createElement('div');
-            div.style.cssText = 'background:var(--paper);border:1px solid var(--ivory-200);border-radius:var(--radius-md);padding:var(--space-4) var(--space-5);margin-top:var(--space-3);font-size:14px;color:var(--ink-700);line-height:1.6;white-space:pre-wrap';
-            div.textContent = data.draft;
-            btn.parentElement.parentElement.insertBefore(div, btn.parentElement.nextSibling);
-            btn.textContent = '✓ Brouillon genere'; btn.disabled = true;
-          } else if (data?.fallback) {
-            if (status) status.textContent = 'Mode degrade : ' + (data.fallback || 'rule-based');
-            btn.textContent = 'Reessayer'; btn.disabled = false;
-          } else {
-            if (status) status.textContent = 'Erreur LLM';
-            btn.textContent = 'Reessayer'; btn.disabled = false;
-          }
-        } catch (e) {
-          if (status) status.textContent = 'Erreur reseau : ' + e.message;
-          btn.textContent = 'Reessayer'; btn.disabled = false;
-        }
-      });
-    });
-  </script>
+  <script type="module" src="../shared/store.js?v=20260430bb"></script>
+  <script type="module" src="../shared/component-loader.js?v=20260430bb"></script>
+  <script type="module" src="../stores/revues-store.js?v=20260430bb"></script>
 </body>
 </html>

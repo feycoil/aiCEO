@@ -123,7 +123,15 @@ app.use(express.json({ limit: "2mb" }));
 
 // Convergence v0.6 (S6.2)  redirect / vers hub avant le static
 app.get("/", (req, res) => res.redirect("/v07/pages/index.html")); // S6.15 bascule v07 = defaut
-app.use(express.static(path.join(__dirname, "public")));
+// S6.22 Lot 15 : Cache-Control no-store sur les fichiers v07 pour forcer
+// le navigateur a re-fetcher a chaque load (etait coince sur 304 Not Modified).
+app.use("/v07", (req, res, next) => {
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+  res.set("Pragma", "no-cache");
+  res.set("Expires", "0");
+  next();
+});
+app.use(express.static(path.join(__dirname, "public"), { etag: false, lastModified: false }));
 
 
 
@@ -307,6 +315,13 @@ app.use("/api/knowledge",      knowledgeRouter);
 
 
 app.use("/api/assistant",      assistantRouter);
+
+// S6.22 Lot 8 : double-mount /api/ pour exposer les 5 routes LLM frontend
+// (llm-status, coaching-question, decision-recommend, auto-draft-review, effects-propagation)
+// aux URLs courtes attendues par le frontend (Cockpit banner + Coaching + Decisions + Revues).
+// Bug racine : sans ce mount, /api/llm-status renvoyait 404 -> safeFetch retournait null
+// -> banner Cockpit forcait "Mode degrade" meme avec ANTHROPIC_API_KEY presente.
+app.use("/api",                assistantRouter);
 
 
 
@@ -718,18 +733,9 @@ app.listen(PORT, () => {
   console.log(`  aiCEO v0.5 - copilote executif`);
 
 
-  console.log(`  -> http://localhost:${PORT}          (matin - arbitrage)`);
-
-
-  console.log(`  -> http://localhost:${PORT}/evening  (soir - debrief)`);
-
-
+  console.log(`  -> http://localhost:${PORT}`);
   console.log(`  -> mode : ${demo ? "DEMO (pas de cle API)" : "REEL - " + (process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6")}`);
-
-
   console.log(`  -> API REST SQLite : /api/{tasks,decisions,contacts,projects,groups,events}`);
-
-
   console.log(`-----------------------------------------`);
   console.log(`  -> http://localhost:${PORT}/legacy   (debug pages v0.5)`);
 });

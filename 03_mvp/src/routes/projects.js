@@ -115,4 +115,36 @@ router.post('/:id/progress', (req, res) => {
   }
 });
 
+
+router.get('/:id/emails', (req, res) => {
+  try {
+    const db = getDb();
+    const proj = projects.get(req.params.id);
+    if (!proj) return res.status(404).json({ error: 'projet introuvable' });
+    // Tolerant si colonne emails.project_id absente
+    let rows = [];
+    try {
+      rows = db.prepare(`
+        SELECT id, subject, from_name, from_email, received_at, arbitrated_at, is_read, has_attach, inferred_project
+        FROM emails
+        WHERE project_id = ? OR LOWER(inferred_project) = LOWER(?)
+        ORDER BY received_at DESC
+        LIMIT 50
+      `).all(req.params.id, proj.name || '');
+    } catch (e) {
+      // fallback : pas de colonne project_id
+      rows = db.prepare(`
+        SELECT id, subject, from_name, from_email, received_at, arbitrated_at, is_read, has_attach, inferred_project
+        FROM emails
+        WHERE LOWER(inferred_project) = LOWER(?)
+        ORDER BY received_at DESC
+        LIMIT 50
+      `).all(proj.name || '');
+    }
+    res.json({ project_id: proj.id, project_name: proj.name, emails: rows, count: rows.length });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 module.exports = router;

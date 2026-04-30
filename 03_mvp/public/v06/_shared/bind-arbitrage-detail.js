@@ -93,25 +93,26 @@
   }
 
   async function applyVerdict(item, verdict) {
-    // Map verdict -> action serveur
-    if (verdict === 'faire') {
-      return fetch('/api/tasks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: item.title, description: item.excerpt, priority: item.proposed_priority || 'P1' }) });
-    }
+    // S6.22 Lot 5 : appel unifie /api/arbitrage/accept (dedupe + dispatch kind).
+    // Le backend marque automatiquement l'email arbitrated_at + cree dans la bonne table (task/decision)
+    // selon kind retourne par /analyze-emails (heuristique subject).
+    var delegate_to = null;
     if (verdict === 'deleguer') {
-      var who = prompt('Deleguer a qui ? (ex: Lamiae)') || 'equipe';
-      return fetch('/api/tasks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: '[Delegation a ' + who + '] ' + item.title, description: item.excerpt, priority: 'P1' }) });
+      delegate_to = prompt('Deleguer a qui ? (ex: Lamiae)') || 'equipe';
     }
-    if (verdict === 'decaler') {
-      return fetch('/api/tasks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: '[Reporte] ' + item.title, description: item.excerpt, priority: 'P2' }) });
-    }
-    if (verdict === 'archiver') {
-      // Just close, no action
-      return Promise.resolve({ ok: true });
-    }
-    if (verdict === 'decliner') {
-      // Could mark email as declined in future; for now just close
-      return Promise.resolve({ ok: true });
-    }
+    return fetch('/api/arbitrage/accept', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        source_id: item.source_id || item.id || null,
+        kind: item.kind || 'task',
+        verdict: verdict,
+        title: item.title,
+        description: item.excerpt,
+        priority: item.proposed_priority,
+        delegate_to: delegate_to
+      })
+    });
   }
 
   async function openDetail(itemId, queue) {

@@ -364,7 +364,7 @@ async function renderLLMStatus() {
   const text = document.querySelector('[data-region="ck-llm-text"]');
   if (!banner || !text) return;
   const r = await safeFetch('/api/llm-status');
-  if (r?.ready) {
+  if (r?.ready || r?.available || r?.mode === "live") {
     banner.classList.add('is-live');
     banner.classList.remove('is-degraded');
     text.innerHTML = '<strong>Claude live</strong> · 5 surfaces UX activees · IA contextualisee';
@@ -376,8 +376,47 @@ async function renderLLMStatus() {
   banner.hidden = false;
 }
 
+// === Onboarding auto-redirect (S6.22) ===
+async function onboardingRedirectCheck() {
+  try {
+    const r = await fetch('/api/preferences');
+    if (!r.ok) return false;
+    const data = await r.json();
+    const prefs = data?.preferences || {};
+    if (!prefs['user.firstName'] && !prefs['onboarding.completed']) {
+      window.location.href = 'onboarding.html';
+      return true;
+    }
+  } catch (e) {}
+  return false;
+}
+
+
+// S6.24.2 : mini-card apprentissage Claude sous le banner LLM
+async function renderLearningMini() {
+  try {
+    const r = await fetch('/api/arbitrage/learning-stats');
+    if (!r.ok) return;
+    const data = await r.json();
+    if (!data.total) return;
+    const banner = document.querySelector('[data-region="ck-llm-banner"]');
+    if (!banner || banner.hidden) return;
+    let mini = document.querySelector('[data-region="ck-learning-mini"]');
+    if (!mini) {
+      mini = document.createElement('div');
+      mini.dataset.region = 'ck-learning-mini';
+      mini.style.cssText = 'margin-top:8px;font-size:12px;color:var(--ink-500);font-style:italic';
+      banner.parentNode.insertBefore(mini, banner.nextSibling);
+    }
+    mini.innerHTML = `\u2726 Claude a appris <strong style="color:var(--violet-800,#463a54);font-style:normal">${data.total}</strong> patterns. <a href="settings.html#coaching" style="color:var(--violet-800,#463a54)">Voir les stats</a>`;
+  } catch (e) { /* swallow */ }
+}
+
 // === Init ===
 document.addEventListener('DOMContentLoaded', async () => {
+  // First launch detection: redirect onboarding if firstName absent
+  const redirected = await onboardingRedirectCheck();
+  if (redirected) return;
   await Promise.all([
     renderHero(),
     renderLLMStatus(),
@@ -386,7 +425,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderKpis(),
     renderNorthStar(),
     renderTop3(),
-    renderProjectGlance()
+    renderProjectGlance(),
+    renderLearningMini()
   ]);
   console.info('[cockpit S6.17] all sections rendered with voix exec moderne');
 });

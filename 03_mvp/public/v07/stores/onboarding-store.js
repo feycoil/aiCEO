@@ -2,7 +2,7 @@
 // Etape 1 : firstName | Etape 2 : tenantName | Etape 3 : posture | Etape 4 : recap+confirm
 // Persistance : POST /api/preferences (table key/value)
 
-const STEPS = ['identite', 'espace', 'posture', 'recap'];
+const STEPS = ['identite', 'espace', 'emails', 'posture', 'recap'];
 const POSTURES = [
   {
     id: 'gardienne',
@@ -29,7 +29,7 @@ const POSTURES = [
 
 const state = {
   currentStep: 0,
-  data: { firstName: '', tenantName: '', posture: '' }
+  data: { firstName: '', tenantName: '', posture: '', emails: [] }
 };
 
 function escapeHtml(s) {
@@ -57,6 +57,7 @@ function renderStep() {
   const step = STEPS[state.currentStep];
   if (step === 'identite') host.innerHTML = stepIdentite();
   else if (step === 'espace') host.innerHTML = stepEspace();
+  else if (step === 'emails') host.innerHTML = stepEmails();
   else if (step === 'posture') host.innerHTML = stepPosture();
   else if (step === 'recap') host.innerHTML = stepRecap();
   bindStepEvents();
@@ -65,7 +66,7 @@ function renderStep() {
 function stepIdentite() {
   return `
     <div class="ob-card">
-      <div class="ob-eyebrow">Etape 1 / 4 - Identite</div>
+      <div class="ob-eyebrow">Etape 1 / 5 - Identite</div>
       <h1 class="ob-title">Comment puis-je vous appeler ?</h1>
       <p class="ob-desc">Votre prenom apparaitra dans le greeting du Hub et dans les rituels matin/soir. Rien d ecrit en pierre - vous pourrez modifier dans Reglages.</p>
       <div class="ob-field">
@@ -84,7 +85,7 @@ function stepIdentite() {
 function stepEspace() {
   return `
     <div class="ob-card">
-      <div class="ob-eyebrow">Etape 2 / 4 - Espace de travail</div>
+      <div class="ob-eyebrow">Etape 2 / 5 - Espace de travail</div>
       <h1 class="ob-title">Quel nom pour votre espace ?</h1>
       <p class="ob-desc">Un espace = un perimetre. C est comme un compte. Vous pourrez en avoir plusieurs plus tard (perso / pro / projet specifique).</p>
       <div class="ob-field">
@@ -95,6 +96,41 @@ function stepEspace() {
       <div class="ob-actions">
         <button class="ob-btn ob-btn-secondary" data-action="prev">Precedent</button>
         <button class="ob-btn ob-btn-primary" data-action="next">Continuer</button>
+      </div>
+    </div>
+  `;
+}
+
+
+function stepEmails() {
+  const emails = state.data.emails || [];
+  const list = emails.length
+    ? emails.map((e, i) => `
+        <li class="ob-email-chip" data-email-idx="${i}">
+          <span>${escapeHtml(e)}</span>
+          <button type="button" class="ob-email-remove" data-action="remove-email" data-idx="${i}" aria-label="Retirer ${escapeHtml(e)}">\u00d7</button>
+        </li>
+      `).join('')
+    : '<li class="ob-email-empty">Aucune adresse pour l instant. Tapez la votre ci-dessous.</li>';
+
+  return `
+    <div class="ob-card">
+      <div class="ob-eyebrow">Etape 3 / 5 - Vos adresses email</div>
+      <h1 class="ob-title">Comment Claude reconnait-il vos mails ?</h1>
+      <p class="ob-desc">Indiquez vos adresses perso (pro, perso, alias). Claude prioritise les mails ou vous etes destinataire direct, distingue les CC, et filtre le noise.</p>
+      <div class="ob-field">
+        <label class="ob-label" for="ob-email-input">Ajouter une adresse</label>
+        <div style="display:flex;gap:8px;align-items:stretch">
+          <input type="email" id="ob-email-input" class="ob-input" placeholder="major.fey@etic-services.net" autocomplete="email" style="flex:1" />
+          <button type="button" class="ob-btn ob-btn-secondary" data-action="add-email" style="white-space:nowrap;padding:0 18px">+ Ajouter</button>
+        </div>
+        <p class="ob-helper">Tapez l adresse + Entree, ou cliquez sur "+ Ajouter". Vos alias et adresses pro sont importants.</p>
+      </div>
+      <ul class="ob-email-list" data-region="ob-email-list">${list}</ul>
+      <p class="ob-helper" style="margin-top:12px;font-size:12px;font-style:italic">Au minimum 1 adresse pour passer a l etape suivante. Vous pourrez en ajouter dans Reglages > General.</p>
+      <div class="ob-actions">
+        <button class="ob-btn ob-btn-secondary" data-action="prev">Precedent</button>
+        <button class="ob-btn ob-btn-primary" data-action="next" ${emails.length ? '' : 'disabled'}>Continuer</button>
       </div>
     </div>
   `;
@@ -113,7 +149,7 @@ function stepPosture() {
   `).join('');
   return `
     <div class="ob-card">
-      <div class="ob-eyebrow">Etape 3 / 4 - Posture decisionnelle</div>
+      <div class="ob-eyebrow">Etape 4 / 5 - Posture decisionnelle</div>
       <h1 class="ob-title">Comment <em>decidez</em>-vous, en vrai ?</h1>
       <p class="ob-desc">Aucune reponse n est meilleure - mais l assistant adaptera ses propositions selon votre style dominant. Vous pourrez l ajuster dans Reglages.</p>
       <div class="ob-postures">${cards}</div>
@@ -129,7 +165,7 @@ function stepRecap() {
   const posture = POSTURES.find(p => p.id === state.data.posture);
   return `
     <div class="ob-card">
-      <div class="ob-eyebrow">Etape 4 / 4 - Confirmation</div>
+      <div class="ob-eyebrow">Etape 5 / 5 - Confirmation</div>
       <h1 class="ob-title">On est prets, ${escapeHtml(state.data.firstName || 'Major')}.</h1>
       <p class="ob-desc">Voici votre configuration. Cliquez sur "Demarrer" pour rejoindre le cockpit.</p>
       <div class="ob-recap">
@@ -140,6 +176,10 @@ function stepRecap() {
         <div class="ob-recap-row">
           <span class="ob-recap-label">Espace</span>
           <span class="ob-recap-value">${escapeHtml(state.data.tenantName)}</span>
+        </div>
+        <div class="ob-recap-row">
+          <span class="ob-recap-label">Adresses email</span>
+          <span class="ob-recap-value">${(state.data.emails || []).length} adresse${(state.data.emails || []).length > 1 ? 's' : ''}</span>
         </div>
         <div class="ob-recap-row">
           <span class="ob-recap-label">Posture</span>
@@ -154,6 +194,27 @@ function stepRecap() {
   `;
 }
 
+
+function addEmailFromInput() {
+  const input = document.querySelector('#ob-email-input');
+  if (!input) return;
+  const v = (input.value || '').trim().toLowerCase();
+  if (!v) return;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) {
+    alert('Adresse email invalide : ' + v);
+    return;
+  }
+  if (!state.data.emails) state.data.emails = [];
+  if (state.data.emails.includes(v)) {
+    alert('Cette adresse est deja dans la liste.');
+    input.value = '';
+    return;
+  }
+  state.data.emails.push(v);
+  input.value = '';
+  renderStep();
+}
+
 function bindStepEvents() {
   const host = document.querySelector('[data-region="ob-step-host"]');
   if (!host) return;
@@ -163,6 +224,28 @@ function bindStepEvents() {
   if (fn) fn.addEventListener('input', e => { state.data.firstName = e.target.value.trim(); });
   const tn = host.querySelector('#ob-tenantName');
   if (tn) tn.addEventListener('input', e => { state.data.tenantName = e.target.value.trim(); });
+
+  // S6.22 Lot 20 : Email input (etape emails)
+  const emailInput = host.querySelector('#ob-email-input');
+  if (emailInput) {
+    emailInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addEmailFromInput();
+      }
+    });
+  }
+
+  // Remove email chip
+  host.querySelectorAll('[data-action="remove-email"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx, 10);
+      if (idx >= 0) {
+        state.data.emails.splice(idx, 1);
+        renderStep();
+      }
+    });
+  });
 
   // Posture cards
   host.querySelectorAll('[data-posture-id]').forEach(card => {
@@ -179,6 +262,7 @@ function bindStepEvents() {
       if (action === 'prev') prevStep();
       else if (action === 'next') nextStep();
       else if (action === 'finish') finishOnboarding();
+      else if (action === 'add-email') addEmailFromInput();
     });
   });
 }
@@ -192,6 +276,10 @@ function nextStep() {
   }
   if (step === 'espace' && !state.data.tenantName) {
     state.data.tenantName = 'Mon espace';
+  }
+  if (step === 'emails' && (!state.data.emails || !state.data.emails.length)) {
+    alert('Ajoutez au moins une adresse email pour continuer.');
+    return;
   }
   if (step === 'posture' && !state.data.posture) {
     alert('Choisissez une posture (vous pourrez la changer dans Reglages).');
@@ -225,6 +313,7 @@ async function finishOnboarding() {
         'user.firstName':  state.data.firstName,
         'user.tenantName': state.data.tenantName,
         'user.posture':    state.data.posture,
+        'user.email_addresses': JSON.stringify(state.data.emails || []),
         'onboarding.completed': new Date().toISOString()
       })
     });
@@ -259,6 +348,13 @@ async function loadExistingPrefs() {
     state.data.firstName  = prefs['user.firstName']  || '';
     state.data.tenantName = prefs['user.tenantName'] || '';
     state.data.posture    = prefs['user.posture']    || '';
+    try {
+      const eAddrs = prefs['user.email_addresses'];
+      if (eAddrs) {
+        state.data.emails = typeof eAddrs === 'string' ? JSON.parse(eAddrs) : eAddrs;
+        if (!Array.isArray(state.data.emails)) state.data.emails = [];
+      }
+    } catch (e) { state.data.emails = []; }
   } catch (e) {}
 }
 

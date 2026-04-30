@@ -1,52 +1,35 @@
-/* aiCEO service worker — minimal cache‑first for shell + fonts */
-const VERSION = 'aiceo-v0.5-design-v06';
-const SHELL = [
-  './hub.html',
-  './index.html',
-  './arbitrage.html',
-  './evening.html',
-  './onboarding.html',
-  './settings.html',
-  './components.html',
-  './_shared/app.css',
-  './_shared/colors_and_type.css',
-  './_shared/tweaks.css',
-  './_shared/app.js',
-  './_shared/icons.svg.html',
-  './manifest.webmanifest'
-];
+/* aiCEO service worker - KILLSWITCH (S6.22 Lot 14)
+ * Le SW v06 cache-first interceptait les fichiers v07 et servait l'ancien code.
+ * Ce SW remplace l'ancien : skipWaiting + claim + delete all caches + unregister self.
+ * Reinstaller un SW propre en V1 si necessaire.
+ */
+const VERSION = 'killswitch-2026-04-30';
 
 self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(VERSION).then(c => c.addAll(SHELL).catch(() => {/* tolerant */}))
-      .then(() => self.skipWaiting())
-  );
+  e.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== VERSION).map(k => caches.delete(k)))
-    ).then(() => self.clients.claim())
-  );
+  e.waitUntil((async () => {
+    // 1. Vider tous les caches
+    const keys = await caches.keys();
+    await Promise.all(keys.map(k => caches.delete(k)));
+    console.warn('[sw killswitch] caches deleted:', keys.length);
+
+    // 2. Claim tous les clients (les pages ouvertes)
+    await self.clients.claim();
+
+    // 3. Reload tous les clients pour qu'ils chargent les fichiers frais
+    const clients = await self.clients.matchAll({ type: 'window' });
+    clients.forEach(c => c.navigate(c.url));
+
+    // 4. Auto-desinstaller le SW
+    await self.registration.unregister();
+    console.warn('[sw killswitch] self unregistered');
+  })());
 });
 
+// Tous les fetch passent au reseau (pas de cache)
 self.addEventListener('fetch', e => {
-  const req = e.request;
-  if (req.method !== 'GET') return;
-
-  // Cache-first for fonts + same-origin shell
-  e.respondWith(
-    caches.match(req).then(cached => {
-      if (cached) return cached;
-      return fetch(req).then(res => {
-        // Opportunistic cache for fonts & icons
-        if (res.ok && (req.url.endsWith('.woff2') || req.url.endsWith('.svg') || req.url.includes('/_shared/'))) {
-          const clone = res.clone();
-          caches.open(VERSION).then(c => c.put(req, clone)).catch(() => {});
-        }
-        return res;
-      }).catch(() => caches.match('./hub.html'));
-    })
-  );
+  // Laisser le browser gerer normalement (pas d'e.respondWith)
 });

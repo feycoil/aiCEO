@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>aiCEO - Bilan (v07 voix exec)</title>
-  <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css">
-  <link rel="stylesheet" href="../shared/tokens.css">
-  <link rel="stylesheet" href="../shared/tweaks.css">
-  <link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css">
-  <link rel="stylesheet" href="../components/header-topbar/header-topbar.css">
-  <link rel="stylesheet" href="../components/modal-detail/modal-detail.css">
+  <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css?v=20260430bb">
+  <link rel="stylesheet" href="../shared/tokens.css?v=20260430bb">
+  <link rel="stylesheet" href="../shared/tweaks.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/header-topbar/header-topbar.css?v=20260430bb">
+  <link rel="stylesheet" href="../components/modal-detail/modal-detail.css?v=20260430bb">
   <style>
     :root[data-chronotype="evening"] { --chrono-bg: #f5f3ee; --chrono-accent: #463a54; }
     body { background: var(--chrono-bg); transition: background 600ms cubic-bezier(.16,1,.3,1); }
@@ -42,6 +42,21 @@
   </style>
 </head>
 <body data-route="evening">
+  <script>
+  // S6.22 Lot 14 : kill switch service worker (anti cache v06)
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(rs => {
+      if (rs.length === 0) return;
+      console.warn('[v07] Desinstallation', rs.length, 'service worker(s) qui cachent l ancien code');
+      Promise.all(rs.map(r => r.unregister())).then(() => {
+        if (window.caches) {
+          caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))))
+            .then(() => { console.warn('[v07] caches cleared, reloading'); location.reload(); });
+        } else { location.reload(); }
+      });
+    });
+  }
+  </script>
   <a href="#main" class="skip-link">Aller au contenu</a>
   <button class="burger-btn" type="button" id="burger-toggle"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg></button>
   <div class="ds-mobile-backdrop" id="ds-backdrop" hidden></div>
@@ -130,8 +145,8 @@
   </nav>
   <div data-region="timeline" hidden></div>
   <div data-component="modal-detail"></div>
-  <script type="module" src="../shared/store.js"></script>
-  <script type="module" src="../shared/component-loader.js"></script>
-  <script type="module" src="../stores/evening-store.js"></script>
+  <script type="module" src="../shared/store.js?v=20260430bb"></script>
+  <script type="module" src="../shared/component-loader.js?v=20260430bb"></script>
+  <script type="module" src="../stores/evening-store.js?v=20260430bb"></script>
 </body>
 </html>

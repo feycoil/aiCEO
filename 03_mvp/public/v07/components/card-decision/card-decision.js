@@ -129,7 +129,7 @@ export default {
       const isOpen = ['active', 'open', 'pending'].includes(status);
       if (isOpen && props.id) {
         aiLink.hidden = false;
-        aiLink.href = `../../v06/assistant.html?context=decision:${encodeURIComponent(props.id)}`;
+        aiLink.href = `assistant.html?context=decision:${encodeURIComponent(props.id)}`;
       } else {
         aiLink.hidden = true;
       }

@@ -2,7 +2,7 @@
 
 > **Lis ce fichier en premier** quand tu démarres une nouvelle session sur ce projet. Il consolide le contexte, les conventions, les pièges connus et les workflows types pour t'éviter de tout redécouvrir.
 
-**Version** : 30/04/2026 (v14 SPRINT AUTONOME) - 6 livrables cascade A-F : docs business (recette CEO + pitch ExCom + spec V1 + release-notes v0.7/v0.8/v0.9) · tests E2E Playwright squelette · polish layout pilotage (sparklines + treemap) · mode graphe Trajectoire (S6.23) · onglet Versions detail plein-page · 19/19 pages voix exec moderne · 10/10 tests verts · 39 ADRs
+**Version** : 30/04/2026 nuit (v16 CASCADE TRIAGE S6.22 → S6.26) — Refonte UX Triage profonde livree en 16 lots ininterrompus (~9h chrono). S6.22 Lots 17-29 (LLM batch + voix exec + dispatch IA + apprentissage actif via table `email_feedback`). S6.23 (Weekly Sync v07 + killswitch SW + restauration server.js). **S6.24 quick wins** (badge Claude + Repondre mailto + tour pedagogique + mini-card stats apprentissage). **S6.25 lacunes structurelles** (auto-create projet `kind=project`, verdict Big Rock semaine ISO max 3, endpoint `GET /api/projects/:id/emails`). **S6.26 polish UX** (bordure violette gauche cards LLM + Focus filtres elargis active+reportee+tranchees recentes 7j). 24 routes arbitrage + 7 routes projects. **Audit complet** `04_docs/AUDIT-UX-ARBITRAGE-v0.8.md` (note 8.5/10 → 9.5/10 alignement promesse). 10/10 v07-atomic verts. **Backlog Phase 1D V1.0** : S6.27 toggle density + hint feedback skipped + audit 161 hex tokens · S6.14 recette CEO 25 min sur sa propre boite mail · S6.16 BETA Lamiae · S6.28 tests E2E LLM frontend live · S6.29 modals 5 kinds nav reelle.
 **À jour à chaque clôture de sprint** ou décision structurante (cf. § 8 Maintenance).
 
 ---
@@ -43,7 +43,7 @@
 
 
 
-**Prochaine étape** : laisser la session parallèle finaliser v0.8 (S6.8.2 connaissance.html câblée + Phase 2 coaching/assistant). Une fois v0.8 livrée et taggée par session parallèle, aligner CLAUDE.md + roadmap-map.html avec leur ADR final. **Cette session reste en stand-by sur les modifs critiques pour ne pas créer de conflit Git** (working tree partagé, lock potentiel sur `.git/index.lock`).
+**Prochaine étape (30/04/2026 nuit)** : Phase 1D backloguée pour V1.0 — S6.27 (Triage Polish V1 : toggle density compact/normal/détaillé + hint feedback skipped + audit 161 hex hardcodes → tokens) + S6.14 (recette CEO 25 min sur sa propre boîte mail + tests E2E Playwright LLM) + S6.16 (BETA Lamiae) + S6.28 (tests E2E LLM frontend live, mock Claude pour CI) + S6.29 (modals 5 kinds en navigation réelle, audit S6.23 résiduel). Estimation ~5 j-binôme cumulés. Avant V1.x : **commit + tag** v0.8.1 incluant la cascade S6.22 → S6.26 livrée. Pilotage v1.8 + roadmap-map JOURNAL synchronisés.
 
 ---
 
@@ -343,12 +343,4 @@ Pour éviter les divergences entre docs, voici la **source unique** par informat
 | Liste 70 routes API (par router) | `04_docs/api/INDEX.md` (à créer Q5) | `03_mvp/server.js` + `src/routes/*.js` |
 | Décisions architecture / méthode / livraisons | `00_BOUSSOLE/DECISIONS.md` (22+ ADRs datés) | CLAUDE.md, release-notes, JOURNAL roadmap |
 | État chronologique projet | `04_docs/11-roadmap-map.html` JOURNAL[] | DECISIONS.md (livraisons), CLAUDE.md §1 (statut) |
-| Statut sprint courant | `04_docs/11-roadmap-map.html` Sprint entries | CLAUDE.md §1 (Statut au), gate-pills onglet 2 |
-| Tags Git posés | `git tag --list 'v0.5*'` (5 tags : v0.5-s1, s2, s3, s4, v0.5) | RELEASES rn-mvp-* dans roadmap-map.html |
-| Trajectoire ROADMAP v3.2 (v0.4 → v0.5 → v0.6 → V1 → V2 → V3) | `00_BOUSSOLE/ROADMAP.md` + `04_docs/08-roadmap.md` | CLAUDE.md §1, DECISIONS.md (ADR Insertion v0.6) |
-
-**Règle d'or** : si tu observes une divergence chiffre/fait entre docs, la source canonique ci-dessus tranche. Mettre à jour les autres docs en cascade et lancer `consistence-dump.ps1` pour vérifier.
-
----
-
-**Source de vérité de ce fichier** : `C:\_workarea_local\aiCEO\CLAUDE.md` (commit dans Git, donc pérenne)
+| Statut sprint courant | `04_docs/11-roadmap-map.html` Sprint entries | CLAUDE.md §1 (Statut au), g

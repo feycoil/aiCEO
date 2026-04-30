@@ -191,6 +191,47 @@
         <p class="aide-meta">Cette page est mise a jour a chaque sprint. Derniere maj : v0.7+ / quadruple sprint S6.13-S6.21 (29/04/2026 PM tres tardif).</p>
       </section>
 
+      <section class="aide-section" id="sec-6">
+        <h2><span class="aide-section-num">06</span>Triage du matin &mdash; le rituel en detail</h2>
+        <p>Le <strong>Triage</strong> transforme votre boite mail en items actionnables en 5-10 minutes. C est la signature differenciante d aiCEO.</p>
+
+        <h3>Les 4 verdicts possibles par email</h3>
+        <ul>
+          <li><strong>Faire</strong> &mdash; cree un item dans la base selon le badge kind (action / decision / project / big-rock / info)</li>
+          <li><strong>Reporter</strong> &mdash; garde l email actif pour la prochaine analyse</li>
+          <li><strong>Ignorer</strong> &mdash; marque arbitre, pas de creation, pas d apprentissage</li>
+          <li><strong>Pas pour moi</strong> (lien discret) &mdash; marque arbitre + envoie un signal a Claude pour qu il filtre les emails similaires a l avenir (table <code>email_feedback</code>, patterns dans le system prompt)</li>
+        </ul>
+
+        <h3>Les 5 kinds (cliquables sur le badge)</h3>
+        <ul>
+          <li><strong>Action</strong> (violet) &mdash; tache operationnelle ponctuelle</li>
+          <li><strong>Decision</strong> (ambre) &mdash; choix strategique a trancher (visible aussi en mode Focus decisions)</li>
+          <li><strong>Project</strong> (vert) &mdash; sujet structurant. Si verdict <code>Faire</code> &rarr; <strong>auto-create projet</strong> (depuis S6.25.1) avec lien email source</li>
+          <li><strong>Big Rock</strong> (orange) &mdash; promotion en rocher hebdomadaire (S6.25.2). Contrainte : 3 max par semaine ISO</li>
+          <li><strong>Info</strong> (bleu) &mdash; contexte pour un projet existant, pas de creation task/decision (lie email a project_id)</li>
+        </ul>
+
+        <h3>Les deux modes</h3>
+        <ul>
+          <li><strong>Mode Queue (emails)</strong> &mdash; bouton "Analyser avec Claude" lance une analyse LLM batch (12 emails &rarr; JSON enrichi summary/action/priority/rationale + skip noise). Bouton "Analyser (heuristique)" si pas de cle API.</li>
+          <li><strong>Mode Focus (decisions)</strong> &mdash; cycle 1-by-1 sur les decisions actives + reportees + tranchees recentes (7 derniers jours, S6.26.4). 4 options : OUI / NON / Reporter / Plus d info.</li>
+        </ul>
+
+        <h3>Apprentissage actif (S6.24.2)</h3>
+        <p>Une mini-card sur le Cockpit affiche en temps reel le nombre de patterns appris. Stats detaillees dans <strong>Reglages &rarr; Coaching IA</strong> : feedbacks par verdict, par mois, recents (10 derniers).</p>
+
+        <h3>Reflexes UX</h3>
+        <ul>
+          <li><strong>Bouton "Repondre"</strong> sur chaque card &mdash; ouvre Outlook avec un mailto pre-rempli (RE: subject)</li>
+          <li><strong>Badge "&#x2726; Claude"</strong> et <strong>bordure violette gauche</strong> sur cards analysees par LLM (S6.26.2)</li>
+          <li><strong>Tag projet cliquable</strong> &mdash; reaffectation rapide d un email a un autre projet</li>
+          <li><strong>Tour pedagogique</strong> au 1<sup>er</sup> Triage (S6.24.4) : 3 reflexes en overlay, dismiss permanent via localStorage</li>
+        </ul>
+
+        <p class="aide-meta">Refonte cascade Lots 17-32 (29-30/04/2026). Audit complet : <code>04_docs/AUDIT-UX-ARBITRAGE-v0.8.md</code>. Plan : <code>04_docs/PLAN-RESOLUTION-AUDIT-ARBITRAGE.md</code>.</p>
+      </section>
+
       <footer class="app-footer">
         <p class="strategic-q">Naviguer clair. Trancher juste. Dormir serein.</p>
         <div class="footer-meta">
