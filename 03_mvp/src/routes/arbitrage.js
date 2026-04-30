@@ -1030,8 +1030,15 @@ router.post("/accept", (req, res) => {
           const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
           const weekNum = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
           const weekId = d.getUTCFullYear() + "-W" + String(weekNum).padStart(2, "0");
-          // Ensure week exists
-          try { db.prepare("INSERT OR IGNORE INTO weeks (id, created_at) VALUES (?, datetime('now'))").run(weekId); } catch (e) {}
+          // Ensure week exists (avec year/week_number/starts_on/ends_on requis par le schema)
+          try {
+            const monday = new Date(d);
+            monday.setUTCDate(monday.getUTCDate() - 3);
+            const sunday = new Date(monday);
+            sunday.setUTCDate(sunday.getUTCDate() + 6);
+            const fmt = (dt) => dt.getUTCFullYear() + "-" + String(dt.getUTCMonth() + 1).padStart(2, "0") + "-" + String(dt.getUTCDate()).padStart(2, "0");
+            db.prepare("INSERT OR IGNORE INTO weeks (id, year, week_number, starts_on, ends_on) VALUES (?, ?, ?, ?, ?)").run(weekId, d.getUTCFullYear(), weekNum, fmt(monday), fmt(sunday));
+          } catch (e) { /* swallow */ }
           // Check current count
           const countRow = db.prepare("SELECT COUNT(*) AS n FROM big_rocks WHERE week_id = ?").get(weekId);
           if (countRow && countRow.n >= 3) {
