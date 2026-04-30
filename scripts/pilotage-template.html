@@ -791,8 +791,202 @@ code, pre, .mono { font-family: var(--font-mono); }
   .grid-2, .grid-3 { grid-template-columns: 1fr; }
   .pillars { grid-template-columns: 1fr 1fr; }
 }
+
+  /* === S6.22+ Drawer detail roadmap === */
+  .rm-drawer-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26, 24, 22, 0.45);
+    backdrop-filter: blur(3px);
+    z-index: 200;
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-end;
+    animation: rmFade 200ms cubic-bezier(.16, 1, .3, 1);
+  }
+  .rm-drawer-overlay[hidden] { display: none !important; }
+  @keyframes rmFade { from { opacity: 0; } to { opacity: 1; } }
+  .rm-drawer {
+    width: min(680px, 100%);
+    background: var(--surface-2, #fff);
+    display: flex;
+    flex-direction: column;
+    box-shadow: -8px 0 32px rgba(26, 24, 22, 0.18);
+    animation: rmSlide 240ms cubic-bezier(.16, 1, .3, 1);
+  }
+  @keyframes rmSlide { from { transform: translateX(100%); } to { transform: translateX(0); } }
+  .rm-drawer-head {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .rm-drawer-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--primary, #463a54);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .rm-drawer-head h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 4px 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .rm-drawer-meta {
+    font-size: 12px;
+    color: var(--text-3);
+    margin: 0;
+    font-family: var(--font-mono);
+  }
+  .rm-drawer-close {
+    background: transparent;
+    border: 0;
+    font-size: 28px;
+    cursor: pointer;
+    color: var(--text-3);
+    line-height: 1;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+  .rm-drawer-close:hover { background: var(--ivory-100); color: var(--text); }
+  .rm-drawer-body {
+    padding: 20px 24px;
+    overflow-y: auto;
+    flex: 1;
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.65;
+  }
+  .rm-drawer-body h3 {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 20px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--ivory-200);
+  }
+  .rm-drawer-body h3:first-child { margin-top: 0; }
+  .rm-drawer-body ul { padding-left: 20px; margin: 8px 0; }
+  .rm-drawer-body li { margin-bottom: 4px; }
+  .rm-drawer-body .rm-promise {
+    background: var(--primary-50, #ece7f0);
+    border-left: 3px solid var(--primary, #463a54);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--text);
+    margin: 0 0 16px;
+  }
+  .rm-drawer-body .rm-sprints-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 6px;
+    margin: 8px 0;
+  }
+  .rm-drawer-body .rm-sprint-mini {
+    padding: 6px 10px;
+    background: var(--ivory-100);
+    border: 1px solid var(--ivory-200);
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    text-align: center;
+  }
+  .rm-drawer-body .rm-sprint-mini.is-done { border-color: var(--emerald, #115e3c); background: var(--emerald-50, #d6f3e6); }
+  .rm-drawer-body .rm-budget {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    background: var(--ivory-50);
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--ivory-200);
+  }
+  .rm-drawer-foot {
+    padding: 14px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .rm-drawer-close-btn {
+    padding: 8px 16px;
+    background: var(--text);
+    color: #fff;
+    border: 0;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .rm-drawer-close-btn:hover { background: var(--text-2); }
+
+  /* Jalons timeline cliquables */
+  .tl-jalon { transition: transform 150ms ease; }
+  .tl-jalon:hover { transform: translateY(-2px); }
+  .tl-jalon:focus-visible { outline: 2px solid var(--primary, #463a54); outline-offset: 4px; border-radius: 8px; }
+
+
+  /* === S6.22+ Widget Gantt Timeline (migration 11-roadmap-map vue d'ensemble) === */
+  .gantt-timeline { background: var(--surface-2, #fff); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-top: 16px; }
+  .gantt-title { font-size: 16px; font-weight: 700; color: var(--text); margin: 0 0 4px; }
+  .gantt-sub { font-size: 12px; color: var(--text-3); margin: 0 0 18px; }
+  .gantt-grid { display: grid; grid-template-columns: 130px 1fr; gap: 8px 16px; align-items: center; }
+  .gantt-row-label { font-size: 12px; font-weight: 600; color: var(--text); text-align: right; padding-right: 6px; }
+  .gantt-bar-row { position: relative; height: 26px; background: var(--ivory-100, #f5f3ee); border-radius: 6px; overflow: hidden; }
+  .gantt-bar { position: absolute; top: 0; height: 100%; display: flex; align-items: center; padding: 0 10px; font-size: 11px; font-weight: 700; color: var(--paper, #fff); white-space: nowrap; cursor: pointer; transition: filter 150ms ease; }
+  .gantt-bar:hover { filter: brightness(1.1); }
+  .gantt-bar.done { background: var(--emerald, #115e3c); }
+  .gantt-bar.current { background: var(--violet-800, #463a54); }
+  .gantt-bar.todo { background: var(--text-3, #6b614f); opacity: 0.7; }
+  .gantt-bar.amber { background: var(--amber, #92400e); }
+  .gantt-axis { display: grid; grid-template-columns: 130px 1fr; gap: 16px; margin-top: 12px; padding-top: 8px; border-top: 1px dashed var(--ivory-200); }
+  .gantt-axis-marks { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; color: var(--text-3); font-weight: 600; }
+
+  /* 6 piliers vue d'ensemble */
+  .gantt-pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 24px; }
+  .gantt-pillar { background: var(--surface-2, #fff); border: 1px solid var(--border); border-radius: 10px; padding: 16px; transition: all 180ms ease; cursor: pointer; }
+  .gantt-pillar:hover { border-color: var(--primary, #463a54); transform: translateY(-2px); box-shadow: var(--elev-1, 0 2px 6px rgba(26, 24, 22, 0.08)); }
+  .gantt-pillar-icon { font-size: 24px; margin-bottom: 8px; }
+  .gantt-pillar-title { font-size: 14px; font-weight: 700; color: var(--text); margin: 0 0 6px; }
+  .gantt-pillar-desc { font-size: 12px; color: var(--text-2); line-height: 1.5; font-style: italic; }
+
 </style>
 <style>
+
+  /* === Versions roadmap (S6.21+) === */
+  .versions-roadmap { margin-bottom: 32px; }
+  .versions-roadmap-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 12px; }
+  .versions-roadmap-title { font-size: 18px; font-weight: 700; color: var(--text); margin: 0; letter-spacing: -0.01em; }
+  .versions-roadmap-link { font-size: 12px; font-weight: 600; color: var(--primary); text-decoration: none; padding: 6px 14px; border-radius: 6px; background: var(--ivory-100); transition: all 150ms ease; }
+  .versions-roadmap-link:hover { background: var(--primary-50, #ece7f0); color: var(--primary-rich); }
+  .versions-roadmap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .versions-roadmap-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; position: relative; overflow: hidden; transition: all 150ms ease; }
+  .versions-roadmap-card:hover { border-color: var(--primary, #463a54); transform: translateY(-1px); box-shadow: var(--elev-1, 0 2px 6px rgba(26, 24, 22, 0.08)); }
+  .versions-roadmap-card.is-done   { border-left: 4px solid var(--success, #115e3c); }
+  .versions-roadmap-card.is-current{ border-left: 4px solid var(--primary, #463a54); background: linear-gradient(135deg, var(--primary-50, #ece7f0) 0%, var(--surface-2) 100%); }
+  .versions-roadmap-card.is-todo   { border-left: 4px solid var(--ivory-200, #ebe7dc); opacity: 0.85; }
+  .versions-roadmap-version { font-family: var(--font-mono); font-size: 11px; font-weight: 800; color: var(--text-3); letter-spacing: 0.04em; }
+  .versions-roadmap-name { font-size: 15px; font-weight: 700; color: var(--text); margin: 4px 0 6px; }
+  .versions-roadmap-promise { font-size: 12px; color: var(--text-2); line-height: 1.45; font-style: italic; margin-bottom: 8px; }
+  .versions-roadmap-meta { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px dashed var(--ivory-200); margin-top: auto; }
+  .versions-roadmap-status { font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .versions-roadmap-status.is-done    { background: var(--success-50, #d6f3e6); color: var(--success, #115e3c); }
+  .versions-roadmap-status.is-current { background: var(--primary-50, #ece7f0); color: var(--primary, #463a54); }
+  .versions-roadmap-status.is-todo    { background: var(--ivory-100, #f5f3ee); color: var(--text-3); }
+
   /* S6.11-bis-LIGHT-v2 : sprints status visuel */
   .sprint-mini-done {
     background: #e2ece8 !important;
@@ -893,6 +1087,72 @@ code, pre, .mono { font-family: var(--font-mono); }
         </div>
       </div>
 
+      
+      <!-- S6.22+ Bandeau synchro : etat des donnees source -->
+      <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-top:14px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;font-size:12px;color:var(--text-2)">
+        <span style="font-weight:700;color:var(--text)">📡 Synchro</span>
+        <span><strong id="sync-adrs-count">—</strong> ADRs <span style="color:var(--text-3)">DECISIONS.md</span></span>
+        <span><strong id="sync-tags-count">—</strong> tags Git <span style="color:var(--text-3)">git log</span></span>
+        <span><strong id="sync-commits-count">—</strong> commits <span style="color:var(--text-3)">100 derniers</span></span>
+        <span><strong id="sync-releases-count">—</strong> release-notes <span style="color:var(--text-3)">_release-notes/</span></span>
+        <span style="margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--text-3)" id="sync-generated-at">—</span>
+      </div>
+
+      <!-- S6.22+ Widget Gantt Timeline migration 11-roadmap-map.html#tab-overview -->
+      <div class="card gantt-timeline">
+        <h2 class="gantt-title">🗺️ Timeline 18 mois — où on est, où on va</h2>
+        <p class="gantt-sub">Vue détaillée Gantt v0.4 → V3 (cliquer sur une barre pour ouvrir le détail · cf. roadmap-map.html migré ici)</p>
+        <div class="gantt-grid">
+          <div class="gantt-row-label">v0.4 MVP</div>
+          <div class="gantt-bar-row"><button class="gantt-bar done" data-version="v0.4" style="left: 0; width: 5%;">Avr ✓</button></div>
+
+          <div class="gantt-row-label">v0.5 Fusion</div>
+          <div class="gantt-bar-row"><button class="gantt-bar done" data-version="v0.5" style="left: 4%; width: 8%;">Avr ✓</button></div>
+
+          <div class="gantt-row-label">v0.6 Câblage</div>
+          <div class="gantt-bar-row"><button class="gantt-bar done" data-version="v0.6" style="left: 11%; width: 6%;">Avr ✓</button></div>
+
+          <div class="gantt-row-label">v0.7 LLM</div>
+          <div class="gantt-bar-row"><button class="gantt-bar done" data-version="v0.7" style="left: 17%; width: 6%;">Avr ✓ b7e9125</button></div>
+
+          <div class="gantt-row-label">v0.8 UX exec</div>
+          <div class="gantt-bar-row"><button class="gantt-bar current" data-version="v0.8" style="left: 23%; width: 5%;">Avr ★ en cours</button></div>
+
+          <div class="gantt-row-label">v0.9 BETA</div>
+          <div class="gantt-bar-row"><button class="gantt-bar amber" data-version="v0.9" style="left: 28%; width: 4%;">Mai ⚡ prochain</button></div>
+
+          <div class="gantt-row-label">V1 SaaS</div>
+          <div class="gantt-bar-row"><button class="gantt-bar todo" data-version="V1" style="left: 32%; width: 26%;">T3 2026 → T1 2027 · 6 mois</button></div>
+
+          <div class="gantt-row-label">V2 Intl</div>
+          <div class="gantt-bar-row"><button class="gantt-bar todo" data-version="V2" style="left: 58%; width: 25%;">T2 → T4 2027</button></div>
+
+          <div class="gantt-row-label">V3 Coach</div>
+          <div class="gantt-bar-row"><button class="gantt-bar todo" data-version="V3" style="left: 83%; width: 17%;">T4 2027+</button></div>
+        </div>
+        <div class="gantt-axis">
+          <div></div>
+          <div class="gantt-axis-marks">
+            <span>Mar 26</span><span>Mai 26</span><span>Juil 26</span><span>Sep 26</span><span>Q4 26</span><span>Q2 27</span><span>Q4 27</span><span>2028+</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 piliers : promesses-clés (migration 11-roadmap-map.html#tab-overview) -->
+      <div class="card">
+        <h3 class="card-title">📍 Où on va — promesses-clés</h3>
+        <div class="gantt-pillars">
+          <button class="gantt-pillar" data-version="v0.6"><div class="gantt-pillar-icon">🌿</div><div class="gantt-pillar-title">v0.6 (livré 28/04)</div><div class="gantt-pillar-desc">"Mon outil est aussi beau qu'il est utile et il marche sur mes vraies données."</div></button>
+          <button class="gantt-pillar" data-version="v0.7"><div class="gantt-pillar-icon">🧠</div><div class="gantt-pillar-title">v0.7 (livré 28/04 PM)</div><div class="gantt-pillar-desc">"Mon outil pense pour moi. LLM coaching, decision-recommend, auto-draft, effects-propagation, Outlook events." Tag b7e9125.</div></button>
+          <button class="gantt-pillar" data-version="v0.8" style="border-color:var(--violet-800);background:var(--violet-50)"><div class="gantt-pillar-icon">★</div><div class="gantt-pillar-title">v0.8 (en cours 29/04)</div><div class="gantt-pillar-desc">"Naviguer clair. Trancher juste. Dormir serein. UX Editorial Executive voix exec moderne · 12 termes canoniques · 4 routes LLM frontend."</div></button>
+          <button class="gantt-pillar" data-version="v0.9"><div class="gantt-pillar-icon">⚡</div><div class="gantt-pillar-title">v0.9 (mai 2026)</div><div class="gantt-pillar-desc">"Validation utilisateur réelle + ExCom décisions. BETA Lamiae 1j+3j cal · tests E2E Playwright · GO V1."</div></button>
+          <button class="gantt-pillar" data-version="V1"><div class="gantt-pillar-icon">👥</div><div class="gantt-pillar-title">V1 (T3 2026)</div><div class="gantt-pillar-desc">"Je rends l'outil dispo à mes pairs + équipe ETIC, partout, mobile inclus."</div></button>
+          <button class="gantt-pillar" data-version="V2"><div class="gantt-pillar-icon">🌍</div><div class="gantt-pillar-title">V2 (2027)</div><div class="gantt-pillar-desc">"On vend l'outil hors écosystème ETIC, internationalement. i18n + SOC 2."</div></button>
+          <button class="gantt-pillar" data-version="V3"><div class="gantt-pillar-icon">🪞</div><div class="gantt-pillar-title">V3 (2028+)</div><div class="gantt-pillar-desc">"L'outil me rend du temps et me garde en forme. Multi-CEO écosystème."</div></button>
+        </div>
+      </div>
+
+
       <div class="grid-2">
         <div class="card">
           <h3 class="card-title">📊 État du projet en 1 coup d'œil</h3>
@@ -950,26 +1210,28 @@ code, pre, .mono { font-family: var(--font-mono); }
     <section class="section" id="section-executive-timeline" style="margin-top:24px">
       <div class="card">
         <h3 class="card-title">🗺️ Timeline 18 mois — où on est, où on va</h3>
-        <p class="card-subtitle">Vue stratégique macro · v0.4 → V1 → V2 → V3 (cf. roadmap-map.html détaillé)</p>
+        <p class="card-subtitle">Vue stratégique macro · 9 jalons v0.4 → V3 (cliquer pour ouvrir le détail)</p>
         <div style="position:relative;padding:32px 0 16px;margin-top:16px">
           <!-- Ligne timeline -->
-          <div style="position:absolute;top:50%;left:0;right:0;height:3px;background:linear-gradient(90deg, var(--emerald) 0%, var(--emerald) 28%, var(--amber) 28%, var(--amber) 42%, var(--violet-800) 42%, var(--violet-800) 70%, var(--text-3) 70%, var(--text-3) 100%);transform:translateY(-50%);border-radius:2px"></div>
+          <div style="position:absolute;top:50%;left:0;right:0;height:3px;background:linear-gradient(90deg, var(--emerald) 0%, var(--emerald) 44%, var(--violet-800) 44%, var(--violet-800) 55%, var(--amber) 55%, var(--amber) 67%, var(--text-3) 67%, var(--text-3) 100%);transform:translateY(-50%);border-radius:2px"></div>
           <!-- Jalons -->
-          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:0;position:relative;z-index:2">
-            <div style="text-align:center"><div style="width:32px;height:32px;border-radius:50%;background:var(--emerald);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;box-shadow:0 2px 8px rgba(61,115,99,.4)">✓</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--text)">v0.4 MVP</div><div style="font-size:10px;color:var(--text-3)">04/2026</div></div>
-            <div style="text-align:center"><div style="width:32px;height:32px;border-radius:50%;background:var(--emerald);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;box-shadow:0 2px 8px rgba(61,115,99,.4)">✓</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--text)">v0.5</div><div style="font-size:10px;color:var(--text-3)">04/2026</div></div>
-            <div style="text-align:center"><div style="width:32px;height:32px;border-radius:50%;background:var(--emerald);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;box-shadow:0 2px 8px rgba(61,115,99,.4)">✓</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--text)">v0.6 + v0.7</div><div style="font-size:10px;color:var(--text-3)">04/2026</div></div>
-            <div style="text-align:center"><div style="width:36px;height:36px;border-radius:50%;background:var(--amber);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;box-shadow:0 4px 12px rgba(184,130,55,.5)">⚡</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--amber-800)">PHASE 0+1</div><div style="font-size:10px;color:var(--text-3)">04-06/2026</div></div>
-            <div style="text-align:center"><div style="width:32px;height:32px;border-radius:50%;background:var(--violet-800);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;box-shadow:0 2px 8px rgba(70,58,84,.4)">V1</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--text)">V1.0 Release</div><div style="font-size:10px;color:var(--text-3)">07/2026</div></div>
-            <div style="text-align:center"><div style="width:32px;height:32px;border-radius:50%;background:var(--text-3);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff">V2</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--text-3)">V2 SaaS+i18n</div><div style="font-size:10px;color:var(--text-3)">2027</div></div>
-            <div style="text-align:center"><div style="width:32px;height:32px;border-radius:50%;background:var(--text-3);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff">V3</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--text-3)">V3 Coach</div><div style="font-size:10px;color:var(--text-3)">2028</div></div>
+          <div style="display:grid;grid-template-columns:repeat(9,1fr);gap:0;position:relative;z-index:2">
+            <button class="tl-jalon" data-version="v0.4" style="text-align:center;background:transparent;border:0;cursor:pointer;padding:0"><div style="width:30px;height:30px;border-radius:50%;background:var(--emerald);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;box-shadow:0 2px 8px rgba(61,115,99,.4);font-size:11px">✓</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--text)">v0.4</div><div style="font-size:10px;color:var(--text-3)">24/04</div></button>
+            <button class="tl-jalon" data-version="v0.5" style="text-align:center;background:transparent;border:0;cursor:pointer;padding:0"><div style="width:30px;height:30px;border-radius:50%;background:var(--emerald);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;box-shadow:0 2px 8px rgba(61,115,99,.4);font-size:11px">✓</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--text)">v0.5</div><div style="font-size:10px;color:var(--text-3)">26/04</div></button>
+            <button class="tl-jalon" data-version="v0.6" style="text-align:center;background:transparent;border:0;cursor:pointer;padding:0"><div style="width:30px;height:30px;border-radius:50%;background:var(--emerald);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;box-shadow:0 2px 8px rgba(61,115,99,.4);font-size:11px">✓</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--text)">v0.6</div><div style="font-size:10px;color:var(--text-3)">28/04</div></button>
+            <button class="tl-jalon" data-version="v0.7" style="text-align:center;background:transparent;border:0;cursor:pointer;padding:0"><div style="width:30px;height:30px;border-radius:50%;background:var(--emerald);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;box-shadow:0 2px 8px rgba(61,115,99,.4);font-size:11px">✓</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--text)">v0.7 LLM</div><div style="font-size:10px;color:var(--text-3)">28/04 PM</div></button>
+            <button class="tl-jalon tl-jalon-current" data-version="v0.8" style="text-align:center;background:transparent;border:0;cursor:pointer;padding:0"><div style="width:36px;height:36px;border-radius:50%;background:var(--violet-800);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;box-shadow:0 4px 12px rgba(70,58,84,.5);font-size:11px">★</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--violet-800)">v0.8 UX</div><div style="font-size:10px;color:var(--text-3)">29/04</div></button>
+            <button class="tl-jalon" data-version="v0.9" style="text-align:center;background:transparent;border:0;cursor:pointer;padding:0"><div style="width:32px;height:32px;border-radius:50%;background:var(--amber);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;box-shadow:0 2px 8px rgba(184,130,55,.4);font-size:11px">⚡</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--amber-800)">v0.9 BETA</div><div style="font-size:10px;color:var(--text-3)">05/2026</div></button>
+            <button class="tl-jalon" data-version="V1" style="text-align:center;background:transparent;border:0;cursor:pointer;padding:0"><div style="width:32px;height:32px;border-radius:50%;background:var(--text-3);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;font-size:11px">V1</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--text-3)">V1 SaaS</div><div style="font-size:10px;color:var(--text-3)">T3-T4 26</div></button>
+            <button class="tl-jalon" data-version="V2" style="text-align:center;background:transparent;border:0;cursor:pointer;padding:0"><div style="width:32px;height:32px;border-radius:50%;background:var(--text-3);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;font-size:11px">V2</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--text-3)">V2 Intl</div><div style="font-size:10px;color:var(--text-3)">2027</div></button>
+            <button class="tl-jalon" data-version="V3" style="text-align:center;background:transparent;border:0;cursor:pointer;padding:0"><div style="width:32px;height:32px;border-radius:50%;background:var(--text-3);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid #fff;font-size:11px">V3</div><div style="font-size:11px;font-weight:700;margin-top:8px;color:var(--text-3)">V3 Coach</div><div style="font-size:10px;color:var(--text-3)">2028+</div></button>
           </div>
         </div>
         <div style="display:flex;gap:8px;margin-top:20px;flex-wrap:wrap;justify-content:center">
           <span style="padding:4px 10px;background:var(--emerald-50);color:var(--emerald-800);border-radius:12px;font-size:11px;font-weight:600">✓ Livré (v0.4 → v0.7)</span>
-          <span style="padding:4px 10px;background:var(--amber-50);color:var(--amber-800);border-radius:12px;font-size:11px;font-weight:600">⚡ En cours (Phase 0 ✅ · Phase 1 prochaine)</span>
-          <span style="padding:4px 10px;background:var(--violet-50);color:var(--violet-800);border-radius:12px;font-size:11px;font-weight:600">▸ V1.0 cible été 2026</span>
-          <span style="padding:4px 10px;background:var(--surface-3);color:var(--text-3);border-radius:12px;font-size:11px;font-weight:600">○ V2-V3 (~2027-2028)</span>
+          <span style="padding:4px 10px;background:var(--violet-50);color:var(--violet-800);border-radius:12px;font-size:11px;font-weight:600">★ En cours (v0.8 UX Editorial Executive)</span>
+          <span style="padding:4px 10px;background:var(--amber-50);color:var(--amber-800);border-radius:12px;font-size:11px;font-weight:600">⚡ Prochaine étape (v0.9 BETA)</span>
+          <span style="padding:4px 10px;background:var(--surface-3);color:var(--text-3);border-radius:12px;font-size:11px;font-weight:600">○ V1-V2-V3 (T3 26 → 2028+)</span>
         </div>
       </div>
 
@@ -1070,6 +1332,16 @@ code, pre, .mono { font-family: var(--font-mono); }
       <div class="card">
         <h3 class="card-title">🗺️ Trajectoire détaillée par phase</h3>
         <p class="card-subtitle">Cliquer sur un sprint pour ouvrir son dossier de cadrage</p>
+        <!-- S6.21+ : section Versions complete (v0.4 -> V3) -->
+        <div class="versions-roadmap">
+          <div class="versions-roadmap-header">
+            <h2 class="versions-roadmap-title">Versions livrees & trajectoire</h2>
+            <a href="11-roadmap-map.html#tab-versions" target="_blank" class="versions-roadmap-link">📖 Detail par version (11-roadmap-map.html)</a>
+          </div>
+          <div class="versions-roadmap-grid" id="versions-roadmap-grid"></div>
+        </div>
+
+        <h3 style="font-size:18px;font-weight:700;color:var(--text);margin:24px 0 12px;letter-spacing:-0.01em">Phases ADD-AI (sprints binome)</h3>
         <div id="roadmap-phases"></div>
       </div>
     </section>
@@ -1444,6 +1716,20 @@ function init() {
   renderExecutive();
   renderReleases();
 
+  // S6.22+ Bandeau synchro : etat des donnees source
+  if ($('#sync-adrs-count'))     $('#sync-adrs-count').textContent     = (DATA.adrs || []).length;
+  if ($('#sync-tags-count'))     $('#sync-tags-count').textContent     = (DATA.tags || []).length;
+  if ($('#sync-commits-count'))  $('#sync-commits-count').textContent  = (DATA.commits || []).length;
+  if ($('#sync-releases-count')) $('#sync-releases-count').textContent = (DATA.releases || []).length;
+  if ($('#sync-generated-at')) {
+    try {
+      $('#sync-generated-at').textContent = 'Genere : ' + new Date(DATA.generated_at).toLocaleString('fr-FR');
+    } catch (e) {
+      $('#sync-generated-at').textContent = '';
+    }
+  }
+
+
   bindNav();
   bindAdrSearch();
   bindDocSearch();
@@ -1544,7 +1830,47 @@ function renderFullTimeline() {
 }
 
 function renderRoadmap() {
-  // Detection automatique des sprints livres depuis ADR (regex etendu pour couvrir EE/EE-2/EE-fix2/etc.)
+  // S6.21+ : rendu des versions (v0.4 -> V3) + drawer detail integre
+  const versions = [
+    { id: 'v0.4',  title: 'MVP rituels reels',           promise: 'Arbitrage matinal en < 10 min avec Claude', date: '24 avril 2026', tag: 'v0.4', status: 'done', sprints: ['S1','S2','S3','S4','S5'], features: ['Arbitrage 3/2/N + delegation un-clic','Boucle du soir + import Outlook 30j','Run reel : 28/28 taches arbitrees en 41s'], budget: 'absorbe MVP' },
+    { id: 'v0.5',  title: 'Fusion produit unifie',       promise: 'Tout mon flux passe par une seule app',       date: '26 avril 2026', tag: 'v0.5', status: 'done', sprints: ['S1-S5 fusion'], features: ['SQLite mono-instance · 11 routers REST','Cockpit + arbitrage + soir + revues','Assistant SSE Anthropic + 12 pages frontend'], budget: '110 k€ engages, 97.4 k€ depenses' },
+    { id: 'v0.6',  title: 'Cablage donnees reelles',     promise: 'Mon outil marche sur mes vraies donnees',     date: '28 avril 2026', tag: 'v0.6', status: 'done', sprints: ['S6.1','S6.2','S6.3','S6.4'], features: ['Backend SQLite etendu (table emails)','13/17 pages frontend cablees API','Sync emails Outlook auto-bootstrap projets/contacts'], budget: '~8 k€ binome' },
+    { id: 'v0.7',  title: 'LLM 4 surfaces UX',           promise: 'Mon outil pense pour moi',                    date: '28 avril 2026 PM', tag: 'v0.7 (b7e9125)', status: 'done', sprints: ['S6.5','S6.6','S6.7'], features: ['5 routes LLM mode degrade activable','3 migrations SQL (events extend, decisions reportee, knowledge_pins)','8 binds frontend cables', 'Sync Outlook events COM J-15 a J+30'], budget: '~5 k€ binome' },
+    { id: 'v0.8',  title: 'UX Editorial Executive (voix exec moderne)', promise: 'Naviguer clair. Trancher juste. Dormir serein.', date: '29 avril 2026 PM', tag: 's6.21', status: 'current', sprints: ['S6.9-bis-LIGHT','S6.10-bis-LIGHT','SPIKE-VALIDATION','S6.11-bis-LIGHT','S6.10-EE','S6.10-EE-FIX','S6.11-EE','S6.11-EE-fix','S6.11-EE-fix2','S6.11-EE-2','S6.12','S6.13','S6.15','S6.17','S6.18','S6.19','S6.20','S6.21'], features: ['Phase 0 LEAN ADD-AI livre (3 j-binome)','19/19 pages v07 Atomic Templates + voix exec moderne','12 termes canoniques figes (Hub, Compass, North Star, Sync, Pulse, Triage, Big Rock, etc.)','4 routes LLM frontend cablees (decision-recommend, auto-draft, coaching, llm-status)','Bascule v07 = defaut + Trajectoire MVP + chronotype CSS variables','10/10 tests v07-atomic verts'], budget: '~5 j-binome cumule (Phase 1A + 1B)' },
+    { id: 'v0.9',  title: 'BETA Lamiae + tests E2E + GO V1',  promise: 'Validation utilisateur reelle + ExCom decisions', date: 'mai 2026', tag: 's6.16/s6.22', status: 'todo', sprints: ['S6.14','S6.16','S6.22','S6.23'], features: ['Tests E2E Playwright LLM + smoke v07','BETA Lamiae validation utilisateur (1 j + 3 j cal.)','Polish UX feedback CEO post-test sur soi','Mode "graphe" Trajectoire (connexions Decisions/Big Rocks/Projects)','Recette CEO complete + dossier ExCom 04/05'], budget: '~3-4 j-binome' },
+    { id: 'V1',    title: 'SaaS multi-tenant',           promise: 'Je rends l outil dispo a mes pairs + equipe ETIC, partout, mobile inclus', date: 'T3-T4 2026',    tag: '~41 k€', status: 'todo', sprints: ['V1.1','V1.2','V1.3','V1.4','V1.5','V1.6','V1.7','V1.8'], features: ['Multi-tenant Supabase + RLS + Microsoft Entra auth','Equipes (delegations, partage Hub/Streams)','Mobile responsive complet','Backup auto SQLite + logs structures winston','Beta closed 5 CEOs pairs francophones'], budget: '~41 k€ binome / 6 mois' },
+    { id: 'V2',    title: 'Commercial international',    promise: 'On vend l outil hors ecosysteme ETIC, internationalement', date: '2027', tag: '~800 k€', status: 'todo', sprints: ['V2.1','V2.2','V2.3','V2.4','V2.5','V2.6'], features: ['i18n FR + EN + AR + RTL prep','Premier client international hors ETIC','SOC 2 Type II + RGPD complet','Canvas IA tldraw + Yjs','Graphe Cytoscape + API publique'], budget: '~800 k€' },
+    { id: 'V3',    title: 'Coach IA proactif',           promise: 'L outil me rend du temps et me garde en forme. Multi-CEO ecosysteme', date: '2028+', tag: '~600 k€', status: 'todo', sprints: ['V3.1','V3.2','V3.3','V3.4'], features: ['Coach Opus modes (arbitrage / coince / revue stoique)','Mirror moments + self-talk monitoring + detection burnout','Post-mortem auto','Offline-first ElectricSQL','Multi-CEO portfolio (250-350 utilisateurs · point mort)'], budget: '~600 k€' }
+  ];
+  // Stocke les versions globalement pour le drawer
+  window.PILOTAGE_VERSIONS = versions;
+
+  const versionsGrid = document.getElementById('versions-roadmap-grid');
+  if (versionsGrid) {
+    versionsGrid.innerHTML = versions.map(v => {
+      const statusLabels = { done: 'livre', current: 'en cours', todo: 'a venir' };
+      const sprintCount = (v.sprints || []).length;
+      return '<button class="versions-roadmap-card is-' + v.status + '" data-version="' + v.id + '" type="button" style="text-align:left;font-family:inherit">' +
+        '<div class="versions-roadmap-version">' + v.id + '</div>' +
+        '<div class="versions-roadmap-name">' + v.title + '</div>' +
+        '<div class="versions-roadmap-promise">"' + v.promise + '"</div>' +
+        '<div class="versions-roadmap-meta">' +
+          '<span>' + v.date + (sprintCount ? ' · ' + sprintCount + ' sprint' + (sprintCount > 1 ? 's' : '') : '') + '</span>' +
+          '<span class="versions-roadmap-status is-' + v.status + '">' + statusLabels[v.status] + '</span>' +
+        '</div>' +
+      '</button>';
+    }).join('');
+    // Click handler -> drawer
+    versionsGrid.querySelectorAll('[data-version]').forEach(card => {
+      card.addEventListener('click', () => openVersionDrawer(card.dataset.version));
+    });
+  }
+  // Lien CTA = aussi drawer (plus de redirect externe)
+  document.querySelectorAll('a.versions-roadmap-link').forEach(link => {
+    link.addEventListener('click', (e) => { e.preventDefault(); openVersionDrawer('all'); });
+  });
+
+    // Detection automatique des sprints livres depuis ADR (regex etendu pour couvrir EE/EE-2/EE-fix2/etc.)
   const livredIds = new Set();
   (DATA.adrs || []).forEach(a => {
     const t = (a.title || '').toLowerCase();
@@ -1790,18 +2116,48 @@ function renderExecutive() {
     return '<div class="exec-stat-row"><div><div class="exec-stat-label">' + s.label + '</div><div class="exec-stat-meta">' + s.meta + '</div></div><div class="exec-stat-value">' + s.value + '</div></div>';
   }).join('');
 
-  // Next milestone
-  $('#next-milestone').innerHTML = '<div style="padding:14px;background:var(--violet-50);border-radius:8px;border-left:3px solid var(--violet-800)">' +
-    '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--violet-800);margin-bottom:6px">⚡ Prochain sprint</div>' +
-    '<h4 style="margin:0 0 4px;font-size:14px;font-weight:600">S6.9-bis-LIGHT — Cowork minimal</h4>' +
-    '<p style="margin:0 0 8px;font-size:12px;color:var(--text-3);line-height:1.5">Setup Cowork plugin + 3 skills + 4 subagents + memory/ bootstrap. <strong>0.5 j-binôme</strong>.</p>' +
-    '<a href="_sprints/S6.9-bis/DOSSIER-SPRINT-S6.9-bis.md" target="_blank" style="font-size:11px;color:var(--violet-800);font-weight:600;text-decoration:none">📄 Cadrage complet →</a>' +
-  '</div>' +
-  '<div style="margin-top:10px;padding:14px;background:var(--amber-50);border-radius:8px;border-left:3px solid var(--amber-800)">' +
-    '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--amber-800);margin-bottom:6px">🔍 Garde-fou critique</div>' +
-    '<h4 style="margin:0 0 4px;font-size:14px;font-weight:600">SPIKE Validation ADD-AI</h4>' +
-    '<p style="margin:0;font-size:12px;color:var(--text-3);line-height:1.5">J+1 · mesure GO/NO-GO. Si NO-GO → abandon ADD-AI.</p>' +
-  '</div>';
+  // Next milestone (DYNAMIQUE - calcule depuis versions + livredIds)
+  // Lit le state global expose par renderRoadmap() : window.PILOTAGE_VERSIONS et window.PILOTAGE_LIVRED_IDS
+  function buildNextMilestone() {
+    const versions = window.PILOTAGE_VERSIONS || [];
+    const livred = window.PILOTAGE_LIVRED_IDS || new Set();
+    if (!versions.length) return '<p style="color:var(--text-3);font-size:13px;padding:14px">Roadmap pas encore initialisee...</p>';
+
+    const versionCourante = versions.find(v => v.status === 'current');
+    const prochainVersion = versions.find(v => v.status === 'todo');
+
+    let html = '';
+    // Bloc 1 : Version en cours + sprint en cours
+    if (versionCourante) {
+      const sprintsList = versionCourante.sprints || [];
+      const sprintsLivres = sprintsList.filter(s => livred.has(s.toLowerCase()));
+      const sprintsRestants = sprintsList.filter(s => !livred.has(s.toLowerCase()));
+      html += '<div style="padding:14px;background:var(--violet-50);border-radius:8px;border-left:3px solid var(--violet-800)">' +
+        '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--violet-800);margin-bottom:6px">★ Version en cours</div>' +
+        '<h4 style="margin:0 0 4px;font-size:14px;font-weight:600">' + versionCourante.id + ' — ' + escHtml(versionCourante.title) + '</h4>' +
+        '<p style="margin:0 0 8px;font-size:12px;color:var(--text-3);line-height:1.5">"' + escHtml(versionCourante.promise) + '"</p>' +
+        '<div style="font-size:11px;color:var(--violet-800);font-weight:600">' +
+          sprintsLivres.length + ' / ' + sprintsList.length + ' sprints livres' +
+          (sprintsRestants.length ? ' · prochain : <code>' + sprintsRestants[0] + '</code>' : ' · ✓ tous livres') +
+        '</div>' +
+      '</div>';
+    }
+    // Bloc 2 : Version a venir
+    if (prochainVersion) {
+      const sprintsList = prochainVersion.sprints || [];
+      html += '<div style="margin-top:10px;padding:14px;background:var(--amber-50);border-radius:8px;border-left:3px solid var(--amber-800)">' +
+        '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--amber-800);margin-bottom:6px">⚡ Prochaine version</div>' +
+        '<h4 style="margin:0 0 4px;font-size:14px;font-weight:600">' + prochainVersion.id + ' — ' + escHtml(prochainVersion.title) + '</h4>' +
+        '<p style="margin:0 0 6px;font-size:12px;color:var(--text-3);line-height:1.5">"' + escHtml(prochainVersion.promise) + '" <strong>' + escHtml(prochainVersion.date) + '</strong></p>' +
+        (sprintsList.length ? '<div style="font-size:11px;color:var(--amber-800);font-weight:600">Sprints prevus : ' + sprintsList.slice(0, 4).map(function(s){ return '<code>' + s + '</code>'; }).join(' · ') + (sprintsList.length > 4 ? ' + ' + (sprintsList.length - 4) + ' autres' : '') + '</div>' : '') +
+      '</div>';
+    }
+    return html || '<p style="color:var(--text-3);font-size:13px;padding:14px">Aucune version courante/a-venir detectee.</p>';
+  }
+  // Le rendu se fait apres renderRoadmap (qui set window.PILOTAGE_VERSIONS)
+  setTimeout(function () {
+    if ($('#next-milestone')) $('#next-milestone').innerHTML = buildNextMilestone();
+  }, 100);
 
   // Top 5 ADRs récents
   $('#exec-adrs-list').innerHTML = DATA.adrs.slice(0, 6).map(function (a) {
@@ -1810,11 +2166,31 @@ function renderExecutive() {
 }
 
 function renderReleases() {
-  var releases = DATA.releases || [];
+  // S6.22+ Synchro : fusionner DATA.releases (release-notes/*.md) + DATA.tags (Git tags) pour avoir TOUS les tags
+  var releases = (DATA.releases || []).slice();
+  var tags = DATA.tags || [];
+  var existingTags = new Set(releases.map(function (r) { return (r.tag || r.version || r.title || '').toLowerCase().replace(/\.md$/, ''); }));
+  // Pour chaque tag Git non present dans releases, en creer un stub
+  tags.forEach(function (t) {
+    var tagId = (t.tag || '').toLowerCase();
+    if (tagId && !existingTags.has(tagId)) {
+      releases.push({
+        tag: t.tag,
+        title: 'Tag Git ' + t.tag + (t.message ? ' - ' + t.message.split('\n')[0].slice(0, 80) : ''),
+        date: t.date || '',
+        body: 'Tag Git uniquement (pas de release-notes ' + tagId + '.md). Voir DECISIONS.md pour les ADRs associes.',
+        link: null,
+        is_git_only: true
+      });
+    }
+  });
+  // Trier par date desc (le plus recent en premier)
+  releases.sort(function (a, b) { return (b.date || '').localeCompare(a.date || ''); });
+
   if ($('#release-count')) $('#release-count').textContent = releases.length;
   if (!$('#releases-list')) return;
   if (releases.length === 0) {
-    $('#releases-list').innerHTML = '<p style="color:var(--text-3);font-size:13px;text-align:center;padding:32px">Aucune release notes publiée. Créer dans <code>04_docs/_release-notes/</code>.</p>';
+    $('#releases-list').innerHTML = '<p style="color:var(--text-3);font-size:13px;text-align:center;padding:32px">Aucune release et aucun tag Git detectes.</p>';
     return;
   }
   $('#releases-list').innerHTML = releases.map(function (r) {
@@ -2417,6 +2793,136 @@ init();
     }
   });
 
+  
+// === S6.22+ Drawer detail roadmap (versions + sprints) ===
+function openVersionDrawer(versionId) {
+  const overlay = document.getElementById('rm-drawer-overlay');
+  if (!overlay) return;
+  const versions = window.PILOTAGE_VERSIONS || [];
+
+  // Cas special : 'all' = liste de toutes les versions (deja affichee dans la grille, on ouvre v0.8 par defaut)
+  if (versionId === 'all') versionId = versions.find(v => v.status === 'current')?.id || 'v0.8';
+
+  const v = versions.find(x => x.id === versionId);
+  if (!v) return;
+
+  document.getElementById('rm-drawer-eyebrow').textContent = 'VERSION ' + v.id.toUpperCase();
+  document.getElementById('rm-drawer-title').textContent = v.title;
+  document.getElementById('rm-drawer-meta').textContent = v.date + ' · tag : ' + v.tag + ' · statut : ' + (v.status === 'done' ? 'livre' : v.status === 'current' ? 'en cours' : 'a venir');
+
+  const body = document.getElementById('rm-drawer-body');
+  if (body) {
+    let html = '';
+    html += '<p class="rm-promise">« ' + v.promise + ' »</p>';
+    html += '<h3>Features livrees / prevues</h3>';
+    html += '<ul>' + (v.features || []).map(f => '<li>' + escHtml(f) + '</li>').join('') + '</ul>';
+    if (v.sprints && v.sprints.length > 0) {
+      html += '<h3>Sprints rattaches (' + v.sprints.length + ')</h3>';
+      html += '<div class="rm-sprints-grid">' + v.sprints.map(s => {
+        const isDone = v.status === 'done' || v.status === 'current';
+        return '<div class="rm-sprint-mini' + (isDone ? ' is-done' : '') + '">' + escHtml(s) + '</div>';
+      }).join('') + '</div>';
+    }
+    if (v.budget) {
+      html += '<h3>Budget</h3>';
+      html += '<div class="rm-budget">' + escHtml(v.budget) + '</div>';
+    }
+    body.innerHTML = html;
+  }
+
+  const link = document.getElementById('rm-drawer-link');
+  if (link) link.href = '11-roadmap-map.html#tab-versions';
+
+  overlay.hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+
+
+// === S6.22+ Routage URL ?tab=... + click drawer Gantt et piliers ===
+(function setupRouting() {
+  function parseTabFromURL() {
+    // Supporte ?tab=roadmap ou #tab=roadmap
+    const params = new URLSearchParams(window.location.search);
+    const fromQuery = params.get('tab');
+    const fromHash = window.location.hash.startsWith('#tab=') ? window.location.hash.slice(5) : null;
+    return fromQuery || fromHash || null;
+  }
+
+  function applyTabFromURL() {
+    const tab = parseTabFromURL();
+    if (!tab) return;
+    const item = document.querySelector('.nav-item[data-section="' + tab + '"]');
+    if (item) item.click();
+  }
+
+  // Au load : appliquer tab depuis URL
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyTabFromURL);
+  } else {
+    setTimeout(applyTabFromURL, 50);
+  }
+
+  // Au click tab : mettre a jour URL (history.pushState, sans rechargement)
+  document.addEventListener('click', (e) => {
+    const item = e.target.closest('.nav-item[data-section]');
+    if (!item) return;
+    const tab = item.dataset.section;
+    const url = new URL(window.location.href);
+    url.searchParams.set('tab', tab);
+    history.pushState({ tab }, '', url.toString());
+  });
+
+  // Bind back/forward : reapplique tab
+  window.addEventListener('popstate', applyTabFromURL);
+})();
+
+// Bind clicks Gantt bars + piliers (delegation, marche meme si rendu apres)
+document.addEventListener('click', (e) => {
+  const ganttBar = e.target.closest('.gantt-bar[data-version]');
+  if (ganttBar) {
+    const v = ganttBar.dataset.version;
+    if (typeof openVersionDrawer === 'function') openVersionDrawer(v);
+    return;
+  }
+  const pillar = e.target.closest('.gantt-pillar[data-version]');
+  if (pillar) {
+    const v = pillar.dataset.version;
+    if (typeof openVersionDrawer === 'function') openVersionDrawer(v);
+    return;
+  }
+  // Bind aussi les anciens jalons timeline
+  const tlJalon = e.target.closest('.tl-jalon[data-version]');
+  if (tlJalon) {
+    const v = tlJalon.dataset.version;
+    if (typeof openVersionDrawer === 'function') openVersionDrawer(v);
+  }
+});
+
+
+  function closeVersionDrawer() {
+  const overlay = document.getElementById('rm-drawer-overlay');
+  if (!overlay) return;
+  overlay.hidden = true;
+  document.body.style.overflow = '';
+}
+
+// Bind close handlers (au DOMContentLoaded)
+document.addEventListener('DOMContentLoaded', () => {
+  const closeBtn = document.getElementById('rm-drawer-close');
+  const closeBtn2 = document.getElementById('rm-drawer-close-btn');
+  const overlay = document.getElementById('rm-drawer-overlay');
+  if (closeBtn) closeBtn.addEventListener('click', closeVersionDrawer);
+  if (closeBtn2) closeBtn2.addEventListener('click', closeVersionDrawer);
+  if (overlay) overlay.addEventListener('click', (e) => { if (e.target === overlay) closeVersionDrawer(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeVersionDrawer(); });
+
+  // Bind jalons timeline cliquables
+  document.querySelectorAll('.tl-jalon[data-version]').forEach(j => {
+    j.addEventListener('click', () => openVersionDrawer(j.dataset.version));
+  });
+});
+
+
   // ===== Cmd+K palette =====
   var overlay = document.getElementById('cmdk-overlay');
   var input = document.getElementById('cmdk-input');
@@ -2654,6 +3160,28 @@ init();
 
 })();
 </script>
+
+
+<!-- S6.22+ : Drawer detail roadmap (versions + sprints) -->
+<div class="rm-drawer-overlay" id="rm-drawer-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="rm-drawer-title">
+  <div class="rm-drawer">
+    <header class="rm-drawer-head">
+      <div>
+        <span class="rm-drawer-eyebrow" id="rm-drawer-eyebrow">VERSION</span>
+        <h2 id="rm-drawer-title">—</h2>
+        <p class="rm-drawer-meta" id="rm-drawer-meta">—</p>
+      </div>
+      <button class="rm-drawer-close" id="rm-drawer-close" aria-label="Fermer (Esc)">×</button>
+    </header>
+    <div class="rm-drawer-body" id="rm-drawer-body">
+      <p>Chargement...</p>
+    </div>
+    <footer class="rm-drawer-foot">
+      <a href="#" id="rm-drawer-link" target="_blank" style="font-size:12px;font-weight:600;color:var(--primary, #463a54)">📖 Voir aussi 11-roadmap-map.html</a>
+      <button class="rm-drawer-close-btn" id="rm-drawer-close-btn">Fermer</button>
+    </footer>
+  </div>
+</div>
 
 </body>
 </html>
