@@ -2,7 +2,7 @@
 
 > **Lis ce fichier en premier** quand tu démarres une nouvelle session sur ce projet. Il consolide le contexte, les conventions, les pièges connus et les workflows types pour t'éviter de tout redécouvrir.
 
-**Version** : 29/04/2026 PM tardif v10 (**S6.17 Phase 2 LIVRE** : Cockpit refondu voix exec moderne - 7 sections + chronotype + anneau journee + Trajectoire mini + KPIs parametrables + North Star + Top 3 + Project glance - 10/10 tests verts. ADR ajoute. Total 33 ADRs.)
+**Version** : 29/04/2026 PM tardif v11 (**S6.18 LIVRE** : page Trajectoire MVP + drawer Capital position 1 + activation CTA Cockpit + voix exec drawer (Triage/Bilan/Projects/Weekly Sync) - 19/19 pages - 10/10 tests verts. ADR ajoute. Total 34 ADRs.)
 **À jour à chaque clôture de sprint** ou décision structurante (cf. § 8 Maintenance).
 
 ---

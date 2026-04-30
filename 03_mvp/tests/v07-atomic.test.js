@@ -7,7 +7,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const V07_ROOT = path.resolve(__dirname, '..', 'public', 'v07');
-const PAGES = ['decisions', 'projets', 'equipe', 'revues', 'agenda', 'taches', 'evening', 'settings', 'projet', 'index', 'arbitrage', 'onboarding', 'hub', 'assistant', 'connaissance', 'coaching', 'components', 'aide'];
+const PAGES = ['decisions', 'projets', 'equipe', 'revues', 'agenda', 'taches', 'evening', 'settings', 'projet', 'index', 'arbitrage', 'onboarding', 'hub', 'assistant', 'connaissance', 'coaching', 'components', 'aide', 'trajectoire'];
 
 test('v07: structure de base presente', () => {
   ['shared/tokens.css','shared/tweaks.css','shared/store.js','shared/component-loader.js'].forEach(f =>
@@ -23,7 +23,7 @@ test('v07: 12 composants atomiques presents avec triplet html+js+css', () => {
   });
 });
 
-test('v07: 18 pages migrees + 18 stores presents', () => {
+test('v07: 19 pages migrees + 18 stores presents', () => {
   PAGES.forEach(id => {
     assert.ok(fs.existsSync(path.join(V07_ROOT, 'pages', id + '.html')), 'page ' + id);
     assert.ok(fs.existsSync(path.join(V07_ROOT, 'stores', id + '-store.js')), 'store ' + id);

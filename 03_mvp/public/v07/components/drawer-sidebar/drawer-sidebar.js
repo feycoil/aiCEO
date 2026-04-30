@@ -1,5 +1,5 @@
 // drawer-sidebar.js — Editorial Executive aligne v06 (sprite SVG)
-// S6.11-EE-fix : routage v07 (13 pages migrees) + flag pending pour pages v06 non migrees
+// S6.18 : ajout Trajectoire en tete de Capital (vue retrospective)
 function ico(id) {
   return `<svg class="ico" aria-hidden="true"><use href="#i-${id}"/></svg>`;
 }
@@ -11,14 +11,14 @@ const SECTIONS = [
     title: 'Pilotage',
     items: [
       { id: 'cockpit',     label: 'Cockpit',      href: 'index.html',         iconId: 'home' },
-      { id: 'arbitrage',   label: 'Arbitrage',    href: 'arbitrage.html',     iconId: 'arbitrage', badgeCount: 0 },
-      { id: 'evening',     label: 'Soiree',       href: 'evening.html',       iconId: 'evening' }
+      { id: 'arbitrage',   label: 'Triage',       href: 'arbitrage.html',     iconId: 'arbitrage', badgeCount: 0 },
+      { id: 'evening',     label: 'Bilan',        href: 'evening.html',       iconId: 'evening' }
     ]
   },
   {
     title: 'Travail',
     items: [
-      { id: 'projets',     label: 'Projets',      href: 'projets.html',       iconId: 'projects', badgeCount: 0 },
+      { id: 'projets',     label: 'Projects',     href: 'projets.html',       iconId: 'projects', badgeCount: 0 },
       { id: 'taches',      label: 'Actions',      href: 'taches.html',        iconId: 'actions', badgeCount: 0 },
       { id: 'agenda',      label: 'Agenda',       href: 'agenda.html',        iconId: 'calendar' },
       { id: 'assistant',   label: 'Assistant',    href: 'assistant.html',     iconId: 'sparkle', badge: 'NEW' },
@@ -28,9 +28,10 @@ const SECTIONS = [
   {
     title: 'Capital',
     items: [
+      { id: 'trajectoire', label: 'Trajectoire',  href: 'trajectoire.html',   iconId: 'arrow-up-right', badge: 'NEW' },
       { id: 'connaissance',label: 'Connaissance', href: 'connaissance.html',  iconId: 'knowledge', badge: 'NEW' },
       { id: 'coaching',    label: 'Coaching',     href: 'coaching.html',      iconId: 'coaching', badge: 'NEW' },
-      { id: 'revues',      label: 'Revues',       href: 'revues.html',        iconId: 'undo' },
+      { id: 'revues',      label: 'Weekly Sync',  href: 'revues.html',        iconId: 'undo' },
       { id: 'decisions',   label: 'Decisions',    href: 'decisions.html',     iconId: 'target' }
     ]
   }

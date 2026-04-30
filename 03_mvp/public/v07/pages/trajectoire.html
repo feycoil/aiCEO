@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>aiCEO - Ma Trajectoire (v07)</title>
+  <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css">
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/tweaks.css">
+  <link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css">
+  <link rel="stylesheet" href="../components/header-topbar/header-topbar.css">
+  <link rel="stylesheet" href="../components/seg-filter/seg-filter.css">
+  <link rel="stylesheet" href="../components/empty-state/empty-state.css">
+  <link rel="stylesheet" href="../components/modal-detail/modal-detail.css">
+  <style>
+    .tj-hero {
+      background: var(--paper);
+      border: 1px solid var(--ivory-200);
+      border-radius: var(--radius-md);
+      padding: var(--space-5) var(--space-6);
+      margin-bottom: var(--space-5);
+    }
+    .tj-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary-500, #463a54);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .tj-title {
+      font-family: var(--font-signature, 'Aubrielle', cursive);
+      font-size: 44px;
+      line-height: 1.1;
+      color: var(--ink-900);
+      margin: 6px 0 var(--space-2);
+      letter-spacing: -0.01em;
+    }
+    .tj-lead {
+      font-size: 15px;
+      color: var(--ink-700);
+      line-height: 1.5;
+      max-width: 620px;
+    }
+
+    .tj-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--space-3);
+      margin-top: var(--space-5);
+    }
+    .tj-stat {
+      background: var(--ivory-50);
+      border: 1px solid var(--ivory-200);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+    }
+    .tj-stat-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ink-500);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .tj-stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--ink-900);
+      line-height: 1.1;
+      margin: 4px 0;
+    }
+    .tj-stat-label {
+      font-size: 12px;
+      color: var(--ink-500);
+    }
+
+    /* Toolbar : filtres temporels */
+    .tj-toolbar {
+      display: flex;
+      gap: var(--space-3);
+      align-items: center;
+      margin-bottom: var(--space-4);
+      flex-wrap: wrap;
+    }
+    .tj-toolbar-spacer { flex: 1; }
+    .tj-toolbar-meta {
+      font-size: 12px;
+      color: var(--ink-500);
+      font-family: var(--font-mono);
+    }
+    .tj-period {
+      display: inline-flex;
+      background: var(--paper);
+      border: 1px solid var(--ivory-200);
+      border-radius: var(--radius-md);
+      padding: 3px;
+      gap: 2px;
+    }
+    .tj-period-btn {
+      padding: 6px 12px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-500);
+      border-radius: 5px;
+      transition: all 150ms ease;
+    }
+    .tj-period-btn:hover { color: var(--ink-900); }
+    .tj-period-btn.is-active {
+      background: var(--ink-900);
+      color: var(--paper);
+    }
+
+    /* Legend kinds */
+    .tj-legend {
+      display: flex;
+      gap: var(--space-3);
+      align-items: center;
+      font-size: 12px;
+      color: var(--ink-500);
+    }
+    .tj-leg-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .tj-leg-mark {
+      width: 12px; height: 12px;
+      border-radius: 3px;
+    }
+
+    /* Timeline grille principale */
+    .tj-timeline {
+      background: var(--paper);
+      border: 1px solid var(--ivory-200);
+      border-radius: var(--radius-md);
+      padding: var(--space-4) var(--space-5);
+      overflow-x: auto;
+    }
+
+    .tj-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: var(--space-3);
+      align-items: center;
+      padding: var(--space-2) 0;
+      border-bottom: 1px solid var(--ivory-100);
+      min-height: 48px;
+    }
+    .tj-row:last-child { border-bottom: 0; }
+
+    .tj-stream-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink-700);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .tj-stream-meta {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--ink-300);
+      margin-top: 2px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .tj-track {
+      position: relative;
+      height: 36px;
+      background: var(--ivory-50);
+      border-radius: var(--radius-md);
+      overflow: visible;
+    }
+
+    /* Markers absolus positionnés sur le track */
+    .tj-marker {
+      position: absolute;
+      top: 6px;
+      width: 24px; height: 24px;
+      border-radius: 5px;
+      display: grid; place-items: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 150ms ease, box-shadow 150ms ease;
+      z-index: 2;
+    }
+    .tj-marker:hover {
+      transform: translateY(-2px) scale(1.1);
+      box-shadow: var(--elev-1);
+      z-index: 5;
+    }
+    .tj-marker.kind-decision { background: var(--primary-500, #463a54); color: var(--paper); }
+    .tj-marker.kind-bigrock  { background: #c08a2c; color: var(--paper); }
+    .tj-marker.kind-project  { background: var(--success, #115e3c); color: var(--paper); }
+
+    /* Graduations */
+    .tj-graduation {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: var(--ivory-200);
+      z-index: 1;
+    }
+    .tj-graduation-label {
+      position: absolute;
+      top: -22px;
+      transform: translateX(-50%);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--ink-300);
+      white-space: nowrap;
+    }
+
+    .tj-loading, .tj-error {
+      padding: var(--space-6);
+      text-align: center;
+      color: var(--ink-500);
+      font-style: italic;
+    }
+    .tj-error { color: var(--danger); }
+  </style>
+</head>
+<body data-route="trajectoire">
+  <a href="#main" class="skip-link">Aller au contenu principal</a>
+  <button class="burger-btn" type="button" aria-label="Ouvrir le menu" id="burger-toggle">
+    <svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg>
+  </button>
+  <div class="ds-mobile-backdrop" id="ds-backdrop" hidden></div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('burger-toggle');
+      const backdrop = document.getElementById('ds-backdrop');
+      const closeDrawer = () => { const ds = document.querySelector('.ds'); if (ds) ds.classList.remove('is-mobile-open'); if (backdrop) backdrop.hidden = true; document.body.classList.remove('has-mobile-drawer'); };
+      const openDrawer = () => { const ds = document.querySelector('.ds'); if (!ds) return; ds.classList.add('is-mobile-open'); if (backdrop) backdrop.hidden = false; document.body.classList.add('has-mobile-drawer'); };
+      if (btn) btn.addEventListener('click', () => { const ds = document.querySelector('.ds'); if (ds && ds.classList.contains('is-mobile-open')) closeDrawer(); else openDrawer(); });
+      if (backdrop) backdrop.addEventListener('click', closeDrawer);
+      document.addEventListener('click', (e) => { if (e.target.closest('.ds-link')) closeDrawer(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDrawer(); });
+    });
+  </script>
+  <div id="sprite-host" hidden></div>
+  <script>fetch('../../v06/_shared/icons.svg.html').then(r=>r.text()).then(h=>{const x=document.getElementById('sprite-host');if(x)x.innerHTML=h;}).catch(()=>{});</script>
+
+  <div class="app">
+    <aside data-component="drawer-sidebar" data-props='{"active":"trajectoire","tenant":{"label":"Mon Hub"},"user":{"name":"Major Fey","role":"CEO"}}'></aside>
+    <main class="app-main" id="main">
+
+      <div data-component="header-topbar" data-props='{"breadcrumb":[{"label":"Cockpit","href":"index.html"},{"label":"Ma Trajectoire"}],"title":"Ma Trajectoire","subtitle":"Decisions tranchees, Big Rocks atteints, Projects clos — au fil du temps"}'></div>
+
+      <!-- Hero -->
+      <section class="tj-hero">
+        <span class="tj-eyebrow" data-region="tj-eyebrow">TRAJECTOIRE — 30 derniers jours</span>
+        <h1 class="tj-title">Votre chemin accompli.</h1>
+        <p class="tj-lead">Chaque marker raconte un moment ou vous avez decide, livre, ou clos. La carte se construit au fil de votre activite.</p>
+
+        <!-- Summary stats -->
+        <div class="tj-summary" data-region="tj-summary">
+          <div class="tj-stat">
+            <div class="tj-stat-eyebrow">DECISIONS TRANCHEES</div>
+            <div class="tj-stat-value" data-stat="decisions">—</div>
+            <div class="tj-stat-label">sur la periode</div>
+          </div>
+          <div class="tj-stat">
+            <div class="tj-stat-eyebrow">BIG ROCKS ATTEINTS</div>
+            <div class="tj-stat-value" data-stat="bigrocks">—</div>
+            <div class="tj-stat-label">objectifs hebdo</div>
+          </div>
+          <div class="tj-stat">
+            <div class="tj-stat-eyebrow">PROJECTS CLOS</div>
+            <div class="tj-stat-value" data-stat="projects">—</div>
+            <div class="tj-stat-label">finalises</div>
+          </div>
+          <div class="tj-stat">
+            <div class="tj-stat-eyebrow">STREAMS ACTIFS</div>
+            <div class="tj-stat-value" data-stat="streams">—</div>
+            <div class="tj-stat-label">verticaux concernes</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Toolbar : filtres temporels + legend -->
+      <div class="tj-toolbar">
+        <div class="tj-period" data-region="tj-period" role="tablist" aria-label="Filtre periode">
+          <button class="tj-period-btn" data-period="7" role="tab">7 j</button>
+          <button class="tj-period-btn is-active" data-period="30" role="tab">30 j</button>
+          <button class="tj-period-btn" data-period="90" role="tab">90 j</button>
+          <button class="tj-period-btn" data-period="180" role="tab">6 mois</button>
+          <button class="tj-period-btn" data-period="365" role="tab">1 an</button>
+          <button class="tj-period-btn" data-period="all" role="tab">tout</button>
+        </div>
+
+        <div class="tj-toolbar-spacer"></div>
+
+        <div class="tj-legend">
+          <span class="tj-leg-item"><span class="tj-leg-mark" style="background:#463a54"></span> Decision</span>
+          <span class="tj-leg-item"><span class="tj-leg-mark" style="background:#c08a2c"></span> Big Rock</span>
+          <span class="tj-leg-item"><span class="tj-leg-mark" style="background:#115e3c"></span> Project clos</span>
+        </div>
+      </div>
+
+      <!-- Timeline principale -->
+      <div class="tj-timeline" data-region="tj-timeline">
+        <div class="tj-loading">Chargement de votre Trajectoire...</div>
+      </div>
+
+      <!-- Empty state -->
+      <div data-region="tj-empty" hidden>
+        <div data-component="empty-state" data-props='{"icon":"target","title":"Votre Trajectoire est vierge","description":"Tranchez votre premiere Decision, atteignez un Big Rock, ou cloturez un Project pour qu un marker apparaisse ici. Chaque pas compte.","cta":{"label":"Lancer un Triage matinal","href":"arbitrage.html"}}'></div>
+      </div>
+
+      <footer class="app-footer">
+        <p class="strategic-q">Naviguer clair. Trancher juste. Dormir serein.</p>
+        <div class="footer-meta">
+          <span>aiCEO v0.7</span>
+          <span>&middot;</span>
+          <span>Ma Trajectoire</span>
+          <span>&middot;</span>
+          <span>v07 · Voix exec moderne</span>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Bottom-tab nav mobile -->
+  <nav class="bottom-tab-nav" aria-label="Navigation rapide mobile">
+    <a href="index.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span>Cockpit</span></a>
+    <a href="arbitrage.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-arbitrage"/></svg><span>Triage</span></a>
+    <button class="bottom-tab fab-trigger" type="button" aria-label="Capter">
+      <span class="fab-circle"><svg class="ico" aria-hidden="true"><use href="#i-mic"/></svg></span>
+      <span>Capter</span>
+    </button>
+    <a href="decisions.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg><span>Decisions</span></a>
+    <a href="evening.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-evening"/></svg><span>Bilan</span></a>
+  </nav>
+
+  <!-- timeline region requise par les tests v07-atomic -->
+  <div data-region="timeline" hidden></div>
+
+  <div data-component="modal-detail"></div>
+
+  <script type="module" src="../shared/store.js"></script>
+  <script type="module" src="../shared/component-loader.js"></script>
+  <script type="module" src="../stores/trajectoire-store.js"></script>
+</body>
+</html>

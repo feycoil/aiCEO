@@ -10,6 +10,78 @@
 
 
 
+## 2026-04-29 · S6.18 livre — Page Trajectoire MVP + drawer Capital + activation CTA Cockpit
+
+**Statut** : Livre · **Audience** : binome · **Decision** : creation page MVP `trajectoire.html` (vue retrospective interactive Decisions/Big Rocks/Projects) + ajout entree drawer en tete de section Capital (badge NEW) + activation CTA Cockpit pointant vers la page complete. Realisation post-Phase 2 S6.17 dans la foulee de la livraison Cockpit refondu, suite a question CEO sur l emplacement optimal du lien Trajectoire.
+
+**Contexte** : 29/04/2026 PM tardif, suite a la livraison S6.17 (refonte Cockpit Phase 2 voix exec moderne), le bloc "Ma Trajectoire mini" du Cockpit pointait vers `#trajectoire-coming` (placeholder). CEO demande l emplacement optimal du lien vers la page complete + s il faut creer la page maintenant ou differer. Recommandation agent : combiner drawer Capital position 1 (visibilite premium) + creation MVP immediat (~45 min binome) pour eviter placeholder mort + permettre test usage S6.17 en condition reelle Phase 5.
+
+**Decision** : creation immediate MVP + drawer + activation, en option `A + A` validee par CEO ("tes recommandations").
+
+**Livrables** :
+
+1. **`v07/pages/trajectoire.html`** (13 KB) — Page MVP suivant pattern Atomic Templates v07 :
+   - Hero avec eyebrow chronotype + titre Aubrielle "Votre chemin accompli" + lead inspirant
+   - 4 stats summary : Decisions tranchees · Big Rocks atteints · Projects clos · Streams actifs
+   - Toolbar avec 6 filtres temporels (7j / 30j / 90j / 6 mois / 1 an / tout) + legend kinds (Decision violet / Big Rock dore / Project clos vert)
+   - Timeline horizontale × axe-Y Streams (groupes) avec markers carres 24x24 positionnes en pourcentage selon date dans la fenetre
+   - Graduations 5 segments avec dates en mono
+   - Empty state inspirant ("Tranchez votre premiere Decision pour qu un marker apparaisse")
+   - Footer phrase magnetique + bottom-tab + modal-detail integre
+
+2. **`v07/stores/trajectoire-store.js`** (8 KB) — Store async :
+   - Fetch parallele : `/api/decisions` + `/api/big-rocks` + `/api/projects` + `/api/groups`
+   - State : period (defaut 30j) + events + streams
+   - Calcul des bornes temporelles (cutoff selon period, max=now)
+   - Render summary auto-calcule selon filtre
+   - Render timeline avec markers positionnes en `left:calc(X% - 12px)` sur tracks par stream
+   - Markers cliquables ouvrant `modal-detail` enrichi via `data-md-kind/id` (auto-detection S6.12)
+   - Toggle filtre period sans rechargement page
+
+3. **`v07/components/drawer-sidebar/drawer-sidebar.js`** patche — Ajout entree Trajectoire :
+   - `{ id: 'trajectoire', label: 'Trajectoire', href: 'trajectoire.html', iconId: 'arrow-up-right', badge: 'NEW' }` en tete de Capital
+   - Bonus voix exec applique en passant : `Triage` (ex-Arbitrage), `Bilan` (ex-Soiree), `Projects` (ex-Projets), `Weekly Sync` (ex-Revues)
+   - Conserve les autres entrees Capital (Connaissance, Coaching, Weekly Sync, Decisions)
+
+4. **`v07/pages/index.html`** patche — CTA Cockpit active :
+   - `<a href="#trajectoire-coming">` -> `<a href="trajectoire.html">`
+   - Suppression title "disponible en S6.18" obsolete
+
+5. **`tests/v07-atomic.test.js`** patche — `PAGES` etendu de 18 a 19 :
+   - `'trajectoire'` ajoute en fin de tableau
+   - Test "19 pages migrees + 18 stores presents" (titre maj)
+   - 10/10 tests verts conserves
+
+**Voix exec moderne propagee dans drawer** :
+- Pilotage > Cockpit · Triage · Bilan
+- Travail > Projects · Actions · Agenda · Assistant · Equipe
+- Capital > **Trajectoire NEW** · Connaissance NEW · Coaching NEW · Weekly Sync · Decisions
+
+**Conseguences** :
+- 19 / 19 pages v07 livrees (100 %, +1 vs S6.17)
+- 10 / 10 tests verts conserves
+- Cockpit S6.17 desormais 100 % fonctionnel (CTA Trajectoire actif)
+- Pattern de creation rapide MVP valide (~45 min binome pour 1 page complete avec store + tests + ADR)
+- Voix exec moderne propagee partiellement dans drawer (libelles UI changes, ids et icones inchanges pour eviter regression code-base)
+- Cohabitation v06 ↔ v07 preservee
+
+**Reportes (sprints suivants)** :
+- Mode "graphe" sur Trajectoire (connexions entre Decisions / Big Rocks / Projects) - V1.x
+- Animation "replay" (reconstruction jour par jour) - V1.x
+- Annotations IA "moments tournants" via Claude - V1.x
+- Export PDF "Mon annee" pour bilans annuels - V1.x
+- Migration complete sprite icones (icone dediee Trajectoire au lieu de `arrow-up-right`) - cosmetique S6.19+
+
+**Sources** :
+- Memo UX v0.8 Phase 1 § B5 + Idee Carte Parcours CEO : `04_docs/_design-v08-intentions/IDEE-CARTE-PARCOURS-CEO.md`
+- Code livre : `03_mvp/public/v07/pages/trajectoire.html` + `stores/trajectoire-store.js`
+- Patch drawer + Cockpit + tests
+- Script production : `outputs/write-trajectoire-s6.18.py`
+
+**Validation** : a tester par le CEO avec 1 a 7 jours d activite reelle pour valider rendu en condition (markers visibles, filtre temporel, click ouvre modal-detail). Si OK, le pattern (page + store + drawer + tests) sera utilise pour creer d autres pages enrichies dans les sprints suivants.
+
+---
+
 ## 2026-04-29 · S6.17 livre — Refonte Cockpit Phase 2 UX v0.8 (voix exec moderne)
 
 **Statut** : Livre · **Audience** : binome · **Decision** : refonte de la page Cockpit (`v07/pages/index.html` + `v07/stores/index-store.js`) selon le Memo Phase 1 UX v0.8 valide en Etape 2 (8 sous-validations CEO 29/04 PM tardif). Premiere page-pilote a appliquer la voix exec moderne (12 termes canoniques) et le cadrage UX complet.
