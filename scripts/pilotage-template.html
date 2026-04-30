@@ -1342,7 +1342,7 @@ code, pre, .mono { font-family: var(--font-mono); }
     <section class="section" id="section-roadmap">
       <div class="card" style="border-left:4px solid var(--violet-800);background:linear-gradient(90deg, var(--violet-50) 0%, var(--surface-2) 30%)">
         <h3 class="card-title">📋 ROADMAP V2 — émise 28/04/2026 post-S6.8</h3>
-        <p class="card-subtitle">4 phases · 22 sprints · 22 j-binôme · 12 semaines · cible V1.0 produit dev-grade</p>
+        <p class="card-subtitle">7 phases · 33 sprints · cascade S6.22→S6.26 livrée · Phase 1D repondérée · cible V1.0 produit dev-grade</p>
         <div style="display:flex;gap:8px;margin-top:10px">
           <a href="03_roadmap/ROADMAP-V2-2026-04-28.md" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:6px;background:var(--text);color:#fff;text-decoration:none;font-size:12px;font-weight:600">📖 Lire ROADMAP V2 complète →</a>
           <a href="audits/PLAN-REALIGNEMENT-PROMESSE-2026-04-28.md" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:6px;background:var(--surface-2);border:1px solid var(--border);color:var(--text);text-decoration:none;font-size:12px;font-weight:600">📊 Plan de réalignement →</a>
@@ -1669,7 +1669,7 @@ code, pre, .mono { font-family: var(--font-mono); }
     </section>
 
     <footer class="footer">
-      <span>aiCEO Pilotage · v1.0 · auto-généré</span>
+      <span>aiCEO Pilotage · v1.9 · 30/04/2026 nuit · cascade S6.22→S6.26 + Phase 1D repondérée (combler angles morts plan réalignement)</span>
       <span>Régénérer : <code>node scripts/generate-pilotage.js</code></span>
     </footer>
   </main>
@@ -1925,7 +1925,8 @@ function renderRoadmap() {
   // Whitelist explicite des sprints livres connus (fallback en cas de regex qui rate)
   ['s6.9-bis-light','s6.10-bis-light','spike-validation','s6.11-bis-light',
    's6.10-ee','s6.10-ee-fix','s6.11-ee','s6.11-ee-fix','s6.11-ee-fix2','s6.11-ee-2',
-   's6.12','s6.13','s6.15','s6.17','s6.18','s6.19','s6.20','s6.21'].forEach(s => livredIds.add(s));
+   's6.12','s6.13','s6.15','s6.17','s6.18','s6.19','s6.20','s6.21',
+   's6.22','s6.23','s6.24','s6.25','s6.26'].forEach(s => livredIds.add(s));
 
   function sprintStatus(id) {
     var lid = id.toLowerCase();
@@ -1960,14 +1961,26 @@ function renderRoadmap() {
       { id: 'S6.21', desc: 'LLM frontend complet : decision-recommend + auto-draft-review + coaching' }
     ], cible: '19/19 pages voix exec figee + 4 routes LLM cablees' },
 
-    { num: 3, title: 'PHASE 1C — Tests E2E + recette CEO + BETA Lamiae', status: 'pending', subtitle: 'Validation usage reel + tests Playwright · ~3-4 j-binome', sprints: [
-      { id: 'S6.14', desc: 'Tests E2E Playwright LLM + smoke v07 + recette CEO complete' },
-      { id: 'S6.16', desc: '🔍 BETA LAMIAE validation utilisateur · 1 j + 3 j cal.', doc: '_sprints/S6.16-beta-lamiae/DOSSIER-SPRINT-S6.16-beta-lamiae.md' },
-      { id: 'S6.22', desc: 'Polish post-test sur soi (ajustements UX feedback CEO)' },
-      { id: 'S6.23', desc: 'Mode "graphe" Trajectoire (connexions Decisions/Big Rocks/Projects)' }
-    ], cible: 'Note 6.3 -> 8.0 + GO V1 + livraison ExCom' },
+    { num: 3, title: 'PHASE 1C — Refonte UX Triage + apprentissage actif (cascade Lots 17-32)', status: 'done', subtitle: 'Refonte profonde Triage + LLM batch + apprentissage feedback · livre 30/04 nuit', sprints: [
+      { id: 'S6.22', desc: 'Lots 17-29 cascade Triage : LLM batch + voix exec + dispatch IA + apprentissage actif (12 lots)' },
+      { id: 'S6.23', desc: 'Refonte Weekly Sync v07 + killswitch SW + restauration server.js' },
+      { id: 'S6.24', desc: 'Quick wins Triage : badge Claude + Repondre + tour pedagogique + mini-card stats' },
+      { id: 'S6.25', desc: 'Lacunes structurelles : auto-create projet + verdict Big Rock + endpoint /:id/emails' },
+      { id: 'S6.26', desc: 'Polish UX : bordure violette LLM + Focus filtres elargis (active+reportee+tranchees)' }
+    ], cible: 'Triage 9.5/10 + 24 routes arbitrage + 7 routes projects + 10/10 v07-atomic verts' },
 
-    { num: 4, title: 'PHASE 2 — INTELLIGENCE (V1.x)', status: 'pending', subtitle: 'L IA devient un binome contextualise · ~6 j-binome · T3-T4 2026', sprints: [
+    { num: 4, title: 'PHASE 1D — Combler angles morts plan realignement (repondere 30/04 nuit)', status: 'pending', subtitle: 'Pilier Executif (keyboard-first) + IA contextualisee + multi-tenant V1 · ~6 j-binome', sprints: [
+      { id: 'S6.12', desc: 'Keyboard-first arbitrage : raccourcis A/D/I sur cards + nav haut/bas + plein ecran inbox-zero (pilier Executif)' },
+      { id: 'S7.1', desc: 'Memoire inter-fils LLM : daily summary integre au system prompt assistant (pilier IA contextualisee)' },
+      { id: 'S6.14', desc: 'Recette CEO 25 min sur sa propre boite mail + tests E2E Playwright LLM' },
+      { id: 'A6', desc: 'Audit data model multi-tenant : ajouter tenant_id TEXT NOT NULL DEFAULT default partout (BLOQUANT V1)' },
+      { id: 'S6.27', desc: 'Triage Polish V1 : toggle density compact/normal/detaille + hint feedback skipped + audit hex tokens' },
+      { id: 'S6.16', desc: 'BETA LAMIAE validation utilisateur · 1 j + 3 j cal.', doc: '_sprints/S6.16-beta-lamiae/DOSSIER-SPRINT-S6.16-beta-lamiae.md' },
+      { id: 'S6.28', desc: 'Tests E2E LLM frontend live (mock Claude pour CI + smoke /accept kind=project,big-rock)' },
+      { id: 'S6.29', desc: 'Modals 5 kinds en navigation reelle (audit S6.23 residuel)' }
+    ], cible: 'Pilier Executif 4/10 -> 8/10 + IA contextualisee 6/10 -> 8/10 + GO V1' },
+
+    { num: 5, title: 'PHASE 2 — INTELLIGENCE (V1.x)', status: 'pending', subtitle: 'L IA devient un binome contextualise · ~6 j-binome · T3-T4 2026', sprints: [
       { id: 'S7.1', desc: 'Memoire inter-fils LLM' },
       { id: 'S7.2', desc: 'Batch LLM operations' },
       { id: 'S7.3', desc: 'Capture audio + Whisper' },
@@ -1976,7 +1989,7 @@ function renderRoadmap() {
       { id: 'S7.6', desc: 'Mobile responsive complet' }
     ], cible: 'Note 8.0 -> 9.0' },
 
-    { num: 5, title: 'PHASE 3 — RITUALISATION (V1.x suite)', status: 'pending', subtitle: 'Compagnon quotidien indispensable · ~5.5 j-binome', sprints: [
+    { num: 6, title: 'PHASE 3 — RITUALISATION (V1.x suite)', status: 'pending', subtitle: 'Compagnon quotidien indispensable · ~5.5 j-binome', sprints: [
       { id: 'S7.7', desc: 'Daily digest matin' },
       { id: 'S7.8', desc: 'Bilan soir augmente' },
       { id: 'S7.9', desc: 'Onboarding CEO pair' },
