@@ -2,7 +2,7 @@
 
 > **Lis ce fichier en premier** quand tu démarres une nouvelle session sur ce projet. Il consolide le contexte, les conventions, les pièges connus et les workflows types pour t'éviter de tout redécouvrir.
 
-**Version** : 29/04/2026 PM tres tardif v13 (**QUADRUPLE SPRINT LIVRE** S6.15+S6.19+S6.13+S6.20+S6.21 - bascule v07=defaut + voix exec moderne propagee 18/19 pages + LLM frontend complet 4 routes cablees - 19/19 pages - 10/10 tests verts. ADR ajoute. Total 36 ADRs.)
+**Version** : 30/04/2026 (v14 SPRINT AUTONOME) - 6 livrables cascade A-F : docs business (recette CEO + pitch ExCom + spec V1 + release-notes v0.7/v0.8/v0.9) · tests E2E Playwright squelette · polish layout pilotage (sparklines + treemap) · mode graphe Trajectoire (S6.23) · onglet Versions detail plein-page · 19/19 pages voix exec moderne · 10/10 tests verts · 39 ADRs
 **À jour à chaque clôture de sprint** ou décision structurante (cf. § 8 Maintenance).
 
 ---

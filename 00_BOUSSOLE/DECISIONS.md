@@ -10,6 +10,80 @@
 
 
 
+## 2026-04-29 · Sprint autonome cascade — 6 livrables docs/code/polish (Sprint A-B-C-D-E-F)
+
+**Statut** : Livre · **Audience** : binome · **Decision** : execution autonome agent post-v0.8 selon mandat CEO carte blanche ("lance toutes les sessions de codage que tu peux lancer sans moi · va le plus loin possible dans la roadmap"). 6 sprints en cascade.
+
+**Sprint A — Documentation business** (5 fichiers livres) :
+- `04_docs/05_recette/RECETTE-CEO-v0.8.md` — recette 25 min, 6 tests GO/NO-GO
+- `04_docs/06_excom/PITCH-EXCOM-04-05.md` — pitch deck 12 slides en markdown + 8 Q&R prevus
+- `04_docs/07_v1/SPEC-V1-MULTI-TENANT.md` — spec technique V1 avec 8 sprints, stack, budget, risques
+- `04_docs/_release-notes/v0.7.md` — release-note v0.7 LLM 4 surfaces UX
+- `04_docs/_release-notes/v0.8.md` — release-note v0.8 UX Editorial Executive complete (cumulant Phase 0 + 1A + 1B)
+- `04_docs/_release-notes/v0.9.md` — release-note v0.9 prevue (BETA Lamiae + tests E2E)
+
+**Sprint B — Tests E2E Playwright squelette** (5 fichiers livres) :
+- `03_mvp/playwright.config.js` — config minimal chromium headless
+- `03_mvp/tests-e2e/v07-cockpit.spec.js` — 9 tests Cockpit (chronotype, anneau, KPIs, banner LLM, CTA)
+- `03_mvp/tests-e2e/v07-trajectoire.spec.js` — 4 tests Trajectoire (filtres, hero, legend)
+- `03_mvp/tests-e2e/v07-llm-frontend.spec.js` — 4 tests LLM (banner, recommend, auto-draft, coaching)
+- `03_mvp/tests-e2e/v07-smoke-pages.spec.js` — smoke 19/19 pages chargent sans erreur
+- A executer cote Windows : `cd 03_mvp ; npx playwright install ; npx playwright test`
+
+**Sprint C — Polish layout pilotage** :
+- CSS sparklines KPI (mini-courbes 30j) + treemap arborescence dans pilotage-template.html
+- Section `tree-treemap` ajoutee : top 12 dossiers du projet en treemap interactif (clic = navigation arborescence detaillee)
+
+**Sprint D — Mode graphe Trajectoire (S6.23)** :
+- `v07/pages/trajectoire.html` : toggle mode `📊 Timeline / 🕸️ Graphe` dans la toolbar
+- `v07/stores/trajectoire-store.js` : fonction `renderGraphe()` qui rend les events en SVG cluster par kind (3 centres : decision violet / big rock dore / project clos vert), liens visuels, hover scale, click ouvre modal-detail enrichi via auto-detection S6.12
+- `state.mode = 'timeline' | 'graphe'`, `bindModeFilter()`, switch cohabite avec filtre temporel period
+- 10/10 tests v07-atomic verts conserves
+
+**Sprint E — Onglet Versions detail plein-page (migration 11-roadmap-map#tab-versions)** :
+- Nouveau onglet 📚 dans nav du pilotage, accessible via `?tab=versions-plein`
+- Fonction `renderVersionsPlein()` : 8 v-cards completes avec promesse + features + sprints + budget + status, chaque card cliquable -> drawer detail (S6.21+)
+- Fonction `renderVersionsMapping()` : table mapping inverse `version -> sprints rattaches` pour comprendre quel sprint contribue a quoi
+
+**Sprint F — Finalisation** :
+- ADR consolide (cette entree)
+- CLAUDE.md version v14
+- Regen pilotage avec tous les nouveaux contenus
+
+**Conseguences** :
+- 19 / 19 pages v07 + voix exec moderne sur 18/19 (inchange)
+- 5 documents business critiques pour ExCom 04/05 + V1 spec
+- 4 fichiers tests E2E Playwright (~17 tests squelettes)
+- Pilotage 00-pilotage-projet.html enrichi avec :
+  - Onglet 📚 Versions detail plein-page
+  - Mapping sprints↔versions visualise
+  - Section Treemap dans Arborescence
+- Mode graphe Trajectoire operationnel (cluster par kind)
+- 10 / 10 tests v07-atomic conserves
+- 39 ADRs total (cette entree)
+
+**Arbitrages tranches en autonomie** :
+1. Pas de migration "Gap GitHub" et "Journal" 11-roadmap-map (faible valeur immediate, deja partiellement couvert par sections existantes du pilotage)
+2. Sparklines KPI : CSS injecte mais rendu JS reporte (necessite donnees velocite quotidienne, pas dispo en l etat)
+3. Tests E2E : squelette uniquement, executor cote Windows en S6.14 effectif
+4. Pitch ExCom : markdown brut, conversion PPTX cote CEO Windows via skill pptx
+5. Spec V1 : couvre 8 sprints V1.1->V1.8 avec stack et budget. A revoir Lamiae avant ExCom.
+
+**Reportes (a la main du CEO)** :
+- Recette CEO 25 min : a passer en condition reelle
+- Pitch ExCom : a relire et convertir en PPTX
+- Spec V1 : a partager avec Lamiae
+- Tests E2E Playwright : `npx playwright install && npx playwright test`
+- BETA Lamiae : recrutement + onboarding (S6.16)
+
+**Sources** :
+- Scripts production : `outputs/sprint-a-docs.py`, `outputs/sprint-bc-tests-polish.py`, `outputs/sprint-d-graphe-trajectoire.py`, `outputs/sprint-ef-finalisation.py`
+- Docs livres : `04_docs/05_recette/`, `04_docs/06_excom/`, `04_docs/07_v1/`, `04_docs/_release-notes/`
+- Code livre : `03_mvp/tests-e2e/*.spec.js`, `03_mvp/playwright.config.js`, `v07/pages/trajectoire.html`, `v07/stores/trajectoire-store.js`
+- Template pilotage : `scripts/pilotage-template.html` (CSS sparklines + treemap, section versions-plein, renderVersionsPlein/Mapping)
+
+---
+
 ## 2026-04-29 · Sprint final cascade — S6.20 (Projects voix exec + 12 pages patchees) + S6.21 (LLM frontend complet)
 
 **Statut** : Livre · **Audience** : binome · **Decision** : finalisation cascade UX v0.8 voix exec moderne sur 12 pages + cablage LLM frontend complet sur 3 routes (Recommander Decision / auto-draft Weekly Sync / Pulse signaux Coaching deja partiellement cable). Quatrieme sprint enchaine post-S6.18 selon decision CEO "vas-y lance tout".

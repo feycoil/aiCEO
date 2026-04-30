@@ -6,6 +6,7 @@ const escHtml = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&
 
 const state = {
   period: 30, // jours par defaut
+  mode: 'timeline', // ou 'graphe' (S6.23)
   events: [],
   streams: []
 };
@@ -198,6 +199,84 @@ function renderTimeline() {
   host.innerHTML = html;
 }
 
+
+function renderGraphe() {
+  const svg = document.querySelector('[data-region="tj-graphe-svg"]');
+  if (!svg) return;
+  const cutoff = periodCutoff(state.period);
+  const filtered = state.events.filter(e => e.date >= cutoff);
+  if (!filtered.length) {
+    svg.innerHTML = '<text x="400" y="240" text-anchor="middle" font-size="14" fill="#6b614f">Aucun evenement sur la periode</text>';
+    return;
+  }
+  // Cluster par kind autour de 3 centres
+  const W = 800, H = 480;
+  const clusters = [
+    { kind: 'decision', cx: 200, cy: 240, color: '#463a54', label: 'Decisions' },
+    { kind: 'bigrock',  cx: 400, cy: 120, color: '#c08a2c', label: 'Big Rocks' },
+    { kind: 'project',  cx: 600, cy: 360, color: '#115e3c', label: 'Projects clos' }
+  ];
+  let html = '';
+  // Background labels clusters
+  clusters.forEach(c => {
+    html += '<text class="tj-graphe-cluster-label" x="' + c.cx + '" y="' + (c.cy - 80) + '" text-anchor="middle">' + c.label + '</text>';
+  });
+  // Liens : chaque event au centre de son cluster (visuel simple)
+  filtered.forEach(e => {
+    const cl = clusters.find(c => c.kind === e.kind);
+    if (!cl) return;
+    // Position aleatoire mais deterministe autour du cluster
+    const seed = (e.id || 0) * 17 + e.date.getTime() / 86400000;
+    const angle = (seed % 360) * Math.PI / 180;
+    const radius = 30 + ((seed * 7) % 50);
+    const x = cl.cx + Math.cos(angle) * radius;
+    const y = cl.cy + Math.sin(angle) * radius;
+    e._x = x; e._y = y;
+    html += '<line class="tj-graphe-link" x1="' + cl.cx + '" y1="' + cl.cy + '" x2="' + x + '" y2="' + y + '"/>';
+  });
+  // Centres clusters
+  clusters.forEach(c => {
+    html += '<circle cx="' + c.cx + '" cy="' + c.cy + '" r="36" fill="' + c.color + '" opacity="0.15"/>';
+  });
+  // Nodes
+  filtered.forEach(e => {
+    const cl = clusters.find(c => c.kind === e.kind);
+    if (!cl || !e._x) return;
+    const symbol = e.kind === 'decision' ? 'D' : (e.kind === 'bigrock' ? '*' : 'P');
+    const mdKind = e.kind === 'project' ? 'project' : (e.kind === 'bigrock' ? 'task' : 'decision');
+    const dateStr = e.date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+    html += '<g class="tj-graphe-node" data-md-kind="' + mdKind + '" data-md-id="' + e.id + '">';
+    html += '<circle cx="' + e._x + '" cy="' + e._y + '" r="11" fill="' + cl.color + '"/>';
+    html += '<text x="' + e._x + '" y="' + (e._y + 4) + '" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">' + symbol + '</text>';
+    html += '<title>' + escHtml(e.title) + ' - ' + dateStr + '</title>';
+    html += '</g>';
+  });
+  svg.innerHTML = html;
+}
+
+function switchMode(mode) {
+  state.mode = mode;
+  document.querySelectorAll('.tj-mode-btn').forEach(b => b.classList.toggle('is-active', b.dataset.mode === mode));
+  const tlEl = document.querySelector('[data-region="tj-timeline"]');
+  const grEl = document.querySelector('[data-region="tj-graphe"]');
+  if (mode === 'timeline') {
+    if (tlEl) tlEl.hidden = false;
+    if (grEl) grEl.hidden = true;
+    renderTimeline();
+  } else {
+    if (tlEl) tlEl.hidden = true;
+    if (grEl) grEl.hidden = false;
+    renderGraphe();
+  }
+}
+
+function bindModeFilter() {
+  const btns = document.querySelectorAll('.tj-mode-btn');
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => switchMode(btn.dataset.mode));
+  });
+}
+
 function bindPeriodFilter() {
   const btns = document.querySelectorAll('[data-region="tj-period"] .tj-period-btn');
   btns.forEach(btn => {
@@ -206,15 +285,17 @@ function bindPeriodFilter() {
       btn.classList.add('is-active');
       state.period = btn.dataset.period === 'all' ? 'all' : parseInt(btn.dataset.period, 10);
       renderSummary();
-      renderTimeline();
+      if (state.mode === 'timeline') renderTimeline();
+      else renderGraphe();
     });
   });
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
   bindPeriodFilter();
+  bindModeFilter();
   await loadData();
   renderSummary();
   renderTimeline();
-  console.info('[trajectoire] rendered', { events: state.events.length, streams: state.streams.length });
+  console.info('[trajectoire] rendered', { events: state.events.length, streams: state.streams.length, modes: ['timeline', 'graphe'] });
 });
