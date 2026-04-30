@@ -1,6 +1,6 @@
 // arbitrage-store.js — 2 modes : queue emails + focus decisions (S6.11-EE-2 L4.1)
 const escHtml = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const state = { mode: 'queue', queue: [], focusList: [], focusIdx: 0 };
+const state = { mode: 'queue', queue: [], focusList: [], focusIdx: 0, kbIdx: 0, kbHelpOpen: false };
 
 async function safeFetch(url, opts) {
   try { const r = await fetch(url, opts); if (!r.ok) return null; return await r.json(); }
@@ -431,7 +431,7 @@ function renderQueue() {
     const justification = getKindJustification(m);
     const dateStr = m.received_at ? m.received_at.slice(0, 10) : '';
     return `
-      <div class="ar-card ${isChecked ? 'is-selected' : ''}${state.llmUsed && m.created_from === 'email-llm' ? ' is-llm' : ''}" data-mail-id="${id}" data-kind="${kind}">
+      <div class="ar-card ${isChecked ? 'is-selected' : ''}${state.llmUsed && m.created_from === 'email-llm' ? ' is-llm' : ''}${i === state.kbIdx ? ' is-kb-focused' : ''}" data-mail-id="${id}" data-kind="${kind}" data-kb-idx="${i}">
         <label class="ar-card-check">
           <input type="checkbox" data-bulk-check="${id}" ${isChecked ? 'checked' : ''} />
         </label>
@@ -975,18 +975,111 @@ function renderHistory(items) {
   `;
 }
 
-// === Init (S6.22 Lot 29 - restoration apres linter ayant supprime le listener) ===
-document.addEventListener('DOMContentLoaded', async () => {
-  // Mode tabs (queue / focus)
-  document.querySelectorAll('.ar-mode-tab').forEach(t => t.addEventListener('click', () => switchMode(t.dataset.mode)));
+// === S6.12 Keyboard-first arbitrage (pilier Executif promesse produit) ===
+function showKbHelpOverlay() {
+  if (state.kbHelpOpen) return;
+  state.kbHelpOpen = true;
+  var overlay = document.createElement('div');
+  overlay.dataset.region = 'ar-kb-help';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(26,22,18,0.55);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center';
+  var rows = [
+    ['A', 'Faire (creer item selon badge kind)'],
+    ['D', 'Reporter (repousser a plus tard)'],
+    ['I', 'Ignorer (marquer arbitre, rien creer)'],
+    ['N', 'Pas pour moi (apprentissage Claude)'],
+    ['arrow up / down', 'Naviguer entre les cards'],
+    ['J / K', 'Naviguer (vim-style)'],
+    ['?', 'Afficher cette aide'],
+    ['Esc', 'Fermer cette aide']
+  ];
+  var html = '<div style="background:var(--paper);border-radius:14px;max-width:520px;width:92%;padding:28px 32px;box-shadow:0 20px 60px rgba(26,22,18,0.25);font-family:var(--font-sans)">';
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px"><h3 style="margin:0;font-size:18px;font-weight:700;color:var(--ink-900)">Raccourcis clavier Triage</h3><button data-kb-close style="background:transparent;border:0;font-size:20px;cursor:pointer;color:var(--ink-500)">x</button></div>';
+  html += '<p style="margin:0 0 14px;font-size:13px;color:var(--ink-500);font-style:italic">Pilier Executif : trancher au clavier. Une frappe = un verdict.</p>';
+  html += '<div style="display:grid;grid-template-columns:auto 1fr;gap:12px 14px;font-size:13px;color:var(--ink-700)">';
+  for (var i = 0; i < rows.length; i++) {
+    html += '<kbd style="font-family:var(--font-mono);background:var(--ivory-100);border:1px solid var(--ivory-200);border-radius:5px;padding:3px 8px;font-size:11px;font-weight:600;text-align:center">' + escHtml(rows[i][0]) + '</kbd><span>' + escHtml(rows[i][1]) + '</span>';
+  }
+  html += '</div>';
+  html += '<p style="margin:18px 0 0;font-size:11px;color:var(--ink-500);font-style:italic">Astuce : la card focus est encadree violet sur la page Triage.</p>';
+  html += '</div>';
+  overlay.innerHTML = html;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay || e.target.dataset.kbClose !== undefined) closeKbHelp();
+  });
+}
 
-  // Bouton "Analyser (heuristique)"
-  document.querySelector('[data-action="analyze"]')?.addEventListener('click', () => analyzeEmails(false));
-  // Bouton "Analyser avec Claude"
-  document.querySelector('[data-action="analyze-llm"]')?.addEventListener('click', () => analyzeEmails(true));
-  // Bouton "Detecter projets & contacts depuis emails"
-  document.querySelector('[data-action="bootstrap"]')?.addEventListener('click', () => bootstrapProjects());
-  // Initial render (empty state) + history
+function closeKbHelp() {
+  state.kbHelpOpen = false;
+  var el = document.querySelector('[data-region="ar-kb-help"]');
+  if (el) el.remove();
+}
+
+function moveKbCursor(delta) {
+  if (state.mode !== 'queue' || !state.queue.length) return;
+  var max = Math.min(state.queue.length, 50) - 1;
+  state.kbIdx = Math.max(0, Math.min(max, state.kbIdx + delta));
+  document.querySelectorAll('.ar-card').forEach(function(c, i) {
+    c.classList.toggle('is-kb-focused', i === state.kbIdx);
+  });
+  var focusedCard = document.querySelector('[data-kb-idx="' + state.kbIdx + '"]');
+  if (focusedCard) focusedCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function triggerKbAction(action) {
+  if (state.mode !== 'queue' || !state.queue.length) return;
+  var item = state.queue[state.kbIdx];
+  if (!item) return;
+  var id = String(item.id);
+  if (action === 'not-concerned') {
+    markNotConcerned(id);
+  } else {
+    handleQueueAction(action, id);
+  }
+}
+
+function arbKeyboardHandler(ev) {
+  var tag = (ev.target.tagName || '').toLowerCase();
+  if (tag === 'input' || tag === 'textarea' || ev.target.isContentEditable) return;
+  if (state.kbHelpOpen) {
+    if (ev.key === 'Escape') { closeKbHelp(); ev.preventDefault(); }
+    return;
+  }
+  if (state.mode !== 'queue') return;
+  if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
+  switch (ev.key) {
+    case '?': case 'h': case 'H':
+      showKbHelpOverlay(); ev.preventDefault(); break;
+    case 'ArrowDown': case 'j': case 'J':
+      moveKbCursor(1); ev.preventDefault(); break;
+    case 'ArrowUp': case 'k': case 'K':
+      moveKbCursor(-1); ev.preventDefault(); break;
+    case 'a': case 'A':
+      triggerKbAction('accept'); ev.preventDefault(); break;
+    case 'd': case 'D':
+      triggerKbAction('defer'); ev.preventDefault(); break;
+    case 'i': case 'I':
+      triggerKbAction('ignore'); ev.preventDefault(); break;
+    case 'n': case 'N':
+      triggerKbAction('not-concerned'); ev.preventDefault(); break;
+  }
+}
+
+// === Init ===
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.ar-mode-tab').forEach(function(t) {
+    t.addEventListener('click', function() { switchMode(t.dataset.mode); });
+  });
+  var bAna = document.querySelector('[data-action="analyze"]');
+  if (bAna) bAna.addEventListener('click', function() { analyzeEmails(false); });
+  var bLlm = document.querySelector('[data-action="analyze-llm"]');
+  if (bLlm) bLlm.addEventListener('click', function() { analyzeEmails(true); });
+  var bBoot = document.querySelector('[data-action="bootstrap"]');
+  if (bBoot) bBoot.addEventListener('click', function() { bootstrapProjects(); });
+  var bKb = document.querySelector('[data-action="kb-help"]');
+  if (bKb) bKb.addEventListener('click', showKbHelpOverlay);
+  // S6.12 keyboard-first
+  document.addEventListener('keydown', arbKeyboardHandler);
   renderQueue();
   if (typeof loadHistory === 'function') loadHistory();
 });
