@@ -827,6 +827,7 @@ Pas de markdown, pas de prose, juste le JSON array brut.`;
 function ensureEmailFeedbackTable() {
   try {
     const db = getDb();
+    // A6 Multi-tenant : tenant_id ajoute des creation pour les nouvelles instances.
     db.exec(`
       CREATE TABLE IF NOT EXISTS email_feedback (
         id           TEXT PRIMARY KEY,
@@ -834,12 +835,16 @@ function ensureEmailFeedbackTable() {
         verdict      TEXT NOT NULL,
         metadata     TEXT,
         rationale    TEXT,
-        learned_at   TEXT NOT NULL DEFAULT (datetime('now'))
+        learned_at   TEXT NOT NULL DEFAULT (datetime('now')),
+        tenant_id    TEXT NOT NULL DEFAULT 'default'
       );
       CREATE INDEX IF NOT EXISTS idx_email_feedback_email   ON email_feedback(email_id);
       CREATE INDEX IF NOT EXISTS idx_email_feedback_verdict ON email_feedback(verdict);
       CREATE INDEX IF NOT EXISTS idx_email_feedback_learned ON email_feedback(learned_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_email_feedback_tenant  ON email_feedback(tenant_id, learned_at DESC);
     `);
+    // Idempotent : si la table existait deja sans tenant_id, ALTER l'ajoute.
+    try { db.exec("ALTER TABLE email_feedback ADD COLUMN tenant_id TEXT NOT NULL DEFAULT 'default'"); } catch (e) { /* deja present */ }
   } catch (e) { console.error('[ensureEmailFeedbackTable]', e.message); }
 }
 ensureEmailFeedbackTable();
