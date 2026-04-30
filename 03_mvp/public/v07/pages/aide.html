@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>aiCEO - Aide & guide CEO (v07)</title>
+  <title>aiCEO - Aide & guide CEO (v07 voix exec)</title>
   <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css">
   <link rel="stylesheet" href="../shared/tokens.css">
   <link rel="stylesheet" href="../shared/tweaks.css">
@@ -11,362 +11,164 @@
   <link rel="stylesheet" href="../components/header-topbar/header-topbar.css">
   <link rel="stylesheet" href="../components/modal-detail/modal-detail.css">
   <style>
-    .aide-toc {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: var(--space-3);
-      margin-bottom: var(--space-6);
-    }
-    .aide-toc-item {
-      background: var(--paper);
-      border: 1px solid var(--ivory-200);
-      border-radius: var(--radius-md);
-      padding: var(--space-3) var(--space-4);
-      text-decoration: none;
-      color: var(--ink-900);
-      transition: all 150ms ease;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .aide-toc-item:hover {
-      border-color: var(--primary-500, #463a54);
-      transform: translateY(-1px);
-      box-shadow: var(--elev-1);
-    }
-    .aide-toc-num {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--primary-500, #463a54);
-      font-weight: 700;
-      letter-spacing: 0.04em;
-    }
-    .aide-toc-label {
-      font-size: 14px;
-      font-weight: 600;
-    }
-    .aide-section {
-      background: var(--paper);
-      border: 1px solid var(--ivory-200);
-      border-radius: var(--radius-md);
-      padding: var(--space-5) var(--space-6);
-      margin-bottom: var(--space-5);
-    }
-    .aide-section h2 {
-      font-family: var(--font-sans);
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--ink-900);
-      margin: 0 0 var(--space-3);
-      letter-spacing: -0.01em;
-    }
-    .aide-section h2 .aide-section-num {
-      color: var(--primary-500, #463a54);
-      font-family: var(--font-mono);
-      font-size: 16px;
-      margin-right: 10px;
-    }
-    .aide-section h3 {
-      font-family: var(--font-sans);
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--ink-700);
-      margin: var(--space-4) 0 var(--space-2);
-    }
-    .aide-section p, .aide-section li {
-      font-size: 14px;
-      color: var(--ink-700);
-      line-height: 1.65;
-    }
-    .aide-section ul {
-      padding-left: 22px;
-      margin: var(--space-2) 0;
-    }
+    .aide-toc { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-3); margin-bottom: var(--space-6); }
+    .aide-toc-item { background: var(--paper); border: 1px solid var(--ivory-200); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); text-decoration: none; color: var(--ink-900); transition: all 150ms ease; display: flex; flex-direction: column; gap: 4px; }
+    .aide-toc-item:hover { border-color: var(--primary-500, #463a54); transform: translateY(-1px); box-shadow: var(--elev-1); }
+    .aide-toc-num { font-family: var(--font-mono); font-size: 11px; color: var(--primary-500, #463a54); font-weight: 700; letter-spacing: 0.04em; }
+    .aide-toc-label { font-size: 14px; font-weight: 600; }
+    .aide-section { background: var(--paper); border: 1px solid var(--ivory-200); border-radius: var(--radius-md); padding: var(--space-5) var(--space-6); margin-bottom: var(--space-5); }
+    .aide-section h2 { font-family: var(--font-sans); font-size: 22px; font-weight: 700; color: var(--ink-900); margin: 0 0 var(--space-3); letter-spacing: -0.01em; }
+    .aide-section h2 .aide-section-num { color: var(--primary-500, #463a54); font-family: var(--font-mono); font-size: 16px; margin-right: 10px; }
+    .aide-section h3 { font-family: var(--font-sans); font-size: 16px; font-weight: 600; color: var(--ink-700); margin: var(--space-4) 0 var(--space-2); }
+    .aide-section p, .aide-section li { font-size: 14px; color: var(--ink-700); line-height: 1.65; }
+    .aide-section ul { padding-left: 22px; margin: var(--space-2) 0; }
     .aide-section li { margin-bottom: 4px; }
-    .aide-section code {
-      background: var(--ivory-100);
-      border: 1px solid var(--ivory-200);
-      border-radius: 4px;
-      padding: 1px 6px;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--ink-900);
-    }
-    .aide-modules-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: var(--space-3);
-      margin-top: var(--space-3);
-    }
-    .aide-module {
-      border: 1px solid var(--ivory-200);
-      border-radius: var(--radius-md);
-      padding: var(--space-3) var(--space-4);
-      background: var(--ivory-50);
-    }
-    .aide-module-head {
-      display: flex; align-items: center; gap: 8px;
-      margin-bottom: 6px;
-    }
-    .aide-module-icon {
-      width: 28px; height: 28px;
-      border-radius: 6px;
-      background: var(--primary-50);
-      color: var(--primary-700, #463a54);
-      display: grid; place-items: center;
-      font-size: 14px; font-weight: 700;
-    }
-    .aide-module-name {
-      font-size: 14px; font-weight: 600;
-      color: var(--ink-900);
-      flex: 1;
-    }
-    .aide-module-status {
-      font-size: 9px; font-weight: 700;
-      padding: 1px 6px;
-      border-radius: var(--radius-pill);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-    .aide-module-status.live {
-      background: var(--success-50, #d6f3e6);
-      color: var(--success, #115e3c);
-    }
-    .aide-module-status.shell {
-      background: var(--warning-50, #fef3c7);
-      color: var(--warning, #92400e);
-    }
-    .aide-module-status.preview {
-      background: var(--info-50, #dceaf5);
-      color: var(--info, #1e5f9c);
-    }
-    .aide-module-desc {
-      font-size: 12px;
-      color: var(--ink-500);
-      line-height: 1.5;
-    }
-    .aide-callout {
-      background: var(--primary-50, #ece7f0);
-      border-left: 3px solid var(--primary-500, #463a54);
-      border-radius: 0 var(--radius-md) var(--radius-md) 0;
-      padding: var(--space-3) var(--space-4);
-      margin: var(--space-3) 0;
-      font-size: 13px;
-      color: var(--ink-700);
-    }
+    .aide-section code { background: var(--ivory-100); border: 1px solid var(--ivory-200); border-radius: 4px; padding: 1px 6px; font-family: var(--font-mono); font-size: 12px; color: var(--ink-900); }
+    .aide-modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-3); margin-top: var(--space-3); }
+    .aide-module { border: 1px solid var(--ivory-200); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); background: var(--ivory-50); }
+    .aide-module-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .aide-module-icon { width: 28px; height: 28px; border-radius: 6px; background: var(--primary-50); color: var(--primary-700, #463a54); display: grid; place-items: center; font-size: 14px; font-weight: 700; }
+    .aide-module-name { font-size: 14px; font-weight: 600; color: var(--ink-900); flex: 1; }
+    .aide-module-status { font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: var(--radius-pill); text-transform: uppercase; letter-spacing: 0.04em; }
+    .aide-module-status.live { background: var(--success-50, #d6f3e6); color: var(--success, #115e3c); }
+    .aide-module-status.shell { background: var(--warning-50, #fef3c7); color: var(--warning, #92400e); }
+    .aide-module-status.preview { background: var(--info-50, #dceaf5); color: var(--info, #1e5f9c); }
+    .aide-module-desc { font-size: 12px; color: var(--ink-500); line-height: 1.5; }
+    .aide-callout { background: var(--primary-50, #ece7f0); border-left: 3px solid var(--primary-500, #463a54); border-radius: 0 var(--radius-md) var(--radius-md) 0; padding: var(--space-3) var(--space-4); margin: var(--space-3) 0; font-size: 13px; color: var(--ink-700); }
     .aide-callout strong { color: var(--primary-700, #463a54); }
-    .aide-meta {
-      font-size: 12px;
-      color: var(--ink-500);
-      font-style: italic;
-      margin-top: var(--space-3);
-    }
+    .aide-meta { font-size: 12px; color: var(--ink-500); font-style: italic; margin-top: var(--space-3); }
   </style>
 </head>
 <body data-route="aide">
   <a href="#main" class="skip-link">Aller au contenu principal</a>
-  <button class="burger-btn" type="button" aria-label="Ouvrir le menu" id="burger-toggle">
-    <svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg>
-  </button>
+  <button class="burger-btn" type="button" aria-label="Ouvrir le menu" id="burger-toggle"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg></button>
   <div class="ds-mobile-backdrop" id="ds-backdrop" hidden></div>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const btn = document.getElementById('burger-toggle');
-      const backdrop = document.getElementById('ds-backdrop');
-      const closeDrawer = () => {
-        const ds = document.querySelector('.ds');
-        if (ds) ds.classList.remove('is-mobile-open');
-        if (backdrop) backdrop.hidden = true;
-        document.body.classList.remove('has-mobile-drawer');
-      };
-      const openDrawer = () => {
-        const ds = document.querySelector('.ds');
-        if (!ds) return;
-        ds.classList.add('is-mobile-open');
-        if (backdrop) backdrop.hidden = false;
-        document.body.classList.add('has-mobile-drawer');
-      };
-      if (btn) btn.addEventListener('click', () => {
-        const ds = document.querySelector('.ds');
-        if (ds && ds.classList.contains('is-mobile-open')) closeDrawer();
-        else openDrawer();
-      });
-      if (backdrop) backdrop.addEventListener('click', closeDrawer);
-      document.addEventListener('click', (e) => { if (e.target.closest('.ds-link')) closeDrawer(); });
-      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDrawer(); });
+      const bd = document.getElementById('ds-backdrop');
+      const close = () => { const ds = document.querySelector('.ds'); if (ds) ds.classList.remove('is-mobile-open'); if (bd) bd.hidden = true; document.body.classList.remove('has-mobile-drawer'); };
+      const open = () => { const ds = document.querySelector('.ds'); if (!ds) return; ds.classList.add('is-mobile-open'); if (bd) bd.hidden = false; document.body.classList.add('has-mobile-drawer'); };
+      if (btn) btn.addEventListener('click', () => { const ds = document.querySelector('.ds'); if (ds && ds.classList.contains('is-mobile-open')) close(); else open(); });
+      if (bd) bd.addEventListener('click', close);
+      document.addEventListener('click', (e) => { if (e.target.closest('.ds-link')) close(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
     });
   </script>
-
   <div id="sprite-host" hidden></div>
-  <script>
-    fetch('../../v06/_shared/icons.svg.html')
-      .then(r => r.text())
-      .then(html => { const h = document.getElementById('sprite-host'); if (h) h.innerHTML = html; })
-      .catch(e => console.warn('[sprite] load failed', e));
-  </script>
+  <script>fetch('../../v06/_shared/icons.svg.html').then(r=>r.text()).then(h=>{const x=document.getElementById('sprite-host');if(x)x.innerHTML=h;}).catch(()=>{});</script>
 
   <div class="app">
-    <aside data-component="drawer-sidebar" data-props='{"active":"help","tenant":{"label":"Mon espace"},"user":{"name":"Major Fey","role":"CEO"}}'></aside>
+    <aside data-component="drawer-sidebar" data-props='{"active":"help","tenant":{"label":"Mon Hub"},"user":{"name":"Major Fey","role":"CEO"}}'></aside>
     <main class="app-main" id="main">
+      <div data-component="header-topbar" data-props='{"breadcrumb":[{"label":"Cockpit","href":"index.html"},{"label":"Aide"}],"title":"Comprendre votre Compass executive","subtitle":"Naviguer clair. Trancher juste. Dormir serein."}'></div>
 
-      <div data-component="header-topbar" data-props='{"breadcrumb":[{"label":"Cockpit","href":"index.html"},{"label":"Aide"}],"title":"Comprendre votre copilote en 5 minutes","subtitle":"Vue d ensemble - modules livres - feuille de route - operations CEO"}'></div>
-
-      <!-- Sommaire interactif -->
       <nav class="aide-toc" aria-label="Sommaire">
-        <a href="#sec-1" class="aide-toc-item">
-          <span class="aide-toc-num">01 - VISION</span>
-          <span class="aide-toc-label">Vue d ensemble</span>
-        </a>
-        <a href="#sec-2" class="aide-toc-item">
-          <span class="aide-toc-num">02 - MODULES</span>
-          <span class="aide-toc-label">Ce qui fonctionne (v0.7)</span>
-        </a>
-        <a href="#sec-3" class="aide-toc-item">
-          <span class="aide-toc-num">03 - PAGES</span>
-          <span class="aide-toc-label">Etat des pages v07</span>
-        </a>
-        <a href="#sec-4" class="aide-toc-item">
-          <span class="aide-toc-num">04 - ROADMAP</span>
-          <span class="aide-toc-label">Ce qui arrive</span>
-        </a>
-        <a href="#sec-5" class="aide-toc-item">
-          <span class="aide-toc-num">05 - OPS</span>
-          <span class="aide-toc-label">Pieges & operations CEO</span>
-        </a>
-        <a href="#sec-6" class="aide-toc-item">
-          <span class="aide-toc-num">06 - LEXIQUE</span>
-          <span class="aide-toc-label">Glossaire essentiel</span>
-        </a>
+        <a href="#sec-1" class="aide-toc-item"><span class="aide-toc-num">01 - VISION</span><span class="aide-toc-label">Vue d ensemble</span></a>
+        <a href="#sec-2" class="aide-toc-item"><span class="aide-toc-num">02 - MODULES</span><span class="aide-toc-label">Ce qui fonctionne (v0.7+)</span></a>
+        <a href="#sec-3" class="aide-toc-item"><span class="aide-toc-num">03 - LEXIQUE</span><span class="aide-toc-label">12 termes canoniques</span></a>
+        <a href="#sec-4" class="aide-toc-item"><span class="aide-toc-num">04 - ROADMAP</span><span class="aide-toc-label">Ce qui arrive</span></a>
+        <a href="#sec-5" class="aide-toc-item"><span class="aide-toc-num">05 - OPS</span><span class="aide-toc-label">Pieges & operations CEO</span></a>
       </nav>
 
-      <!-- 01. VISION -->
       <section class="aide-section" id="sec-1">
         <h2><span class="aide-section-num">01</span>Vue d ensemble</h2>
-        <p><strong>aiCEO</strong> est votre copilote IA executif local. Il ne remplace pas vos decisions, il les structure et les protege : un cockpit le matin pour arbitrer ce qui compte, des automatismes pour digerer la masse d emails, un rituel le soir pour clore proprement, une revue le vendredi pour ajuster.</p>
+        <p><strong>aiCEO</strong> est votre <strong>Compass executive local</strong> pour CEO francophone CSP+. Il ne remplace pas vos Decisions, il les structure et les protege : un Cockpit le matin pour arbitrer ce qui compte (Triage), des automatismes pour digerer la masse d emails, un Bilan le soir pour clore proprement, un Weekly Sync pour ajuster.</p>
         <div class="aide-callout">
-          <strong>Philosophie :</strong> 100 % local, SQLite mono-instance, zero cloud applicatif. Vos donnees restent sur votre poste. Anthropic Claude sert uniquement au raisonnement (chat assistant + extraction signaux) - aucune donnee de votre cockpit n est conservee chez Anthropic.
+          <strong>Philosophie</strong> : 100 % local, SQLite mono-instance, zero cloud applicatif. Vos donnees restent sur votre poste. Anthropic Claude sert uniquement au raisonnement (chat assistant + 4 routes LLM frontend) - aucune donnee de votre Hub n est conservee chez Anthropic.
         </div>
-        <h3>Les 4 cycles</h3>
+        <h3>Les 4 cycles (Sync)</h3>
         <ul>
-          <li><strong>Matin (Arbitrage)</strong> - 5 a 10 min : trier la file emails, accepter / reporter / ignorer, tirer les decisions du jour.</li>
-          <li><strong>Journee (Cockpit + Actions)</strong> : KPIs, projets sous tension, top 3 d aujourd hui, prises de decisions au fil de l eau.</li>
-          <li><strong>Soir (Bilan)</strong> - 3 min : humeur, energie, top 3 fait, streak.</li>
-          <li><strong>Semaine (Revue)</strong> - 30 min : retrospective, big rocks (max 3) pour la semaine suivante, auto-draft Claude.</li>
+          <li><strong>Triage matin</strong> (5-10 min) : tri emails + Decisions du jour</li>
+          <li><strong>Cockpit journee</strong> : KPIs, Pulse, Top 3 du jour, North Star</li>
+          <li><strong>Bilan soir</strong> (3 min) : mood, energie, top 3 fait, streak</li>
+          <li><strong>Weekly Sync vendredi</strong> (30 min) : retrospective + Big Rocks + auto-draft Claude</li>
         </ul>
       </section>
 
-      <!-- 02. MODULES -->
       <section class="aide-section" id="sec-2">
-        <h2><span class="aide-section-num">02</span>Modules livres en v0.7</h2>
-        <p>Le backend (15 routers REST + 21 tables SQLite) est <strong>fonctionnel sur l ensemble du perimetre</strong>. Le frontend v07 (Atomic Templates / Editorial Executive) est en cours de finalisation : 17 pages livrees en squelette, 8 a enrichir specifiquement (cf. section 03).</p>
+        <h2><span class="aide-section-num">02</span>Modules livres en v0.7+</h2>
+        <p>Le backend (15 routers REST + 21 tables SQLite) est <strong>fonctionnel sur l ensemble du perimetre</strong>. Le frontend v07 (Atomic Templates + Editorial Executive voix exec moderne) est <strong>fonctionnellement complet</strong> : 19 / 19 pages livrees, 18 / 19 voix exec moderne propagee, 4 / 5 routes LLM cablees frontend (S6.21).</p>
         <div class="aide-modules-grid">
           <div class="aide-module">
-            <div class="aide-module-head">
-              <span class="aide-module-icon">A</span>
-              <span class="aide-module-name">Arbitrage</span>
-              <span class="aide-module-status live">live</span>
-            </div>
-            <div class="aide-module-desc">File emails (top 8 propositions / SQL scoring) + focus mode + board drag-drop. Auto-bootstrap projets/contacts.</div>
+            <div class="aide-module-head"><span class="aide-module-icon">C</span><span class="aide-module-name">Cockpit</span><span class="aide-module-status live">live</span></div>
+            <div class="aide-module-desc">Hero greeting Aubrielle chronotype + anneau journee 3 segments + Trajectoire mini + KPIs parametrables + North Star + Top 3 + banner LLM. Refondu S6.17.</div>
           </div>
           <div class="aide-module">
-            <div class="aide-module-head">
-              <span class="aide-module-icon">D</span>
-              <span class="aide-module-name">Decisions</span>
-              <span class="aide-module-status live">live</span>
-            </div>
-            <div class="aide-module-desc">Registre + transitions ouverte / tranchee / gelee + Recommander (LLM). Pin to knowledge.</div>
+            <div class="aide-module-head"><span class="aide-module-icon">T</span><span class="aide-module-name">Triage</span><span class="aide-module-status live">live</span></div>
+            <div class="aide-module-desc">File emails (top 8 SQL scoring) + focus mode + board drag-drop. Auto-bootstrap Projects + contacts.</div>
           </div>
           <div class="aide-module">
-            <div class="aide-module-head">
-              <span class="aide-module-icon">R</span>
-              <span class="aide-module-name">Revues hebdo</span>
-              <span class="aide-module-status live">live</span>
-            </div>
-            <div class="aide-module-desc">Big Rocks (max 3) + auto-draft Claude. Streak tracking.</div>
+            <div class="aide-module-head"><span class="aide-module-icon">D</span><span class="aide-module-name">Decisions</span><span class="aide-module-status live">live</span></div>
+            <div class="aide-module-desc">Registre + transitions ouverte/tranchee/gelee + bouton ✦ Recommander avec Claude (S6.21). Pin to Wealth.</div>
           </div>
           <div class="aide-module">
-            <div class="aide-module-head">
-              <span class="aide-module-icon">P</span>
-              <span class="aide-module-name">Portefeuille</span>
-              <span class="aide-module-status live">live</span>
-            </div>
-            <div class="aide-module-desc">Projets, equipes, contacts. Drill-down. Auto-status alerte / a-surveiller / sain.</div>
+            <div class="aide-module-head"><span class="aide-module-icon">W</span><span class="aide-module-name">Weekly Sync</span><span class="aide-module-status live">live</span></div>
+            <div class="aide-module-desc">Big Rocks (max 3) + bouton ✦ Auto-draft Claude (S6.21). Streak tracking.</div>
           </div>
           <div class="aide-module">
-            <div class="aide-module-head">
-              <span class="aide-module-icon">@</span>
-              <span class="aide-module-name">Assistant chat</span>
-              <span class="aide-module-status preview">preview LLM</span>
-            </div>
-            <div class="aide-module-desc">Chat live SSE avec Claude Sonnet (Anthropic API) + sidebar conversations. Necessite ANTHROPIC_API_KEY.</div>
+            <div class="aide-module-head"><span class="aide-module-icon">★</span><span class="aide-module-name">Trajectoire</span><span class="aide-module-status live">live</span></div>
+            <div class="aide-module-desc">Vue retrospective : Decisions tranchees + Big Rocks + Projects clos sur axe-Y Streams. 6 filtres temporels (S6.18).</div>
           </div>
           <div class="aide-module">
-            <div class="aide-module-head">
-              <span class="aide-module-icon">K</span>
-              <span class="aide-module-name">Connaissance</span>
-              <span class="aide-module-status preview">preview</span>
-            </div>
-            <div class="aide-module-desc">Pins de decisions / criteres / regles. CRUD + auto-creation depuis Assistant.</div>
+            <div class="aide-module-head"><span class="aide-module-icon">P</span><span class="aide-module-name">Portefeuille</span><span class="aide-module-status live">live</span></div>
+            <div class="aide-module-desc">Projects, equipes, contacts. Drill-down. Auto-status alerte/a-surveiller/sain.</div>
           </div>
           <div class="aide-module">
-            <div class="aide-module-head">
-              <span class="aide-module-icon">C</span>
-              <span class="aide-module-name">Coaching</span>
-              <span class="aide-module-status preview">preview</span>
-            </div>
-            <div class="aide-module-desc">Signaux faibles + 4 questions LLM contextuelles.</div>
+            <div class="aide-module-head"><span class="aide-module-icon">@</span><span class="aide-module-name">Assistant chat</span><span class="aide-module-status preview">preview LLM</span></div>
+            <div class="aide-module-desc">Chat live SSE avec Claude Sonnet + sidebar conversations. Necessite ANTHROPIC_API_KEY.</div>
           </div>
           <div class="aide-module">
-            <div class="aide-module-head">
-              <span class="aide-module-icon">O</span>
-              <span class="aide-module-name">Sync Outlook</span>
-              <span class="aide-module-status live">live</span>
-            </div>
-            <div class="aide-module-desc">schtasks toutes les 2h - emails (J-15) + events (J-15 a J+30). 100 % local, 0 cloud.</div>
+            <div class="aide-module-head"><span class="aide-module-icon">K</span><span class="aide-module-name">Connaissance</span><span class="aide-module-status preview">preview</span></div>
+            <div class="aide-module-desc">Pins de Decisions / criteres / regles. CRUD + auto-creation depuis Assistant.</div>
+          </div>
+          <div class="aide-module">
+            <div class="aide-module-head"><span class="aide-module-icon">~</span><span class="aide-module-name">Coaching</span><span class="aide-module-status preview">preview LLM</span></div>
+            <div class="aide-module-desc">Pulse signals + 4 questions Sync hebdo LLM-aware (S6.21 cable).</div>
+          </div>
+          <div class="aide-module">
+            <div class="aide-module-head"><span class="aide-module-icon">O</span><span class="aide-module-name">Sync Outlook</span><span class="aide-module-status live">live</span></div>
+            <div class="aide-module-desc">schtasks toutes les 2h - emails (J-15) + events (J-15 a J+30). 100 % local.</div>
           </div>
         </div>
       </section>
 
-      <!-- 03. PAGES -->
       <section class="aide-section" id="sec-3">
-        <h2><span class="aide-section-num">03</span>Etat des pages v07</h2>
-        <p>Le sprint <strong>S6.11-EE</strong> a livre le framework Atomic Templates a l echelle (17 pages migrees, 12 composants atomiques, 10/10 tests verts). Pour 9 pages "liste de cartes", l affichage fonctionne. Pour 8 pages a UX specifique, le squelette est en place mais le rendu metier sera porte en <strong>S6.11-EE-2</strong>.</p>
-        <h3>Pages avec rendu specifique en attente (S6.11-EE-2)</h3>
+        <h2><span class="aide-section-num">03</span>12 termes canoniques (voix exec moderne)</h2>
+        <p>Le glossaire complet est dans <code>04_docs/_design-v08-intentions/GLOSSAIRE-AICEO.md</code>. Resume :</p>
+        <h3>Architecture</h3>
         <ul>
-          <li><strong>Cockpit</strong> - 5 sections (KPIs, Cap strategique, dot-chart 7j, projects-houses, Top 3)</li>
-          <li><strong>Arbitrage</strong> - file emails + focus mode + board drag-drop</li>
-          <li><strong>Soiree</strong> - rituel humeur / energie / top 3 / streak (form)</li>
-          <li><strong>Onboarding</strong> - wizard 3 etapes (firstName, tenantName, premiere maison)</li>
-          <li><strong>Hub</strong> - grid de tuiles de navigation centrale</li>
-          <li><strong>Connaissance</strong> - pins + form de creation</li>
-          <li><strong>Coaching</strong> - signaux faibles + 4 questions LLM</li>
-          <li><strong>Reglages</strong> - 8 onglets (General, Langue, Maisons, Rituels, Coaching, Donnees, Apparence, Zone sensible)</li>
+          <li><strong>Hub</strong> - votre espace top-level + page d accueil personnelle (fusion semantique)</li>
+          <li><strong>Stream</strong> - vertical de business (admin / fi / op / r&d / maintenance / rh)</li>
+          <li><strong>Project</strong> - entite metier principale (auto-status alerte/a-surveiller/sain)</li>
+          <li><strong>Action</strong> - travail concret (matrice Eisenhower)</li>
+          <li><strong>Decision</strong> - choix trace (4 statuts : ouverte/tranchee/gelee/reportee)</li>
+          <li><strong>Pin</strong> - extrait epingle reutilisable (Decisions / criteres / regles)</li>
         </ul>
-        <div class="aide-callout">
-          En attendant, vous pouvez utiliser la <strong>v06</strong> qui reste 100 % fonctionnelle (lien <em>Aide</em> dans le menu lateral pointe encore vers v06 jusqu a la mise a jour terminee). La cohabitation v06 et v07 est sans regression.
-        </div>
-        <h3>Pages avec rendu liste fonctionnel</h3>
+        <h3>Strategie & rituels</h3>
         <ul>
-          <li>Decisions, Projets, Equipe, Actions, Agenda, Revues, Projet, Components, Assistant</li>
+          <li><strong>Compass</strong> - pilotage strategique (drawer section + outil mental)</li>
+          <li><strong>North Star</strong> - intention trimestre/semaine</li>
+          <li><strong>Big Rock</strong> - priorite hebdomadaire (max 3 par semaine)</li>
+          <li><strong>Sync</strong> - umbrella : Triage matin · Quick Sync hebdo · Evening Sync</li>
+          <li><strong>Triage</strong> - rituel matin tri emails + Decisions</li>
+          <li><strong>Pulse</strong> - signal faible detecte automatiquement</li>
         </ul>
-        <p class="aide-meta">Les modals "detail" sur ces pages sont volontairement minimaux pour cette livraison. L enrichissement modal (champs, actions contextuelles, sous-listes) est aussi planifie en S6.11-EE-2.</p>
+        <p class="aide-meta">Voir aussi : <code>VOICE-AICEO.md</code> pour la charte de voix complete (champ navigation maritime + tons par contexte + anti-patterns).</p>
       </section>
 
-      <!-- 04. ROADMAP -->
       <section class="aide-section" id="sec-4">
         <h2><span class="aide-section-num">04</span>Ce qui arrive</h2>
-        <h3>Phase 1 - Lean ADD-AI (en cours, T2-T3 2026)</h3>
+        <h3>Phase 1 (en cours fin avril 2026)</h3>
         <ul>
-          <li><strong>S6.11-EE-2</strong> - enrichissement specifique des 8 pages a UX particuliere (cockpit / arbitrage / soiree / onboarding / hub / connaissance / coaching / reglages)</li>
-          <li><strong>S6.12</strong> - polish modal-detail + binds metier complets</li>
-          <li><strong>S6.13</strong> - cablage LLM frontend complet (revues auto-draft, decisions Recommander, cockpit banner llm-status)</li>
-          <li><strong>S6.14</strong> - tests E2E LLM + recette CEO complete</li>
-          <li><strong>S6.15</strong> - bascule v07 = defaut, v06 archivee</li>
+          <li>✅ <strong>Phase 1A</strong> - Migration v06 -> v07 Atomic Templates (S6.10-EE -> S6.12)</li>
+          <li>✅ <strong>Phase 1B</strong> - UX Editorial Executive v0.8 voix exec moderne (S6.13 + S6.15 + S6.17 + S6.18 + S6.19 + S6.20 + S6.21)</li>
+          <li>⏳ <strong>Phase 1C</strong> - Tests E2E + recette CEO + BETA Lamiae (S6.14 + S6.16 + S6.22 + S6.23)</li>
         </ul>
         <h3>V1 (T3-T4 2026, ~41 k binome)</h3>
         <ul>
           <li>SaaS multi-tenant Supabase + RLS + Microsoft Entra auth</li>
-          <li>Equipes (delegations, partage portefeuille)</li>
+          <li>Equipes (delegations, partage Hub)</li>
           <li>Mobile responsive complet</li>
         </ul>
         <h3>V2 (2027) et V3 (2028)</h3>
@@ -377,63 +179,35 @@
         <p class="aide-meta">Total trajectoire 18 mois : 1.56 M (binome + provisions V1 absorbe + commercial). Cf. <code>04_docs/08-roadmap.md v3.3</code>.</p>
       </section>
 
-      <!-- 05. OPS -->
       <section class="aide-section" id="sec-5">
         <h2><span class="aide-section-num">05</span>Pieges connus & operations CEO</h2>
-        <p>Cette section est volontairement courte. Pour la liste complete + commandes copiables, ouvrir la page <strong>Pilotage</strong> (<code>04_docs/00-pilotage-projet.html</code>) onglet "Actions CEO".</p>
+        <p>Pour la liste complete + commandes copiables, ouvrir la page <strong>Pilotage</strong> (<code>04_docs/00-pilotage-projet.html</code>) onglet "Actions CEO".</p>
         <h3>Top 3 reflexes</h3>
         <ol>
-          <li><strong>Serveur kazi</strong> (port 4747 occupe) : <code>Get-NetTCPConnection -LocalPort 4747 | Stop-Process -Force</code> avant <code>npm start</code></li>
+          <li><strong>Serveur kazi</strong> (port 4747 occupe) : <code>Get-NetTCPConnection -LocalPort 4747 | Stop-Process -Force</code></li>
           <li><strong>Reset DB</strong> : tuer le serveur d abord, puis <code>cd 03_mvp ; npm run db:reset</code></li>
-          <li><strong>Sync Outlook manuelle</strong> : <code>pwsh -File scripts/sync-outlook.ps1</code> (J-15 emails + J-15 a J+30 events)</li>
+          <li><strong>Sync Outlook manuelle</strong> : <code>pwsh -File scripts/sync-outlook.ps1</code></li>
         </ol>
-        <h3>Si quelque chose casse</h3>
-        <ul>
-          <li>Logs serveur : dossier <code>logs/</code> a la racine du repo (rotation 2 Mo / 3 archives)</li>
-          <li>Push Git d urgence : <code>git push origin main --force-with-lease</code> apres backup local</li>
-          <li>Snapshot DB : <code>cp data/aiceo.db data/aiceo.db.bak-$(date +%Y%m%d)</code></li>
-        </ul>
-      </section>
-
-      <!-- 06. LEXIQUE -->
-      <section class="aide-section" id="sec-6">
-        <h2><span class="aide-section-num">06</span>Glossaire essentiel</h2>
-        <ul>
-          <li><strong>Big Rocks</strong> - les 3 priorites maximum d une semaine. Si tout est prioritaire, rien ne l est.</li>
-          <li><strong>Cap strategique</strong> - le "pourquoi" du trimestre. Si la decision du jour ne sert pas le cap, la reporter.</li>
-          <li><strong>Arbitrage matin</strong> - rituel de tri 5-10 min : la file d emails est traitee en accepter / reporter / ignorer.</li>
-          <li><strong>Streak</strong> - serie de jours consecutifs ou le bilan du soir a ete fait. Effet d ancrage.</li>
-          <li><strong>Atomic Templates</strong> - framework v07 : squelette HTML vierge + store unique + ComponentLoader. Garantit la coherence visuelle.</li>
-          <li><strong>Editorial Executive</strong> - direction artistique v07 : Reflect + Granola + Linear + Apple HIG. Warm neutrals + accent violet + Aubrielle script (titres).</li>
-          <li><strong>ADR</strong> - Architecture Decision Record. Format leger : Statut + Contexte + Decision + Consequences. 30+ ADR dans <code>00_BOUSSOLE/DECISIONS.md</code>.</li>
-          <li><strong>Lean ADD-AI</strong> - methode binome CEO + agent. Sprints livres en 3 a 9 h chrono (vs 13 semaines BASELINE).</li>
-        </ul>
-        <p class="aide-meta">Cette page est mise a jour au fur et a mesure du developpement. Derniere maj : v0.7 / S6.11-EE-fix.</p>
+        <p class="aide-meta">Cette page est mise a jour a chaque sprint. Derniere maj : v0.7+ / quadruple sprint S6.13-S6.21 (29/04/2026 PM tres tardif).</p>
       </section>
 
       <footer class="app-footer">
-        <p class="strategic-q">Une bonne aide ne dit pas "comment ca marche" - elle dit "ce qui compte aujourd hui, et pourquoi".</p>
+        <p class="strategic-q">Naviguer clair. Trancher juste. Dormir serein.</p>
         <div class="footer-meta">
-          <span>aiCEO v0.7</span>
-          <span>&middot;</span>
-          <span>Aide & guide CEO</span>
-          <span>&middot;</span>
-          <span>v07 Atomic Templates</span>
+          <span>aiCEO v0.7</span><span>&middot;</span><span>Aide & guide CEO</span><span>&middot;</span><span>v07 · Voix exec moderne</span>
         </div>
       </footer>
     </main>
   </div>
 
-  <!-- Bottom-tab nav mobile (parite v06) -->
   <nav class="bottom-tab-nav" aria-label="Navigation rapide mobile">
     <a href="index.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span>Cockpit</span></a>
-    <a href="arbitrage.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
+    <a href="arbitrage.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-arbitrage"/></svg><span>Triage</span></a>
     <button class="bottom-tab fab-trigger" type="button" aria-label="Capter">
-      <span class="fab-circle"><svg class="ico" aria-hidden="true"><use href="#i-mic"/></svg></span>
-      <span>Capter</span>
+      <span class="fab-circle"><svg class="ico" aria-hidden="true"><use href="#i-mic"/></svg></span><span>Capter</span>
     </button>
     <a href="decisions.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg><span>Decisions</span></a>
-    <a href="evening.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-evening"/></svg><span>Soiree</span></a>
+    <a href="evening.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-evening"/></svg><span>Bilan</span></a>
   </nav>
 
   <div data-component="modal-detail"></div>

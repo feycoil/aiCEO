@@ -1559,7 +1559,7 @@ function renderRoadmap() {
   // Whitelist explicite des sprints livres connus (fallback en cas de regex qui rate)
   ['s6.9-bis-light','s6.10-bis-light','spike-validation','s6.11-bis-light',
    's6.10-ee','s6.10-ee-fix','s6.11-ee','s6.11-ee-fix','s6.11-ee-fix2','s6.11-ee-2',
-   's6.12','s6.17','s6.18'].forEach(s => livredIds.add(s));
+   's6.12','s6.13','s6.15','s6.17','s6.18','s6.19','s6.20','s6.21'].forEach(s => livredIds.add(s));
 
   function sprintStatus(id) {
     var lid = id.toLowerCase();
@@ -1584,19 +1584,22 @@ function renderRoadmap() {
       { id: 'S6.12', desc: 'Modal-detail enrichi 6 kinds + auto-detection [data-md-kind]' }
     ], cible: '18/18 pages v07 + 10/10 tests verts' },
 
-    { num: 2, title: 'PHASE 1B — UX Editorial Executive v0.8 (voix exec moderne)', status: 'active', subtitle: 'Refonte progressive selon Memo UX v0.8 · en cours 29/04 PM', sprints: [
-      { id: 'S6.17', desc: 'Phase 2 - Cockpit refondu voix exec (anneau, North Star, Top 3, KPIs parametrables)' },
-      { id: 'S6.18', desc: 'Page Trajectoire MVP + drawer Capital + activation CTA Cockpit' },
-      { id: 'S6.19', desc: 'Generalisation pattern aux autres pages (Hub, Soiree, Decisions, Projects)', doc: null },
-      { id: 'S6.20', desc: 'Triage refondu (file emails + focus mode)', doc: null }
-    ], cible: '12 termes canoniques figes + 19/19 pages refondues' },
+    { num: 2, title: 'PHASE 1B — UX Editorial Executive v0.8 (voix exec moderne)', status: 'done', subtitle: 'Refonte voix exec + 12 termes canoniques figes · livre 29/04 PM tres tardif', sprints: [
+      { id: 'S6.13', desc: 'Banner LLM Cockpit (live/degrade) + base LLM frontend' },
+      { id: 'S6.15', desc: 'Bascule v07 = defaut (server.js redirect)' },
+      { id: 'S6.17', desc: 'Phase 2 - Cockpit refondu voix exec (anneau, North Star, Top 3, KPIs)' },
+      { id: 'S6.18', desc: 'Page Trajectoire MVP + drawer Capital + CTA Cockpit' },
+      { id: 'S6.19', desc: 'Lots 1-3 Hub/Bilan/Decisions voix exec moderne (3h binome)' },
+      { id: 'S6.20', desc: 'Voix exec propagee sur 12 pages restantes (38 patches text-replace)' },
+      { id: 'S6.21', desc: 'LLM frontend complet : decision-recommend + auto-draft-review + coaching' }
+    ], cible: '19/19 pages voix exec figee + 4 routes LLM cablees' },
 
-    { num: 3, title: 'PHASE 1C — LLM frontend complet + tests', status: 'pending', subtitle: 'Cablage Claude live sur 5 surfaces UX · ~3-4 j-binome', sprints: [
-      { id: 'S6.13', desc: 'Cablage LLM frontend (decisions Recommander, revues auto-draft, coaching signaux)' },
-      { id: 'S6.14', desc: 'Tests E2E LLM + recette CEO complete' },
-      { id: 'S6.15', desc: 'Bascule v07 = defaut, v06 archivee' },
-      { id: 'S6.16', desc: '🔍 BETA LAMIAE validation utilisateur · 1 j + 3 j cal.', doc: '_sprints/S6.16-beta-lamiae/DOSSIER-SPRINT-S6.16-beta-lamiae.md' }
-    ], cible: 'Note 6.3 -> 8.0 + GO V1' },
+    { num: 3, title: 'PHASE 1C — Tests E2E + recette CEO + BETA Lamiae', status: 'pending', subtitle: 'Validation usage reel + tests Playwright · ~3-4 j-binome', sprints: [
+      { id: 'S6.14', desc: 'Tests E2E Playwright LLM + smoke v07 + recette CEO complete' },
+      { id: 'S6.16', desc: '🔍 BETA LAMIAE validation utilisateur · 1 j + 3 j cal.', doc: '_sprints/S6.16-beta-lamiae/DOSSIER-SPRINT-S6.16-beta-lamiae.md' },
+      { id: 'S6.22', desc: 'Polish post-test sur soi (ajustements UX feedback CEO)' },
+      { id: 'S6.23', desc: 'Mode "graphe" Trajectoire (connexions Decisions/Big Rocks/Projects)' }
+    ], cible: 'Note 6.3 -> 8.0 + GO V1 + livraison ExCom' },
 
     { num: 4, title: 'PHASE 2 — INTELLIGENCE (V1.x)', status: 'pending', subtitle: 'L IA devient un binome contextualise · ~6 j-binome · T3-T4 2026', sprints: [
       { id: 'S7.1', desc: 'Memoire inter-fils LLM' },
