@@ -66,6 +66,16 @@
       <div data-region="empty" hidden>
         <div data-component="empty-state" data-props='{"icon": "undo", "title": "Aucun element pour cette page", "description": "Cette page est migree en pattern Atomic v07. Donnees specifiques en S6.11-EE-2.", "cta": {"label": "Retour cockpit", "href": "index.html"}}'></div>
       </div>
+      <!-- S6.21 LLM frontend - bouton auto-draft Claude -->
+      <div style="background:var(--primary-50);border:1px solid var(--primary-100, #d8d0e0);border-radius:var(--radius-md);padding:var(--space-4);margin-bottom:var(--space-4);display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap">
+        <div style="flex:1;min-width:240px">
+          <div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--primary-700);letter-spacing:0.08em">✦ WEEKLY SYNC AUTO-DRAFT</div>
+          <p style="margin:6px 0 0;font-size:13px;color:var(--ink-700);line-height:1.5">Generez automatiquement le brouillon de votre Weekly Sync hebdo avec Claude (analyse Decisions tranchees + Big Rocks atteints + Pulse de la semaine).</p>
+        </div>
+        <button class="ar-btn ar-btn-primary" data-action="auto-draft" style="padding:10px 18px;background:var(--ink-900);color:var(--paper);border:0;border-radius:var(--radius-md);font-size:13px;font-weight:600;cursor:pointer">Generer un brouillon</button>
+        <span data-region="auto-draft-status" style="font-size:12px;color:var(--ink-500)"></span>
+      </div>
+
       <footer class="app-footer">
         <p class="strategic-q">Big Rocks, retex, ce qui a marche</p>
         <div class="footer-meta">
@@ -73,7 +83,7 @@
           <span>&middot;</span>
           <span>Vos revues hebdomadaires</span>
           <span>&middot;</span>
-          <span>v07 Atomic Templates</span>
+          <span>v07 · Voix exec moderne</span>
         </div>
       </footer>
     </main>
@@ -81,13 +91,13 @@
 
   <nav class="bottom-tab-nav" aria-label="Navigation rapide mobile">
     <a href="index.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span>Cockpit</span></a>
-    <a href="arbitrage.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-arbitrage"/></svg><span>Arbitrage</span></a>
+    <a href="arbitrage.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-arbitrage"/></svg><span>Triage</span></a>
     <button class="bottom-tab fab-trigger" type="button" aria-label="Capter">
       <span class="fab-circle"><svg class="ico" aria-hidden="true"><use href="#i-mic"/></svg></span>
       <span>Capter</span>
     </button>
     <a href="decisions.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg><span>Decisions</span></a>
-    <a href="evening.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-evening"/></svg><span>Soiree</span></a>
+    <a href="evening.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-evening"/></svg><span>Bilan</span></a>
   </nav>
 
   <div data-component="modal-detail"></div>
@@ -95,5 +105,36 @@
   <script type="module" src="../shared/store.js"></script>
   <script type="module" src="../shared/component-loader.js"></script>
   <script type="module" src="../stores/revues-store.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.querySelector('[data-action="auto-draft"]');
+      const status = document.querySelector('[data-region="auto-draft-status"]');
+      if (!btn) return;
+      btn.addEventListener('click', async () => {
+        btn.disabled = true; btn.textContent = '✦ Claude reflechit...';
+        if (status) status.textContent = '';
+        try {
+          const r = await fetch('/api/auto-draft-review', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ week: 'current' }) });
+          const data = await r.json();
+          if (data?.draft) {
+            const div = document.createElement('div');
+            div.style.cssText = 'background:var(--paper);border:1px solid var(--ivory-200);border-radius:var(--radius-md);padding:var(--space-4) var(--space-5);margin-top:var(--space-3);font-size:14px;color:var(--ink-700);line-height:1.6;white-space:pre-wrap';
+            div.textContent = data.draft;
+            btn.parentElement.parentElement.insertBefore(div, btn.parentElement.nextSibling);
+            btn.textContent = '✓ Brouillon genere'; btn.disabled = true;
+          } else if (data?.fallback) {
+            if (status) status.textContent = 'Mode degrade : ' + (data.fallback || 'rule-based');
+            btn.textContent = 'Reessayer'; btn.disabled = false;
+          } else {
+            if (status) status.textContent = 'Erreur LLM';
+            btn.textContent = 'Reessayer'; btn.disabled = false;
+          }
+        } catch (e) {
+          if (status) status.textContent = 'Erreur reseau : ' + e.message;
+          btn.textContent = 'Reessayer'; btn.disabled = false;
+        }
+      });
+    });
+  </script>
 </body>
 </html>

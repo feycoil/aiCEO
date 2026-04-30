@@ -252,6 +252,8 @@
 .md-btn-primary:hover { background: var(--ink-700); }
 .md-btn-ghost { background: transparent; color: var(--ink-700); border-color: var(--ivory-200); }
 .md-btn-ghost:hover { background: var(--ivory-100); color: var(--ink-900); }
+.md-btn-llm { background: var(--primary-50); color: var(--primary-700, #463a54); border-color: var(--primary-500); }
+.md-btn-llm:hover { background: var(--primary-500); color: var(--paper); }
 .md-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* Pointer sur les cartes auto-detectees */

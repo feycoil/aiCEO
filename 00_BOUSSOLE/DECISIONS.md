@@ -10,6 +10,69 @@
 
 
 
+## 2026-04-29 · Sprint final cascade — S6.20 (Projects voix exec + 12 pages patchees) + S6.21 (LLM frontend complet)
+
+**Statut** : Livre · **Audience** : binome · **Decision** : finalisation cascade UX v0.8 voix exec moderne sur 12 pages + cablage LLM frontend complet sur 3 routes (Recommander Decision / auto-draft Weekly Sync / Pulse signaux Coaching deja partiellement cable). Quatrieme sprint enchaine post-S6.18 selon decision CEO "vas-y lance tout".
+
+**Contexte** : 29/04/2026 PM tres tardif, suite a S6.15 (bascule v07 = defaut) + S6.19 Lots 1-3 (Hub/Bilan/Decisions voix exec) + S6.13 (banner LLM Cockpit), CEO valide la suite. Recommandation agent : enchainer S6.20 (propagation voix exec sur 12 autres pages restantes) + S6.21 (cablage LLM frontend complet pour 5 surfaces UX).
+
+**Sprint S6.20 — Voix exec moderne propagee (12 pages, ~30 min binome)** :
+- Patches text-replace cibles sur les libelles communs : `Soiree → Bilan`, `Arbitrage → Triage`, `Cap strategique → North Star`, `rituel → Sync`, `Projets → Projects`, `Revues → Weekly Sync`, etc.
+- Liens `../../v06/...` -> liens v07 directs (cohabitation deja basculee en S6.15)
+- Footer meta `v07 Atomic Templates → v07 · Voix exec moderne`
+- Pages patches : projets · taches · agenda · equipe · revues · arbitrage · connaissance · coaching · projet · onboarding · settings · assistant · components
+- 38 patches appliques au total (sur ~99 patterns scannes - certains absents dans le HTML actuel = OK normal)
+
+**Sprint S6.21 — LLM frontend complet (3 routes câblées)** :
+
+*Route 1 — `decision-recommend` dans modal-detail* :
+- Nouveau bouton `✦ Recommander avec Claude` (style violet `--md-btn-llm`) ajoute dans le foot du modal-detail kind=decision (uniquement si status `open` ou `a_trancher`)
+- Handler `md-recommend` : POST `/api/decision-recommend` avec `{decision_id}`
+- Rendu progressif : "✦ Claude reflechit..." pendant le call, puis section "✦ Recommandation Claude" inseree dans le body avec gradient violet, ou message fallback si mode degrade
+- Bouton bascule "✓ Recommandation generee" en final, ou "Reessayer" si erreur
+
+*Route 2 — `auto-draft-review` dans Weekly Sync* :
+- Banner premium violet `✦ WEEKLY SYNC AUTO-DRAFT` insere dans `revues.html` avant le footer
+- Bouton `Generer un brouillon` declenche POST `/api/auto-draft-review` avec `{week: 'current'}`
+- Brouillon Claude affiche en pre-formatted (white-space: pre-wrap) en dessous du bouton
+- Fallback rule-based affiche "Mode degrade" si LLM down
+
+*Route 3 — `coaching-question` dans Coaching* :
+- Deja cable en S6.11-EE-2 L3 (coaching-store.js a `loadLlmStatus()` + `loadSignals(llmReady)` + `loadQuestions(llmReady)`)
+- Verifie : signaux Pulse + 4 questions hebdo Sync sont LLM-aware avec fallback rule-based
+- Aucune modification supplementaire necessaire, route deja consommee
+
+*Routes deja cablees ou differees* :
+- `effects-propagation` (Triage focus mode) : deja partiellement en S6.11-EE-2 L4, complet en S7.x
+- `llm-status` : cable en S6.13 (banner Cockpit live/degrade)
+
+**Conseguences** :
+- 18 / 19 pages v07 voix exec moderne propagee (Hub, Bilan, Decisions, Trajectoire, Cockpit + 13 patchees S6.20)
+- 4 / 5 routes LLM cablees frontend (decision-recommend, auto-draft-review, coaching-question, llm-status)
+- Modal-detail enrichi : kind=decision a maintenant le bouton "Recommander Claude" qui transforme la decision en suggestion contextualisee
+- Weekly Sync : auto-draft Claude operationnel (un clic genere le brouillon hebdo)
+- v07 = home par defaut (S6.15) + voix exec partout + LLM live ou degrade visible (banner Cockpit)
+- 10 / 10 tests verts conserves
+- 36 ADRs documentes total
+
+**Reportes (sprints suivants)** :
+- S6.14 — Tests E2E LLM (Playwright) + recette CEO complete
+- S6.16 — BETA Lamiae validation utilisateur (1 j + 3 j cal.)
+- S7.x — `effects-propagation` complet dans Triage focus mode (recommandations A/B/C streaming SSE)
+- S7.x — Mode "graphe" Trajectoire (connexions entre Decisions/Big Rocks/Projects)
+- S7.x — Mobile responsive audit complet
+- V1.x — Mode sombre + audit WCAG complet + i18n EN
+
+**Sources** :
+- Memo UX v0.8 Phase 1 : `04_docs/_design-v08-intentions/MEMO-UX-V08-PHASE1.md`
+- Charte de voix : `04_docs/_design-v08-intentions/VOICE-AICEO.md`
+- Code livre : `03_mvp/server.js` + `03_mvp/public/v07/pages/*.html` (13 patches) + `03_mvp/public/v07/components/modal-detail/{modal-detail.js, modal-detail.css}`
+- Scripts : `outputs/write-s6.15-bascule.py`, `outputs/write-s6.19-hub-bilan.py`, `outputs/write-s6.19-decisions-projects-llm.py`, `outputs/write-s6.20-s6.21.py`
+
+**Validation** : test sur soi 3-7 jours par CEO en condition reelle d usage. v07 est home par defaut, voix exec figee partout, LLM frontend cable sur 4 surfaces : la valeur est livree, place au feedback utilisateur reel.
+
+---
+
 ## 2026-04-29 · Triple sprint livre — S6.15 (bascule v07=defaut) + S6.19 Lots 1-3 (Hub/Bilan/Decisions voix exec) + S6.13 (banner LLM Cockpit)
 
 **Statut** : Livre · **Audience** : binome · **Decision** : enchainement de 3 sprints en cascade post-S6.18 selon decision CEO "fait tout maintenant" pour maximiser la valeur livree avant la pause de test sur soi (Etape 5 parcours UX v0.8).

@@ -94,6 +94,7 @@ async function renderDecision(d) {
     `,
     foot: `
       ${d.status === 'open' || d.status === 'a_trancher' ? '<button class="md-btn md-btn-primary" data-action="md-trancher">Trancher</button>' : ''}
+      ${d.status === 'open' || d.status === 'a_trancher' ? '<button class="md-btn md-btn-llm" data-action="md-recommend" data-id="' + d.id + '">✦ Recommander avec Claude</button>' : ''}
       <button class="md-btn md-btn-ghost" data-action="md-pin" data-id="${d.id}" data-title="${escapeHtml(d.title || '')}">Epingler</button>
       <button class="md-btn md-btn-ghost" data-action="close">Fermer</button>
     `
@@ -304,6 +305,36 @@ export default {
             if (r.ok) { btn.textContent = '✓ Epingle'; btn.disabled = true; }
           } else if (action === 'md-trancher') {
             window.location.href = `arbitrage.html`;
+          } else if (action === 'md-recommend') {
+            // S6.21 LLM frontend - decision-recommend
+            const id = btn.dataset.id;
+            const orig = btn.textContent;
+            btn.disabled = true; btn.textContent = '✦ Claude reflechit...';
+            try {
+              const r = await fetch('/api/decision-recommend', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ decision_id: id })
+              });
+              const data = await r.json();
+              const body = root.querySelector('[data-region="md-body"]');
+              if (body && data?.recommendation) {
+                const reco = document.createElement('div');
+                reco.className = 'md-section';
+                reco.innerHTML = '<h3 class="md-section-title">✦ Recommandation Claude</h3><div class="md-context" style="background:var(--primary-50);padding:var(--space-3);border-radius:var(--radius-md);border-left:3px solid var(--primary-500)"><p>' + escapeHtml(data.recommendation).replace(/\n/g, '<br>') + '</p></div>';
+                body.appendChild(reco);
+                btn.textContent = '✓ Recommandation generee'; btn.disabled = true;
+              } else if (data?.fallback) {
+                btn.textContent = '○ Mode degrade - regle: ' + (data.fallback || ''); btn.disabled = false;
+                setTimeout(() => { btn.textContent = orig; }, 4000);
+              } else {
+                btn.textContent = '✗ Erreur'; btn.disabled = false;
+                setTimeout(() => { btn.textContent = orig; }, 2000);
+              }
+            } catch (err) {
+              btn.textContent = '✗ ' + err.message; btn.disabled = false;
+              setTimeout(() => { btn.textContent = orig; }, 3000);
+            }
           } else if (action === 'md-toggle-done') {
             await fetch(`/api/tasks/${btn.dataset.id}`, {
               method: 'PATCH', headers: { 'Content-Type': 'application/json' },
