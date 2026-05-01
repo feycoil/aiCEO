@@ -293,11 +293,38 @@ function bindPeriodFilter() {
   });
 }
 
+// S6.31 — Recit Claude narratif au-dessus de la timeline
+async function renderNarrative() {
+  let host = document.querySelector('[data-region="tj-narrative"]');
+  if (!host) {
+    const summary = document.querySelector('[data-region="tj-summary"]') || document.querySelector('.tj-stats');
+    if (!summary) return;
+    host = document.createElement('div');
+    host.dataset.region = 'tj-narrative';
+    host.className = 'tj-narrative is-llm-output';
+    summary.parentNode.insertBefore(host, summary);
+  }
+  host.innerHTML = '<div class="thinking-pulse"><span class="thinking-spinner"></span><span>Claude lit votre trajectoire...</span></div>';
+  try {
+    const r = await fetch('/api/assistant/trajectoire-narrative', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ period: String(state.period) })
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'serveur');
+    host.innerHTML = '<div class="tj-narrative-mode">Recit ' + (data.mode === 'live' ? 'Claude live' : 'rule-based') + '</div>'
+      + '<p class="tj-narrative-text">' + escHtml(data.narrative || '') + '</p>';
+  } catch (e) {
+    host.innerHTML = '<p class="tj-narrative-error">Recit indisponible : ' + escHtml(e.message) + '</p>';
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   bindPeriodFilter();
   bindModeFilter();
   await loadData();
   renderSummary();
   renderTimeline();
+  renderNarrative();
   console.info('[trajectoire] rendered', { events: state.events.length, streams: state.streams.length, modes: ['timeline', 'graphe'] });
 });

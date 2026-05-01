@@ -844,3 +844,48 @@ body[data-route="revues"] [data-region="timeline"] .cd-title {
 .as-bubble.assistant h1 { font-size: 16px; }
 .as-bubble.assistant h2 { font-size: 15px; }
 .as-bubble.assistant h3 { font-size: 14px; }
+
+/* S6.31 — Trajectoire recit narratif */
+.tj-narrative {
+  background: var(--paper);
+  border: 1px solid var(--ivory-200);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin: 16px 0 20px;
+  position: relative;
+}
+.tj-narrative-mode {
+  display: inline-block;
+  padding: 3px 10px;
+  background: var(--violet-100);
+  color: var(--violet-800);
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+}
+.tj-narrative-text {
+  font-size: 14px;
+  color: var(--ink-700);
+  line-height: 1.65;
+  margin: 0;
+  font-style: italic;
+}
+.tj-narrative-error {
+  font-size: 13px;
+  color: var(--danger-700);
+  margin: 0;
+}
+
+/* S6.31 — bouton suggest-rocks ghost */
+.ws-btn[data-action="suggest-rocks"] {
+  background: transparent;
+  color: var(--violet-800);
+  border: 1px solid var(--violet-200);
+}
+.ws-btn[data-action="suggest-rocks"]:hover {
+  background: var(--violet-50);
+  border-color: var(--violet-500);
+}

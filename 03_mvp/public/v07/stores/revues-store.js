@@ -228,6 +228,35 @@ async function saveRocks() {
   await loadCurrentRocks();
 }
 
+// S6.31 — Auto-suggest 3 Big Rocks depuis decisions tranchees + projets en alerte
+async function suggestRocks() {
+  const btn = document.querySelector('[data-action="suggest-rocks"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Claude analyse...'; }
+  try {
+    const r = await fetch('/api/weekly-reviews/' + state.nextWeek + '/suggest-rocks', { method: 'POST' });
+    const data = await r.json();
+    if (btn) { btn.disabled = false; btn.textContent = 'Suggerer 3 Big Rocks'; }
+    if (!r.ok || data.error) {
+      showToast('Erreur : ' + (data.error || 'serveur'), 'error');
+      return;
+    }
+    if (!data.suggestions || !data.suggestions.length) {
+      showToast(data.message || 'Aucune suggestion', 'warning');
+      return;
+    }
+    data.suggestions.slice(0, 3).forEach(function (s, i) {
+      const titleInput = document.querySelector('[data-rock-field="title"][data-rock-ordre="' + (i + 1) + '"]');
+      const descInput = document.querySelector('[data-rock-field="description"][data-rock-ordre="' + (i + 1) + '"]');
+      if (titleInput && !titleInput.value) titleInput.value = s.title;
+      if (descInput && !descInput.value) descInput.value = (s.description || '') + (s.rationale ? '\n[Pourquoi : ' + s.rationale + ']' : '');
+    });
+    showToast(data.suggestions.length + ' Big Rocks suggeres (' + data.mode + ')', 'success');
+  } catch (e) {
+    if (btn) { btn.disabled = false; btn.textContent = 'Suggerer 3 Big Rocks'; }
+    showToast('Erreur reseau : ' + e.message, 'error');
+  }
+}
+
 // === Init ===
 document.addEventListener('DOMContentLoaded', async () => {
   initWeeks();
@@ -236,6 +265,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.querySelector('[data-action="auto-draft"]')?.addEventListener('click', autoDraft);
   document.querySelector('[data-action="save-bilan"]')?.addEventListener('click', saveBilan);
   document.querySelector('[data-action="save-rocks"]')?.addEventListener('click', saveRocks);
+  document.querySelector('[data-action="suggest-rocks"]')?.addEventListener('click', suggestRocks);
 
   // Bind blur des inputs pour auto-save (optionnel, on garde le bouton explicite pour l instant)
 
