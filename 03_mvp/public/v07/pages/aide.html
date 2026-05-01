@@ -169,7 +169,7 @@
             <ul>
               <li><strong>S6.30 DS unifie</strong> (3 j) : card-base 4 variants + Banner LLM universel + Animation thinking standardisee + etats (skeleton/empty/loading/error) + tokens manquants + .is-llm-output</li>
               <li><strong>S6.31 Top 5 ROI</strong> (2.5 j) : Decisions &#x2726; Recommander avec Claude + card-project dedie + Markdown Assistant + Auto-suggest 3 BR Revues + Recit Claude Trajectoire</li>
-              <li><strong>S6.32 Polish par page</strong> (3 j) : tour des 7 pages (Decisions, Projets, Revues, Assistant, Connaissance, Coaching, Trajectoire) avec ~50 recos restantes priorite 2-3</li>
+              <li><strong>S6.32 Polish par page</strong> (3 j) : tour des 7 pages avec ~50 recos restantes priorite 2-3 + microinteractions + iconographie</li>
               <li><strong>S6.33 Keyboard universel + density global</strong> (2 j) : extension S6.12 + S6.27 sur 7 pages + tour pedagogique + apprentissage actif generique</li>
             </ul>
           </li>
@@ -186,7 +186,7 @@
           <li><strong>Connaissance</strong> 5.5/10 &rarr; cible 9.5</li>
           <li><strong>Projets</strong> 5.0/10 &rarr; cible 9.5 (le plus pauvre, le plus a gagner)</li>
         </ul>
-        <p class="aide-meta">5 patterns recurrents identifies cross-pages : banner LLM absent, animation thinking exclusif Triage, bordure violette LLM exclusif Triage, apprentissage actif exclusif Triage, tour pedagogique exclusif Triage. Industrialises dans S6.30 DS unifie pour debloquer toutes les pages d un coup.</p>
+        <p class="aide-meta">5 patterns recurrents identifies cross-pages : banner LLM absent, animation thinking exclusif Triage, bordure violette LLM exclusif Triage, apprentissage actif exclusif Triage, tour pedagogique exclusif Triage. Industrialises dans S6.30 DS unifie.</p>
 
         <h3>V1 (T3-T4 2026, ~41 k binome)</h3>
         <ul>
@@ -242,4 +242,42 @@
         </ul>
 
         <h3>Apprentissage actif (S6.24.2)</h3>
-        <p>Une mini-card sur le Cockpit affiche en temps reel le nombre de patt
+        <p>Une mini-card sur le Cockpit affiche en temps reel le nombre de patterns appris. Stats detaillees dans <strong>Reglages &rarr; Coaching IA</strong> : feedbacks par verdict, par mois, recents (10 derniers).</p>
+
+        <h3>Reflexes UX</h3>
+        <ul>
+          <li><strong>Bouton "Repondre"</strong> sur chaque card &mdash; ouvre Outlook avec un mailto pre-rempli (RE: subject)</li>
+          <li><strong>Badge "&#x2726; Claude"</strong> et <strong>bordure violette gauche</strong> sur cards analysees par LLM (S6.26.2)</li>
+          <li><strong>Tag projet cliquable</strong> &mdash; reaffectation rapide d un email a un autre projet</li>
+          <li><strong>Tour pedagogique</strong> au 1<sup>er</sup> Triage (S6.24.4) : 3 reflexes en overlay, dismiss permanent via localStorage</li>
+        </ul>
+
+        <p class="aide-meta">Refonte cascade Lots 17-32 (29-30/04/2026). Audit complet : <code>04_docs/AUDIT-UX-ARBITRAGE-v0.8.md</code>. Plan : <code>04_docs/PLAN-RESOLUTION-AUDIT-ARBITRAGE.md</code>.</p>
+      </section>
+
+      <footer class="app-footer">
+        <p class="strategic-q">Naviguer clair. Trancher juste. Dormir serein.</p>
+        <div class="footer-meta">
+          <span>aiCEO v0.7</span><span>&middot;</span><span>Aide & guide CEO</span><span>&middot;</span><span>v07 · Voix exec moderne</span>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <nav class="bottom-tab-nav" aria-label="Navigation rapide mobile">
+    <a href="index.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span>Cockpit</span></a>
+    <a href="arbitrage.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-arbitrage"/></svg><span>Triage</span></a>
+    <button class="bottom-tab fab-trigger" type="button" aria-label="Capter">
+      <span class="fab-circle"><svg class="ico" aria-hidden="true"><use href="#i-mic"/></svg></span><span>Capter</span>
+    </button>
+    <a href="decisions.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg><span>Decisions</span></a>
+    <a href="evening.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-evening"/></svg><span>Bilan</span></a>
+  </nav>
+
+  <div data-component="modal-detail"></div>
+
+  <script type="module" src="../shared/store.js"></script>
+  <script type="module" src="../shared/component-loader.js"></script>
+  <script type="module" src="../stores/aide-store.js"></script>
+</body>
+</html>
