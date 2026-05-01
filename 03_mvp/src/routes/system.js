@@ -308,6 +308,47 @@ router.get("/releases", (req, res) => {
   res.json({ released, upcoming, generated_at: new Date().toISOString() });
 });
 
+// S6.33 — Apprentissage actif generique : table interaction_feedback
+function ensureInteractionFeedbackTable() {
+  try {
+    const { getDb } = require('../db');
+    const db = getDb();
+    db.exec("CREATE TABLE IF NOT EXISTS interaction_feedback (id TEXT PRIMARY KEY, kind TEXT NOT NULL, item_id TEXT, action TEXT NOT NULL, metadata TEXT, ts TEXT NOT NULL DEFAULT (datetime('now')), tenant_id TEXT NOT NULL DEFAULT 'default')");
+    db.exec("CREATE INDEX IF NOT EXISTS idx_iaf_kind ON interaction_feedback(kind, ts DESC)");
+    db.exec("CREATE INDEX IF NOT EXISTS idx_iaf_action ON interaction_feedback(action, ts DESC)");
+    db.exec("CREATE INDEX IF NOT EXISTS idx_iaf_tenant ON interaction_feedback(tenant_id, ts DESC)");
+  } catch (e) { console.error('[ensureInteractionFeedbackTable]', e.message); }
+}
+ensureInteractionFeedbackTable();
+
+router.post('/interaction-feedback', (req, res) => {
+  try {
+    const { getDb, uuid7 } = require('../db');
+    const db = getDb();
+    const { kind, item_id, action, metadata } = req.body || {};
+    if (!kind || !action) return res.status(400).json({ error: 'kind + action requis' });
+    const id = uuid7();
+    db.prepare("INSERT INTO interaction_feedback (id, kind, item_id, action, metadata) VALUES (?, ?, ?, ?, ?)").run(id, String(kind).slice(0, 50), item_id ? String(item_id).slice(0, 100) : null, String(action).slice(0, 100), metadata ? JSON.stringify(metadata).slice(0, 1000) : null);
+    res.json({ ok: true, id: id });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+router.get('/interaction-feedback/stats', (req, res) => {
+  try {
+    const { getDb } = require('../db');
+    const db = getDb();
+    const total = db.prepare("SELECT COUNT(*) AS c FROM interaction_feedback").get().c;
+    const byKind = db.prepare("SELECT kind, COUNT(*) AS c FROM interaction_feedback GROUP BY kind ORDER BY c DESC").all();
+    const byAction = db.prepare("SELECT action, COUNT(*) AS c FROM interaction_feedback GROUP BY action ORDER BY c DESC LIMIT 10").all();
+    const recent7d = db.prepare("SELECT COUNT(*) AS c FROM interaction_feedback WHERE ts >= datetime('now','-7 days')").get().c;
+    res.json({ total: total, recent_7d: recent7d, by_kind: byKind, by_action: byAction });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 module.exports = router;
 module.exports.getLastSyncStatus = getLastSyncStatus;
 module.exports.THRESHOLD_WARN_MIN = THRESHOLD_WARN_MIN;
