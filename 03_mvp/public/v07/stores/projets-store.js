@@ -157,7 +157,14 @@ async function doRender() {
     } else {
       // S6.38 : render par vue
       const view = state.viewMode || 'company';
+      // S6.39 : helpers de resolution domain/company
+      const domById = {};
+      (state.domains || []).forEach(d => { domById[d.id] = d; });
+      const compById = {};
+      (state.companies || []).forEach(c => { compById[c.id] = c; });
       const renderCard = (item, i) => {
+        const dom = item.domain_id ? domById[item.domain_id] : null;
+        const comp = item.company_id ? compById[item.company_id] : null;
         const data = {
           kind: 'project',
           id: item.id || ('item-' + i),
@@ -167,6 +174,13 @@ async function doRender() {
           created_at: item.created_at || item.updated_at || item.date || new Date().toISOString(),
           project_name: item.project_name || item.project || item.house_name,
           type: item.type,
+          // S6.39 : axes resolus pour affichage chips dans card-decision
+          domain_label: dom ? dom.name : null,
+          domain_icon: dom ? (dom.icon || '◯') : null,
+          domain_color: dom ? (dom.color || '#94A3B8') : null,
+          company_label: comp ? comp.name : null,
+          company_icon: comp ? (comp.icon || '🏢') : null,
+          company_color: comp ? (comp.color || '#0F172A') : null,
           _raw: item
         };
         const delay = Math.min(i * 30, 600);

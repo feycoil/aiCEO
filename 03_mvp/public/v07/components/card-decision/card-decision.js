@@ -74,6 +74,15 @@ export default {
     const metaEl = el.querySelector('[data-region="cd-meta"]');
     if (metaEl) {
       const parts = [];
+      // S6.39 : axes (domaine + societe) en premier sur les cards projet
+      if (props.kind === 'project' && props.domain_label) {
+        const dc = props.domain_color || '#7C3AED';
+        parts.push('<span class="cd-axis-chip" style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:11px;background:' + dc + '22;color:' + dc + ';font-size:11px;font-weight:600;border:1px solid ' + dc + '40">' + (props.domain_icon || '\u25CB') + ' ' + escapeHtml(props.domain_label) + '</span>');
+      }
+      if (props.kind === 'project' && props.company_label) {
+        const cc = props.company_color || '#0F172A';
+        parts.push('<span class="cd-axis-chip" style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:11px;background:' + cc + '15;color:' + cc + ';font-size:11px;font-weight:600;border:1px solid ' + cc + '30">' + (props.company_icon || '\ud83c\udfe2') + ' ' + escapeHtml(props.company_label) + '</span>');
+      }
       if (props.project || props.project_name) {
         const projectName = props.project_name || props.project;
         parts.push(`<div data-component="pill-project" data-props='${escapeJsonAttr(JSON.stringify({ name: projectName, color: props.project_color }))}'></div>`);

@@ -113,6 +113,78 @@ function renderDescription(p) {
   return h;
 }
 
+// S6.39 : section Rattachement (axes domain + company editables)
+function renderAxes(p) {
+  const dom = p.domain || null;
+  const comp = p.company || null;
+  const dColor = (dom && dom.color) || '#7C3AED';
+  const cColor = (comp && comp.color) || '#0F172A';
+  let h = '<div class="proj-section">';
+  h += '<h3 class="proj-section-title">Rattachement</h3>';
+  h += '<div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:8px">';
+  // Domain selector
+  h += '<div style="flex:1;min-width:200px"><label style="display:block;font-size:11px;color:var(--text-3);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Domaine</label>';
+  if (dom) {
+    h += '<div class="cd-axis-chip" style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:14px;background:' + dColor + '22;color:' + dColor + ';font-weight:600;border:1px solid ' + dColor + '40">' + (dom.icon || '◯') + ' ' + escHtml(dom.name) + '</div>';
+  } else {
+    h += '<div style="color:var(--text-3);font-size:13px;font-style:italic">Non rattache</div>';
+  }
+  h += ' <select data-axis="domain" data-pid="' + escHtml(p.id) + '" style="margin-left:8px;padding:4px 8px;border:1px solid var(--ivory-300);border-radius:6px;font-size:12px"><option value="">— Choisir —</option>';
+  axesDomains.forEach(d => { h += '<option value="' + escHtml(d.id) + '"' + (dom && dom.id === d.id ? ' selected' : '') + '>' + (d.icon || '') + ' ' + escHtml(d.name) + '</option>'; });
+  h += '</select></div>';
+  // Company selector
+  h += '<div style="flex:1;min-width:200px"><label style="display:block;font-size:11px;color:var(--text-3);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Societe</label>';
+  if (comp) {
+    h += '<div class="cd-axis-chip" style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:14px;background:' + cColor + '15;color:' + cColor + ';font-weight:600;border:1px solid ' + cColor + '30">' + (comp.icon || '🏢') + ' ' + escHtml(comp.name) + '</div>';
+  } else {
+    h += '<div style="color:var(--text-3);font-size:13px;font-style:italic">Non rattachee</div>';
+  }
+  h += ' <select data-axis="company" data-pid="' + escHtml(p.id) + '" style="margin-left:8px;padding:4px 8px;border:1px solid var(--ivory-300);border-radius:6px;font-size:12px"><option value="">— Choisir —</option>';
+  axesCompanies.forEach(c => { h += '<option value="' + escHtml(c.id) + '"' + (comp && comp.id === c.id ? ' selected' : '') + '>' + (c.icon || '') + ' ' + escHtml(c.name) + '</option>'; });
+  h += '</select></div>';
+  h += '</div>';
+  h += '<p style="margin:10px 0 0;font-size:12px;color:var(--text-3)">Gerer les axes : <a href="axes.html">/axes</a></p>';
+  h += '</div>';
+  return h;
+}
+
+// S6.39 : section Emails lies (5 derniers)
+function renderEmails(p) {
+  const emails = p._emails || [];
+  if (!emails.length) return '';
+  let h = '<div class="proj-section">';
+  h += '<h3 class="proj-section-title">Emails lies <span class="proj-count">' + emails.length + '</span></h3>';
+  h += '<ul class="proj-list" style="margin-top:8px">';
+  emails.slice(0, 5).forEach(e => {
+    const date = (e.received_at || '').slice(0, 10);
+    h += '<li style="padding:6px 0;border-bottom:1px solid var(--ivory-200)"><strong>' + escHtml(e.from_name || e.from_email || '?') + '</strong> · <span style="color:var(--text-3);font-size:12px">' + date + '</span><div style="font-size:13px;margin-top:2px">' + escHtml((e.subject || '').slice(0, 100)) + '</div></li>';
+  });
+  h += '</ul></div>';
+  return h;
+}
+
+function bindAxesEdit() {
+  document.querySelectorAll('select[data-axis]').forEach(sel => {
+    if (sel.dataset.bound) return;
+    sel.dataset.bound = '1';
+    sel.addEventListener('change', async () => {
+      const pid = sel.dataset.pid;
+      const axis = sel.dataset.axis;
+      const val = sel.value || null;
+      const field = axis === 'domain' ? 'domain_id' : 'company_id';
+      const body = {};
+      body[field] = val;
+      try {
+        await fetch('/api/projects/' + encodeURIComponent(pid), {
+          method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+        });
+        // Reload pour refleter le changement (chip + select sync)
+        load();
+      } catch (e) { alert('Erreur : ' + e.message); }
+    });
+  });
+}
+
 function render(p) {
   const titleEl = document.querySelector('.ht-title');
   const subtitleEl = document.querySelector('.ht-subtitle');
@@ -123,30 +195,60 @@ function render(p) {
   let html = '';
   html += renderHero(p);
   html += renderKpis(p);
+  html += renderAxes(p);   // S6.39
   html += renderEffort(p);
   html += renderDescription(p);
   html += renderChildren(p);
   html += renderDecisions(p);
   html += renderTasks(p);
-  const empty = !p.description && (!p.children || !p.children.length) && (!p.recent_decisions || !p.recent_decisions.length) && (!p.recent_tasks || !p.recent_tasks.length);
+  html += renderEmails(p); // S6.39
+  const empty = !p.description && (!p.children || !p.children.length) && (!p.recent_decisions || !p.recent_decisions.length) && (!p.recent_tasks || !p.recent_tasks.length) && (!p._emails || !p._emails.length);
   if (empty) html += emptyState('Projet vierge', 'Aucune action, decision ni sous-projet pour l instant.', 'Lancer le Triage', 'arbitrage.html');
   host.innerHTML = html;
+  bindAxesEdit();  // S6.39 : wire les selects domaine/societe
+}
+
+// S6.39 : caches axes pour edition rattachement
+let axesDomains = [];
+let axesCompanies = [];
+
+async function loadAxes() {
+  try {
+    const [d, c] = await Promise.all([
+      safeFetch('/api/domains'),
+      safeFetch('/api/companies')
+    ]);
+    axesDomains = (d && d.domains) || [];
+    axesCompanies = (c && c.companies) || [];
+  } catch (e) {}
 }
 
 async function load() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
   const host = document.querySelector('[data-region="projet-content"]');
+  // Fix titre 'Chargement...' : remplacer par '...' neutre tant que data n arrive pas
+  const subtitleEl = document.querySelector('.ht-subtitle');
+  if (subtitleEl && subtitleEl.textContent.trim() === 'Chargement...') subtitleEl.textContent = '';
   if (!host) return;
   if (!id) {
     host.innerHTML = emptyState('Aucun projet selectionne', 'L URL doit contenir <code>?id=&lt;project-id&gt;</code>.', 'Voir tous les projets', 'projets.html');
     return;
   }
+  // Charger axes en parallele du projet
+  await Promise.all([loadAxes(), Promise.resolve()]);
   const data = await safeFetch('/api/projects/' + encodeURIComponent(id));
   if (!data || !data.project) {
     host.innerHTML = emptyState('Projet introuvable', 'Cet identifiant n existe pas.', 'Voir tous les projets', 'projets.html');
     return;
   }
+  // Charger emails lies (best effort)
+  let emails = [];
+  try {
+    const eRes = await safeFetch('/api/projects/' + encodeURIComponent(id) + '/emails');
+    emails = (eRes && eRes.emails) || [];
+  } catch (e) {}
+  data.project._emails = emails;
   render(data.project);
 }
 

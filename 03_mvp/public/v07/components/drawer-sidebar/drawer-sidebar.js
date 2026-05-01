@@ -38,8 +38,9 @@ const SECTIONS = [
   }
 ];
 
-// Aide v07 livree (S6.11-EE-fix2)
+// Aide v07 livree (S6.11-EE-fix2) — S6.39 : ajout Axes (domaines + societes)
 const EXTRA_LINKS = [
+  { id: 'axes',     label: 'Axes',     href: 'axes.html',           iconId: 'target' },
   { id: 'help',     label: 'Aide',     href: 'aide.html',           iconId: 'info' },
   { id: 'settings', label: 'Reglages', href: 'settings.html',       iconId: 'settings' }
 ];

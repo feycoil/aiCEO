@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>aiCEO — Axes (Domaines & Sociétés)</title>
+<link rel="stylesheet" href="../shared/colors_and_type.css" />
+<link rel="stylesheet" href="../shared/app.css" />
+<link rel="stylesheet" href="../shared/tweaks.css" />
+<link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css" />
+<link rel="stylesheet" href="../components/header-topbar/header-topbar.css" />
+<style>
+  .axes-grid { display:grid; grid-template-columns: 1fr 1fr; gap:24px; margin-top:24px; }
+  @media (max-width: 900px) { .axes-grid { grid-template-columns: 1fr; } }
+  .axes-card { background:var(--surface); border:1px solid var(--ivory-200); border-radius:12px; padding:20px; }
+  .axes-card-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .axes-card-head h3 { margin:0; font-family:var(--font-serif); font-size:20px; font-weight:600; }
+  .axes-card-head p { margin:2px 0 0; color:var(--text-3); font-size:12px; }
+  .axes-list { display:flex; flex-direction:column; gap:8px; }
+  .axes-item { display:flex; align-items:center; gap:12px; padding:10px 12px; border:1px solid var(--ivory-200); border-radius:8px; background:var(--ivory-50); }
+  .axes-item-icon { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .axes-item-body { flex:1; min-width:0; }
+  .axes-item-name { font-weight:600; color:var(--ink-900); }
+  .axes-item-meta { font-size:11px; color:var(--text-3); margin-top:2px; }
+  .axes-item-actions { display:flex; gap:6px; }
+  .axes-btn { padding:4px 10px; border:1px solid var(--ivory-300); border-radius:6px; background:white; cursor:pointer; font-size:12px; }
+  .axes-btn:hover { background:var(--ivory-100); }
+  .axes-btn-danger:hover { background:#fee; border-color:#fcc; color:#c33; }
+  .axes-add-form { display:flex; gap:8px; margin-top:12px; padding:12px; background:var(--ivory-50); border-radius:8px; }
+  .axes-add-form input[type="text"] { flex:1; padding:8px 10px; border:1px solid var(--ivory-300); border-radius:6px; font-size:13px; }
+  .axes-add-form input[type="text"]:focus { outline:2px solid var(--violet-300); outline-offset:1px; }
+  .axes-add-form .icon-input { width:60px; text-align:center; }
+  .axes-add-form .color-input { width:50px; padding:4px; cursor:pointer; }
+  .axes-empty { padding:30px 12px; text-align:center; color:var(--text-3); font-size:13px; }
+</style>
+</head>
+<body data-route="axes">
+  <div data-component="drawer-sidebar" data-props='{"active": "settings"}'></div>
+  <main class="main-with-sidebar">
+    <div class="page-content">
+      <div data-component="header-topbar" data-props='{"breadcrumb": [{"label": "Cockpit", "href": "index.html"}, {"label": "Axes"}], "title": "Domaines & Sociétés", "subtitle": "Les 2 axes orthogonaux qui structurent vos projets"}'></div>
+
+      <div class="axes-grid">
+        <!-- Domaines -->
+        <div class="axes-card">
+          <div class="axes-card-head">
+            <div>
+              <h3>Domaines</h3>
+              <p>Thématiques entrepreneuriales · Finance, RH, Sales…</p>
+            </div>
+            <span class="badge-count" data-region="domains-count">—</span>
+          </div>
+          <div data-region="domains-list" class="axes-list">
+            <div class="axes-empty">Chargement…</div>
+          </div>
+          <form class="axes-add-form" data-region="domains-form">
+            <input type="text" name="icon" placeholder="🏷️" class="icon-input" maxlength="2" />
+            <input type="text" name="name" placeholder="Nom du domaine" required />
+            <input type="color" name="color" value="#7C3AED" class="color-input" />
+            <button type="submit" class="axes-btn">+ Ajouter</button>
+          </form>
+        </div>
+
+        <!-- Sociétés -->
+        <div class="axes-card">
+          <div class="axes-card-head">
+            <div>
+              <h3>Sociétés</h3>
+              <p>Entités juridiques · holdings et filiales</p>
+            </div>
+            <span class="badge-count" data-region="companies-count">—</span>
+          </div>
+          <div data-region="companies-list" class="axes-list">
+            <div class="axes-empty">Chargement…</div>
+          </div>
+          <form class="axes-add-form" data-region="companies-form">
+            <input type="text" name="icon" placeholder="🏢" class="icon-input" maxlength="2" />
+            <input type="text" name="name" placeholder="Nom de la société" required />
+            <input type="color" name="color" value="#0F172A" class="color-input" />
+            <button type="submit" class="axes-btn">+ Ajouter</button>
+          </form>
+        </div>
+      </div>
+
+      <div style="margin-top:24px;padding:16px;background:var(--violet-50, #f5f3ff);border-radius:10px;border:1px solid var(--violet-200, #ddd6fe)">
+        <strong style="color:var(--violet-800, #5b21b6)">💡 Architecture 2 axes orthogonaux</strong>
+        <p style="margin:6px 0 0;font-size:13px;color:var(--text-2);line-height:1.5">
+          Un projet peut avoir <strong>0 ou 1 domaine</strong> ET <strong>0 ou 1 société</strong> — les deux sont indépendants.
+          Vous pouvez ainsi voir vos projets « par société » (vue par défaut, cap stratégique) ou « par domaine » (vue thématique transverse).
+          La vue « À traiter » vous montre les projets sans rattachement.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="../shared/component-loader.js"></script>
+  <script type="module" src="../shared/header-loader.js"></script>
+  <script type="module" src="../stores/axes-store.js"></script>
+</body>
+</html>
