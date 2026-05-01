@@ -173,4 +173,53 @@ router.get('/:id/emails', (req, res) => {
   }
 });
 
+// === S6.37 — Triage workflow rattachement projet ===
+// POST /api/projects/suggest { text } -> { suggestions: [...top 5 projets candidats] }
+// Permet au Triage de proposer 3 options (rattacher / sous-thread / nouveau) sur la base
+// d'un matching simple sur name/tagline/description par mots-clés.
+router.post('/suggest', (req, res) => {
+  try {
+    const text = String((req.body && req.body.text) || '').toLowerCase().trim();
+    if (!text || text.length < 3) return res.json({ suggestions: [], reason: 'text trop court' });
+    const db = getDb();
+    // tokenize : mots > 3 chars, retirer accents/ponctuation
+    const tokens = text
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .split(/\s+/)
+      .filter(w => w.length >= 4);
+    if (!tokens.length) return res.json({ suggestions: [], reason: 'aucun token utile' });
+    // limiter à 6 tokens distincts
+    const uniq = [...new Set(tokens)].slice(0, 6);
+    // construire un WHERE OR pour LIKE sur name/tagline/description
+    const conds = [];
+    const params = [];
+    uniq.forEach(t => {
+      const safe = t.replace(/'/g, "''");
+      conds.push("(LOWER(name) LIKE ? OR LOWER(tagline) LIKE ? OR LOWER(description) LIKE ?)");
+      const pat = '%' + safe + '%';
+      params.push(pat, pat, pat);
+    });
+    const whereClause = conds.join(' OR ');
+    let rows = [];
+    try {
+      rows = db.prepare(
+        "SELECT id, name, tagline, status, domain_id, company_id, parent_id FROM projects WHERE status NOT IN ('archived') AND (" + whereClause + ") LIMIT 20"
+      ).all(...params);
+    } catch (e) {}
+    // scorer naïvement par nombre de tokens présents dans name+tagline+description
+    const scored = rows.map(p => {
+      const hay = ((p.name || '') + ' ' + (p.tagline || '') + ' ' + (p.description || ''))
+        .toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      let score = 0;
+      uniq.forEach(t => { if (hay.includes(t)) score += 1; });
+      return Object.assign({}, p, { score });
+    }).sort((a, b) => b.score - a.score).slice(0, 5);
+    res.json({ suggestions: scored, tokens: uniq, count: scored.length });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 module.exports = router;
