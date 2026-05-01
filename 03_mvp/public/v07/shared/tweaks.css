@@ -950,3 +950,37 @@ body[data-route="revues"] [data-region="timeline"] .cd-title {
   color: var(--ink-900);
   box-shadow: var(--shadow-card);
 }
+
+/* S6.32 — Trajectoire markers click affordance */
+.tj-marker[data-md-kind] { cursor: pointer; transition: transform 150ms; }
+.tj-marker[data-md-kind]:hover { transform: scale(1.15); z-index: 10; }
+.tj-graphe-node[data-md-kind] { cursor: pointer; }
+.tj-graphe-node[data-md-kind]:hover circle { stroke-width: 2; stroke: var(--violet-800); }
+
+/* S6.32 — Coaching signaux LLM (bordure violette) deja dans .is-llm-output */
+.co-signal.is-llm-output { padding-left: 16px; }
+
+/* S6.32 — kn-pin (Connaissance) hover affordance */
+.kn-pin { transition: transform 150ms, box-shadow 150ms; cursor: default; }
+.kn-pin:hover { transform: translateY(-1px); box-shadow: var(--shadow-card); }
+.kn-pin-del { transition: opacity 150ms, transform 150ms; }
+.kn-pin:hover .kn-pin-del { opacity: 1; }
+
+/* S6.32 — Decisions card-recommend bouton plus visible */
+.cd-ai-link.cd-recommend {
+  background: var(--violet-50);
+  color: var(--violet-800);
+  border: 1px solid var(--violet-200);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  text-decoration: none;
+  transition: all 150ms;
+}
+.cd-ai-link.cd-recommend:hover {
+  background: var(--violet-100);
+  border-color: var(--violet-500);
+  transform: translateY(-1px);
+}

@@ -92,8 +92,10 @@ async function loadSignals(llmReady) {
 
   host.innerHTML = signals.map(s => {
     const cls = s.level === 'alert' ? 'is-alert' : (s.level === 'warn' ? 'is-warn' : '');
+    // S6.32 : bordure violette gauche sur signaux LLM-generes
+    const llmCls = (s.source === 'llm' || s.via === 'llm' || llmReady) ? ' is-llm-output' : '';
     return `
-      <div class="co-signal ${cls}">
+      <div class="co-signal ${cls}${llmCls}">
         <div class="co-signal-label">${escHtml(s.label || s.level || 'signal')}</div>
         <div class="co-signal-text">${escHtml(s.text || '')}</div>
         ${s.meta ? `<div class="co-signal-meta">${escHtml(s.meta)}</div>` : ''}
