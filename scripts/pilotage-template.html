@@ -1669,7 +1669,7 @@ code, pre, .mono { font-family: var(--font-mono); }
     </section>
 
     <footer class="footer">
-      <span>aiCEO Pilotage · v2.1 · 1/5/2026 matin · Phase 1E S6.30+S6.31 livrés (DS unifié + Top 5 ROI) · S6.32+S6.33 backloggés</span>
+      <span>aiCEO Pilotage · v2.2 · 1/5/2026 matin · Phase 1E S6.30+S6.31+S6.32 livrés (3/4 sprints) · S6.33 keyboard universel backloggé</span>
       <span>Régénérer : <code>node scripts/generate-pilotage.js</code></span>
     </footer>
   </main>
@@ -1927,7 +1927,7 @@ function renderRoadmap() {
    's6.10-ee','s6.10-ee-fix','s6.11-ee','s6.11-ee-fix','s6.11-ee-fix2','s6.11-ee-2',
    's6.12','s6.13','s6.15','s6.17','s6.18','s6.19','s6.20','s6.21',
    's6.22','s6.23','s6.24','s6.25','s6.26','s6.27','s6.28','s6.29',
-   's7.1','a6','s6.30','s6.31'].forEach(s => livredIds.add(s));
+   's7.1','a6','s6.30','s6.31','s6.32'].forEach(s => livredIds.add(s));
 
   function sprintStatus(id) {
     var lid = id.toLowerCase();
@@ -1981,7 +1981,7 @@ function renderRoadmap() {
       { id: 'S6.16', desc: 'BETA LAMIAE validation utilisateur · 1 j + 3 j cal. (demande coordination)', doc: '_sprints/S6.16-beta-lamiae/DOSSIER-SPRINT-S6.16-beta-lamiae.md' }
     ], cible: '6/8 sprints livres + tag v0.8.1 pose · note produit 6.3 -> 8.5+' },
 
-    { num: 5, title: 'PHASE 1E — Polish 7 pages : S6.30 DS unifie + S6.31 Top 5 ROI livres (1/5/2026)', status: 'partial', subtitle: 'DS unifie + LLM cross-pages + 64 actions priorisees · ~10.5 j-binome cumule', sprints: [
+    { num: 5, title: 'PHASE 1E — Polish 7 pages : S6.30+S6.31+S6.32 livres (3/4 sprints) · S6.33 backlogge', status: 'partial', subtitle: 'DS unifie + LLM cross-pages + 64 actions priorisees · ~10.5 j-binome cumule', sprints: [
       { id: 'S6.30', desc: 'DS unifie : card-base 4 variants + Banner LLM universel + Animation thinking standardisee + Etats (skeleton/empty/loading/error) + tokens manquants + .is-llm-output (3 j)' },
       { id: 'S6.31', desc: 'Top 5 ROI : Decisions ✦ Recommander avec Claude + card-project dedie + Markdown Assistant + Auto-suggest 3 BR Revues + Recit Claude Trajectoire (2.5 j)' },
       { id: 'S6.32', desc: 'Polish par page : tour des 7 pages avec ~50 recos restantes priorite 2-3 + microinteractions + iconographie (3 j)' },
