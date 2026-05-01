@@ -48,9 +48,18 @@ export default {
     // S6.29 : auto-wire modal-detail sur la card root si props.id present.
     // Si props.kind defini (project/task/event/review/big-rock/info), respecte-le.
     if (root && props.id) {
-      root.dataset.mdKind = props.kind || 'decision';
-      root.dataset.mdId = props.id;
-      root.style.cursor = 'pointer';
+      if (props.kind === 'project') {
+        root.style.cursor = 'pointer';
+        root.dataset.projectId = props.id;
+        root.addEventListener('click', function(ev) {
+          if (ev.target.closest('a, button[data-action], [data-no-md]')) return;
+          window.location.href = 'projet.html?id=' + encodeURIComponent(props.id);
+        });
+      } else {
+        root.dataset.mdKind = props.kind || 'decision';
+        root.dataset.mdId = props.id;
+        root.style.cursor = 'pointer';
+      }
     }
 
     const timeEl = el.querySelector('[data-region="cd-time"]');
@@ -146,7 +155,8 @@ export default {
         if (span) span.textContent = 'Recommander avec Claude';
       } else if (isOpenGeneric && props.id) {
         aiLink.hidden = false;
-        aiLink.href = 'assistant.html?context=decision:' + encodeURIComponent(props.id);
+        var titleParam = props.title ? '&title=' + encodeURIComponent(props.title) : '';
+        aiLink.href = 'assistant.html?context=' + (props.kind || 'decision') + ':' + encodeURIComponent(props.id) + titleParam;
       } else {
         aiLink.hidden = true;
       }

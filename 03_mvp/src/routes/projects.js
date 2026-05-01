@@ -63,22 +63,33 @@ router.get('/:id', (req, res) => {
   const p = projects.get(req.params.id);
   if (!p) return res.status(404).json({ error: 'projet introuvable' });
   const db = getDb();
+  const id = req.params.id;
   const counts = {
-    tasks_open: db.prepare(`SELECT COUNT(*) AS n FROM tasks WHERE project_id = ? AND done = 0`).get(req.params.id).n,
-    tasks_total: db.prepare(`SELECT COUNT(*) AS n FROM tasks WHERE project_id = ?`).get(req.params.id).n,
-    decisions_open: db.prepare(`SELECT COUNT(*) AS n FROM decisions WHERE project_id = ? AND status = 'ouverte'`).get(req.params.id).n,
-    decisions_total: db.prepare(`SELECT COUNT(*) AS n FROM decisions WHERE project_id = ?`).get(req.params.id).n,
-    contacts: db.prepare(`SELECT COUNT(*) AS n FROM contacts_projects WHERE project_id = ?`).get(req.params.id).n,
-    events_upcoming: db.prepare(`SELECT COUNT(*) AS n FROM events WHERE project_id = ? AND starts_at >= datetime('now')`).get(req.params.id).n,
+    tasks_open: db.prepare("SELECT COUNT(*) AS n FROM tasks WHERE project_id = ? AND done = 0").get(id).n,
+    tasks_total: db.prepare("SELECT COUNT(*) AS n FROM tasks WHERE project_id = ?").get(id).n,
+    tasks_done_30d: db.prepare("SELECT COUNT(*) AS n FROM tasks WHERE project_id = ? AND done = 1 AND updated_at >= datetime('now','-30 days')").get(id).n,
+    decisions_open: db.prepare("SELECT COUNT(*) AS n FROM decisions WHERE project_id = ? AND status = 'ouverte'").get(id).n,
+    decisions_total: db.prepare("SELECT COUNT(*) AS n FROM decisions WHERE project_id = ?").get(id).n,
+    contacts: db.prepare("SELECT COUNT(*) AS n FROM contacts_projects WHERE project_id = ?").get(id).n,
+    events_upcoming: db.prepare("SELECT COUNT(*) AS n FROM events WHERE project_id = ? AND starts_at >= datetime('now')").get(id).n
   };
-  res.json({ project: { ...p, counts } });
+  let children = [];
+  let parent = null;
+  try {
+    children = db.prepare("SELECT id, name, status, tagline, progress FROM projects WHERE parent_id = ? ORDER BY updated_at DESC").all(id);
+    if (p.parent_id) parent = db.prepare("SELECT id, name FROM projects WHERE id = ?").get(p.parent_id);
+  } catch (e) {}
+  const recentTasks = db.prepare("SELECT id, title, done, priority, type, updated_at FROM tasks WHERE project_id = ? ORDER BY updated_at DESC LIMIT 10").all(id);
+  const recentDecisions = db.prepare("SELECT id, title, status, updated_at FROM decisions WHERE project_id = ? ORDER BY updated_at DESC LIMIT 5").all(id);
+  const velocity = counts.tasks_total > 0 ? Math.round((counts.tasks_total - counts.tasks_open) / counts.tasks_total * 100) : 0;
+  res.json({ project: Object.assign({}, p, { counts: counts, parent: parent, children: children, recent_tasks: recentTasks, recent_decisions: recentDecisions, velocity_pct: velocity }) });
 });
 
 router.patch('/:id', (req, res) => {
   try {
     const existing = projects.get(req.params.id);
     if (!existing) return res.status(404).json({ error: 'projet introuvable' });
-    const allowed = ['name', 'group_id', 'tagline', 'status', 'description', 'color', 'icon', 'progress', 'companies'];
+    const allowed = ['name', 'group_id', 'tagline', 'status', 'description', 'color', 'icon', 'progress', 'companies', 'parent_id', 'effort_done_days', 'effort_remaining_days'];
     const patch = {};
     for (const k of allowed) if (k in req.body) patch[k] = req.body[k];
     if (!Object.keys(patch).length) return res.json({ project: existing });

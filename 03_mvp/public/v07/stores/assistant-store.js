@@ -259,18 +259,26 @@ function newThread() {
   document.querySelector('[data-region="as-composer-input"]')?.focus();
 }
 
-// === Capture du context URL (?context=decision:UUID) ===
+// === Capture du context URL — S6.34 : titre lisible ===
 function captureUrlContext() {
   const params = new URLSearchParams(window.location.search);
   const ctx = params.get('context');
   if (!ctx) return null;
   state.contextFromUrl = ctx;
-  // Pre-remplit le composer avec une question contextuelle
+  const titleParam = params.get('title') || '';
   const input = document.querySelector('[data-region="as-composer-input"]');
-  if (input && ctx.startsWith('decision:')) {
-    input.value = 'Aide-moi a trancher cette decision (id: ' + ctx.split(':')[1] + ')';
-    input.focus();
-  }
+  if (!input) return;
+  const parts = ctx.split(':');
+  const kind = parts[0];
+  const id = parts[1] || '';
+  const ref = titleParam ? '"' + titleParam + '"' : ('id ' + id.slice(0, 8));
+  let prompt = '';
+  if (kind === 'decision') prompt = 'Aide-moi a trancher la decision ' + ref + '. Quels sont les points cles a peser ?';
+  else if (kind === 'project') prompt = 'Sur le projet ' + ref + ', quelles sont les prochaines actions a prioriser ?';
+  else if (kind === 'task') prompt = 'Concernant la tache ' + ref + ', comment proceder efficacement ?';
+  else prompt = 'A propos de ' + ref + ', que penses-tu ?';
+  input.value = prompt;
+  input.focus();
 }
 
 // === Composer events ===

@@ -1145,3 +1145,164 @@ body[data-route="revues"] [data-region="timeline"] .cd-title {
   transition: transform 150ms;
 }
 .page-tour-cta:hover { transform: translateY(-1px); }
+
+/* S6.34 — Fiche projet detaillee */
+.proj-hero {
+  padding: 24px 0 12px;
+}
+.proj-status-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  background: var(--ivory-100);
+  color: var(--ink-700);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.proj-status-pill.is-alerte, .proj-status-pill.is-hot { background: var(--danger-50); color: var(--danger-700); }
+.proj-status-pill.is-a_surveiller { background: var(--warning-50); color: var(--warning-700); }
+.proj-status-pill.is-sain, .proj-status-pill.is-active { background: var(--success-50); color: var(--success-700); }
+.proj-status-pill.is-archived { background: var(--ivory-200); color: var(--ink-500); }
+.proj-parent-link {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--ink-500);
+}
+.proj-parent-link a { color: var(--violet-800); text-decoration: none; font-weight: 600; }
+.proj-parent-link a:hover { text-decoration: underline; }
+.proj-section {
+  background: var(--paper);
+  border: 1px solid var(--ivory-200);
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin-top: 16px;
+}
+.proj-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-900);
+  margin: 0 0 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.proj-count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-500);
+  background: var(--ivory-100);
+  padding: 1px 8px;
+  border-radius: 999px;
+}
+.proj-context {
+  font-size: 13px;
+  color: var(--ink-700);
+  line-height: 1.6;
+}
+.proj-effort {
+  background: var(--paper);
+  border: 1px solid var(--ivory-200);
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin-top: 16px;
+}
+.proj-effort-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--ivory-100);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+.proj-effort-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--success-700), var(--violet-500));
+  transition: width 200ms;
+}
+.proj-effort-meta {
+  display: flex; gap: 16px;
+  font-size: 12px;
+  color: var(--ink-500);
+}
+.proj-children {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+}
+.proj-child-card {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 12px;
+  background: var(--ivory-50);
+  border: 1px solid var(--ivory-200);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 150ms;
+}
+.proj-child-card:hover {
+  background: var(--paper);
+  border-color: var(--violet-300);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card);
+}
+.proj-child-status {
+  width: 4px; height: 24px; flex-shrink: 0;
+  border-radius: 2px;
+  background: var(--ivory-200);
+  margin-top: 2px;
+}
+.proj-child-status.is-alerte, .proj-child-status.is-hot { background: var(--danger-700); }
+.proj-child-status.is-a_surveiller { background: var(--warning-700); }
+.proj-child-status.is-sain, .proj-child-status.is-active { background: var(--success-700); }
+.proj-child-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-900);
+}
+.proj-child-tagline {
+  font-size: 11px;
+  color: var(--ink-500);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+.proj-list {
+  list-style: none;
+  padding: 0; margin: 0;
+}
+.proj-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--ivory-100);
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px;
+}
+.proj-list li:last-child { border-bottom: 0; }
+.proj-list a { color: var(--ink-900); text-decoration: none; flex: 1; }
+.proj-list a:hover { color: var(--violet-800); }
+.proj-list-status {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ivory-300, var(--ivory-200));
+  flex-shrink: 0;
+}
+.proj-list-status.is-ouverte, .proj-list-status.is-open { background: var(--warning-700); }
+.proj-list-status.is-tranchee, .proj-list-status.is-closed, .proj-list-status.is-decidee { background: var(--success-700); }
+.proj-task-check {
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--ivory-200);
+  border-radius: 4px;
+  display: inline-grid; place-items: center;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.proj-task-check.is-done {
+  background: var(--success-700);
+  border-color: var(--success-700);
+  color: var(--paper);
+}
+.proj-task-prio {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: var(--ivory-100);
+  color: var(--ink-700);
+}
