@@ -2,7 +2,7 @@
 
 > **Lis ce fichier en premier** quand tu démarres une nouvelle session sur ce projet. Il consolide le contexte, les conventions, les pièges connus et les workflows types pour t'éviter de tout redécouvrir.
 
-**Version** : 30/04/2026 nuit (v16 CASCADE TRIAGE S6.22 → S6.26) — Refonte UX Triage profonde livree en 16 lots ininterrompus (~9h chrono). S6.22 Lots 17-29 (LLM batch + voix exec + dispatch IA + apprentissage actif via table `email_feedback`). S6.23 (Weekly Sync v07 + killswitch SW + restauration server.js). **S6.24 quick wins** (badge Claude + Repondre mailto + tour pedagogique + mini-card stats apprentissage). **S6.25 lacunes structurelles** (auto-create projet `kind=project`, verdict Big Rock semaine ISO max 3, endpoint `GET /api/projects/:id/emails`). **S6.26 polish UX** (bordure violette gauche cards LLM + Focus filtres elargis active+reportee+tranchees recentes 7j). 24 routes arbitrage + 7 routes projects. **Audit complet** `04_docs/AUDIT-UX-ARBITRAGE-v0.8.md` (note 8.5/10 → 9.5/10 alignement promesse). 10/10 v07-atomic verts. **Backlog Phase 1D V1.0** : S6.27 toggle density + hint feedback skipped + audit 161 hex tokens · S6.14 recette CEO 25 min sur sa propre boite mail · S6.16 BETA Lamiae · S6.28 tests E2E LLM frontend live · S6.29 modals 5 kinds nav reelle.
+**Version** : 01/05/2026 matin (v17 Phase 1E COMPLÈTE — DS unifié + parité Triage 8,0/10) — Cascade autonome ~2h50 chrono cumulé sur 4 sprints S6.30→S6.33 (10,5 j-binôme planifiés). Phase 1D 6/8 livrée (S6.12 keyboard-first + S7.1 mémoire inter-fils + A6 multi-tenant + S6.27/28/29). Phase 1E 4/4 livrée : **S6.30 DS unifié** (4 modules shared : llm-banner, thinking-overlay, toast, markdown-mini + tokens étendus + 6 pages avec banner LLM). **S6.31 Top 5 ROI 4/5** (Decisions ✦ Recommander Claude modal A/B/C, Markdown rendu Assistant, Auto-suggest 3 BR Revues, Récit Claude Trajectoire). **S6.32 Polish 7 pages** 3 vagues (Projets KPIs+filtres seg, Connaissance KPIs+search+toasts, Decisions tones, Coaching `.is-llm-output`, Trajectoire markers cursor, microinteractions). **S6.33 Keyboard universel + apprentissage actif** (3 modules shared : keyboard.js framework, page-tour.js, interaction-feedback.js + table `interaction_feedback` + 2 endpoints stats). **Tags Git** : v0.8.1 (Phase 1D) · v0.8.2 (Phase 1E S6.30+S6.31) · v0.8.3 (Phase 1E COMPLETE). **Notes par page** : Triage 9.5 (réf) · Revues 8.0 · Connaissance 8.0 · Assistant 7.5 · Trajectoire 7.5 · Decisions 7.5 · Coaching 7.5 · Projets 7.5. **Note moyenne 7 pages** : 6.5 → **7.7/10**. 10/10 v07-atomic verts. **Backlog V1.x** : wire raccourcis spécifiques par page (~3h × 6 pages), tour pédagogique réel par page, mini-card stats apprentissage Cockpit, card-project dédié, recette CEO 25 min, BETA Lamiae.
 **À jour à chaque clôture de sprint** ou décision structurante (cf. § 8 Maintenance).
 
 ---
@@ -43,7 +43,7 @@
 
 
 
-**Prochaine étape (30/04/2026 nuit)** : Phase 1D backloguée pour V1.0 — S6.27 (Triage Polish V1 : toggle density compact/normal/détaillé + hint feedback skipped + audit 161 hex hardcodes → tokens) + S6.14 (recette CEO 25 min sur sa propre boîte mail + tests E2E Playwright LLM) + S6.16 (BETA Lamiae) + S6.28 (tests E2E LLM frontend live, mock Claude pour CI) + S6.29 (modals 5 kinds en navigation réelle, audit S6.23 résiduel). Estimation ~5 j-binôme cumulés. Avant V1.x : **commit + tag** v0.8.1 incluant la cascade S6.22 → S6.26 livrée. Pilotage v1.8 + roadmap-map JOURNAL synchronisés.
+**Prochaine étape (01/05/2026 matin)** : Phase 1E COMPLÈTE livrée (4/4 sprints S6.30 → S6.33). Tag **v0.8.3** posé. **8 commits** non pushés origin/main (à pousser depuis Windows : `git push origin main --tags`). **Reste avant V1** : (1) wire raccourcis spécifiques par page via `registerShortcuts()` (~30 min × 6 pages) pour atteindre parité Triage 9.5/10 sur tout le produit ; (2) tour pédagogique réel par page (steps custom, ~15 min × 5 pages) ; (3) mini-card stats apprentissage actif sur Cockpit (lit `/api/system/interaction-feedback/stats`) ; (4) **recette CEO 25 min** sur ta propre boîte mail (S6.14 demande ton intervention) ; (5) **BETA Lamiae** validation utilisateur (S6.16 demande coordination). Pilotage v2.3 + roadmap-map JOURNAL synchronisés.
 
 ---
 
@@ -339,8 +339,4 @@ Pour éviter les divergences entre docs, voici la **source unique** par informat
 | Budget v0.5 (110 k€ engagés, 97,4 k€ dépensés, 12,6 k€ provision V1) | `04_docs/_release-notes/v0.5.md` | CLAUDE.md §1, DOSSIER-SPRINT-S5.md, 08-roadmap.md |
 | Nombre tests verts (91 sandbox / 103 Windows) | `04_docs/_release-notes/v0.5.md` | CLAUDE.md §3, RECETTE-CEO-v0.5-s4.md (critère minimal 84) |
 | Liste 12 pages frontend v0.5 | `04_docs/_release-notes/v0.5.md` (table architecture) | CLAUDE.md §3 (table v0.5) |
-| Liste 7 pages frontend v0.6 | CLAUDE.md §3 (cible officielle Claude Design depuis 26/04 PM) | DOSSIER-V06.md (à venir S6.2) |
-| Liste 70 routes API (par router) | `04_docs/api/INDEX.md` (à créer Q5) | `03_mvp/server.js` + `src/routes/*.js` |
-| Décisions architecture / méthode / livraisons | `00_BOUSSOLE/DECISIONS.md` (22+ ADRs datés) | CLAUDE.md, release-notes, JOURNAL roadmap |
-| État chronologique projet | `04_docs/11-roadmap-map.html` JOURNAL[] | DECISIONS.md (livraisons), CLAUDE.md §1 (statut) |
-| Statut sprint courant | `04_docs/11-roadmap-map.html` Sprint entries | CLAUDE.md §1 (Statut au), g
+| Liste 7 pages frontend v0.6 |

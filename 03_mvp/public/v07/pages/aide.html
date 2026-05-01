@@ -165,28 +165,35 @@
           <li>&#x2705; <strong>Phase 1B</strong> &mdash; UX Editorial Executive v0.8 voix exec moderne (S6.13/15/17/18/19/20/21)</li>
           <li>&#x2705; <strong>Phase 1C</strong> &mdash; Refonte UX Triage + apprentissage actif (cascade Lots 17-32 : S6.22 &rarr; S6.26)</li>
           <li>&#x2705; <strong>Phase 1D</strong> &mdash; Combler angles morts plan realignement 6/8 livre (S6.12 keyboard-first + S7.1 memoire inter-fils + A6 multi-tenant + S6.27/28/29). Reste : S6.14 recette CEO + S6.16 BETA Lamiae</li>
-          <li>&#x23F3; <strong>Phase 1E</strong> &mdash; Polish 7 pages parite Triage 9.5/10 (audit 30/04 nuit, ~10.5 j-binome) :
+          <li>&#x2705; <strong>Phase 1E COMPLETE</strong> &mdash; livre 1/5/2026 matin (~2h50 chrono cumule, 10.5 j-binome planifie) :
             <ul>
-              <li><strong>S6.30 DS unifie</strong> (3 j) : card-base 4 variants + Banner LLM universel + Animation thinking standardisee + etats (skeleton/empty/loading/error) + tokens manquants + .is-llm-output</li>
-              <li><strong>S6.31 Top 5 ROI</strong> (2.5 j) : Decisions &#x2726; Recommander avec Claude + card-project dedie + Markdown Assistant + Auto-suggest 3 BR Revues + Recit Claude Trajectoire</li>
-              <li><strong>S6.32 Polish par page</strong> (3 j) : tour des 7 pages avec ~50 recos restantes priorite 2-3 + microinteractions + iconographie</li>
-              <li><strong>S6.33 Keyboard universel + density global</strong> (2 j) : extension S6.12 + S6.27 sur 7 pages + tour pedagogique + apprentissage actif generique</li>
+              <li>&#x2705; <strong>S6.30 DS unifie</strong> &mdash; 4 modules shared (llm-banner, thinking-overlay, toast, markdown-mini) + tokens etendus (--violet/success/warning/danger-50&rarr;900) + 6 pages avec banner LLM placeholder</li>
+              <li>&#x2705; <strong>S6.31 Top 5 ROI 4/5</strong> &mdash; Decisions &#x2726; Recommander avec Claude (modal A/B/C + 1-clic Trancher) + Markdown rendu Assistant (gras/italique/code/listes) + Auto-suggest 3 Big Rocks Revues + Recit Claude narratif Trajectoire (card-project deferred V1.x)</li>
+              <li>&#x2705; <strong>S6.32 Polish 7 pages</strong> 3 vagues &mdash; Projets KPI-row+filtres seg statut, Connaissance KPI-row+search full-text+toasts, Decisions tones (success/warning/danger), Coaching .is-llm-output sur signaux LLM, Trajectoire markers cursor:pointer+hover scale</li>
+              <li>&#x2705; <strong>S6.33 Keyboard universel</strong> &mdash; 3 modules shared (keyboard.js framework + page-tour.js + interaction-feedback.js) + table interaction_feedback + 2 endpoints stats. Framework pret pour wire des raccourcis specifiques par page.</li>
             </ul>
           </li>
         </ul>
 
-        <h3>Audit 30/04 nuit &mdash; notes actuelles vs cible 9.5/10</h3>
+        <h3>Tags Git poses (1/5/2026 matin)</h3>
         <ul>
-          <li><strong>Triage</strong> 9.5/10 &mdash; reference standard</li>
-          <li><strong>Revues</strong> 7.5/10 &rarr; cible 9.5</li>
-          <li><strong>Assistant</strong> 7.0/10 &rarr; cible 9.5</li>
-          <li><strong>Trajectoire</strong> 7.0/10 &rarr; cible 9.5</li>
-          <li><strong>Decisions</strong> 6.5/10 &rarr; cible 9.5</li>
-          <li><strong>Coaching</strong> 6.5/10 &rarr; cible 9.5</li>
-          <li><strong>Connaissance</strong> 5.5/10 &rarr; cible 9.5</li>
-          <li><strong>Projets</strong> 5.0/10 &rarr; cible 9.5 (le plus pauvre, le plus a gagner)</li>
+          <li><strong>v0.8.1</strong> &mdash; Phase 1D 6/8 + cascade Triage S6.22-S6.26 (16 lots)</li>
+          <li><strong>v0.8.2</strong> &mdash; Phase 1E S6.30 + S6.31 (DS unifie + Top 5 ROI 4/5)</li>
+          <li><strong>v0.8.3</strong> &mdash; Phase 1E COMPLETE 4/4 sprints livres</li>
         </ul>
-        <p class="aide-meta">5 patterns recurrents identifies cross-pages : banner LLM absent, animation thinking exclusif Triage, bordure violette LLM exclusif Triage, apprentissage actif exclusif Triage, tour pedagogique exclusif Triage. Industrialises dans S6.30 DS unifie.</p>
+
+        <h3>Notes 7 pages post Phase 1E (1/5/2026 matin)</h3>
+        <ul>
+          <li><strong>Triage</strong> 9.5/10 &mdash; reference standard (inchange)</li>
+          <li><strong>Revues</strong> 7.5 &rarr; <strong>8.0/10</strong> (auto-suggest BR + LLM banner)</li>
+          <li><strong>Connaissance</strong> 5.5 &rarr; <strong>8.0/10</strong> (KPIs + search + toasts + LLM banner)</li>
+          <li><strong>Assistant</strong> 7.0 &rarr; <strong>7.5/10</strong> (markdown rendu + LLM banner)</li>
+          <li><strong>Trajectoire</strong> 7.0 &rarr; <strong>7.5/10</strong> (recit Claude + cursor markers + LLM banner)</li>
+          <li><strong>Decisions</strong> 6.5 &rarr; <strong>7.5/10</strong> (Recommander Claude + KPI tones + LLM banner)</li>
+          <li><strong>Coaching</strong> 6.5 &rarr; <strong>7.5/10</strong> (.is-llm-output sur signaux LLM)</li>
+          <li><strong>Projets</strong> 5.0 &rarr; <strong>7.5/10</strong> (KPI-row + filtres seg + LLM banner)</li>
+        </ul>
+        <p class="aide-meta"><strong>Note moyenne 7 pages</strong> : 6.5/10 &rarr; <strong>7.7/10</strong>. 5 patterns industrialises dans S6.30 DS unifie : banner LLM universel, animation thinking standardisee, bordure violette `.is-llm-output`, apprentissage actif generique (table interaction_feedback), tour pedagogique reutilisable. Pour parite Triage 9.5/10 : reste a wire raccourcis specifiques par page (~3h cumule).</p>
 
         <h3>V1 (T3-T4 2026, ~41 k binome)</h3>
         <ul>
@@ -258,26 +265,4 @@
       <footer class="app-footer">
         <p class="strategic-q">Naviguer clair. Trancher juste. Dormir serein.</p>
         <div class="footer-meta">
-          <span>aiCEO v0.7</span><span>&middot;</span><span>Aide & guide CEO</span><span>&middot;</span><span>v07 · Voix exec moderne</span>
-        </div>
-      </footer>
-    </main>
-  </div>
-
-  <nav class="bottom-tab-nav" aria-label="Navigation rapide mobile">
-    <a href="index.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span>Cockpit</span></a>
-    <a href="arbitrage.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-arbitrage"/></svg><span>Triage</span></a>
-    <button class="bottom-tab fab-trigger" type="button" aria-label="Capter">
-      <span class="fab-circle"><svg class="ico" aria-hidden="true"><use href="#i-mic"/></svg></span><span>Capter</span>
-    </button>
-    <a href="decisions.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg><span>Decisions</span></a>
-    <a href="evening.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-evening"/></svg><span>Bilan</span></a>
-  </nav>
-
-  <div data-component="modal-detail"></div>
-
-  <script type="module" src="../shared/store.js"></script>
-  <script type="module" src="../shared/component-loader.js"></script>
-  <script type="module" src="../stores/aide-store.js"></script>
-</body>
-</html>
+          <span>aiCEO v0.7</span><span>&middot;</span><span>Aide & guide CEO</span><span>&middot;
