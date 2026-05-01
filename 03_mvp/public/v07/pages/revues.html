@@ -163,6 +163,7 @@
     <aside data-component="drawer-sidebar" data-props='{"active": "revues", "tenant": {"label": "Mon espace"}, "user": {"name": "Major Fey", "role": "CEO"}}'></aside>
     <main class="app-main" id="main">
       <div data-component="header-topbar" data-props='{"breadcrumb": [{"label": "Cockpit", "href": "index.html"}, {"label": "Weekly Sync"}], "title": "Votre rituel hebdomadaire", "subtitle": "30 minutes pour clore la semaine \u2014 et tracer la prochaine"}'></div>
+      <div data-region="page-llm-banner" hidden style="margin: 12px 0;"></div>
 
       <div class="ws-stack">
 
@@ -286,5 +287,9 @@
   <script type="module" src="../shared/store.js?v=20260430bb"></script>
   <script type="module" src="../shared/component-loader.js?v=20260430bb"></script>
   <script type="module" src="../stores/revues-store.js?v=20260430bb"></script>
+  <script type="module">
+    import { mountLlmBanner } from '../shared/llm-banner.js';
+    document.addEventListener('DOMContentLoaded', () => { mountLlmBanner('[data-region="page-llm-banner"]', { context: 'Weekly Sync' }); });
+  </script>
 </body>
 </html>

@@ -133,10 +133,20 @@ export default {
 
     const aiLink = el.querySelector('[data-region="cd-ai-link"]');
     if (aiLink) {
-      const isOpen = ['active', 'open', 'pending'].includes(status);
-      if (isOpen && props.id) {
+      // S6.31 : sur decisions ouvertes/reportees, transformer le lien en bouton "Recommander avec Claude"
+      const isOpenDec = props.kind === 'decision' && ['active', 'open', 'ouverte', 'pending', 'reportee'].includes(status);
+      const isOpenGeneric = ['active', 'open', 'pending'].includes(status);
+      if (isOpenDec && props.id) {
         aiLink.hidden = false;
-        aiLink.href = `assistant.html?context=decision:${encodeURIComponent(props.id)}`;
+        aiLink.href = '#';
+        aiLink.dataset.action = 'recommend-decision';
+        aiLink.dataset.decisionId = props.id;
+        aiLink.classList.add('cd-recommend');
+        var span = aiLink.querySelector('span');
+        if (span) span.textContent = 'Recommander avec Claude';
+      } else if (isOpenGeneric && props.id) {
+        aiLink.hidden = false;
+        aiLink.href = 'assistant.html?context=decision:' + encodeURIComponent(props.id);
       } else {
         aiLink.hidden = true;
       }

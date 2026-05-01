@@ -75,6 +75,7 @@
     <aside data-component="drawer-sidebar" data-props='{"active":"connaissance","tenant":{"label":"Mon espace"},"user":{"name":"Major Fey","role":"CEO"}}'></aside>
     <main class="app-main" id="main">
       <div data-component="header-topbar" data-props='{"breadcrumb":[{"label":"Cockpit","href":"index.html"},{"label":"Connaissance"}],"title":"Votre base de connaissance","subtitle":"Decisions epinglees, criteres, regles","actions":[{"id":"new","label":"Nouveau pin","iconId":"plus","primary":true}]}'></div>
+      <div data-region="page-llm-banner" hidden style="margin: 12px 0;"></div>
 
       <div class="kn-toolbar">
         <div data-component="seg-filter" data-props='{"id":"type","options":["Tous","decision","critere","regle"],"active":"Tous"}'></div>
@@ -130,5 +131,9 @@
   <script type="module" src="../shared/store.js?v=20260430bb"></script>
   <script type="module" src="../shared/component-loader.js?v=20260430bb"></script>
   <script type="module" src="../stores/connaissance-store.js?v=20260430bb"></script>
+  <script type="module">
+    import { mountLlmBanner } from '../shared/llm-banner.js';
+    document.addEventListener('DOMContentLoaded', () => { mountLlmBanner('[data-region="page-llm-banner"]', { context: 'votre base de connaissance' }); });
+  </script>
 </body>
 </html>

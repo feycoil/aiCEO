@@ -1,5 +1,7 @@
-// assistant-store.js \u2014 chat live SSE v07 (S6.22 Lot 11)
+// assistant-store.js — chat live SSE v07 (S6.22 Lot 11 + S6.31 markdown)
 // Refonte complete : sidebar fils + zone chat + streaming SSE via fetch+ReadableStream
+
+import { mdToHtml } from '../shared/markdown-mini.js';
 
 const escHtml = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmtTime = ts => {
@@ -95,7 +97,7 @@ function renderMessages() {
 
   host.innerHTML = state.messages.map(m => `
     <div class="as-bubble ${m.role === 'user' ? 'user' : 'assistant'}" data-msg-id="${escHtml(m.id || '')}">
-      ${escHtml(m.content || '')}
+      ${m.role === 'assistant' ? mdToHtml(m.content || '') : escHtml(m.content || '')}
       ${m.ts ? `<div class="as-bubble-meta">${escHtml(fmtTime(m.ts))}</div>` : ''}
     </div>
   `).join('');
@@ -239,7 +241,8 @@ function updateStreamingBubble(msg) {
   if (!host) return;
   const div = host.querySelector('.as-bubble.assistant.is-streaming');
   if (div) {
-    div.textContent = msg.content;
+    // S6.31 : markdown rendu live pendant streaming
+    div.innerHTML = mdToHtml(msg.content);
     host.scrollTop = host.scrollHeight;
   }
 }

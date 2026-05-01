@@ -282,6 +282,7 @@
     <main class="app-main" id="main">
 
       <div data-component="header-topbar" data-props='{"breadcrumb":[{"label":"Cockpit","href":"index.html"},{"label":"Ma Trajectoire"}],"title":"Ma Trajectoire","subtitle":"Decisions tranchees, Big Rocks atteints, Projects clos — au fil du temps"}'></div>
+      <div data-region="page-llm-banner" hidden style="margin: 12px 0;"></div>
 
       <!-- Hero -->
       <section class="tj-hero">
@@ -386,5 +387,9 @@
   <script type="module" src="../shared/store.js?v=20260430bb"></script>
   <script type="module" src="../shared/component-loader.js?v=20260430bb"></script>
   <script type="module" src="../stores/trajectoire-store.js?v=20260430bb"></script>
+  <script type="module">
+    import { mountLlmBanner } from '../shared/llm-banner.js';
+    document.addEventListener('DOMContentLoaded', () => { mountLlmBanner('[data-region="page-llm-banner"]', { context: 'votre trajectoire' }); });
+  </script>
 </body>
 </html>
