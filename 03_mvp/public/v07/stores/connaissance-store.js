@@ -1,3 +1,5 @@
+import { showToast } from '../shared/toast.js';
+
 // connaissance-store.js — CRUD pins (S6.11-EE-2 L3.2)
 const escHtml = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -79,7 +81,7 @@ function bindForm() {
       const type = document.getElementById('kn-type').value;
       const title = document.getElementById('kn-title').value.trim();
       const content = document.getElementById('kn-content').value.trim();
-      if (!title) { alert('Le titre est requis.'); return; }
+      if (!title) { showToast('Le titre est requis.', 'warning'); return; }
       const r = await safeFetch('/api/knowledge/pins', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -90,7 +92,7 @@ function bindForm() {
         form.reset();
         loadPins();
       } else {
-        alert('Erreur creation.');
+        showToast('Erreur creation.', 'warning');
       }
     });
   }
