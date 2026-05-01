@@ -159,24 +159,47 @@
 
       <section class="aide-section" id="sec-4">
         <h2><span class="aide-section-num">04</span>Ce qui arrive</h2>
-        <h3>Phase 1 (en cours fin avril 2026)</h3>
+        <h3>Phase 1 (livre 30/04/2026 nuit)</h3>
         <ul>
-          <li>✅ <strong>Phase 1A</strong> - Migration v06 -> v07 Atomic Templates (S6.10-EE -> S6.12)</li>
-          <li>✅ <strong>Phase 1B</strong> - UX Editorial Executive v0.8 voix exec moderne (S6.13 + S6.15 + S6.17 + S6.18 + S6.19 + S6.20 + S6.21)</li>
-          <li>⏳ <strong>Phase 1C</strong> - Tests E2E + recette CEO + BETA Lamiae (S6.14 + S6.16 + S6.22 + S6.23)</li>
+          <li>&#x2705; <strong>Phase 1A</strong> &mdash; Migration v06 &rarr; v07 Atomic Templates (S6.10-EE &rarr; S6.12)</li>
+          <li>&#x2705; <strong>Phase 1B</strong> &mdash; UX Editorial Executive v0.8 voix exec moderne (S6.13/15/17/18/19/20/21)</li>
+          <li>&#x2705; <strong>Phase 1C</strong> &mdash; Refonte UX Triage + apprentissage actif (cascade Lots 17-32 : S6.22 &rarr; S6.26)</li>
+          <li>&#x2705; <strong>Phase 1D</strong> &mdash; Combler angles morts plan realignement 6/8 livre (S6.12 keyboard-first + S7.1 memoire inter-fils + A6 multi-tenant + S6.27/28/29). Reste : S6.14 recette CEO + S6.16 BETA Lamiae</li>
+          <li>&#x23F3; <strong>Phase 1E</strong> &mdash; Polish 7 pages parite Triage 9.5/10 (audit 30/04 nuit, ~10.5 j-binome) :
+            <ul>
+              <li><strong>S6.30 DS unifie</strong> (3 j) : card-base 4 variants + Banner LLM universel + Animation thinking standardisee + etats (skeleton/empty/loading/error) + tokens manquants + .is-llm-output</li>
+              <li><strong>S6.31 Top 5 ROI</strong> (2.5 j) : Decisions &#x2726; Recommander avec Claude + card-project dedie + Markdown Assistant + Auto-suggest 3 BR Revues + Recit Claude Trajectoire</li>
+              <li><strong>S6.32 Polish par page</strong> (3 j) : tour des 7 pages (Decisions, Projets, Revues, Assistant, Connaissance, Coaching, Trajectoire) avec ~50 recos restantes priorite 2-3</li>
+              <li><strong>S6.33 Keyboard universel + density global</strong> (2 j) : extension S6.12 + S6.27 sur 7 pages + tour pedagogique + apprentissage actif generique</li>
+            </ul>
+          </li>
         </ul>
+
+        <h3>Audit 30/04 nuit &mdash; notes actuelles vs cible 9.5/10</h3>
+        <ul>
+          <li><strong>Triage</strong> 9.5/10 &mdash; reference standard</li>
+          <li><strong>Revues</strong> 7.5/10 &rarr; cible 9.5</li>
+          <li><strong>Assistant</strong> 7.0/10 &rarr; cible 9.5</li>
+          <li><strong>Trajectoire</strong> 7.0/10 &rarr; cible 9.5</li>
+          <li><strong>Decisions</strong> 6.5/10 &rarr; cible 9.5</li>
+          <li><strong>Coaching</strong> 6.5/10 &rarr; cible 9.5</li>
+          <li><strong>Connaissance</strong> 5.5/10 &rarr; cible 9.5</li>
+          <li><strong>Projets</strong> 5.0/10 &rarr; cible 9.5 (le plus pauvre, le plus a gagner)</li>
+        </ul>
+        <p class="aide-meta">5 patterns recurrents identifies cross-pages : banner LLM absent, animation thinking exclusif Triage, bordure violette LLM exclusif Triage, apprentissage actif exclusif Triage, tour pedagogique exclusif Triage. Industrialises dans S6.30 DS unifie pour debloquer toutes les pages d un coup.</p>
+
         <h3>V1 (T3-T4 2026, ~41 k binome)</h3>
         <ul>
-          <li>SaaS multi-tenant Supabase + RLS + Microsoft Entra auth</li>
+          <li>SaaS multi-tenant Supabase + RLS + Microsoft Entra auth (A6 deja livre &mdash; tenant_id partout sur 17 tables)</li>
           <li>Equipes (delegations, partage Hub)</li>
           <li>Mobile responsive complet</li>
         </ul>
         <h3>V2 (2027) et V3 (2028)</h3>
         <ul>
-          <li><strong>V2</strong> - commercial international + i18n + SOC 2 (~800 k)</li>
-          <li><strong>V3</strong> - coach IA proactif + offline + multi-CEO (~600 k)</li>
+          <li><strong>V2</strong> &mdash; commercial international + i18n + SOC 2 (~800 k)</li>
+          <li><strong>V3</strong> &mdash; coach IA proactif + offline + multi-CEO (~600 k)</li>
         </ul>
-        <p class="aide-meta">Total trajectoire 18 mois : 1.56 M (binome + provisions V1 absorbe + commercial). Cf. <code>04_docs/08-roadmap.md v3.3</code>.</p>
+        <p class="aide-meta">Total trajectoire 18 mois : 1.56 M (binome + provisions V1 absorbe + commercial). Cf. <code>04_docs/08-roadmap.md v3.3</code> + <code>00_BOUSSOLE/DECISIONS.md</code> ADR audit 30/04 nuit.</p>
       </section>
 
       <section class="aide-section" id="sec-5">
@@ -219,42 +242,4 @@
         </ul>
 
         <h3>Apprentissage actif (S6.24.2)</h3>
-        <p>Une mini-card sur le Cockpit affiche en temps reel le nombre de patterns appris. Stats detaillees dans <strong>Reglages &rarr; Coaching IA</strong> : feedbacks par verdict, par mois, recents (10 derniers).</p>
-
-        <h3>Reflexes UX</h3>
-        <ul>
-          <li><strong>Bouton "Repondre"</strong> sur chaque card &mdash; ouvre Outlook avec un mailto pre-rempli (RE: subject)</li>
-          <li><strong>Badge "&#x2726; Claude"</strong> et <strong>bordure violette gauche</strong> sur cards analysees par LLM (S6.26.2)</li>
-          <li><strong>Tag projet cliquable</strong> &mdash; reaffectation rapide d un email a un autre projet</li>
-          <li><strong>Tour pedagogique</strong> au 1<sup>er</sup> Triage (S6.24.4) : 3 reflexes en overlay, dismiss permanent via localStorage</li>
-        </ul>
-
-        <p class="aide-meta">Refonte cascade Lots 17-32 (29-30/04/2026). Audit complet : <code>04_docs/AUDIT-UX-ARBITRAGE-v0.8.md</code>. Plan : <code>04_docs/PLAN-RESOLUTION-AUDIT-ARBITRAGE.md</code>.</p>
-      </section>
-
-      <footer class="app-footer">
-        <p class="strategic-q">Naviguer clair. Trancher juste. Dormir serein.</p>
-        <div class="footer-meta">
-          <span>aiCEO v0.7</span><span>&middot;</span><span>Aide & guide CEO</span><span>&middot;</span><span>v07 · Voix exec moderne</span>
-        </div>
-      </footer>
-    </main>
-  </div>
-
-  <nav class="bottom-tab-nav" aria-label="Navigation rapide mobile">
-    <a href="index.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-home"/></svg><span>Cockpit</span></a>
-    <a href="arbitrage.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-arbitrage"/></svg><span>Triage</span></a>
-    <button class="bottom-tab fab-trigger" type="button" aria-label="Capter">
-      <span class="fab-circle"><svg class="ico" aria-hidden="true"><use href="#i-mic"/></svg></span><span>Capter</span>
-    </button>
-    <a href="decisions.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg><span>Decisions</span></a>
-    <a href="evening.html" class="bottom-tab"><svg class="ico" aria-hidden="true"><use href="#i-evening"/></svg><span>Bilan</span></a>
-  </nav>
-
-  <div data-component="modal-detail"></div>
-
-  <script type="module" src="../shared/store.js"></script>
-  <script type="module" src="../shared/component-loader.js"></script>
-  <script type="module" src="../stores/aide-store.js"></script>
-</body>
-</html>
+        <p>Une mini-card sur le Cockpit affiche en temps reel le nombre de patt

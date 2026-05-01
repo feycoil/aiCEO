@@ -3,6 +3,148 @@
 
 
 
+## 2026-04-30 (nuit) · Audit polish 7 pages + Plan S6.30 → S6.33 (DS unifié + parité Triage)
+
+**Statut** : Décidé · **Audience** : binôme · **Décision** : audit double (fonctionnel + visuel) des 7 pages non-Triage révèle 64 actions priorisables pour atteindre la parité Triage 9.5/10. Décomposition en 4 sprints S6.30-S6.33 (~10,5 j-binôme cumulé · ~5h chrono à la vélocité observée).
+
+### Pages auditées + notes actuelles
+
+| Page | Note | Effort 3 quick wins |
+|---|---|---|
+| Projets | 5,0/10 | 1,8 j |
+| Connaissance | 5,5/10 | 1,3 j |
+| Decisions | 6,5/10 | 1,5 j |
+| Coaching | 6,5/10 | 1,5 j |
+| Trajectoire | 7,0/10 | 1,8 j |
+| Assistant | 7,0/10 | 1,4 j |
+| Revues | 7,5/10 | 1,2 j |
+
+### 5 patterns récurrents identifiés (cross-pages)
+
+1. **Banner LLM live/dégradé absent** (sauf Coaching)
+2. **Animation thinking overlay LLM** non standardisée (exclusif Triage)
+3. **Bordure violette `.is-llm-output`** non systématique (exclusif Triage)
+4. **Apprentissage actif** (table feedback + mini-card stats) exclusif Triage
+5. **Tour pédagogique 1ère utilisation** exclusif Triage
+
+### 8 améliorations DS systémiques (Pilier 1)
+
+1. **`card-base` unifié à 4 variants** — remplace 5 patterns différents (`.ar-card`, `.cd`, `.kn-pin`, `.co-signal`, `.ws-rock`)
+2. **`card-project` dédié** — sortir Projets du clone `card-decision`
+3. **États standardisés** (skeleton/empty/loading/error/first-time)
+4. **Tokens manquants** (`--violet-50→800`, `--success/warning/danger-50→900`)
+5. **Animations entrée cohérentes** (`.fade-up` + `--anim-stagger-step: 30ms`)
+6. **Microinteractions standardisées** (hover/focus/active/toast unifié)
+7. **Badge component** (props `kind/status/size/variant`)
+8. **Page-header enrichi** (slot KPI-strip, eyebrow context, status chip)
+
+### Décomposition sprints
+
+**S6.30 — DS unifié** (3 j-binôme, priorité 1) :
+- `card-base` unifié + variants
+- Banner LLM universel `shared/llm-banner.js`
+- Animation thinking overlay extraite `shared/thinking-overlay.js`
+- États standardisés (4 atomes : skeleton-card, empty-state-v2, error-state, loading-spinner)
+- Tokens manquants ajoutés à `tokens.css`
+- Classe utilitaire `.is-llm-output` (bordure violette)
+
+**S6.31 — Top 5 ROI** (2,5 j-binôme, priorité 2) :
+- Decisions ✦ Recommander avec Claude (A/B/C + rationale + 1-clic Trancher)
+- `card-project` dédié (KPIs inline, progress bar, owner avatar)
+- Assistant : markdown rendu dans bulles + 4 chips prompts starters
+- Revues : auto-suggest 3 Big Rocks depuis décisions tranchées
+- Trajectoire : récit Claude narratif au-dessus de la timeline
+
+**S6.32 — Polish par page** (3 j-binôme, priorité 3) :
+- Tour systématique des 7 pages avec les ~50 recos restantes priorité 2-3
+- Microinteractions standardisées
+- Iconographie/sprite préchargement
+- Form animations slide-down
+- Toasts centralisés
+
+**S6.33 — Keyboard universel + density global** (2 j-binôme, priorité 4) :
+- Extension S6.12 keyboard-first sur les 7 pages (raccourcis adaptés par contexte)
+- Extension S6.27 toggle density (compact/normal/détaillé) global
+- Tour pédagogique 1ère utilisation par page
+- Apprentissage actif générique (table `interaction_feedback`)
+
+### Cibles post-livraison
+
+| Stratégie | Effort | Note moyenne |
+|---|---|---|
+| S6.30 seul | 3 j | 7,5 → 8,5/10 |
+| S6.30 + S6.31 | 5,5 j | 7,5 → 9,0/10 |
+| S6.30+S6.31+S6.32 | 8,5 j | 7,5 → 9,3/10 |
+| **S6.30→S6.33 complet** | **10,5 j** | **7,5 → 9,5/10 partout** |
+
+### Recommandation d'attaque
+
+Commencer par **S6.30 DS unifié** (ROI structurel maximum — chaque heure investie réduit l'effort des pages de 30-40%). Puis attaquer par la page la plus pauvre (Projets 5/10).
+
+### Sources
+
+- Audit fonctionnel : 21 quick wins + 5 patterns cross-pages
+- Audit visuel/UX : 56 recos par page + 8 systémiques DS = 64 actions priorisables
+- Référence : Triage post-cascade S6.22-S6.27 (note 9,5/10)
+
+
+
+## 2026-04-30 (nuit, post-audit) · Repondération Phase 1D — combler angles morts plan réalignement 28/04
+
+**Statut** : Validé · **Audience** : binôme · **Décision** : audit honnête de notre position vs `04_docs/audits/PLAN-REALIGNEMENT-PROMESSE-2026-04-28.md` révèle un déséquilibre — surinvestissement sur le pilier "polish UX Triage" (cascade S6.22→S6.26 = 16 lots, note 8.5→9.5/10), sous-investissement chronique sur 2 piliers de la promesse.
+
+### Constat audit
+
+| Pilier promesse | Note | Verdict |
+|---|---|---|
+| Cockpit + arbitrage + bilan + revue + assistant | 9/10 | ✅ Tous fonctionnels |
+| 100% local, SQLite mono-instance, zéro cloud | 10/10 | ✅ Respecté |
+| Vélocité ×30 binôme | 10/10 | ✅ Prouvée |
+| **Copilote IA contextualisé** | **6/10** | ❌ Pas de mémoire inter-fils, pas de daily digest |
+| **Exécutif (keyboard-first)** | **4/10** | ❌ Souris obligatoire, S6.12 du plan **jamais fait** |
+| ICP CEO francophone validé | 5/10 | 🟡 Pas de BETA Lamiae, pas de recette CEO sur soi |
+
+### Plan vs Livré
+
+- **Phase 0 Setup** : 100% livré (S6.9-bis-LIGHT + S6.10-bis-LIGHT)
+- **Phase 1 Fondations** : ~50% livré · S6.12 keyboard-first **non fait** · S6.13 Cmd+K dans pilotage seulement (pas dans v07) · S6.14 mémoire LLM **non fait**
+- **Phase 2 Intelligence** : ~30% en avance (S7.2 batch LLM ✅ via `analyze-emails-llm` 1 appel/12 emails · S7.4 backlinks projets/emails ✅ · S7.5 skeleton ✅) · S7.1, S7.3, S7.6 **non fait**
+- **Phase 3 Ritualisation** : 0% livré
+- **Métriques produit (7)** : 0/7 instrumentées
+- **Audits (A1-A10)** : 0/10 réalisés
+
+### Décision repondération Phase 1D
+
+Au lieu de S6.27 toggle density (cosmétique) en tête, repondérer pour combler les 2 piliers négligés :
+
+| Ordre | Sprint | Effort | Pilier comblé |
+|---|---|---|---|
+| 1 | **S6.12 Keyboard-first arbitrage** (A/D/I + nav ↑↓ + plein écran inbox-zero) | 1 j | Exécutif |
+| 2 | **S7.1 Mémoire inter-fils LLM** (daily summary system prompt) | 1 j | IA contextualisée |
+| 3 | **S6.14 Recette CEO 25 min** sur sa propre boîte + tests E2E | 0.5 j | Validation usage réel |
+| 4 | **A6 Audit multi-tenant** (`tenant_id` partout) | 0.5 j | Bloquant V1 |
+| 5 | S6.27 Triage Polish V1 (toggle density + hex tokens) | 1 j | Cosmétique |
+| 6 | S6.16 BETA Lamiae | 1 j + 3 j cal. | ICP |
+| 7 | S6.28 Tests E2E LLM frontend | 0.5 j | Robustesse |
+| 8 | S6.29 Modals 5 kinds nav | 0.5 j | Audit S6.23 résiduel |
+
+**Total** : ~6 j-binôme (au lieu de ~5 j avec ordre cosmétique d'origine).
+
+### Cibles repondérées
+
+- **Pilier Exécutif** : 4/10 → **8/10** (keyboard-first récupéré)
+- **Pilier IA contextualisée** : 6/10 → **8/10** (mémoire inter-fils livrée)
+- **Bloquant V1 multi-tenant** : levé via A6
+- **Note produit globale** : 6.3 → **8.5** (vs 8.0 dans le plan original)
+
+### Sources
+
+- `04_docs/audits/PLAN-REALIGNEMENT-PROMESSE-2026-04-28.md` (plan source signé 28/04)
+- `04_docs/AUDIT-UX-ARBITRAGE-v0.8.md` (audit complet 30/04)
+- `04_docs/00-pilotage-projet.html` v1.9 (Phase 1D repondérée)
+
+
+
 ## 2026-04-30 (nuit) · S6.24 + S6.25 + S6.26 — Cascade autonome Plan de résolution (Lots 30-32)
 
 **Statut** : Livré · **Audience** : binôme · **Décision** : exécution autonome demandée par CEO ("lance tout ce que tu peux faire seul jusqu'à phase 3"). Cascade S6.24 quick wins + S6.25 lacunes structurelles + S6.26 polish UX.
@@ -2843,102 +2985,4 @@ Patches Python atomic write sur `scripts/pilotage-template.html` (2266 → 2488 
    - `search-pill` (input avec debounce 180ms + événement `search:change`)
    - `modal-detail` (overlay + panel + API publique `el.openWith(data)` + listener global `decision:open`)
    - `empty-state` (icône + titre + description + CTA)
-3. **Store `decisions-store.js`** : fetch `/api/decisions?limit=200`, état réactif, calcul KPIs (total/open/done/frozen), filtrage par type + recherche, render orchestré via `ComponentLoader.refresh()`
-4. **Page `pages/decisions.html`** : 60 lignes de squelette vierge, **zéro donnée démo en dur**, **zéro style inline JS**, accessible via `http://localhost:4747/v07/pages/decisions.html`
-5. **7 tests unitaires** dans `03_mvp/tests/v07-atomic.test.js` (structure, références composants, anti-patterns démo, fetch API, tokens DS) — **7/7 verts** confirmés
-
-**Critères d'acceptance** (vs DOSSIER-SPRINT-S6.10-bis.md §5) :
-- ✅ 1 page-pilote migrée (decisions) — *Lean ADD-AI 1 au lieu de 3, connaissance + arbitrage en Phase 1*
-- ✅ Aucune donnée démo en dur dans les .html v07 (test automatique passing)
-- ✅ Aucun `style="..."` inline dans les bind/store .js (test automatique passing)
-- ✅ 8 composants atomiques utilisables via `data-component="..."` (vs 12 cible plein, écart Lean assumé)
-- ✅ Tests unit ≥ 80% sur composants (7/7 = 100%)
-- ⏳ Framework documenté dans `FRAMEWORK-ATOMIC-TEMPLATES.md` (déjà existant, plan migration à enrichir post-S6.10-bis)
-- ⏳ Plan migration 17 autres pages (sera produit en S6.10-EE qui regroupe migration EE + Atomic post-SPIKE-VALIDATION)
-
-**Effort réel** : ~1h Claude actif (vs cadrage 1 j-binôme). Vélocité ×8 vs cadrage Lean.
-
-**Conséquences** :
-
-*Court terme* :
-- SPIKE-VALIDATION-ADD-AI peut maintenant comparer S6.10-bis-LIGHT (méthode ADD-AI) vs un sprint S6.8 équivalent (méthode classique).
-- Le CEO peut ouvrir `http://localhost:4747/v07/pages/decisions.html` pour valider visuellement le rendu Atomic Templates en direct sur ses vraies données.
-- Cohabitation v06 ↔ v07 : pas de bascule du drawer principal, les utilisateurs peuvent comparer en parallèle.
-
-*Long terme* :
-- Si SPIKE valide la méthode, le sprint S6.11-EE (Editorial Executive sur 17 pages v06) sera fusionné avec une **migration progressive vers v07 Atomic** au lieu de patcher v06.
-- Le framework Atomic est prêt pour scale : ajouter une page = ajouter 1 squelette HTML + 1 store, sans toucher aux composants existants.
-
-*Risques résiduels* :
-- R1 — Composants chargés via `fetch()` HTML par composant = N requêtes au load. Mitigation : cache navigateur + browser HTTP/2 multiplexing. Bundle V1 différé.
-- R2 — Le `data-props` JSON peut casser sur les apostrophes dans les valeurs (ex: `"href":"arbitrage.html"` après `"label":"Aller à l\'arbitrage"`). Mitigation : helper `escapeJson` dans le store + tests à étendre en Phase 1 sur edge cases.
-- R3 — Sans le LLM live, les enrichissements coaching ne sont pas testables sur cette page. Pas bloquant : la migration ne touche pas la couche LLM.
-
-**Sources** :
-- DOSSIER-SPRINT-S6.10-bis.md (cadrage plein, mode Lean activé)
-- ADR `2026-04-28 v8 · Adoption ADD-AI`, v9 Lean, v11 Editorial Executive, v12 S6.9-bis livré
-- `04_docs/00_methode/FRAMEWORK-ATOMIC-TEMPLATES.md` (note de cadrage technique 28/04)
-- Tests : `03_mvp/tests/v07-atomic.test.js` (7/7 verts en sandbox Linux)
-
-**Prochaine étape** : SPIKE-VALIDATION-ADD-AI (mesure GO/NO-GO formelle vélocité ×1.2 / coût −20% / erreurs −30%).
-
----
-
-## 2026-04-28 v12 · Sprint S6.9-bis-LIGHT livré — Cowork minimal (Lean ADD-AI Phase 0)
-
-**Statut** : Acté · **Origine** : mandat CEO 28/04 soir *« on lance toute la phase option A »* (4 sprints Lean en autonomie).
-
-**Décision** : livraison du sprint S6.9-bis-LIGHT (variante minimaliste de S6.9-bis), inaugurant la Phase 0 Lean ADD-AI.
-
-**Périmètre livré** :
-
-1. **Plugin Cowork `aiceo-dev`** créé dans `.cowork/plugins/aiceo-dev/` :
-   - `plugin.json` (manifeste lean_mode=true)
-   - 3 skills essentielles : `kickoff.md` (démarrage sprint), `ship.md` (livraison sprint), `retex.md` (retour d'expérience)
-   - 4 subagents experts : `architect.md`, `dev-fullstack.md`, `designer.md`, `qa-engineer.md`
-2. **Mémoire structurée** dans `.cowork/memory/` (bootstrap depuis CLAUDE.md) :
-   - `product/promesse.md` + `product/contraintes.md`
-   - `tech/architecture.md` + `tech/invariants.md` + `tech/pieges-connus.md`
-   - `ceo-context/etic-context.md`
-   - `retex/_template.md`
-3. **Routines** : `.cowork/routines.json` (3 scheduled tasks Lean : morning-brief, evening-bilan, weekly-audit — implémentations différées en S7.7/S7.8/S6.15)
-4. **Hooks git** : `.cowork/hooks/pre-commit` (node --check + détection NUL bytes + secrets API + warning <script> manquants) + `.cowork/hooks/install-hooks.ps1` (installeur PowerShell idempotent)
-5. **README** : `.cowork/README.md` documentant la structure et le mode Lean
-
-**Périmètre NON livré (deferred S6.16-bis post-V1)** :
-- Restructuration dossier projet (déplacement 18 `*.ps1` vers `tools/`, sous-classement `04_docs/` en `00_methode/`, `01_produit/`...)
-- Skills supplémentaires (7 deferred : `/audit`, `/refactor`, `/focus`, `/morning-brief`, `/evening-bilan`, `/audit-week`, `/cost-status`)
-- Subagents supplémentaires (4 deferred : `dev-backend`, `dev-frontend`, `security-auditor`, `tech-writer`, `product-manager`)
-- Routine `consistence-hourly` (régénération auto pilotage)
-- Hook `pre-tag` étendu (smoke-all + audit visuel diff)
-
-**Effort réel** : ~45 min Claude actif (vs cadrage 0.5 j-binôme). Vélocité ×2 vs cadrage Lean.
-
-**Conséquences** :
-
-*Court terme* :
-- Phase 0 Lean ADD-AI peut continuer : S6.10-bis-LIGHT (Atomic Templates page-pilote `decisions.html`) déblocable immédiatement.
-- Le CEO doit installer manuellement les hooks via `pwsh -File .cowork\hooks\install-hooks.ps1` (le `.git/hooks/` est protégé en sandbox).
-- Le retex S6.9-bis-LIGHT sera produit après les 4 sprints Phase 0 (regroupement /retex automatique post-Phase 0).
-
-*Long terme* :
-- Si SPIKE-VALIDATION-ADD-AI valide la méthode (vélocité ×1.2 / coût −20% / erreurs −30%), le plugin sera enrichi avec les skills et subagents deferred dans S6.16-bis.
-- Si SPIKE NO-GO, le plugin Lean reste utilisable pour la suite de la roadmap classique (ADD-AI abandonnée).
-
-*Risques résiduels* :
-- R1 — Hook pre-commit n'est pas testé sur Windows (vérifier que `tail -c 4 | od -An -c` fonctionne dans git Bash Windows). Mitigation : `install-hooks.ps1` permet rollback via `.bak`.
-- R2 — Mémoire bootstrap est à snapshot v0.7. Doit être patchée à chaque sprint majeur. Le skill `/retex` documente comment.
-- R3 — Zéro skill réellement *exécutable* via Claude Cowork à ce stade (le plugin est un manifeste de référence, pas un runtime). Les skills servent de *contrats* pour orchestrer manuellement le workflow. Mitigation : OK en Phase 0 Lean, on n'a pas besoin d'auto-exécution avant SPIKE-VALIDATION.
-
-**Sources** :
-- DOSSIER-SPRINT-S6.9-bis.md (cadrage plein, mode lean activé)
-- ADR `2026-04-28 v8 · Adoption ADD-AI`
-- ADR `2026-04-28 v9 · Lean ADD-AI + 3 garde-fous`
-- ROADMAP-V2-2026-04-28.md v2.1 (Phase 0 Lean = 3 j-binôme)
-- Mandat CEO 28/04 soir (option A : 4 sprints autonomie, $15 budget)
-
-**Prochaine étape** : passer à S6.10-bis-LIGHT (Atomic Templates page-pilote decisions.html, 1 j-binôme cadré).
-
----
-
-## 2026-04-28 v11 · Direction artist
+3. **Store `decisions-store.js`** : fetch `/api/decisions?limit=200`, état réactif, calcul KPIs (total/open/done/frozen), filtrage par type + recherche, rende
