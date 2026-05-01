@@ -37,10 +37,72 @@ Tu peux appeler le tool plusieurs fois dans la même réponse si plusieurs élé
 const MAX_TOKENS = 1500;
 
 // === S7.1 (30/04/2026) — Memoire inter-fils LLM (pilier IA contextualisee) ===
-// buildContextualSystemPrompt() augmente le system prompt avec snapshot DB.
-// Try/catch : si DB indisponible, fallback prompt de base.
-function buildContextualSystemPrompt() {
+// === S6.35 (1/5/2026) — Contextualiseur item specifique (project/decision/task) ===
+// buildContextualSystemPrompt(opts) : opts = { context_kind, context_id }
+// Si fourni, prepend un bloc detaille sur l item (emails, tasks, decisions, sub-projects)
+function buildContextualSystemPrompt(opts) {
   let ctx = "";
+  // S6.35 : si contexte specifique, fetch detail et inject
+  if (opts && opts.context_kind && opts.context_id) {
+    try {
+      const db = getDb();
+      const id = String(opts.context_id);
+      if (opts.context_kind === "project") {
+        const proj = db.prepare("SELECT id, name, tagline, description, status FROM projects WHERE id = ?").get(id);
+        if (proj) {
+          ctx += "\n\n---\nCONTEXTE DETAILLE PROJET \"" + proj.name + "\" :\n";
+          if (proj.tagline) ctx += "Tagline : " + proj.tagline + "\n";
+          if (proj.description) ctx += "Description : " + proj.description.slice(0, 300) + "\n";
+          ctx += "Statut : " + (proj.status || "active") + "\n";
+          let emails = [];
+          try { emails = db.prepare("SELECT subject, from_name, received_at, body_preview FROM emails WHERE project_id = ? OR LOWER(inferred_project) = LOWER(?) ORDER BY received_at DESC LIMIT 5").all(id, proj.name || ""); } catch (e) {}
+          if (emails.length) {
+            ctx += "\nDerniers emails (" + emails.length + ") :\n";
+            emails.forEach(e => { ctx += "- [" + (e.received_at || "").slice(0, 10) + "] " + (e.from_name || "?") + " : \"" + (e.subject || "").slice(0, 80) + "\""; if (e.body_preview) ctx += " — " + e.body_preview.slice(0, 100); ctx += "\n"; });
+          }
+          let decs = [];
+          try { decs = db.prepare("SELECT title, status, decision FROM decisions WHERE project_id = ? ORDER BY updated_at DESC LIMIT 5").all(id); } catch (e) {}
+          if (decs.length) {
+            ctx += "\nDecisions liees (" + decs.length + ") :\n";
+            decs.forEach(d => { ctx += "- [" + (d.status || "?") + "] " + (d.title || ""); if (d.decision) ctx += " => tranchee : " + d.decision.slice(0, 100); ctx += "\n"; });
+          }
+          let tasks = [];
+          try { tasks = db.prepare("SELECT title, done, priority FROM tasks WHERE project_id = ? AND done = 0 ORDER BY created_at DESC LIMIT 8").all(id); } catch (e) {}
+          if (tasks.length) {
+            ctx += "\nActions ouvertes (" + tasks.length + ") :\n";
+            tasks.forEach(t => { ctx += "- [" + (t.priority || "P2") + "] " + (t.title || "") + "\n"; });
+          }
+          let children = [];
+          try { children = db.prepare("SELECT name, status FROM projects WHERE parent_id = ?").all(id); } catch (e) {}
+          if (children.length) {
+            ctx += "\nSous-projets (" + children.length + ") : " + children.map(c => c.name + " [" + (c.status || "active") + "]").join(", ") + "\n";
+          }
+          ctx += "---\n";
+        }
+      } else if (opts.context_kind === "decision") {
+        const d = db.prepare("SELECT title, status, context, options, decision FROM decisions WHERE id = ?").get(id);
+        if (d) {
+          ctx += "\n\n---\nCONTEXTE DETAILLE DECISION \"" + d.title + "\" :\n";
+          ctx += "Statut : " + (d.status || "ouverte") + "\n";
+          if (d.context) ctx += "Contexte : " + d.context.slice(0, 500) + "\n";
+          if (d.options) ctx += "Options : " + (typeof d.options === "string" ? d.options : JSON.stringify(d.options)).slice(0, 500) + "\n";
+          if (d.decision) ctx += "Decision tranchee : " + d.decision.slice(0, 300) + "\n";
+          ctx += "---\n";
+        }
+      } else if (opts.context_kind === "task") {
+        const t = db.prepare("SELECT title, description, priority, done, due_at FROM tasks WHERE id = ?").get(id);
+        if (t) {
+          ctx += "\n\n---\nCONTEXTE DETAILLE ACTION \"" + t.title + "\" :\n";
+          ctx += "Priorite : " + (t.priority || "P2") + " | Etat : " + (t.done ? "fait" : "ouverte") + "\n";
+          if (t.due_at) ctx += "Echeance : " + t.due_at + "\n";
+          if (t.description) ctx += "Description : " + t.description.slice(0, 500) + "\n";
+          ctx += "---\n";
+        }
+      }
+    } catch (e) {
+      console.warn("[buildContextualSystemPrompt] context fetch failed:", e.message);
+    }
+  }
   try {
     const db = getDb();
     let decisions = [];
@@ -260,7 +322,7 @@ router.post('/messages', async (req, res) => {
         const stream = await client.messages.stream({
           model,
           max_tokens: MAX_TOKENS,
-          system: buildContextualSystemPrompt(),
+          system: buildContextualSystemPrompt({ context_kind: (req.body && req.body.context_kind) || null, context_id: (req.body && req.body.context_id) || null }),
           tools: TOOLS_ASSISTANT,
           messages: claudeMessages,
         });

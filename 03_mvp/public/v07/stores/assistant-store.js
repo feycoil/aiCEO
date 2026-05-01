@@ -137,7 +137,10 @@ async function sendMessage(content) {
       headers: { 'Content-Type': 'application/json', 'Accept': 'text/event-stream' },
       body: JSON.stringify({
         content,
-        conversation_id: state.activeConvId || undefined
+        conversation_id: state.activeConvId || undefined,
+        // S6.35 : transmet le contexte de l item (project/decision/task) pour enrichir le system prompt
+        context_kind: state.contextKind || undefined,
+        context_id: state.contextId || undefined
       })
     });
 
@@ -266,11 +269,15 @@ function captureUrlContext() {
   if (!ctx) return null;
   state.contextFromUrl = ctx;
   const titleParam = params.get('title') || '';
-  const input = document.querySelector('[data-region="as-composer-input"]');
-  if (!input) return;
   const parts = ctx.split(':');
   const kind = parts[0];
   const id = parts[1] || '';
+  // S6.35 : populate pour POST messages context_kind/context_id
+  state.contextKind = kind;
+  state.contextId = id;
+  state.contextTitle = titleParam;
+  const input = document.querySelector('[data-region="as-composer-input"]');
+  if (!input) return;
   const ref = titleParam ? '"' + titleParam + '"' : ('id ' + id.slice(0, 8));
   let prompt = '';
   if (kind === 'decision') prompt = 'Aide-moi a trancher la decision ' + ref + '. Quels sont les points cles a peser ?';
