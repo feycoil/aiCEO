@@ -83,7 +83,8 @@ function renderViewToggle() {
   if (!host || host.dataset.bound) return;
   host.innerHTML = '<button class="seg-btn is-active" data-view="company">Par societe</button>' +
                    '<button class="seg-btn" data-view="domain">Par domaine</button>' +
-                   '<button class="seg-btn" data-view="to-triage">A traiter</button>';
+                   '<button class="seg-btn" data-view="to-triage">A traiter</button>' +
+                   '<button class="seg-btn" data-view="table">Tableau</button>';
   host.dataset.bound = '1';
   host.addEventListener('click', function (ev) {
     const btn = ev.target.closest('[data-view]');
@@ -186,7 +187,47 @@ async function doRender() {
         const delay = Math.min(i * 30, 600);
         return '<div data-component="card-decision" data-props=' + "'" + escapeJsonAttr(JSON.stringify(data)) + "'" + ' style="animation-delay:' + delay + 'ms"></div>';
       };
-      if (view === 'to-triage') {
+      if (view === 'table') {
+        // S6.40 : Vue compacte tableau — 1 ligne par projet, ultra dense
+        const escTbl = s => String(s||'').replace(/[&<>"']/g, c2 => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c2]));
+        const fmtDateShort = iso => { if(!iso) return ''; const d=new Date(iso); if(isNaN(d.getTime())) return ''; return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'}); };
+        if (filteredItems.length === 0) {
+          timeline.innerHTML = '<div class="empty-state-v2"><div class="empty-state-v2-title">Aucun projet</div></div>';
+        } else {
+          let h = '<table class="proj-table" style="width:100%;border-collapse:separate;border-spacing:0;font-size:13px;background:var(--paper);border:1px solid var(--ivory-200);border-radius:8px;overflow:hidden">';
+          h += '<thead><tr style="background:var(--ivory-50);border-bottom:1px solid var(--ivory-200)">';
+          h += '<th style="padding:10px 12px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-500);width:6px"></th>';
+          h += '<th style="padding:10px 12px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-500)">Projet</th>';
+          h += '<th style="padding:10px 12px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-500)">Domaine</th>';
+          h += '<th style="padding:10px 12px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-500)">Societe</th>';
+          h += '<th style="padding:10px 12px;text-align:right;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-500)" title="Statut">Etat</th>';
+          h += '<th style="padding:10px 12px;text-align:right;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-500)" title="Mise a jour">MAJ</th>';
+          h += '</tr></thead><tbody>';
+          filteredItems.forEach((p, i) => {
+            const dom = p.domain_id ? domById[p.domain_id] : null;
+            const comp = p.company_id ? compById[p.company_id] : null;
+            const st = (p.status || 'active').toLowerCase();
+            const stColor = st === 'hot' || st === 'alerte' ? '#dc2626' : st === 'a_surveiller' || st === 'pending' ? '#f59e0b' : '#10b981';
+            const stLabel = { hot: 'Hot', alerte: 'Alerte', a_surveiller: 'A surveiller', pending: 'En attente', active: 'Actif', new: 'Nouveau', archived: 'Archive', sain: 'Sain' }[st] || st;
+            h += '<tr data-pid="' + escTbl(p.id) + '" style="border-bottom:1px solid var(--ivory-100);cursor:pointer;transition:background 100ms" onmouseover="this.style.background=\'var(--ivory-50)\'" onmouseout="this.style.background=\'\'">';
+            h += '<td style="padding:0;width:4px;background:' + stColor + '"></td>';
+            h += '<td style="padding:10px 12px"><strong style="color:var(--ink-900)">' + escTbl(p.name || '?') + '</strong>';
+            if (p.tagline) h += '<div style="font-size:11px;color:var(--ink-500);margin-top:2px">' + escTbl(p.tagline.slice(0, 80)) + '</div>';
+            h += '</td>';
+            h += '<td style="padding:10px 12px">' + (dom ? '<span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;color:' + (dom.color||'#7C3AED') + '">' + (dom.icon || '\u25CB') + ' ' + escTbl(dom.name) + '</span>' : '<span style="color:var(--ink-400);font-size:11px;font-style:italic">non rattache</span>') + '</td>';
+            h += '<td style="padding:10px 12px">' + (comp ? '<span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;color:' + (comp.color||'#0F172A') + '">' + (comp.icon || '\ud83c\udfe2') + ' ' + escTbl(comp.name) + '</span>' : '<span style="color:var(--ink-400);font-size:11px;font-style:italic">non rattachee</span>') + '</td>';
+            h += '<td style="padding:10px 12px;text-align:right"><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;background:' + stColor + '20;color:' + stColor + '">' + stLabel + '</span></td>';
+            h += '<td style="padding:10px 12px;text-align:right;color:var(--ink-500);font-size:11px">' + escTbl(fmtDateShort(p.updated_at || p.created_at)) + '</td>';
+            h += '</tr>';
+          });
+          h += '</tbody></table>';
+          timeline.innerHTML = h;
+          // Wire click -> projet.html
+          timeline.querySelectorAll('tr[data-pid]').forEach(tr => {
+            tr.addEventListener('click', () => { window.location.href = 'projet.html?id=' + encodeURIComponent(tr.dataset.pid); });
+          });
+        }
+      } else if (view === 'to-triage') {
         // Vue 'A traiter' : projets sans domain_id ET sans company_id, ou avec status hot/alerte
         const toTriage = filteredItems.filter(p => (!p.domain_id || !p.company_id) || ['hot','alerte'].includes((p.status||'').toLowerCase()));
         timeline.innerHTML = toTriage.length === 0

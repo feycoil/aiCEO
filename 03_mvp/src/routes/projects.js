@@ -222,4 +222,75 @@ router.post('/suggest', (req, res) => {
   }
 });
 
+// === S6.40 — Auto-classification heuristique des projets ===
+// POST /api/projects/auto-classify -> { proposed: [{id, name, domain_id, score}], applied: false }
+// POST /api/projects/auto-classify { apply: true } -> applique et retourne { updated: N }
+router.post('/auto-classify', (req, res) => {
+  try {
+    const apply = !!(req.body && req.body.apply);
+    const db = getDb();
+    // Mots-cles par domaine (rule-based simple, LLM ameliorable en V1)
+    const RULES = {
+      'dom-finance':    ['finance','tresor','tresorerie','compte','bank','banque','compta','facture','paie','budget','marge','cash','solde','iban','bilan','tva'],
+      'dom-sales':      ['client','prospect','deal','vente','sales','commercial','contrat','proposition','rdv','demo','partenariat','partenaire'],
+      'dom-marketing':  ['marketing','communication','site','seo','social','linkedin','newsletter','event','salon','presse','brand','campagne'],
+      'dom-ops':        ['production','livraison','logistique','qualite','supply','stock','operation','process','fournisseur','chantier','signature'],
+      'dom-rh':         ['recrut','salar','paye','cdi','cdd','rh','formation','onboard','candidat','entretien','cv'],
+      'dom-tech':       ['tech','dev','code','infra','serveur','cloud','it','informatique','app','api','site','docker','github','deploy'],
+      'dom-strategie':  ['strategie','vision','board','exec','gouvernance','m&a','transformation','plan','roadmap','pivot','orientation'],
+      'dom-legal':      ['legal','juridique','contrat','nda','rgpd','litige','avocat','clause','propriete','marque']
+    };
+    const projects = db.prepare("SELECT id, name, tagline, description, domain_id FROM projects WHERE status NOT IN ('archived')").all();
+    const proposals = [];
+    for (const p of projects) {
+      if (p.domain_id) continue; // deja classifie
+      const hay = ((p.name || '') + ' ' + (p.tagline || '') + ' ' + (p.description || ''))
+        .toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      let bestId = null;
+      let bestScore = 0;
+      for (const [domId, keywords] of Object.entries(RULES)) {
+        let score = 0;
+        for (const kw of keywords) { if (hay.includes(kw)) score += 1; }
+        if (score > bestScore) { bestScore = score; bestId = domId; }
+      }
+      if (bestId && bestScore >= 1) {
+        proposals.push({ id: p.id, name: p.name, domain_id: bestId, score: bestScore });
+      }
+    }
+    let updated = 0;
+    if (apply && proposals.length) {
+      const stmt = db.prepare("UPDATE projects SET domain_id = ?, updated_at = datetime('now') WHERE id = ?");
+      for (const prop of proposals) {
+        try { stmt.run(prop.domain_id, prop.id); updated++; } catch (e) {}
+      }
+    }
+    res.json({
+      mode: apply ? 'applied' : 'proposed',
+      total_projects: projects.length,
+      already_classified: projects.length - proposals.length - projects.filter(p => !p.domain_id).length + proposals.length,
+      proposals: proposals,
+      proposed_count: proposals.length,
+      updated: updated
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// POST /api/projects/bulk-company { company_id } -> assigne company_id a tous les projets sans company
+router.post('/bulk-company', (req, res) => {
+  try {
+    const cid = req.body && req.body.company_id;
+    if (!cid) return res.status(400).json({ error: 'company_id requis' });
+    const db = getDb();
+    const exists = db.prepare("SELECT id FROM companies WHERE id = ?").get(cid);
+    if (!exists) return res.status(404).json({ error: 'company introuvable' });
+    const r = db.prepare("UPDATE projects SET company_id = ?, updated_at = datetime('now') WHERE company_id IS NULL AND status NOT IN ('archived')").run(cid);
+    res.json({ updated: r.changes, company_id: cid });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 module.exports = router;

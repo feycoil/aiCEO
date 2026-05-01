@@ -152,8 +152,91 @@ function bindForms() {
   }
 }
 
+function bindActions() {
+  // S6.40 : auto-classification heuristique
+  const classifyBtn = document.querySelector('[data-action="classify-projects"]');
+  const classifyResult = document.querySelector('[data-region="classify-result"]');
+  if (classifyBtn && !classifyBtn.dataset.bound) {
+    classifyBtn.dataset.bound = '1';
+    classifyBtn.addEventListener('click', async () => {
+      classifyBtn.disabled = true;
+      classifyBtn.textContent = 'Analyse en cours...';
+      classifyResult.hidden = false;
+      classifyResult.classList.remove('is-error');
+      classifyResult.textContent = 'Lecture des projets et matching keywords...';
+      try {
+        // 1. Preview
+        const previewR = await safeFetch('/api/projects/auto-classify', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ apply: false }) });
+        if (!previewR) throw new Error('Reponse invalide');
+        const n = previewR.proposed_count || 0;
+        if (n === 0) {
+          classifyResult.textContent = 'Aucun projet a classer (tous deja classifies ou aucun mot-cle match).';
+          classifyBtn.disabled = false;
+          classifyBtn.textContent = 'Lancer la classification';
+          return;
+        }
+        const preview = (previewR.proposals || []).slice(0, 5).map(p => p.name + ' -> ' + p.domain_id.replace('dom-','')).join(', ');
+        if (!confirm('Proposer ' + n + ' rattachement(s) :\n\n' + preview + (n > 5 ? '\n... + ' + (n-5) + ' autres' : '') + '\n\nAppliquer ?')) {
+          classifyResult.textContent = 'Annule.';
+          classifyBtn.disabled = false;
+          classifyBtn.textContent = 'Lancer la classification';
+          return;
+        }
+        // 2. Apply
+        const applyR = await safeFetch('/api/projects/auto-classify', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ apply: true }) });
+        if (!applyR) throw new Error('Reponse invalide');
+        classifyResult.textContent = '\u2713 ' + (applyR.updated || 0) + ' projet(s) classifie(s). Recharger la liste projets pour voir.';
+      } catch (e) {
+        classifyResult.classList.add('is-error');
+        classifyResult.textContent = 'Erreur : ' + e.message;
+      }
+      // Recharger les counts (projects_count par domaine)
+      loadDomains();
+      classifyBtn.disabled = false;
+      classifyBtn.textContent = 'Lancer la classification';
+    });
+  }
+
+  // S6.40 : bulk-company
+  const bulkBtn = document.querySelector('[data-action="bulk-company"]');
+  const bulkResult = document.querySelector('[data-region="bulk-result"]');
+  if (bulkBtn && !bulkBtn.dataset.bound) {
+    bulkBtn.dataset.bound = '1';
+    bulkBtn.addEventListener('click', async () => {
+      if (!state.companies.length) { alert('Aucune societe disponible — ajoutez-en une.'); return; }
+      // Si plusieurs societes, demander laquelle
+      let cid = state.companies[0].id;
+      if (state.companies.length > 1) {
+        const list = state.companies.map((c, i) => (i+1) + '. ' + c.name).join('\n');
+        const choice = prompt('Plusieurs societes disponibles. Choisir le numero :\n\n' + list, '1');
+        if (!choice) return;
+        const idx = parseInt(choice, 10) - 1;
+        if (isNaN(idx) || idx < 0 || idx >= state.companies.length) return;
+        cid = state.companies[idx].id;
+      }
+      const cName = (state.companies.find(c => c.id === cid) || {}).name || cid;
+      if (!confirm('Rattacher TOUS les projets sans societe a "' + cName + '" ?')) return;
+      bulkBtn.disabled = true;
+      bulkResult.hidden = false;
+      bulkResult.classList.remove('is-error');
+      bulkResult.textContent = 'En cours...';
+      try {
+        const r = await safeFetch('/api/projects/bulk-company', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ company_id: cid }) });
+        if (!r) throw new Error('Reponse invalide');
+        bulkResult.textContent = '\u2713 ' + (r.updated || 0) + ' projet(s) rattache(s) a ' + cName + '.';
+      } catch (e) {
+        bulkResult.classList.add('is-error');
+        bulkResult.textContent = 'Erreur : ' + e.message;
+      }
+      loadCompanies();
+      bulkBtn.disabled = false;
+    });
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   bindForms();
+  bindActions();
   loadDomains();
   loadCompanies();
 });
