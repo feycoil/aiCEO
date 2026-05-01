@@ -3,7 +3,7 @@ import { showToast } from '../shared/toast.js';
 // connaissance-store.js — CRUD pins (S6.11-EE-2 L3.2)
 const escHtml = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-const state = { pins: [], filter: 'Tous' };
+const state = { pins: [], filter: 'Tous', search: '' };
 
 async function safeFetch(url, opts) {
   try { const r = await fetch(url, opts); if (!r.ok) return null; return await r.json(); }
@@ -16,15 +16,43 @@ async function loadPins() {
   render();
 }
 
+function computeKnKpis(pins) {
+  return {
+    total: pins.length,
+    decisions: pins.filter(p => p.type === 'decision').length,
+    criteres: pins.filter(p => p.type === 'critere' || p.type === 'criterion').length,
+    regles: pins.filter(p => p.type === 'regle' || p.type === 'principle').length
+  };
+}
+
+function renderKnKpis(pins) {
+  const host = document.querySelector('[data-region="kn-kpis"]');
+  if (!host) return;
+  const k = computeKnKpis(pins);
+  host.innerHTML = ''
+    + '<div class="kpi-tile" data-tone="neutral"><div class="kpi-tile-label">Total</div><div class="kpi-tile-value">' + k.total + '</div></div>'
+    + '<div class="kpi-tile" data-tone="success"><div class="kpi-tile-label">Decisions</div><div class="kpi-tile-value">' + k.decisions + '</div></div>'
+    + '<div class="kpi-tile" data-tone="warning"><div class="kpi-tile-label">Criteres</div><div class="kpi-tile-value">' + k.criteres + '</div></div>'
+    + '<div class="kpi-tile" data-tone="danger"><div class="kpi-tile-label">Regles</div><div class="kpi-tile-value">' + k.regles + '</div></div>';
+}
+
 function render() {
   const grid = document.querySelector('[data-region="kn-grid"]');
   const empty = document.querySelector('[data-region="kn-empty"]');
   const meta = document.querySelector('[data-region="kn-meta"]');
   if (!grid) return;
 
-  const filtered = state.filter === 'Tous'
+  // S6.32 : KPIs
+  renderKnKpis(state.pins);
+
+  let filtered = state.filter === 'Tous'
     ? state.pins
     : state.pins.filter(p => p.type === state.filter);
+  // S6.32 : search
+  if (state.search) {
+    const q = state.search.toLowerCase();
+    filtered = filtered.filter(p => (p.title || '').toLowerCase().includes(q) || (p.content || '').toLowerCase().includes(q));
+  }
 
   if (meta) meta.textContent = `${filtered.length} pin${filtered.length > 1 ? 's' : ''}`;
 
@@ -108,8 +136,23 @@ function bindFilters() {
   });
 }
 
+// S6.32 : bind search input
+function bindSearch() {
+  const inp = document.querySelector('[data-region="kn-search"]');
+  if (!inp) return;
+  let timer = null;
+  inp.addEventListener('input', () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      state.search = inp.value || '';
+      render();
+    }, 200);
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   bindForm();
   bindFilters();
+  bindSearch();
   loadPins();
 });
