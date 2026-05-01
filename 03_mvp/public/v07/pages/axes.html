@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>aiCEO - Axes (v07)</title>
-  <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css?v=20260501ax">
-  <link rel="stylesheet" href="../shared/tokens.css?v=20260501ax">
-  <link rel="stylesheet" href="../shared/tweaks.css?v=20260501ax">
-  <link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css?v=20260501ax">
-  <link rel="stylesheet" href="../components/header-topbar/header-topbar.css?v=20260501ax">
+  <link rel="stylesheet" href="../../v06/_shared/colors_and_type.css?v=20260501ax2">
+  <link rel="stylesheet" href="../shared/tokens.css?v=20260501ax2">
+  <link rel="stylesheet" href="../shared/tweaks.css?v=20260501ax2">
+  <link rel="stylesheet" href="../components/drawer-sidebar/drawer-sidebar.css?v=20260501ax2">
+  <link rel="stylesheet" href="../components/header-topbar/header-topbar.css?v=20260501ax2">
   <style>
     .ax-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-4); }
     @media (max-width: 900px) { .ax-grid { grid-template-columns: 1fr; } }
@@ -19,19 +19,16 @@
     .ax-count { font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--ink-500); padding: 2px 8px; background: var(--ivory-100); border-radius: 10px; }
     .ax-list { display: flex; flex-direction: column; gap: 6px; }
     .ax-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--ivory-200); border-radius: var(--radius-sm); background: var(--ivory-50); transition: all 150ms ease; }
-    .ax-item:hover { background: var(--paper); border-color: var(--ink-300); }
     .ax-item-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
     .ax-item-body { flex: 1; min-width: 0; }
     .ax-item-name { font-weight: 600; color: var(--ink-900); font-size: 14px; }
     .ax-item-meta { font-size: 11px; color: var(--ink-500); margin-top: 2px; }
     .ax-item-meta code { font-family: var(--font-mono); background: var(--ivory-100); padding: 1px 5px; border-radius: 3px; }
     .ax-item-actions { display: flex; gap: 6px; }
-    .ax-btn { padding: 4px 10px; border: 1px solid var(--ivory-300); border-radius: var(--radius-sm); background: var(--paper); cursor: pointer; font-size: 12px; color: var(--ink-700); font-family: var(--font-sans); }
-    .ax-btn:hover { background: var(--ivory-100); color: var(--ink-900); }
-    .ax-btn-danger:hover { background: #fee; border-color: #fcc; color: #c33; }
+    .ax-btn { padding: 4px 10px; border: 1px solid var(--ivory-300); border-radius: var(--radius-sm); background: var(--paper); cursor: pointer; font-size: 12px; color: var(--ink-700); }
+    .ax-btn:hover { background: var(--ivory-100); }
     .ax-form { display: flex; gap: 8px; margin-top: var(--space-3); padding: var(--space-3); background: var(--ivory-50); border-radius: var(--radius-sm); border: 1px dashed var(--ivory-300); }
-    .ax-form input[type="text"] { flex: 1; padding: 8px 10px; border: 1px solid var(--ivory-300); border-radius: var(--radius-sm); font-size: 13px; font-family: var(--font-sans); }
-    .ax-form input[type="text"]:focus { outline: 2px solid var(--violet-300, #c4b5fd); outline-offset: 1px; }
+    .ax-form input[type="text"] { flex: 1; padding: 8px 10px; border: 1px solid var(--ivory-300); border-radius: var(--radius-sm); font-size: 13px; }
     .ax-form .icon-input { width: 56px; text-align: center; font-size: 18px; }
     .ax-form .color-input { width: 44px; padding: 4px; cursor: pointer; border: 1px solid var(--ivory-300); border-radius: var(--radius-sm); }
     .ax-form button { padding: 8px 14px; background: var(--ink-900); color: var(--paper); border: 0; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; font-size: 13px; }
@@ -44,24 +41,77 @@
     .ax-action-card strong { display: block; font-size: 13px; color: var(--ink-900); margin-bottom: 4px; }
     .ax-action-card p { margin: 0 0 10px; font-size: 12px; color: var(--ink-500); line-height: 1.5; }
     .ax-action-card button { width: 100%; padding: 8px 12px; background: var(--ink-900); color: var(--paper); border: 0; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; font-size: 13px; }
-    .ax-action-card button[disabled] { opacity: 0.5; cursor: not-allowed; }
-    .ax-action-result { margin-top: 10px; font-size: 12px; color: var(--emerald-700, #059669); }
+    .ax-action-result { margin-top: 10px; font-size: 12px; color: #059669; }
     .ax-action-result.is-error { color: #dc2626; }
   </style>
 </head>
 <body data-route="axes">
   <script>
-  // Killswitch service worker (cohérent avec autres pages v07)
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(rs => {
-      rs.forEach(r => r.unregister().catch(() => {}));
-    }).catch(() => {});
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.getRegistrations().then(rs => { rs.forEach(r => r.unregister().catch(() => {})); }).catch(() => {});
   }
   </script>
   <div id="sprite-host" hidden></div>
-  <script>fetch('../../v06/_shared/icons.svg.html').then(r=>r.text()).then(h=>{const x=document.getElementById('sprite-host');if(x)x.innerHTML=h;}).catch(()=>{});</script>
+  <script>fetch("../../v06/_shared/icons.svg.html").then(r=>r.text()).then(h=>{const x=document.getElementById("sprite-host");if(x)x.innerHTML=h;}).catch(()=>{});</script>
 
   <div class="app">
     <aside data-component="drawer-sidebar" data-props='{"active":"axes","tenant":{"label":"Mon espace"},"user":{"name":"Major Fey","role":"CEO"}}'></aside>
     <main class="app-main" id="main">
-      <div data-component="header-topbar" data-prop
+      <div data-component="header-topbar" data-props='{"breadcrumb":[{"label":"Cockpit","href":"index.html"},{"label":"Axes"}],"title":"Domaines et Societes","subtitle":"Les 2 axes orthogonaux qui structurent vos projets"}'></div>
+
+      <div class="ax-grid">
+        <div class="ax-card">
+          <div class="ax-card-head">
+            <div><h3>Domaines</h3><p>Thematiques entrepreneuriales</p></div>
+            <span class="ax-count" data-region="domains-count">-</span>
+          </div>
+          <div data-region="domains-list" class="ax-list"><div class="ax-empty">Chargement...</div></div>
+          <form class="ax-form" data-region="domains-form">
+            <input type="text" name="icon" placeholder="emoji" class="icon-input" maxlength="2" />
+            <input type="text" name="name" placeholder="Nom du domaine" required />
+            <input type="color" name="color" value="#7C3AED" class="color-input" />
+            <button type="submit">+ Ajouter</button>
+          </form>
+        </div>
+
+        <div class="ax-card">
+          <div class="ax-card-head">
+            <div><h3>Societes</h3><p>Entites juridiques</p></div>
+            <span class="ax-count" data-region="companies-count">-</span>
+          </div>
+          <div data-region="companies-list" class="ax-list"><div class="ax-empty">Chargement...</div></div>
+          <form class="ax-form" data-region="companies-form">
+            <input type="text" name="icon" placeholder="emoji" class="icon-input" maxlength="2" />
+            <input type="text" name="name" placeholder="Nom de la societe" required />
+            <input type="color" name="color" value="#0F172A" class="color-input" />
+            <button type="submit">+ Ajouter</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="ax-actions-row">
+        <div class="ax-action-card">
+          <strong>Classifier les projets existants</strong>
+          <p>Analyse les projets et propose un domaine pour ceux qui n en ont pas (heuristique mots-cles).</p>
+          <button data-action="classify-projects">Lancer la classification</button>
+          <div class="ax-action-result" data-region="classify-result" hidden></div>
+        </div>
+        <div class="ax-action-card">
+          <strong>Rattacher a la societe par defaut</strong>
+          <p>Assigne une societe a tous les projets sans rattachement.</p>
+          <button data-action="bulk-company">Rattacher tous</button>
+          <div class="ax-action-result" data-region="bulk-result" hidden></div>
+        </div>
+      </div>
+
+      <div class="ax-info">
+        <strong>Architecture 2 axes orthogonaux</strong>
+        <p>Un projet peut avoir 0 ou 1 domaine ET 0 ou 1 societe (independants). Vue Societe par defaut, vue Domaine pour transverse, vue A traiter pour les projets sans rattachement.</p>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="../shared/component-loader.js?v=20260501ax2"></script>
+  <script type="module" src="../stores/axes-store.js?v=20260501ax2"></script>
+</body>
+</html>
