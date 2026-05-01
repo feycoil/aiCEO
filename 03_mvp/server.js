@@ -85,6 +85,9 @@ const systemRouter        = require("./src/routes/system");
 const assistantRouter     = require("./src/routes/assistant");
 const preferencesRouter   = require("./src/routes/preferences");
 const knowledgeRouter     = require("./src/routes/knowledge");
+// S6.36 : axes orthogonaux Domain + Company sur projets
+const domainsRouter       = require("./src/routes/domains");
+const companiesRouter     = require("./src/routes/companies");
 
 
 
@@ -312,6 +315,9 @@ app.use("/api/big-rocks",      bigRocksRouter);
 app.use("/api/system",         systemRouter);
 app.use("/api/preferences",    preferencesRouter);
 app.use("/api/knowledge",      knowledgeRouter);
+// S6.36 : axes Domain + Company
+app.use("/api/domains",        domainsRouter);
+app.use("/api/companies",      companiesRouter);
 
 
 app.use("/api/assistant",      assistantRouter);

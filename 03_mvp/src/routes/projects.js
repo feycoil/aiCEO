@@ -16,10 +16,13 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
   try {
-    const { group, status, q, limit, offset } = req.query;
+    const { group, status, q, limit, offset, domain, company } = req.query;
     const filters = {};
     if (group !== undefined) filters.group_id = group;
     if (status) filters.status = status;
+    // S6.36 : filtres par axe domain et company (orthogonaux)
+    if (domain !== undefined) filters.domain_id = domain || null;
+    if (company !== undefined) filters.company_id = company || null;
     const opts = {
       orderBy: "CASE status WHEN 'hot' THEN 0 WHEN 'active' THEN 1 WHEN 'new' THEN 2 ELSE 9 END, name ASC",
       limit: limit ? Number(limit) : undefined,
@@ -51,6 +54,9 @@ router.post('/', (req, res) => {
       icon: body.icon ?? null,
       progress: typeof body.progress === 'number' ? body.progress : 0,
       companies: body.companies ?? null,
+      // S6.36 : 2 axes orthogonaux
+      domain_id: body.domain_id ?? null,
+      company_id: body.company_id ?? null,
     };
     const created = projects.insert(data);
     res.status(201).json({ project: created });
@@ -75,21 +81,30 @@ router.get('/:id', (req, res) => {
   };
   let children = [];
   let parent = null;
+  let domain = null;
+  let company = null;
   try {
     children = db.prepare("SELECT id, name, status, tagline, progress FROM projects WHERE parent_id = ? ORDER BY updated_at DESC").all(id);
     if (p.parent_id) parent = db.prepare("SELECT id, name FROM projects WHERE id = ?").get(p.parent_id);
+    // S6.36 : axes domain + company
+    if (p.domain_id) {
+      try { domain = db.prepare("SELECT id, name, slug, color, icon FROM domains WHERE id = ?").get(p.domain_id); } catch (e) {}
+    }
+    if (p.company_id) {
+      try { company = db.prepare("SELECT id, name, slug, color, icon FROM companies WHERE id = ?").get(p.company_id); } catch (e) {}
+    }
   } catch (e) {}
   const recentTasks = db.prepare("SELECT id, title, done, priority, type, updated_at FROM tasks WHERE project_id = ? ORDER BY updated_at DESC LIMIT 10").all(id);
   const recentDecisions = db.prepare("SELECT id, title, status, updated_at FROM decisions WHERE project_id = ? ORDER BY updated_at DESC LIMIT 5").all(id);
   const velocity = counts.tasks_total > 0 ? Math.round((counts.tasks_total - counts.tasks_open) / counts.tasks_total * 100) : 0;
-  res.json({ project: Object.assign({}, p, { counts: counts, parent: parent, children: children, recent_tasks: recentTasks, recent_decisions: recentDecisions, velocity_pct: velocity }) });
+  res.json({ project: Object.assign({}, p, { counts: counts, parent: parent, children: children, domain: domain, company: company, recent_tasks: recentTasks, recent_decisions: recentDecisions, velocity_pct: velocity }) });
 });
 
 router.patch('/:id', (req, res) => {
   try {
     const existing = projects.get(req.params.id);
     if (!existing) return res.status(404).json({ error: 'projet introuvable' });
-    const allowed = ['name', 'group_id', 'tagline', 'status', 'description', 'color', 'icon', 'progress', 'companies', 'parent_id', 'effort_done_days', 'effort_remaining_days'];
+    const allowed = ['name', 'group_id', 'tagline', 'status', 'description', 'color', 'icon', 'progress', 'companies', 'parent_id', 'effort_done_days', 'effort_remaining_days', 'domain_id', 'company_id'];
     const patch = {};
     for (const k of allowed) if (k in req.body) patch[k] = req.body[k];
     if (!Object.keys(patch).length) return res.json({ project: existing });
