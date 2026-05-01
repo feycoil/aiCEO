@@ -75,6 +75,7 @@
       <div data-region="page-llm-banner" hidden style="margin: 12px 0;"></div>
       <div data-region="kpis" class="kpi-row"></div>
       <div class="filters-row">
+        <div class="seg-filter" data-region="filter-status" role="group" aria-label="Filtrer par statut"></div>
         <div class="filters-spacer"></div>
         <span class="filters-meta" data-region="filter-meta">Chargement...</span>
       </div>
@@ -115,5 +116,6 @@
     import { mountLlmBanner } from '../shared/llm-banner.js';
     document.addEventListener('DOMContentLoaded', () => { mountLlmBanner('[data-region="page-llm-banner"]', { context: 'vos projets' }); });
   </script>
+  <script type="module" src="../shared/page-keyboard-init.js?v=20260501"></script>
 </body>
 </html>

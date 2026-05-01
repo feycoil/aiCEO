@@ -103,6 +103,78 @@
     .ar-card.is-llm:hover {
       border-left-color: var(--violet-500, #8167a3);
     }
+    /* S6.12 : keyboard-first focus indicator */
+    .ar-card.is-kb-focused {
+      outline: 2px solid var(--violet-500, #8167a3);
+      outline-offset: 2px;
+      box-shadow: 0 4px 16px rgba(129, 103, 163, 0.2);
+      transform: translateX(2px);
+      transition: all 120ms ease-out;
+    }
+    /* S6.27 : densite UI compact / detaille (normal = defaut) */
+    body.density-compact .ar-card { padding: 8px 12px; gap: 8px; }
+    body.density-compact .ar-card-snippet { display: none; }
+    body.density-compact .ar-card-tools { padding-top: 4px; margin-top: 4px; gap: 4px; }
+    body.density-compact .ar-mail-snippet { -webkit-line-clamp: 1; }
+    body.density-detaille .ar-card { padding: 16px 20px; gap: 14px; }
+    body.density-detaille .ar-card-snippet { -webkit-line-clamp: 4; }
+    /* S6.27 : hint "filtre grace a votre feedback" sur section skipped */
+    .ar-skipped-hint {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px;
+      background: linear-gradient(135deg, var(--ivory-50) 0%, #f5f0fa 100%);
+      border: 1px solid var(--violet-200, #c7b9d3);
+      border-left: 3px solid var(--violet-500, #8167a3);
+      border-radius: 8px;
+      font-size: 12px;
+      color: var(--ink-700);
+      font-style: italic;
+      margin-bottom: var(--space-3);
+    }
+    .ar-skipped-hint::before {
+      content: '✦';
+      color: var(--violet-800, #463a54);
+      font-style: normal;
+      font-weight: 700;
+    }
+    .ar-card.is-kb-focused::before {
+      content: '⌨';
+      position: absolute;
+      left: -28px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      color: var(--violet-500, #8167a3);
+      opacity: 0.85;
+    }
+    .ar-card { position: relative; }
+    .ar-kb-hint {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
+      background: var(--ivory-50);
+      border: 1px solid var(--ivory-200);
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-700);
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: all 150ms;
+    }
+    .ar-kb-hint:hover {
+      background: var(--ivory-100);
+      border-color: var(--violet-300, #b9a5cd);
+      color: var(--violet-800, #463a54);
+    }
+    .ar-kb-hint kbd {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      background: var(--paper);
+      border: 1px solid var(--ivory-200);
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-weight: 700;
+    }
 
     /* === S6.22 Lot 28 : Recipient flag + project tag === */
     .ar-recipient-flag {
@@ -969,7 +1041,8 @@
           <div class="ar-summary-text">
             <span data-region="ar-queue-stat"><strong>—</strong> emails proposes par scoring SQL</span>
           </div>
-          <div style="display:flex;gap:8px;">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <button class="ar-kb-hint" data-action="kb-help" title="Afficher l aide des raccourcis clavier (touche ?)">⌨️ Raccourcis <kbd>?</kbd></button>
             <button class="ar-btn ar-btn-ghost" data-action="bootstrap" title="Auto-detecte les projets et contacts depuis vos emails">✨ Detecter projets & contacts</button>
             <button class="ar-btn ar-btn-ghost" data-action="analyze">Analyser (heuristique)</button>
             <button class="ar-btn ar-btn-primary" data-action="analyze-llm" title="Analyse Claude : skip noise + summary + suggested action">✦ Analyser avec Claude</button>

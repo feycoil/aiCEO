@@ -109,10 +109,10 @@ async function doRender() {
   const kpiRegion = document.querySelector('[data-region="kpis"]');
   if (kpiRegion) {
     kpiRegion.innerHTML = [
-      { label: 'Decisions tranchees',         value: kpis.decided,  tone: '' },
+      { label: 'Decisions tranchees',         value: kpis.decided,  tone: 'success' },
       { label: "En attente d'effet",          value: kpis.pending,  tone: 'warning' },
-      { label: 'Infirmees retrospectivement', value: kpis.infirmed, tone: '' },
-      { label: 'A revisiter sous 30 j',       value: kpis.revisit,  tone: '' }
+      { label: 'Infirmees retrospectivement', value: kpis.infirmed, tone: 'danger' },
+      { label: 'A revisiter sous 30 j',       value: kpis.revisit,  tone: 'neutral' }
     ].map(k => `<div data-component="kpi-tile" data-props='${escapeJsonAttr(JSON.stringify(k))}'></div>`).join('');
     await ComponentLoader.refresh(kpiRegion);
     if (mySeq !== renderSeq) return; // abandonne si depasse
@@ -178,6 +178,78 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
   startLoad();
 } else {
   document.addEventListener('DOMContentLoaded', startLoad);
+}
+
+// S6.31 : handler global "Recommander avec Claude" sur cards decision ouvertes
+document.addEventListener('click', async function (ev) {
+  var trigger = ev.target.closest('[data-action="recommend-decision"]');
+  if (!trigger) return;
+  ev.preventDefault();
+  var decId = trigger.dataset.decisionId;
+  if (!decId) return;
+  showRecommendModal(decId, trigger);
+});
+
+async function showRecommendModal(decisionId, anchorEl) {
+  // Modal overlay
+  var overlay = document.createElement('div');
+  overlay.className = 'rec-overlay';
+  overlay.innerHTML = ''
+    + '<div class="rec-modal is-llm-output">'
+    + '<header class="rec-head"><h3>&#x2726; Recommandation Claude</h3>'
+    + '<button class="rec-close" data-action="rec-close">&times;</button></header>'
+    + '<div class="rec-body" data-region="rec-body">'
+    + '<div class="thinking-pulse"><span class="thinking-spinner"></span><span>Claude analyse la decision...</span></div>'
+    + '</div>'
+    + '</div>';
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', function (ev) {
+    if (ev.target === overlay || ev.target.dataset.action === 'rec-close') overlay.remove();
+  });
+  // Fetch
+  try {
+    var r = await fetch('/api/assistant/decision-recommend', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ decision_id: decisionId })
+    });
+    var data = await r.json();
+    var body = overlay.querySelector('[data-region="rec-body"]');
+    if (!body) return;
+    if (!r.ok || data.error) {
+      body.innerHTML = '<p style="color:var(--danger-700,#991b1b)">Erreur : ' + (data.error || 'serveur') + '</p>';
+      return;
+    }
+    body.innerHTML = renderRecommendHtml(data, decisionId);
+  } catch (e) {
+    var body2 = overlay.querySelector('[data-region="rec-body"]');
+    if (body2) body2.innerHTML = '<p style="color:var(--danger-700,#991b1b)">Erreur reseau : ' + e.message + '</p>';
+  }
+}
+
+function renderRecommendHtml(data, decisionId) {
+  var opts = data.options || data.recommendations || [];
+  var rationale = data.rationale || data.reasoning || '';
+  var modeBadge = data.mode === 'live' ? '&#x2726; Claude live' : 'Mode rule-based';
+  var html = '<div class="rec-mode">' + modeBadge + '</div>';
+  if (opts.length) {
+    html += '<div class="rec-options">';
+    opts.forEach(function (o, i) {
+      var letter = String.fromCharCode(65 + i);
+      html += '<div class="rec-option">'
+        + '<div class="rec-option-head"><span class="rec-letter">' + letter + '</span>'
+        + '<strong>' + escapeHtml(o.label || o.title || ('Option ' + letter)) + '</strong></div>';
+      if (o.rationale || o.detail) html += '<p class="rec-option-detail">' + escapeHtml(o.rationale || o.detail) + '</p>';
+      html += '<button class="rec-pick" data-action="rec-pick" data-decision-id="' + escapeHtml(decisionId) + '" data-choice="' + letter + '">Trancher selon ' + letter + ' &rarr;</button>';
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+  if (rationale) html += '<div class="rec-rationale"><strong>Pourquoi :</strong> ' + escapeHtml(rationale) + '</div>';
+  return html;
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]); });
 }
 
 export default store;

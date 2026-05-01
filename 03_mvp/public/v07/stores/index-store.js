@@ -412,6 +412,37 @@ async function renderLearningMini() {
   } catch (e) { /* swallow */ }
 }
 
+// S6.33 : mini-card stats apprentissage generique (interaction_feedback cross-pages)
+async function renderInteractionStats() {
+  try {
+    const r = await fetch('/api/system/interaction-feedback/stats');
+    if (!r.ok) return;
+    const data = await r.json();
+    if (!data || !data.total || data.total < 5) return;
+    const banner = document.querySelector('[data-region="ck-llm-banner"]');
+    if (!banner) return;
+    let mini = document.querySelector('[data-region="ck-interaction-mini"]');
+    if (!mini) {
+      mini = document.createElement('div');
+      mini.dataset.region = 'ck-interaction-mini';
+      mini.className = 'is-llm-output';
+      mini.style.cssText = 'margin-top:8px;padding:8px 12px;font-size:12px;color:var(--ink-700);background:var(--violet-50,#f5f0fa);border-radius:8px';
+      banner.parentNode.insertBefore(mini, banner.nextSibling);
+    }
+    const topKind = (data.by_kind && data.by_kind[0]) ? data.by_kind[0] : null;
+    const topAction = (data.by_action && data.by_action[0]) ? data.by_action[0] : null;
+    let html = '<strong style="color:var(--violet-800,#463a54)">' + data.total + '</strong> interactions tracees';
+    if (data.recent_7d) html += ' (' + data.recent_7d + ' ces 7j)';
+    if (topAction) html += ' &middot; top action : <code>' + escapeHtmlMini(topAction.action) + '</code>';
+    if (topKind) html += ' &middot; ' + escapeHtmlMini(topKind.kind) + '&times;' + topKind.c;
+    mini.innerHTML = html;
+  } catch (e) { /* swallow */ }
+}
+
+function escapeHtmlMini(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
 // === Init ===
 document.addEventListener('DOMContentLoaded', async () => {
   // First launch detection: redirect onboarding if firstName absent
@@ -426,7 +457,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderNorthStar(),
     renderTop3(),
     renderProjectGlance(),
-    renderLearningMini()
+    renderLearningMini(),
+    renderInteractionStats()
   ]);
   console.info('[cockpit S6.17] all sections rendered with voix exec moderne');
 });

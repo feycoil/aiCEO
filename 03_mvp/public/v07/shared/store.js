@@ -41,3 +41,20 @@ export function bindRender(store, renderFn) {
   store.on('change', renderFn);
   if (store.state) renderFn(store.state);
 }
+
+// S6.27 : applique la classe density-* au body sur toutes les pages au load.
+// Source localStorage (UI prefs only — autorise par ADR S2.00).
+if (typeof document !== 'undefined') {
+  function applyUiDensity() {
+    try {
+      const d = localStorage.getItem('aiCEO.uiDensity') || 'normal';
+      document.body.classList.remove('density-compact', 'density-normal', 'density-detaille');
+      document.body.classList.add('density-' + d);
+    } catch (e) { /* swallow */ }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyUiDensity);
+  } else {
+    applyUiDensity();
+  }
+}

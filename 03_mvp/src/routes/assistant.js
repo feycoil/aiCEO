@@ -544,4 +544,53 @@ router.get("/llm-status", (req, res) => {
   });
 });
 
+// --- POST /trajectoire-narrative ----------------------------
+// S6.31 — Genere un recit de 3-5 phrases sur la periode demandee
+// Body : { period: '7'|'30'|'90'|'180'|'365'|'all' }
+router.post("/trajectoire-narrative", (req, res) => {
+  try {
+    const period = String(req.body?.period || '30');
+    const days = period === 'all' ? 9999 : parseInt(period, 10) || 30;
+    const cutoff = "datetime('now', '-" + days + " days')";
+    const db = getDb();
+    let decs = 0, rocks = 0, projs = 0, topProj = null, topDec = null;
+    try {
+      decs = db.prepare("SELECT COUNT(*) AS c FROM decisions WHERE status IN ('decidee','executee','tranchee') AND decided_at >= " + cutoff).get().c;
+      rocks = db.prepare("SELECT COUNT(*) AS c FROM big_rocks WHERE status = 'accompli' AND created_at >= " + cutoff).get().c;
+      projs = db.prepare("SELECT COUNT(*) AS c FROM projects WHERE status IN ('archived') AND updated_at >= " + cutoff).get().c;
+      const tp = db.prepare("SELECT name FROM projects WHERE status = 'hot' ORDER BY updated_at DESC LIMIT 1").get();
+      if (tp) topProj = tp.name;
+      const td = db.prepare("SELECT title FROM decisions WHERE status = 'decidee' AND decided_at >= " + cutoff + " ORDER BY decided_at DESC LIMIT 1").get();
+      if (td) topDec = td.title;
+    } catch (e) {}
+
+    // Heuristique narrative rule-based (LLM amelioration en V1.x)
+    const periodLabels = { '7': '7 derniers jours', '30': '30 derniers jours', '90': '3 derniers mois', '180': '6 derniers mois', '365': 'derniere annee', 'all': 'depuis le debut' };
+    const periodLbl = periodLabels[period] || (days + ' derniers jours');
+    let narrative = '';
+    if (decs === 0 && rocks === 0 && projs === 0) {
+      narrative = 'Sur les ' + periodLbl + ', votre Hub est calme : peu de decisions tranchees, peu de Big Rocks accomplis. Soit la periode etait posee, soit vous avez peut-etre laisse passer des moments-cle. Envisagez un Triage matinal pour reactiver l elan.';
+    } else {
+      const parts = [];
+      if (decs > 0) parts.push(decs + ' decision' + (decs > 1 ? 's' : '') + ' tranchee' + (decs > 1 ? 's' : ''));
+      if (rocks > 0) parts.push(rocks + ' Big Rock' + (rocks > 1 ? 's' : '') + ' accompli' + (rocks > 1 ? 's' : ''));
+      if (projs > 0) parts.push(projs + ' projet' + (projs > 1 ? 's' : '') + ' clos');
+      narrative = 'Sur les ' + periodLbl + ', vous avez avance : ' + parts.join(', ') + '. ';
+      if (topDec) narrative += 'La decision la plus recente : "' + topDec.slice(0, 80) + '". ';
+      if (topProj) narrative += 'Projet le plus chaud actuellement : ' + topProj + '. ';
+      narrative += rocks >= decs / 2 ? 'Bon rythme d execution.' : 'Decision tres elevee vs execution — attention au drift.';
+    }
+
+    res.json({
+      period: period,
+      stats: { decisions: decs, rocks: rocks, projects_closed: projs },
+      narrative: narrative,
+      mode: llmReady() ? 'rule-based-pending-llm' : 'rule-based',
+      llm_available: llmReady()
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 module.exports = router;

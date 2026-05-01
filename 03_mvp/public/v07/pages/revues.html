@@ -236,6 +236,7 @@
           </div>
 
           <div class="ws-actions">
+            <button class="ws-btn ws-btn-ghost" data-action="suggest-rocks" title="Generer 3 Big Rocks suggeres depuis decisions tranchees + projets en alerte">&#x2726; Suggerer 3 Big Rocks</button>
             <button class="ws-btn ws-btn-primary" data-action="save-rocks">Sauvegarder les 3 Big Rocks</button>
           </div>
         </section>
@@ -291,5 +292,6 @@
     import { mountLlmBanner } from '../shared/llm-banner.js';
     document.addEventListener('DOMContentLoaded', () => { mountLlmBanner('[data-region="page-llm-banner"]', { context: 'Weekly Sync' }); });
   </script>
+  <script type="module" src="../shared/page-keyboard-init.js?v=20260501"></script>
 </body>
 </html>

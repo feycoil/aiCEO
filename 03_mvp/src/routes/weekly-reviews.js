@@ -136,4 +136,70 @@ router.delete('/:id', (req, res) => {
   }
 });
 
+// S6.31 — POST /:week/suggest-rocks : 3 Big Rocks suggeres depuis decisions tranchees + projets en alerte
+router.post('/:week/suggest-rocks', (req, res) => {
+  try {
+    const week = req.params.week;
+    if (!/^\d{4}-W\d{2}$/.test(week)) {
+      return res.status(400).json({ error: 'parametre week invalide (attendu: YYYY-Www)' });
+    }
+    const { getDb } = require('../db');
+    const db = getDb();
+    // Heuristique rule-based : top 3 sources de Big Rocks
+    // 1. Projets actifs avec status=alerte ou hot
+    let alertProjects = [];
+    try {
+      alertProjects = db.prepare("SELECT id, name, tagline FROM projects WHERE status IN ('alerte','hot') ORDER BY updated_at DESC LIMIT 3").all();
+    } catch (e) {}
+    // 2. Decisions tranchees recentes (7j) qui ont une suite a executer
+    let recentDecisions = [];
+    try {
+      recentDecisions = db.prepare("SELECT id, title FROM decisions WHERE status IN ('decidee','executee') AND decided_at >= datetime('now', '-7 days') ORDER BY decided_at DESC LIMIT 3").all();
+    } catch (e) {}
+    // 3. Tasks P0 ouvertes
+    let p0Tasks = [];
+    try {
+      p0Tasks = db.prepare("SELECT id, title FROM tasks WHERE priority = 'P0' AND done = 0 ORDER BY created_at DESC LIMIT 3").all();
+    } catch (e) {}
+
+    const suggestions = [];
+    alertProjects.forEach(p => {
+      suggestions.push({
+        title: 'Avancer ' + p.name,
+        description: p.tagline || 'Projet en alerte — besoin de progression visible cette semaine',
+        source: 'project',
+        source_id: p.id,
+        rationale: 'Projet ' + (p.tagline ? '"' + p.tagline + '"' : '') + ' marque alerte/hot — sans Big Rock cette semaine, glisse encore'
+      });
+    });
+    recentDecisions.forEach(d => {
+      suggestions.push({
+        title: 'Executer suite : ' + d.title.slice(0, 50),
+        description: 'Decision tranchee recemment — eviter le drift d execution',
+        source: 'decision',
+        source_id: d.id,
+        rationale: 'Tranche ces 7 derniers jours — conversion en action visible cette semaine'
+      });
+    });
+    p0Tasks.forEach(t => {
+      suggestions.push({
+        title: t.title.slice(0, 80),
+        description: 'Tache P0 toujours ouverte — promotion en Big Rock',
+        source: 'task',
+        source_id: t.id,
+        rationale: 'Tache critique P0 non clos — recadrer comme rocher hebdo'
+      });
+    });
+
+    res.json({
+      week: week,
+      suggestions: suggestions.slice(0, 3),
+      mode: 'rule-based',
+      message: suggestions.length ? suggestions.length + ' suggestions generees depuis ' + alertProjects.length + ' projets alerte + ' + recentDecisions.length + ' decisions tranchees + ' + p0Tasks.length + ' tasks P0' : 'Aucune source claire pour cette semaine — renseignez decisions/projets/tasks'
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 module.exports = router;

@@ -77,8 +77,11 @@
       <div data-component="header-topbar" data-props='{"breadcrumb":[{"label":"Cockpit","href":"index.html"},{"label":"Connaissance"}],"title":"Votre base de connaissance","subtitle":"Decisions epinglees, criteres, regles","actions":[{"id":"new","label":"Nouveau pin","iconId":"plus","primary":true}]}'></div>
       <div data-region="page-llm-banner" hidden style="margin: 12px 0;"></div>
 
+      <div data-region="kn-kpis" class="kpi-row" style="margin-bottom: 16px;"></div>
+
       <div class="kn-toolbar">
         <div data-component="seg-filter" data-props='{"id":"type","options":["Tous","decision","critere","regle"],"active":"Tous"}'></div>
+        <input type="search" data-region="kn-search" class="st-input" placeholder="Rechercher dans titres + contenus..." style="max-width:280px;flex:1;min-width:200px;" />
         <div class="kn-spacer"></div>
         <span class="kn-meta" data-region="kn-meta">— pins</span>
       </div>
@@ -135,5 +138,6 @@
     import { mountLlmBanner } from '../shared/llm-banner.js';
     document.addEventListener('DOMContentLoaded', () => { mountLlmBanner('[data-region="page-llm-banner"]', { context: 'votre base de connaissance' }); });
   </script>
+  <script type="module" src="../shared/page-keyboard-init.js?v=20260501"></script>
 </body>
 </html>
