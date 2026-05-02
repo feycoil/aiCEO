@@ -349,6 +349,61 @@ router.get('/interaction-feedback/stats', (req, res) => {
   }
 });
 
+// === S6.42 — Restart server + status server ===
+// GET /api/system/server-status -> uptime, memoire, port, version, db_size
+router.get('/server-status', (req, res) => {
+  try {
+    const fs = require('node:fs');
+    const path = require('node:path');
+    const dbPath = process.env.AICEO_DB_OVERRIDE || path.resolve(__dirname, '..', '..', 'data', 'aiceo.db');
+    const dbSize = fs.existsSync(dbPath) ? fs.statSync(dbPath).size : 0;
+    res.json({
+      pid: process.pid,
+      uptime_s: Math.round(process.uptime()),
+      uptime_human: humanDuration(process.uptime()),
+      memory: {
+        rss_mb: Math.round(process.memoryUsage().rss / 1024 / 1024),
+        heap_mb: Math.round(process.memoryUsage().heapUsed / 1024 / 1024)
+      },
+      node_version: process.version,
+      port: Number(process.env.PORT) || 3001,
+      db_path: path.basename(dbPath),
+      db_size_kb: Math.round(dbSize / 1024),
+      llm_ready: !!process.env.ANTHROPIC_API_KEY,
+      env: process.env.NODE_ENV || 'production',
+      started_at: new Date(Date.now() - process.uptime() * 1000).toISOString()
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+function humanDuration(seconds) {
+  if (seconds < 60) return Math.round(seconds) + 's';
+  if (seconds < 3600) return Math.round(seconds / 60) + 'min';
+  if (seconds < 86400) return Math.round(seconds / 3600 * 10) / 10 + 'h';
+  return Math.round(seconds / 86400 * 10) / 10 + 'j';
+}
+
+// POST /api/system/restart -> exit graceful (le wrapper Variante D le relance auto au logon)
+// Header obligatoire X-Confirm-Restart: yes-i-am-sure
+// Sans wrapper actif, le serveur ne se relancera PAS automatiquement.
+router.post('/restart', (req, res) => {
+  if (req.get('X-Confirm-Restart') !== 'yes-i-am-sure') {
+    return res.status(400).json({ error: 'Header X-Confirm-Restart: yes-i-am-sure obligatoire' });
+  }
+  res.json({
+    ok: true,
+    message: 'Serveur va s arreter dans 1s. Si Variante D (raccourci logon) actif : redemarrage auto. Sinon : relancer manuellement npm start.',
+    pid: process.pid
+  });
+  // Laisser le temps au res de partir avant exit
+  setTimeout(() => {
+    console.log('[system] redemarrage demande via API. Exit en cours.');
+    process.exit(0);
+  }, 1000);
+});
+
 // === S6.41 — Sync Log + Sync Status ===
 // GET /api/system/sync-log?connector=outlook-desktop&limit=20
 //   -> historique chronologique des syncs avec details (start, end, items, status)

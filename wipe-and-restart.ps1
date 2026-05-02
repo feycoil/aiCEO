@@ -27,7 +27,8 @@
 
 param(
   [switch]$NoRestart,
-  [switch]$Force
+  [switch]$Force,
+  [switch]$KillAllNode  # Tue TOUS les node.exe et npm.cmd du systeme + desactive schtasks aiCEO-Outlook-Sync
 )
 
 $ErrorActionPreference = 'Stop'
@@ -92,16 +93,36 @@ if ($nodes) {
     if ($line) {
       foreach ($seg in $repoSegments) { if ($line -like "*$seg*") { $isMine = $true; break } }
     }
-    if ($isMine -or $line -match 'aiceo' -or $line -match 'server\.js') {
+    if ($isMine -or ($line -and ($line -match 'aiceo' -or $line -match 'server\.js'))) {
       Write-Host "  Stop node PID $($n.Id) (cmdline lien repo)" -ForegroundColor Gray
       Stop-Process -Id $n.Id -Force -ErrorAction SilentlyContinue
     }
   }
 }
 
-# 1c. Attendre que les handles SQLite soient libres (jusqu'a 5s)
-Write-Host "  Attente 3s pour liberation des handles SQLite..." -ForegroundColor Gray
-Start-Sleep -Seconds 3
+# 1c. Mode agressif : tue TOUS les node.exe restants + desactive schtasks Outlook
+if ($KillAllNode) {
+  Write-Host "  Mode agressif : kill TOUS les node.exe + npm.cmd restants..." -ForegroundColor Yellow
+  Get-Process -Name node -ErrorAction SilentlyContinue | ForEach-Object {
+    Write-Host "  Stop node PID $($_.Id) (mode KillAllNode)" -ForegroundColor Gray
+    Stop-Process -Id $_.Id -Force -ErrorAction SilentlyContinue
+  }
+  # Stop tache planifiee Outlook si en cours
+  try {
+    $task = Get-ScheduledTask -TaskName 'aiCEO-Outlook-Sync' -ErrorAction SilentlyContinue
+    if ($task) {
+      $info = Get-ScheduledTaskInfo -TaskName 'aiCEO-Outlook-Sync' -ErrorAction SilentlyContinue
+      if ($info -and $info.LastTaskResult -eq 267009) {  # 267009 = task running
+        Stop-ScheduledTask -TaskName 'aiCEO-Outlook-Sync' -ErrorAction SilentlyContinue
+        Write-Host "  Stop schtask aiCEO-Outlook-Sync (etait en cours)" -ForegroundColor Gray
+      }
+    }
+  } catch { }
+}
+
+# 1d. Attendre que les handles SQLite soient libres (jusqu'a 5s)
+Write-Host "  Attente 5s pour liberation des handles SQLite..." -ForegroundColor Gray
+Start-Sleep -Seconds 5
 
 # --- 2. Suppression base SQLite (avec retry si verrouille) ---
 Write-Host ""
@@ -119,8 +140,20 @@ foreach ($f in $dbFiles) {
       break
     } catch {
       if ($attempt -eq 5) {
-        Write-Host "  ERREUR : $f reste verrouille apres 5 tentatives. Le serveur est peut-etre encore en route." -ForegroundColor Red
-        Write-Host "         Fermez manuellement TOUS les node.exe (Task Manager) puis relancez." -ForegroundColor Yellow
+        Write-Host "  ERREUR : $f reste verrouille apres 5 tentatives." -ForegroundColor Red
+        Write-Host "" -ForegroundColor Yellow
+        Write-Host "  CAUSES PROBABLES :" -ForegroundColor Yellow
+        Write-Host "    - Un autre node.exe sur le systeme tient le fichier (autre projet ouvert ?)" -ForegroundColor Yellow
+        Write-Host "    - La tache planifiee aiCEO-Outlook-Sync est en cours d execution" -ForegroundColor Yellow
+        Write-Host "    - Un editeur (VS Code SQLite viewer, DB Browser) garde le fichier ouvert" -ForegroundColor Yellow
+        Write-Host "" -ForegroundColor Yellow
+        Write-Host "  SOLUTION RAPIDE : relancez avec -KillAllNode (tue TOUS les node.exe du systeme) :" -ForegroundColor Cyan
+        Write-Host "    .\wipe-and-restart.ps1 -KillAllNode" -ForegroundColor White
+        Write-Host "" -ForegroundColor Yellow
+        Write-Host "  OU manuellement :" -ForegroundColor Yellow
+        Write-Host "    1. Task Manager (Ctrl+Shift+Esc) > tuer tous les node.exe" -ForegroundColor Yellow
+        Write-Host "    2. Fermer DB Browser / VS Code SQLite si ouvert" -ForegroundColor Yellow
+        Write-Host "    3. Relancer ce script" -ForegroundColor Yellow
         exit 2
       }
       Write-Host "  Verrouille (tentative $attempt/5), retry dans 2s..." -ForegroundColor Yellow

@@ -3,6 +3,7 @@ const escHtml = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&
 
 const TABS = [
   { id: 'general',     icon: 'settings',  label: 'General' },
+  { id: 'systeme',     icon: 'home',      label: 'Systeme' },
   { id: 'connecteurs', icon: 'arrow-up-right', label: 'Connecteurs' },
   { id: 'langue',      icon: 'globe',     label: 'Langue & locales' },
   { id: 'maisons',     icon: 'projects',  label: 'Maisons' },
@@ -311,6 +312,47 @@ function panelApparence() {
   `;
 }
 
+// S6.42 : Onglet Systeme (status serveur + actions admin)
+function panelSysteme() {
+  return `
+    <h2 class="st-panel-title">Systeme</h2>
+    <p class="st-panel-desc">Etat du serveur backend, redemarrage, reinitialisation. Actions admin centralisees.</p>
+
+    <div data-region="st-server-status" style="background:var(--paper);border:1px solid var(--ivory-200);border-radius:var(--radius-md);padding:var(--space-4);margin-top:var(--space-3)">
+      <div style="color:var(--ink-500);text-align:center">Chargement du statut serveur...</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--space-3);margin-top:var(--space-4)">
+      <div style="padding:var(--space-3);background:var(--paper);border:1px solid var(--ivory-200);border-radius:var(--radius-md)">
+        <strong style="display:block;font-size:13px;margin-bottom:4px">🔄 Redemarrer le serveur</strong>
+        <p style="margin:0 0 10px;font-size:12px;color:var(--ink-500);line-height:1.5">Force un restart du backend. Si le raccourci de demarrage automatique (Variante D) est actif, le serveur se relance tout seul. Sinon, il faut npm start manuel.</p>
+        <button class="st-btn" data-action="restart-server" style="width:100%;padding:8px;background:var(--ink-900);color:var(--paper);border:0;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px">Redemarrer maintenant</button>
+        <div data-region="restart-result" style="margin-top:10px;font-size:12px" hidden></div>
+      </div>
+
+      <div style="padding:var(--space-3);background:var(--paper);border:1px solid var(--ivory-200);border-radius:var(--radius-md)">
+        <strong style="display:block;font-size:13px;margin-bottom:4px">☠ Reinitialiser la base</strong>
+        <p style="margin:0 0 10px;font-size:12px;color:var(--ink-500);line-height:1.5">Vide TOUTES les donnees (decisions, projets, contacts, emails, conversations). Preserve les 8 domaines + 1 societe seed. Vous serez redirige vers l onboarding.</p>
+        <button class="st-btn st-btn-danger" data-action="wipe-data-systeme" style="width:100%;padding:8px;background:#dc2626;color:white;border:0;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px">Tout reinitialiser maintenant</button>
+        <div data-region="wipe-result-systeme" style="margin-top:10px;font-size:12px" hidden></div>
+      </div>
+
+      <div style="padding:var(--space-3);background:var(--paper);border:1px solid var(--ivory-200);border-radius:var(--radius-md)">
+        <strong style="display:block;font-size:13px;margin-bottom:4px">📧 Resync Outlook</strong>
+        <p style="margin:0 0 10px;font-size:12px;color:var(--ink-500);line-height:1.5">Lance une synchronisation immediate des emails Outlook (au lieu d attendre la tache planifiee toutes les 2h). Voir l onglet Connecteurs pour l historique.</p>
+        <button class="st-btn" data-action="sync-outlook-systeme" style="width:100%;padding:8px;background:var(--ink-900);color:var(--paper);border:0;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px">Synchroniser maintenant</button>
+        <div data-region="sync-result-systeme" style="margin-top:10px;font-size:12px" hidden></div>
+      </div>
+
+      <div style="padding:var(--space-3);background:#fef3c7;border:1px solid #fcd34d;border-radius:var(--radius-md)">
+        <strong style="display:block;font-size:13px;margin-bottom:4px">📚 Parcours d initialisation</strong>
+        <p style="margin:0 0 10px;font-size:12px;color:var(--ink-700);line-height:1.5">Documentation complete (8 etapes, 25 min) pour repartir d une page blanche.</p>
+        <a href="../../../../04_docs/PARCOURS-INIT-CEO.md" target="_blank" style="display:block;text-align:center;padding:8px;background:#f59e0b;color:white;border:0;border-radius:6px;text-decoration:none;font-weight:600;font-size:13px">Lire le guide</a>
+      </div>
+    </div>
+  `;
+}
+
 // S6.41 : Onglet Connecteurs (catalogue sources de donnees + sync log)
 function panelConnecteurs() {
   return `
@@ -353,9 +395,13 @@ function panelSensible() {
 function renderPanel() {
   const host = document.querySelector('[data-region="st-panel"]');
   if (!host) return;
-  const fn = ({ general: panelGeneral, connecteurs: panelConnecteurs, langue: panelLangue, maisons: panelMaisons, rituels: panelRituels, coaching: panelCoaching, donnees: panelDonnees, apparence: panelApparence, sensible: panelSensible })[state.activeTab];
+  const fn = ({ general: panelGeneral, systeme: panelSysteme, connecteurs: panelConnecteurs, langue: panelLangue, maisons: panelMaisons, rituels: panelRituels, coaching: panelCoaching, donnees: panelDonnees, apparence: panelApparence, sensible: panelSensible })[state.activeTab];
   host.innerHTML = fn ? fn() : '<p>Section inconnue.</p>';
   bindPanelEvents();
+  // S6.42 : trigger render Systeme si onglet systeme
+  if (state.activeTab === 'systeme') {
+    setTimeout(() => renderSystemePanel(), 100);
+  }
   // S6.41 : trigger render connecteurs si onglet connecteurs
   if (state.activeTab === 'connecteurs') {
     setTimeout(() => renderConnectors(), 100);
@@ -481,6 +527,108 @@ function bindPanelEvents() {
       alert('Impossible de copier (clipboard API non disponible). Selectionnez le texte manuellement.');
     }
   });
+}
+
+// === S6.42 : Render Systeme panel ===
+async function renderSystemePanel() {
+  const host = document.querySelector('[data-region="st-server-status"]');
+  if (!host) return;
+  const data = await safeFetch('/api/system/server-status');
+  if (!data) {
+    host.innerHTML = '<div style="color:#dc2626;text-align:center">Serveur non joignable</div>';
+  } else {
+    const llmDot = data.llm_ready ? '<span style="color:#10b981">● Live</span>' : '<span style="color:#f59e0b">○ Mode degrade (rule-based)</span>';
+    const fmtDate = (iso) => { try { return new Date(iso).toLocaleString('fr-FR'); } catch { return iso; } };
+    host.innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:var(--space-3)">
+        <div><div style="font-size:11px;color:var(--ink-500);text-transform:uppercase;letter-spacing:0.05em;font-weight:600">Uptime</div><div style="font-size:18px;font-family:var(--font-mono);font-weight:700;margin-top:4px">${escHtml(data.uptime_human)}</div></div>
+        <div><div style="font-size:11px;color:var(--ink-500);text-transform:uppercase;letter-spacing:0.05em;font-weight:600">Memoire</div><div style="font-size:18px;font-family:var(--font-mono);font-weight:700;margin-top:4px">${data.memory.rss_mb}<span style="font-size:11px;color:var(--ink-500)">Mo RSS</span></div></div>
+        <div><div style="font-size:11px;color:var(--ink-500);text-transform:uppercase;letter-spacing:0.05em;font-weight:600">DB taille</div><div style="font-size:18px;font-family:var(--font-mono);font-weight:700;margin-top:4px">${data.db_size_kb}<span style="font-size:11px;color:var(--ink-500)">Ko</span></div></div>
+        <div><div style="font-size:11px;color:var(--ink-500);text-transform:uppercase;letter-spacing:0.05em;font-weight:600">PID</div><div style="font-size:18px;font-family:var(--font-mono);font-weight:700;margin-top:4px">${data.pid}</div></div>
+        <div><div style="font-size:11px;color:var(--ink-500);text-transform:uppercase;letter-spacing:0.05em;font-weight:600">Port</div><div style="font-size:18px;font-family:var(--font-mono);font-weight:700;margin-top:4px">${data.port}</div></div>
+        <div><div style="font-size:11px;color:var(--ink-500);text-transform:uppercase;letter-spacing:0.05em;font-weight:600">LLM</div><div style="font-size:14px;font-weight:600;margin-top:6px">${llmDot}</div></div>
+      </div>
+      <div style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--ivory-200);font-size:11px;color:var(--ink-500)">Demarre : ${fmtDate(data.started_at)} · Node ${escHtml(data.node_version)} · Env ${escHtml(data.env)}</div>
+    `;
+  }
+
+  // Wire boutons actions
+  const restartBtn = document.querySelector('[data-action="restart-server"]');
+  if (restartBtn && !restartBtn.dataset.bound) {
+    restartBtn.dataset.bound = '1';
+    restartBtn.addEventListener('click', async () => {
+      if (!confirm('Redemarrer le serveur backend ?\n\nLe site sera indisponible 2-5s. Si le wrapper Variante D (raccourci logon) est actif, le serveur se relancera automatiquement.\n\nSinon, vous devrez relancer npm start manuellement.')) return;
+      const result = document.querySelector('[data-region="restart-result"]');
+      result.hidden = false;
+      result.innerHTML = '<span style="color:var(--ink-500)">Envoi de la commande...</span>';
+      try {
+        const r = await fetch('/api/system/restart', { method: 'POST', headers: { 'X-Confirm-Restart': 'yes-i-am-sure' } });
+        if (r.ok) {
+          result.innerHTML = '<strong style="color:#059669">✓ Restart envoye.</strong> Le serveur va s arreter dans 1s. Recharger la page dans 5-10s.';
+          // Auto-poll pour detecter retour
+          let attempts = 0;
+          const poll = setInterval(async () => {
+            attempts++;
+            try {
+              const r2 = await fetch('/api/health', { cache: 'no-store' });
+              if (r2.ok) {
+                clearInterval(poll);
+                result.innerHTML = '<strong style="color:#059669">✓ Serveur redemarre apres ' + (attempts * 2) + 's.</strong> <a href="">Recharger</a>';
+              }
+            } catch (e) { /* serveur down, on continue */ }
+            if (attempts > 30) { clearInterval(poll); result.innerHTML = '<strong style="color:#f59e0b">⚠ Serveur ne repond pas apres 60s. Relancer manuellement npm start.</strong>'; }
+          }, 2000);
+        } else {
+          result.innerHTML = '<strong style="color:#dc2626">✗ Erreur ' + r.status + '</strong>';
+        }
+      } catch (e) {
+        // Connection refused = expected (serveur s arrete)
+        result.innerHTML = '<strong style="color:#059669">✓ Serveur arrete. Attente du restart...</strong>';
+      }
+    });
+  }
+
+  const wipeBtn = document.querySelector('[data-action="wipe-data-systeme"]');
+  if (wipeBtn && !wipeBtn.dataset.bound) {
+    wipeBtn.dataset.bound = '1';
+    wipeBtn.addEventListener('click', async () => {
+      const txt = prompt('SUPPRESSION DEFINITIVE de toutes vos donnees.\n\nLes 8 domaines + 1 societe seedes seront preserves.\n\nTapez "RESET" pour confirmer.');
+      if (txt !== 'RESET') return;
+      const result = document.querySelector('[data-region="wipe-result-systeme"]');
+      result.hidden = false;
+      result.textContent = 'Reinitialisation en cours...';
+      try {
+        const r = await fetch('/api/system/wipe-data', {
+          method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Confirm-Wipe': 'yes-i-am-sure' },
+          body: JSON.stringify({ keep_seeds: true })
+        });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const j = await r.json();
+        const total = (j.wiped || []).reduce((s, w) => s + (w.deleted || 0), 0);
+        result.innerHTML = '<strong style="color:#059669">✓ Reset OK.</strong> ' + total + ' lignes supprimees. <a href="onboarding.html">Aller a l onboarding →</a>';
+      } catch (e) {
+        result.innerHTML = '<strong style="color:#dc2626">✗ ' + e.message + '</strong>';
+      }
+    });
+  }
+
+  const syncBtn = document.querySelector('[data-action="sync-outlook-systeme"]');
+  if (syncBtn && !syncBtn.dataset.bound) {
+    syncBtn.dataset.bound = '1';
+    syncBtn.addEventListener('click', async () => {
+      const result = document.querySelector('[data-region="sync-result-systeme"]');
+      result.hidden = false;
+      result.textContent = 'Sync en cours...';
+      try {
+        const r = await fetch('/api/connectors/outlook-desktop/sync', { method: 'POST' });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const j = await r.json();
+        result.innerHTML = '<strong style="color:#059669">✓ Sync lancee.</strong> Voir l onglet Connecteurs pour le suivi.';
+      } catch (e) {
+        result.innerHTML = '<strong style="color:#dc2626">✗ ' + e.message + '</strong>';
+      }
+    });
+  }
 }
 
 // === S6.41 : Render Connecteurs (catalogue + sync) ===
