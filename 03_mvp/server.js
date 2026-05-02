@@ -88,6 +88,8 @@ const knowledgeRouter     = require("./src/routes/knowledge");
 // S6.36 : axes orthogonaux Domain + Company sur projets
 const domainsRouter       = require("./src/routes/domains");
 const companiesRouter     = require("./src/routes/companies");
+// S6.41 : connecteurs sources de donnees (Outlook live + Gmail/GCal/Teams/Slack backlog V1.x)
+const connectorsRouter    = require("./src/routes/connectors");
 
 
 
@@ -318,6 +320,8 @@ app.use("/api/knowledge",      knowledgeRouter);
 // S6.36 : axes Domain + Company
 app.use("/api/domains",        domainsRouter);
 app.use("/api/companies",      companiesRouter);
+// S6.41 : connecteurs (Outlook live + 4 placeholders)
+app.use("/api/connectors",     connectorsRouter);
 
 
 app.use("/api/assistant",      assistantRouter);

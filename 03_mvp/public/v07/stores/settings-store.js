@@ -2,14 +2,15 @@
 const escHtml = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 const TABS = [
-  { id: 'general',    icon: 'settings',  label: 'General' },
-  { id: 'langue',     icon: 'globe',     label: 'Langue & locales' },
-  { id: 'maisons',    icon: 'projects',  label: 'Maisons' },
-  { id: 'rituels',    icon: 'evening',   label: 'Rituels' },
-  { id: 'coaching',   icon: 'coaching',  label: 'Coaching IA' },
-  { id: 'donnees',    icon: 'knowledge', label: 'Donnees' },
-  { id: 'apparence',  icon: 'sparkle',   label: 'Apparence' },
-  { id: 'sensible',   icon: 'undo',      label: 'Zone sensible' }
+  { id: 'general',     icon: 'settings',  label: 'General' },
+  { id: 'connecteurs', icon: 'arrow-up-right', label: 'Connecteurs' },
+  { id: 'langue',      icon: 'globe',     label: 'Langue & locales' },
+  { id: 'maisons',     icon: 'projects',  label: 'Maisons' },
+  { id: 'rituels',     icon: 'evening',   label: 'Rituels' },
+  { id: 'coaching',    icon: 'coaching',  label: 'Coaching IA' },
+  { id: 'donnees',     icon: 'knowledge', label: 'Donnees' },
+  { id: 'apparence',   icon: 'sparkle',   label: 'Apparence' },
+  { id: 'sensible',    icon: 'undo',      label: 'Zone sensible' }
 ];
 
 const state = { activeTab: 'general', prefs: {} };
@@ -310,6 +311,23 @@ function panelApparence() {
   `;
 }
 
+// S6.41 : Onglet Connecteurs (catalogue sources de donnees + sync log)
+function panelConnecteurs() {
+  return `
+    <h2 class="st-panel-title">Connecteurs</h2>
+    <p class="st-panel-desc">Sources de donnees branchees a aiCEO. Vous pouvez resynchroniser, voir l historique des syncs, et brancher de nouveaux connecteurs (a venir en V1.x).</p>
+
+    <div data-region="st-connectors" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:var(--space-3);margin-top:var(--space-3)">
+      <div style="text-align:center;padding:30px;color:var(--ink-500);grid-column:1/-1">Chargement...</div>
+    </div>
+
+    <div style="margin-top:var(--space-5);padding:var(--space-4);background:var(--ivory-50);border:1px solid var(--ivory-200);border-radius:var(--radius-md)">
+      <h3 style="margin:0 0 var(--space-2);font-size:14px;font-weight:600">Historique des syncs (10 dernieres)</h3>
+      <div data-region="st-synclog" style="font-size:12px;color:var(--ink-700)"><em>Chargement...</em></div>
+    </div>
+  `;
+}
+
 function panelSensible() {
   return `
     <h2 class="st-panel-title">Zone sensible</h2>
@@ -335,9 +353,13 @@ function panelSensible() {
 function renderPanel() {
   const host = document.querySelector('[data-region="st-panel"]');
   if (!host) return;
-  const fn = ({ general: panelGeneral, langue: panelLangue, maisons: panelMaisons, rituels: panelRituels, coaching: panelCoaching, donnees: panelDonnees, apparence: panelApparence, sensible: panelSensible })[state.activeTab];
+  const fn = ({ general: panelGeneral, connecteurs: panelConnecteurs, langue: panelLangue, maisons: panelMaisons, rituels: panelRituels, coaching: panelCoaching, donnees: panelDonnees, apparence: panelApparence, sensible: panelSensible })[state.activeTab];
   host.innerHTML = fn ? fn() : '<p>Section inconnue.</p>';
   bindPanelEvents();
+  // S6.41 : trigger render connecteurs si onglet connecteurs
+  if (state.activeTab === 'connecteurs') {
+    setTimeout(() => renderConnectors(), 100);
+  }
   // S6.24.2 : trigger stats apprentissage si onglet coaching
   if (state.activeTab === 'coaching') {
     setTimeout(() => renderLearningStats(), 100);
@@ -459,6 +481,90 @@ function bindPanelEvents() {
       alert('Impossible de copier (clipboard API non disponible). Selectionnez le texte manuellement.');
     }
   });
+}
+
+// === S6.41 : Render Connecteurs (catalogue + sync) ===
+async function renderConnectors() {
+  const host = document.querySelector('[data-region="st-connectors"]');
+  const logHost = document.querySelector('[data-region="st-synclog"]');
+  if (!host) return;
+  const data = await safeFetch('/api/connectors');
+  if (!data || !data.connectors) {
+    host.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--ink-500);padding:20px">Erreur de chargement des connecteurs</div>';
+    return;
+  }
+  const fmtDate = (iso) => { if (!iso) return 'jamais'; try { return new Date(iso).toLocaleString('fr-FR', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }); } catch { return iso; } };
+  const statusBadge = (s) => {
+    const map = {
+      'connected':   { label: 'Connecte',  bg: '#10b98120', fg: '#059669' },
+      'available':   { label: 'Disponible',bg: '#3b82f620', fg: '#1e40af' },
+      'error':       { label: 'Erreur',    bg: '#ef444420', fg: '#b91c1c' },
+      'coming_soon': { label: 'Bientot',   bg: '#94a3b820', fg: '#475569' },
+      'disabled':    { label: 'Desactive', bg: '#94a3b820', fg: '#475569' }
+    };
+    const m = map[s] || map['available'];
+    return '<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;background:' + m.bg + ';color:' + m.fg + '">' + m.label + '</span>';
+  };
+  host.innerHTML = data.connectors.map(c => {
+    const last = c.last_sync ? '<div style="font-size:11px;color:var(--ink-500);margin-top:4px">Dernier run : ' + fmtDate(c.last_sync.started_at) + ' · ' + (c.last_sync.items_count || 0) + ' items</div>' : '';
+    const canSync = c.status !== 'coming_soon' && c.status !== 'disabled';
+    const btn = canSync
+      ? '<button class="st-btn" data-action="sync-now" data-kind="' + escHtml(c.kind) + '" style="margin-top:10px;width:100%;padding:8px;background:var(--ink-900);color:var(--paper);border:0;border-radius:6px;cursor:pointer;font-weight:600;font-size:12px">Resynchroniser maintenant</button>'
+      : '<button disabled style="margin-top:10px;width:100%;padding:8px;background:var(--ivory-200);color:var(--ink-400);border:0;border-radius:6px;cursor:not-allowed;font-weight:600;font-size:12px">Bientot disponible (V1.x)</button>';
+    return `<div style="background:var(--paper);border:1px solid var(--ivory-200);border-radius:10px;padding:14px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <div style="font-size:24px">${escHtml(c.icon || '🔌')}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;color:var(--ink-900)">${escHtml(c.label)}</div>
+          <div style="font-size:11px;color:var(--ink-500);font-family:var(--font-mono)">${escHtml(c.kind)}</div>
+        </div>
+        ${statusBadge(c.status)}
+      </div>
+      ${last}
+      ${c.last_error ? '<div style="margin-top:6px;font-size:11px;color:#dc2626">⚠ ' + escHtml(c.last_error.slice(0, 100)) + '</div>' : ''}
+      ${btn}
+    </div>`;
+  }).join('');
+  // Wire sync buttons
+  host.querySelectorAll('[data-action="sync-now"]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const kind = btn.dataset.kind;
+      btn.disabled = true; btn.textContent = 'Sync en cours...';
+      try {
+        const r = await fetch('/api/connectors/' + encodeURIComponent(kind) + '/sync', { method: 'POST' });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const j = await r.json();
+        btn.textContent = '✓ Lance · suivez l historique';
+        // Poll log apres 3s puis 10s
+        setTimeout(() => { renderSyncLog(); renderConnectors(); }, 3000);
+        setTimeout(() => { renderSyncLog(); renderConnectors(); }, 10000);
+      } catch (e) {
+        btn.textContent = '✗ ' + e.message;
+        setTimeout(() => { btn.disabled = false; btn.textContent = 'Resynchroniser maintenant'; }, 3000);
+      }
+    });
+  });
+  // Render sync log
+  renderSyncLog();
+}
+
+async function renderSyncLog() {
+  const logHost = document.querySelector('[data-region="st-synclog"]');
+  if (!logHost) return;
+  const data = await safeFetch('/api/system/sync-log?limit=10');
+  if (!data || !data.logs || !data.logs.length) {
+    logHost.innerHTML = '<em style="color:var(--ink-500)">Aucune sync enregistree pour le moment.</em>';
+    return;
+  }
+  const fmtDate = (iso) => { if (!iso) return ''; try { return new Date(iso).toLocaleString('fr-FR', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit', second:'2-digit' }); } catch { return iso; } };
+  const fmtDur = (ms) => { if (!ms) return '-'; if (ms < 1000) return ms + 'ms'; return Math.round(ms/100)/10 + 's'; };
+  const statusIcon = { running: '⏳', success: '✓', error: '✗' };
+  logHost.innerHTML = '<table style="width:100%;border-collapse:collapse"><thead><tr style="background:var(--paper)"><th style="text-align:left;padding:6px;font-size:11px;color:var(--ink-500);text-transform:uppercase">Statut</th><th style="text-align:left;padding:6px;font-size:11px;color:var(--ink-500);text-transform:uppercase">Connecteur</th><th style="text-align:left;padding:6px;font-size:11px;color:var(--ink-500);text-transform:uppercase">Demarre</th><th style="text-align:right;padding:6px;font-size:11px;color:var(--ink-500);text-transform:uppercase">Items</th><th style="text-align:right;padding:6px;font-size:11px;color:var(--ink-500);text-transform:uppercase">Duree</th></tr></thead><tbody>' +
+    data.logs.map(l => {
+      const errTooltip = l.error_message ? ' title="' + escHtml(l.error_message) + '"' : '';
+      const stColor = l.status === 'success' ? '#059669' : (l.status === 'error' ? '#dc2626' : '#3b82f6');
+      return '<tr style="border-top:1px solid var(--ivory-200)"' + errTooltip + '><td style="padding:6px;color:' + stColor + '">' + (statusIcon[l.status] || '?') + ' ' + escHtml(l.status) + '</td><td style="padding:6px;font-family:var(--font-mono);font-size:11px">' + escHtml(l.connector_kind) + '</td><td style="padding:6px;font-size:11px">' + fmtDate(l.started_at) + '</td><td style="padding:6px;text-align:right;font-variant-numeric:tabular-nums">' + (l.items_count || 0) + '</td><td style="padding:6px;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-500)">' + fmtDur(l.duration_ms) + '</td></tr>';
+    }).join('') + '</tbody></table>';
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
