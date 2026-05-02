@@ -321,8 +321,13 @@ function panelSensible() {
     </div>
     <div class="st-danger-zone" style="margin-top:var(--space-3)">
       <div class="st-danger-zone-title">☠ Reset complet de la base</div>
-      <p class="st-helper" style="margin-bottom:var(--space-3)">Supprime TOUTES vos donnees (decisions, projets, contacts, bilans...). Cette operation se fait cote serveur uniquement (<code>cd 03_mvp ; npm run db:reset</code>) - non disponible depuis l UI pour eviter les accidents.</p>
-      <button class="st-btn st-btn-danger" disabled>Disponible cote serveur uniquement</button>
+      <p class="st-helper" style="margin-bottom:var(--space-3)">Supprime TOUTES vos donnees (decisions, projets, contacts, bilans, emails, conversations Assistant). Les 8 domaines + 1 societe seedes sont preserves. Operation irreversible. Cote ligne de commande : <code>cd C:\\_workarea_local\\aiCEO ; .\\wipe-and-restart.ps1</code></p>
+      <button class="st-btn st-btn-danger" data-action="wipe-data">☠ Tout reinitialiser maintenant</button>
+      <div data-region="wipe-result" style="margin-top:var(--space-3);font-size:13px" hidden></div>
+    </div>
+    <div class="st-danger-zone" style="margin-top:var(--space-3);background:#fef3c7;border-color:#fcd34d">
+      <div class="st-danger-zone-title">📚 Parcours d initialisation</div>
+      <p class="st-helper" style="margin-bottom:var(--space-3)">Vous voulez accompagner un nouveau dirigeant ou repartir d une page blanche ? Le parcours d init complet est documente : <a href="../../../../04_docs/PARCOURS-INIT-CEO.md" target="_blank">04_docs/PARCOURS-INIT-CEO.md</a> (8 etapes, 25 minutes).</p>
     </div>
   `;
 }
@@ -416,6 +421,29 @@ function bindPanelEvents() {
     if (!confirm('Repasser par le wizard d onboarding au prochain demarrage ?')) return;
     await safeFetch('/api/preferences/onboarding.completed', { method: 'DELETE' });
     alert('✓ Onboarding reinitialise. Allez sur /v07/pages/onboarding.html pour le refaire.');
+  });
+
+  // S6.41 : Wipe complet (reset comme nouvelle install)
+  host.querySelector('[data-action="wipe-data"]')?.addEventListener('click', async () => {
+    const txt = prompt('Cette operation supprime DEFINITIVEMENT vos donnees (decisions, projets, contacts, emails, conversations).\n\nLes 8 domaines + societe seed sont preserves.\n\nTapez "RESET" pour confirmer.');
+    if (txt !== 'RESET') return;
+    const result = document.querySelector('[data-region="wipe-result"]');
+    if (result) { result.hidden = false; result.textContent = 'Reinitialisation en cours...'; }
+    try {
+      const r = await fetch('/api/system/wipe-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Confirm-Wipe': 'yes-i-am-sure' },
+        body: JSON.stringify({ keep_seeds: true })
+      });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const j = await r.json();
+      const total = (j.wiped || []).reduce((s, w) => s + (w.deleted || 0), 0);
+      if (result) {
+        result.innerHTML = '<strong style="color:#059669">✓ Reset complete.</strong> ' + total + ' lignes supprimees sur ' + (j.wiped || []).length + ' tables. Caches Outlook : ' + ((j.cache_files_removed || []).length) + ' fichiers. <a href="onboarding.html">Aller a l onboarding →</a>';
+      }
+    } catch (e) {
+      if (result) result.innerHTML = '<strong style="color:#dc2626">✗ Erreur :</strong> ' + e.message;
+    }
   });
 
   // S6.22 Lot 7 : copier commande config ANTHROPIC_API_KEY

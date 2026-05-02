@@ -349,6 +349,152 @@ router.get('/interaction-feedback/stats', (req, res) => {
   }
 });
 
+// === S6.41 — Sync Log + Sync Status ===
+// GET /api/system/sync-log?connector=outlook-desktop&limit=20
+//   -> historique chronologique des syncs avec details (start, end, items, status)
+router.get('/sync-log', (req, res) => {
+  try {
+    const { getDb } = require('../db');
+    const db = getDb();
+    const connector = req.query.connector || null;
+    const limit = Math.min(Number(req.query.limit) || 20, 100);
+    let rows = [];
+    try {
+      if (connector) {
+        rows = db.prepare("SELECT * FROM sync_log WHERE connector_kind = ? ORDER BY started_at DESC LIMIT ?").all(connector, limit);
+      } else {
+        rows = db.prepare("SELECT * FROM sync_log ORDER BY started_at DESC LIMIT ?").all(limit);
+      }
+    } catch (e) { /* table absente */ }
+    res.json({ logs: rows, count: rows.length, connector: connector });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// GET /api/system/sync-status -> synthese globale (dernieres syncs par connecteur + counts)
+router.get('/sync-status', (req, res) => {
+  try {
+    const { getDb } = require('../db');
+    const db = getDb();
+    let conns = [];
+    try {
+      conns = db.prepare("SELECT kind, label, icon, status, last_sync_at, last_error FROM connectors").all();
+    } catch (e) { /* table absente */ }
+    const byConnector = conns.map((c) => {
+      let last = null;
+      try {
+        last = db.prepare("SELECT started_at, ended_at, status, items_count, items_new, duration_ms, error_message FROM sync_log WHERE connector_kind = ? ORDER BY started_at DESC LIMIT 1").get(c.kind);
+      } catch (e) {}
+      return Object.assign({}, c, { last_run: last });
+    });
+    let counts = {};
+    try {
+      counts = {
+        emails: db.prepare("SELECT COUNT(*) AS n FROM emails").get().n,
+        events: db.prepare("SELECT COUNT(*) AS n FROM events").get().n,
+        contacts: db.prepare("SELECT COUNT(*) AS n FROM contacts").get().n
+      };
+    } catch (e) {}
+    res.json({ connectors: byConnector, counts: counts });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// === S6.41 — Reset complet de l application (zone sensible) ===
+// POST /api/system/wipe-data
+//   Header obligatoire : X-Confirm-Wipe: yes-i-am-sure
+//   Body : { keep_seeds: true|false }  (default true : preserve les 8 domaines + 1 societe seed)
+//
+// Vide TOUTES les tables metier (tasks, decisions, projects, contacts, emails, ...)
+// puis reimporte les seeds initial schema (domains/companies) si keep_seeds=true.
+//
+// L appli est utilisable immediatement apres : redirection /onboarding au prochain load.
+router.post('/wipe-data', (req, res) => {
+  try {
+    if (req.get('X-Confirm-Wipe') !== 'yes-i-am-sure') {
+      return res.status(400).json({ error: 'Header X-Confirm-Wipe: yes-i-am-sure obligatoire' });
+    }
+    const keepSeeds = (req.body && req.body.keep_seeds !== false);
+    const { getDb } = require('../db');
+    const db = getDb();
+
+    // Liste des tables metier a vider (ordre = inverse des FK)
+    const TABLES_METIER = [
+      'arbitrage_sessions', 'evening_sessions', 'big_rocks', 'weekly_reviews', 'weeks',
+      'task_events', 'contacts_projects', 'delegations',
+      'assistant_messages', 'assistant_conversations',
+      'knowledge_pins', 'interaction_feedback', 'email_feedback',
+      'tasks', 'decisions', 'events', 'emails',
+      'projects', 'contacts', 'groups',
+      'user_preferences', 'settings'
+    ];
+    const TABLES_AXES = ['domains', 'companies'];
+
+    const wiped = [];
+    const skipped = [];
+    db.exec('PRAGMA foreign_keys = OFF');
+    try {
+      for (const t of TABLES_METIER) {
+        try {
+          const before = db.prepare('SELECT COUNT(*) AS c FROM ' + t).get().c;
+          db.exec('DELETE FROM ' + t);
+          wiped.push({ table: t, deleted: before });
+        } catch (e) {
+          skipped.push({ table: t, reason: e.message });
+        }
+      }
+      // Axes : reset si keep_seeds=false, sinon preserve
+      if (!keepSeeds) {
+        for (const t of TABLES_AXES) {
+          try {
+            const before = db.prepare('SELECT COUNT(*) AS c FROM ' + t).get().c;
+            db.exec('DELETE FROM ' + t);
+            wiped.push({ table: t, deleted: before });
+          } catch (e) {}
+        }
+        // Re-seed minimal (8 domaines + 1 societe par defaut)
+        try {
+          db.exec(require('node:fs').readFileSync(
+            require('node:path').resolve(__dirname, '..', '..', 'data', 'migrations', '2026-05-01-domains-companies.sql'),
+            'utf8'
+          ));
+        } catch (e) {
+          skipped.push({ table: 'reseed', reason: e.message });
+        }
+      }
+    } finally {
+      db.exec('PRAGMA foreign_keys = ON');
+    }
+
+    // Bonus : supprimer les caches Outlook sur disque (si keep_seeds=false on va vraiment loin)
+    const fs = require('node:fs');
+    const path = require('node:path');
+    const dataDir = path.resolve(__dirname, '..', '..', 'data');
+    const cacheFiles = ['emails.json', 'emails-summary.json', 'events.json',
+                        'arbitrage-history.json', 'evening-history.json'];
+    const removedFiles = [];
+    for (const f of cacheFiles) {
+      const p = path.join(dataDir, f);
+      if (fs.existsSync(p)) {
+        try { fs.unlinkSync(p); removedFiles.push(f); } catch (e) {}
+      }
+    }
+
+    res.json({
+      ok: true,
+      mode: keepSeeds ? 'wipe-keep-seeds' : 'wipe-full',
+      wiped: wiped,
+      skipped: skipped,
+      cache_files_removed: removedFiles,
+      next_step: 'Recharger /v07/pages/onboarding.html pour reconfigurer.'
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 module.exports = router;
 module.exports.getLastSyncStatus = getLastSyncStatus;
 module.exports.THRESHOLD_WARN_MIN = THRESHOLD_WARN_MIN;
