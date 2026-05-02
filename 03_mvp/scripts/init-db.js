@@ -52,23 +52,48 @@ const files = fs
   .sort();
 
 let count = 0;
+let warned = 0;
+// S6.42 : erreurs SQLite tolerees (DBs existantes ou re-application benigne)
+const TOLERABLE_PATTERNS = [
+  /duplicate column name/i,
+  /table .* already exists/i,
+  /index .* already exists/i,
+];
+function isTolerable(err) {
+  const msg = String(err && err.message || err);
+  return TOLERABLE_PATTERNS.some((p) => p.test(msg));
+}
+
 for (const file of files) {
   const version = file.replace(/\.sql$/, '');
   if (applied.has(version)) continue;
   const sql = fs.readFileSync(path.join(MIGRATIONS_DIR, file), 'utf8');
-  const tx = db.transaction(() => {
-    db.exec(sql);
-    db.prepare('INSERT OR IGNORE INTO schema_migrations (version) VALUES (?)').run(version);
-  });
-  tx();
-  count++;
-  console.log(`[init-db] migration appliquée : ${version}`);
+  try {
+    const tx = db.transaction(() => {
+      db.exec(sql);
+      db.prepare('INSERT OR IGNORE INTO schema_migrations (version) VALUES (?)').run(version);
+    });
+    tx();
+    count++;
+    console.log(`[init-db] migration appliquée : ${version}`);
+  } catch (e) {
+    if (isTolerable(e)) {
+      // Marque la migration comme appliquee (skip benin)
+      try { db.prepare('INSERT OR IGNORE INTO schema_migrations (version) VALUES (?)').run(version); } catch (e2) {}
+      warned++;
+      console.warn(`[init-db] migration toleree (skip benin) : ${version} -> ${e.message}`);
+    } else {
+      console.error(`[init-db] ECHEC migration ${version}:`);
+      console.error(`         ${e.message}`);
+      throw e;
+    }
+  }
 }
 
-if (count === 0) {
+if (count === 0 && warned === 0) {
   console.log(`[init-db] base à jour (${files.length} migrations connues).`);
 } else {
-  console.log(`[init-db] ${count} migration(s) appliquée(s). Base : ${DB_PATH}`);
+  console.log(`[init-db] ${count} migration(s) appliquée(s)${warned ? `, ${warned} toleree(s)` : ''}. Base : ${DB_PATH}`);
 }
 
 db.close();

@@ -1,27 +1,16 @@
 -- ----------------------------------------------------------
--- 2026-04-28-emails-fk-projects.sql — Sprint v0.7-S6.7
--- Ajoute emails.project_id (FK projects.id ON DELETE SET NULL).
--- Permet le rattachement manuel ou auto-suggéré d'un email à un projet.
+-- 2026-04-28-emails-fk-projects.sql — DEPRECATED (S6.42 fix)
+--
+-- Cette migration etait alphabetiquement avant 2026-04-28-emails.sql
+-- (`emails-` < `emails.`), ce qui faisait planter --reset car emails
+-- n'existait pas encore au moment de l'ALTER.
+--
+-- Le contenu a ete deplace dans 2026-04-28b-emails-fk-projects.sql
+-- (suffixe `b` pour passer apres emails.sql).
+--
+-- Ce fichier reste vide pour preserver le tracking schema_migrations
+-- des DBs existantes (qui ont deja applique cette migration).
 -- ----------------------------------------------------------
 
-ALTER TABLE emails ADD COLUMN project_id TEXT REFERENCES projects(id) ON DELETE SET NULL;
-
-CREATE INDEX IF NOT EXISTS idx_emails_project_id ON emails(project_id);
-
--- knowledge_pins : table pour épinglage decisions/critères côté connaissance.html
-CREATE TABLE IF NOT EXISTS knowledge_pins (
-    id           TEXT PRIMARY KEY,
-    kind         TEXT CHECK(kind IN ('decision','criterion','principle','note')) DEFAULT 'note',
-    title        TEXT NOT NULL,
-    content      TEXT,
-    source_type  TEXT,                     -- 'decision','task','arbitrage','manuel'
-    source_id    TEXT,
-    pinned_at    TEXT NOT NULL DEFAULT (datetime('now')),
-    archived_at  TEXT,
-    tags         TEXT,                     -- JSON array
-    created_at   TEXT NOT NULL DEFAULT (datetime('now')),
-    updated_at   TEXT NOT NULL DEFAULT (datetime('now'))
-);
-
-CREATE INDEX IF NOT EXISTS idx_knowledge_pins_kind ON knowledge_pins(kind);
-CREATE INDEX IF NOT EXISTS idx_knowledge_pins_archived ON knowledge_pins(archived_at);
+-- no-op (voir 2026-04-28b-emails-fk-projects.sql)
+SELECT 1;
