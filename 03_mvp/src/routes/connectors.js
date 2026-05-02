@@ -73,6 +73,92 @@ router.patch('/:kind', (req, res) => {
   }
 });
 
+// === POST /api/connectors — ajouter un nouveau connecteur custom ===
+router.post('/', (req, res) => {
+  try {
+    const body = req.body || {};
+    if (!body.kind || !body.label) return res.status(400).json({ error: 'kind et label requis' });
+    const data = {
+      kind: String(body.kind).trim(),
+      label: String(body.label).trim(),
+      icon: body.icon || '🔌',
+      status: body.status || 'available',
+      config_json: body.config_json ? (typeof body.config_json === 'string' ? body.config_json : JSON.stringify(body.config_json)) : null
+    };
+    const created = connectors.insert(data);
+    res.status(201).json({ connector: created });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// === DELETE /api/connectors/:kind ===
+router.delete('/:kind', (req, res) => {
+  try {
+    const db = getDb();
+    const c = db.prepare("SELECT * FROM connectors WHERE kind = ?").get(req.params.kind);
+    if (!c) return res.status(404).json({ error: 'connecteur inconnu' });
+    db.prepare("DELETE FROM connectors WHERE kind = ?").run(req.params.kind);
+    res.json({ ok: true, removed: c.kind });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// === POST /api/connectors/:kind/test — teste la connexion sans synchroniser ===
+router.post('/:kind/test', async (req, res) => {
+  try {
+    const db = getDb();
+    const c = db.prepare("SELECT * FROM connectors WHERE kind = ?").get(req.params.kind);
+    if (!c) return res.status(404).json({ error: 'connecteur inconnu' });
+    if (c.status === 'coming_soon') {
+      return res.json({ ok: false, message: 'Connecteur pas encore disponible (V1.x)', status: 'coming_soon' });
+    }
+    if (c.kind === 'outlook-desktop') {
+      // Test : verifier que le script PowerShell existe
+      const scriptPath = path.resolve(__dirname, '..', '..', 'scripts', 'sync-outlook.ps1');
+      const exists = fs.existsSync(scriptPath);
+      const lastSync = db.prepare("SELECT MAX(started_at) AS ts FROM sync_log WHERE connector_kind = ? AND status = 'success'").get(c.kind);
+      return res.json({
+        ok: exists,
+        message: exists ? 'Script de sync trouve. Outlook Desktop doit etre lance pour la sync reelle.' : 'Script sync-outlook.ps1 manquant',
+        script_path: scriptPath,
+        last_success: lastSync ? lastSync.ts : null
+      });
+    }
+    res.json({ ok: false, message: 'Test non implemente pour ce kind', kind: c.kind });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// === GET /api/connectors/:kind/stats — stats agregees d'un connecteur ===
+router.get('/:kind/stats', (req, res) => {
+  try {
+    const db = getDb();
+    const c = db.prepare("SELECT * FROM connectors WHERE kind = ?").get(req.params.kind);
+    if (!c) return res.status(404).json({ error: 'connecteur inconnu' });
+    let stats = {};
+    try {
+      stats = {
+        total_runs: db.prepare("SELECT COUNT(*) AS n FROM sync_log WHERE connector_kind = ?").get(c.kind).n,
+        success_runs: db.prepare("SELECT COUNT(*) AS n FROM sync_log WHERE connector_kind = ? AND status = 'success'").get(c.kind).n,
+        error_runs: db.prepare("SELECT COUNT(*) AS n FROM sync_log WHERE connector_kind = ? AND status = 'error'").get(c.kind).n,
+        avg_duration_ms: db.prepare("SELECT AVG(duration_ms) AS avg FROM sync_log WHERE connector_kind = ? AND status = 'success'").get(c.kind).avg || 0,
+        last_7d: db.prepare("SELECT COUNT(*) AS n FROM sync_log WHERE connector_kind = ? AND started_at >= datetime('now','-7 days')").get(c.kind).n
+      };
+    } catch (e) {}
+    // Total items pour outlook = COUNT(emails)
+    if (c.kind === 'outlook-desktop') {
+      try { stats.items_total = db.prepare("SELECT COUNT(*) AS n FROM emails").get().n; } catch (e) {}
+      try { stats.items_30d = db.prepare("SELECT COUNT(*) AS n FROM emails WHERE received_at >= datetime('now','-30 days')").get().n; } catch (e) {}
+    }
+    res.json({ connector: c.kind, stats: stats });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // === POST /api/connectors/:kind/sync — declenche une synchronisation ===
 router.post('/:kind/sync', async (req, res) => {
   try {

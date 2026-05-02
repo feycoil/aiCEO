@@ -353,13 +353,16 @@ function panelSysteme() {
   `;
 }
 
-// S6.41 : Onglet Connecteurs (catalogue sources de donnees + sync log)
+// S6.41 + S6.43 : Onglet Connecteurs (catalogue + paramétrage + test + stats + ajout)
 function panelConnecteurs() {
   return `
-    <h2 class="st-panel-title">Connecteurs</h2>
-    <p class="st-panel-desc">Sources de donnees branchees a aiCEO. Vous pouvez resynchroniser, voir l historique des syncs, et brancher de nouveaux connecteurs (a venir en V1.x).</p>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-2)">
+      <h2 class="st-panel-title" style="margin:0">Connecteurs</h2>
+      <button data-action="add-connector" style="padding:6px 12px;background:var(--ink-900);color:var(--paper);border:0;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:600">+ Ajouter un connecteur</button>
+    </div>
+    <p class="st-panel-desc">Sources de donnees branchees a aiCEO. Configurez, testez, synchronisez et suivez les stats.</p>
 
-    <div data-region="st-connectors" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:var(--space-3);margin-top:var(--space-3)">
+    <div data-region="st-connectors" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:var(--space-3);margin-top:var(--space-3)">
       <div style="text-align:center;padding:30px;color:var(--ink-500);grid-column:1/-1">Chargement...</div>
     </div>
 
@@ -367,6 +370,9 @@ function panelConnecteurs() {
       <h3 style="margin:0 0 var(--space-2);font-size:14px;font-weight:600">Historique des syncs (10 dernieres)</h3>
       <div data-region="st-synclog" style="font-size:12px;color:var(--ink-700)"><em>Chargement...</em></div>
     </div>
+
+    <div data-region="st-connector-drawer" style="display:none;position:fixed;top:0;right:0;bottom:0;width:480px;max-width:90vw;background:var(--paper);box-shadow:-4px 0 20px rgba(0,0,0,0.15);z-index:1000;padding:24px;overflow-y:auto"></div>
+    <div data-region="st-connector-backdrop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:999"></div>
   `;
 }
 
@@ -631,10 +637,9 @@ async function renderSystemePanel() {
   }
 }
 
-// === S6.41 : Render Connecteurs (catalogue + sync) ===
+// === S6.41 + S6.43 : Render Connecteurs (catalogue + config + test + stats) ===
 async function renderConnectors() {
   const host = document.querySelector('[data-region="st-connectors"]');
-  const logHost = document.querySelector('[data-region="st-synclog"]');
   if (!host) return;
   const data = await safeFetch('/api/connectors');
   if (!data || !data.connectors) {
@@ -654,11 +659,17 @@ async function renderConnectors() {
     return '<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;background:' + m.bg + ';color:' + m.fg + '">' + m.label + '</span>';
   };
   host.innerHTML = data.connectors.map(c => {
-    const last = c.last_sync ? '<div style="font-size:11px;color:var(--ink-500);margin-top:4px">Dernier run : ' + fmtDate(c.last_sync.started_at) + ' · ' + (c.last_sync.items_count || 0) + ' items</div>' : '';
-    const canSync = c.status !== 'coming_soon' && c.status !== 'disabled';
-    const btn = canSync
-      ? '<button class="st-btn" data-action="sync-now" data-kind="' + escHtml(c.kind) + '" style="margin-top:10px;width:100%;padding:8px;background:var(--ink-900);color:var(--paper);border:0;border-radius:6px;cursor:pointer;font-weight:600;font-size:12px">Resynchroniser maintenant</button>'
-      : '<button disabled style="margin-top:10px;width:100%;padding:8px;background:var(--ivory-200);color:var(--ink-400);border:0;border-radius:6px;cursor:not-allowed;font-weight:600;font-size:12px">Bientot disponible (V1.x)</button>';
+    const last = c.last_sync ? '<div style="font-size:11px;color:var(--ink-500);margin-top:4px">Dernier run : ' + fmtDate(c.last_sync.started_at) + ' · <strong>' + (c.last_sync.items_count || 0) + '</strong> items · ' + (c.last_sync.status || '?') + '</div>' : '<div style="font-size:11px;color:var(--ink-400);margin-top:4px;font-style:italic">Jamais synchronise</div>';
+    const canAct = c.status !== 'coming_soon' && c.status !== 'disabled';
+    const actions = canAct
+      ? `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px">
+          <button data-action="config-connector" data-kind="${escHtml(c.kind)}" style="padding:6px;background:var(--ivory-100);color:var(--ink-700);border:1px solid var(--ivory-200);border-radius:6px;cursor:pointer;font-size:11px;font-weight:600">⚙ Configurer</button>
+          <button data-action="test-connector" data-kind="${escHtml(c.kind)}" style="padding:6px;background:var(--ivory-100);color:var(--ink-700);border:1px solid var(--ivory-200);border-radius:6px;cursor:pointer;font-size:11px;font-weight:600">⚡ Tester</button>
+          <button data-action="sync-now" data-kind="${escHtml(c.kind)}" style="padding:6px;background:var(--ink-900);color:var(--paper);border:0;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600">🔄 Sync</button>
+         </div>
+         <div data-region="stats-${escHtml(c.kind)}" style="margin-top:8px;font-size:11px;color:var(--ink-500)">Chargement stats...</div>
+         <div data-region="result-${escHtml(c.kind)}" style="margin-top:6px;font-size:11px" hidden></div>`
+      : `<button disabled style="margin-top:10px;width:100%;padding:8px;background:var(--ivory-200);color:var(--ink-400);border:0;border-radius:6px;cursor:not-allowed;font-weight:600;font-size:12px">Bientot disponible (V1.x)</button>`;
     return `<div style="background:var(--paper);border:1px solid var(--ivory-200);border-radius:10px;padding:14px">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
         <div style="font-size:24px">${escHtml(c.icon || '🔌')}</div>
@@ -670,30 +681,158 @@ async function renderConnectors() {
       </div>
       ${last}
       ${c.last_error ? '<div style="margin-top:6px;font-size:11px;color:#dc2626">⚠ ' + escHtml(c.last_error.slice(0, 100)) + '</div>' : ''}
-      ${btn}
+      ${actions}
     </div>`;
   }).join('');
-  // Wire sync buttons
+  // Wire boutons
   host.querySelectorAll('[data-action="sync-now"]').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const kind = btn.dataset.kind;
-      btn.disabled = true; btn.textContent = 'Sync en cours...';
-      try {
-        const r = await fetch('/api/connectors/' + encodeURIComponent(kind) + '/sync', { method: 'POST' });
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        const j = await r.json();
-        btn.textContent = '✓ Lance · suivez l historique';
-        // Poll log apres 3s puis 10s
-        setTimeout(() => { renderSyncLog(); renderConnectors(); }, 3000);
-        setTimeout(() => { renderSyncLog(); renderConnectors(); }, 10000);
-      } catch (e) {
-        btn.textContent = '✗ ' + e.message;
-        setTimeout(() => { btn.disabled = false; btn.textContent = 'Resynchroniser maintenant'; }, 3000);
-      }
-    });
+    btn.addEventListener('click', async () => onSyncNow(btn.dataset.kind, btn));
   });
-  // Render sync log
+  host.querySelectorAll('[data-action="config-connector"]').forEach(btn => {
+    btn.addEventListener('click', () => openConnectorDrawer(btn.dataset.kind));
+  });
+  host.querySelectorAll('[data-action="test-connector"]').forEach(btn => {
+    btn.addEventListener('click', async () => onTestConnector(btn.dataset.kind, btn));
+  });
+  // Render sync log + stats par connecteur
   renderSyncLog();
+  data.connectors.forEach(c => loadConnectorStats(c.kind));
+  // Wire bouton ajout connecteur
+  const addBtn = document.querySelector('[data-action="add-connector"]');
+  if (addBtn && !addBtn.dataset.bound) {
+    addBtn.dataset.bound = '1';
+    addBtn.addEventListener('click', () => openConnectorDrawer(null));
+  }
+}
+
+async function loadConnectorStats(kind) {
+  const region = document.querySelector('[data-region="stats-' + kind + '"]');
+  if (!region) return;
+  const data = await safeFetch('/api/connectors/' + encodeURIComponent(kind) + '/stats');
+  if (!data || !data.stats) { region.innerHTML = ''; return; }
+  const s = data.stats;
+  const successRate = s.total_runs ? Math.round(s.success_runs / s.total_runs * 100) : null;
+  const parts = [];
+  if (typeof s.items_total === 'number') parts.push('<strong>' + s.items_total + '</strong> items total');
+  if (typeof s.items_30d === 'number') parts.push(s.items_30d + ' / 30j');
+  if (s.total_runs) parts.push(s.total_runs + ' runs (' + (successRate !== null ? successRate + '% OK' : '') + ')');
+  if (s.avg_duration_ms) parts.push('moy ' + Math.round(s.avg_duration_ms / 100) / 10 + 's');
+  region.innerHTML = parts.length ? parts.join(' · ') : '<em>Aucune stat disponible</em>';
+}
+
+async function onSyncNow(kind, btn) {
+  const result = document.querySelector('[data-region="result-' + kind + '"]');
+  btn.disabled = true; btn.textContent = '⏳ Sync...';
+  try {
+    const r = await fetch('/api/connectors/' + encodeURIComponent(kind) + '/sync', { method: 'POST' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    if (result) { result.hidden = false; result.innerHTML = '<span style="color:#3b82f6">⏳ Sync lancee, suivre l historique en bas</span>'; }
+    setTimeout(() => { renderSyncLog(); loadConnectorStats(kind); }, 3000);
+    setTimeout(() => { renderSyncLog(); renderConnectors(); }, 10000);
+  } catch (e) {
+    if (result) { result.hidden = false; result.innerHTML = '<span style="color:#dc2626">✗ ' + e.message + '</span>'; }
+  } finally {
+    setTimeout(() => { btn.disabled = false; btn.textContent = '🔄 Sync'; }, 2000);
+  }
+}
+
+async function onTestConnector(kind, btn) {
+  const result = document.querySelector('[data-region="result-' + kind + '"]');
+  btn.disabled = true; btn.textContent = '⏳ Test...';
+  try {
+    const r = await fetch('/api/connectors/' + encodeURIComponent(kind) + '/test', { method: 'POST' });
+    const j = await r.json();
+    if (result) {
+      result.hidden = false;
+      const color = j.ok ? '#059669' : '#dc2626';
+      const icon = j.ok ? '✓' : '✗';
+      result.innerHTML = '<span style="color:' + color + '">' + icon + ' ' + escHtml(j.message || 'Test termine') + '</span>';
+    }
+  } catch (e) {
+    if (result) { result.hidden = false; result.innerHTML = '<span style="color:#dc2626">✗ ' + e.message + '</span>'; }
+  } finally {
+    btn.disabled = false; btn.textContent = '⚡ Tester';
+  }
+}
+
+// Drawer Configurer / Ajouter connecteur
+async function openConnectorDrawer(kind) {
+  const drawer = document.querySelector('[data-region="st-connector-drawer"]');
+  const backdrop = document.querySelector('[data-region="st-connector-backdrop"]');
+  if (!drawer || !backdrop) return;
+  let connector = null;
+  if (kind) {
+    const data = await safeFetch('/api/connectors/' + encodeURIComponent(kind));
+    connector = data && data.connector;
+  }
+  const isNew = !connector;
+  const title = isNew ? 'Ajouter un connecteur' : 'Configurer : ' + (connector.label || connector.kind);
+  let configJson = '{}';
+  try { if (connector && connector.config_json) { configJson = JSON.stringify(JSON.parse(connector.config_json), null, 2); } } catch (e) { configJson = connector.config_json || '{}'; }
+  drawer.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4)">
+      <h3 style="margin:0;font-family:var(--font-serif);font-size:20px">${escHtml(title)}</h3>
+      <button data-action="close-drawer" style="background:transparent;border:0;font-size:20px;cursor:pointer;color:var(--ink-500)">×</button>
+    </div>
+    <form data-region="connector-form" style="display:flex;flex-direction:column;gap:var(--space-3)">
+      ${isNew ? `<div><label style="display:block;font-size:12px;font-weight:600;margin-bottom:4px">Type (kind)</label><input name="kind" required placeholder="ex: gmail-oauth, custom-api" style="width:100%;padding:8px;border:1px solid var(--ivory-300);border-radius:6px;font-family:var(--font-mono)" /></div>` : `<div><label style="display:block;font-size:12px;color:var(--ink-500)">Kind</label><div style="font-family:var(--font-mono);font-size:13px;padding:8px;background:var(--ivory-50);border-radius:6px">${escHtml(connector.kind)}</div></div>`}
+      <div><label style="display:block;font-size:12px;font-weight:600;margin-bottom:4px">Libelle</label><input name="label" required value="${escHtml(connector ? connector.label : '')}" style="width:100%;padding:8px;border:1px solid var(--ivory-300);border-radius:6px" /></div>
+      <div style="display:flex;gap:var(--space-2)"><div style="flex:0 0 80px"><label style="display:block;font-size:12px;font-weight:600;margin-bottom:4px">Icone</label><input name="icon" value="${escHtml(connector ? connector.icon : '🔌')}" maxlength="2" style="width:100%;padding:8px;border:1px solid var(--ivory-300);border-radius:6px;text-align:center;font-size:18px" /></div><div style="flex:1"><label style="display:block;font-size:12px;font-weight:600;margin-bottom:4px">Statut</label><select name="status" style="width:100%;padding:8px;border:1px solid var(--ivory-300);border-radius:6px"><option value="available"${connector && connector.status === 'available' ? ' selected' : ''}>Disponible</option><option value="connected"${connector && connector.status === 'connected' ? ' selected' : ''}>Connecte</option><option value="disabled"${connector && connector.status === 'disabled' ? ' selected' : ''}>Desactive</option><option value="coming_soon"${connector && connector.status === 'coming_soon' ? ' selected' : ''}>Bientot (V1.x)</option></select></div></div>
+      <div><label style="display:block;font-size:12px;font-weight:600;margin-bottom:4px">Configuration JSON (compte, scopes, endpoints, secrets...)</label><textarea name="config_json" rows="8" placeholder='{"account":"user@example.com","scopes":["read","write"]}' style="width:100%;padding:8px;border:1px solid var(--ivory-300);border-radius:6px;font-family:var(--font-mono);font-size:12px">${escHtml(configJson)}</textarea><div style="font-size:11px;color:var(--ink-500);margin-top:4px">JSON valide. Stocke local SQLite (jamais transmis).</div></div>
+      <div style="display:flex;gap:8px;margin-top:var(--space-3)">
+        <button type="submit" style="flex:1;padding:10px;background:var(--ink-900);color:var(--paper);border:0;border-radius:6px;cursor:pointer;font-weight:600">${isNew ? 'Ajouter' : 'Enregistrer'}</button>
+        ${!isNew && connector.kind && connector.kind !== 'outlook-desktop' ? '<button type="button" data-action="delete-connector" style="padding:10px 16px;background:transparent;color:#dc2626;border:1px solid #fca5a5;border-radius:6px;cursor:pointer;font-weight:600">Supprimer</button>' : ''}
+      </div>
+    </form>
+  `;
+  drawer.style.display = 'block';
+  backdrop.style.display = 'block';
+  // Wire close
+  drawer.querySelector('[data-action="close-drawer"]').addEventListener('click', () => closeConnectorDrawer());
+  backdrop.addEventListener('click', () => closeConnectorDrawer());
+  // Wire delete
+  const delBtn = drawer.querySelector('[data-action="delete-connector"]');
+  if (delBtn) {
+    delBtn.addEventListener('click', async () => {
+      if (!confirm('Supprimer le connecteur ' + connector.label + ' ?')) return;
+      await fetch('/api/connectors/' + encodeURIComponent(connector.kind), { method: 'DELETE' });
+      closeConnectorDrawer();
+      renderConnectors();
+    });
+  }
+  // Wire submit
+  drawer.querySelector('[data-region="connector-form"]').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const fd = new FormData(ev.target);
+    const body = {
+      label: fd.get('label'),
+      icon: fd.get('icon') || '🔌',
+      status: fd.get('status') || 'available'
+    };
+    let cfgRaw = String(fd.get('config_json') || '').trim();
+    if (cfgRaw && cfgRaw !== '{}') {
+      try { JSON.parse(cfgRaw); body.config_json = cfgRaw; }
+      catch (e) { alert('JSON invalide : ' + e.message); return; }
+    }
+    if (isNew) {
+      body.kind = String(fd.get('kind') || '').trim();
+      if (!body.kind) { alert('kind requis'); return; }
+      const r = await fetch('/api/connectors', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      if (!r.ok) { alert('Erreur ' + r.status); return; }
+    } else {
+      const r = await fetch('/api/connectors/' + encodeURIComponent(connector.kind), { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      if (!r.ok) { alert('Erreur ' + r.status); return; }
+    }
+    closeConnectorDrawer();
+    renderConnectors();
+  });
+}
+
+function closeConnectorDrawer() {
+  const drawer = document.querySelector('[data-region="st-connector-drawer"]');
+  const backdrop = document.querySelector('[data-region="st-connector-backdrop"]');
+  if (drawer) drawer.style.display = 'none';
+  if (backdrop) backdrop.style.display = 'none';
 }
 
 async function renderSyncLog() {
